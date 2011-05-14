@@ -135,10 +135,12 @@ public class Dinosauro {
 	 * @return la Forza
 	 */
 	protected int getForzaComune(int moltiplicatore) {
-		return forza = setForza(moltiplicatore);
+		setForza(moltiplicatore);
+		return forza;
 	}
 	/**
 	 * @param moltiplicatore imposta la forza
+	 * @return 
 	 */
 	protected void setForza (int moltiplicatore) {
 		forza = (moltiplicatore*this.getDimensione()*this.getEnergiaAttuale());

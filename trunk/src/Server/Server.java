@@ -1,4 +1,13 @@
-import dinolib;
+package Server;
+
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.concurrent.ConcurrentHashMap;
+
+import dinolib.Giocatore;
+import dinolib.Mappa;
 
 public class Server {
 	/*
@@ -22,7 +31,6 @@ public class Server {
 	 */
 	private final int LATO_MAPPA = 40;
 	private final int PORTA_DI_GIOCO = 54532;
-	private ServerSocket serverISocket;
 	/**
 	 * Passo 1
 	 * Crea rif. agli oggetti (mappa, giocatori) ma NON istanziarli
@@ -30,7 +38,7 @@ public class Server {
 	 */
 	public Mappa rifMappa;
 	public ConcurrentHashMap<String, Giocatore> Giocatori;
-	private ServerSocket serverISocket;
+	private ServerSocket serverInstSocket;
 	
 	public Server(){
 		/**
@@ -49,6 +57,7 @@ public class Server {
 		listenSocket();
 	}
 	
+	@SuppressWarnings("unused")
 	public static void main (String[] args) {
 		Server server = new Server();
 	}
@@ -57,7 +66,7 @@ public class Server {
 	 * Implementa Passo 2
 	 * Se i file di salvataggio esistono li carica, altrimenti assume primo avvio
 	 */
-	private void caricaPartitaDaFile throws FileNotFoundException {
+	private void caricaPartitaDaFile() throws FileNotFoundException {
 		/**
 		 * Carica file di mappa, se esiste deve esistere anche il file dei giocatori.
 		 * In caso il primo o l'altro non esistano l'eccezione viene gestita e passata al chiamante, che quindi assume un primo avvios
@@ -69,7 +78,7 @@ public class Server {
 			throw e;
 		}
 		try {
-			caricaFileGiocatori();
+			caricaFileGiocatori("giocatori.dat");
 		}
 		catch (FileNotFoundException e){
 			throw e;
@@ -97,16 +106,17 @@ public class Server {
 	
 	public void listenSocket () {
 		try {
-			serverISocket = new ServerSocket(PORTA_DI_GIOCO);
+			serverInstSocket = new ServerSocket(PORTA_DI_GIOCO);
 		}
 		catch (IOException e) {
 			System.out.println("Could not listen on port" + PORTA_DI_GIOCO);
 			System.exit(-1);
 		}
-		while (running) {
+		boolean running = true;
+		while (running ) {
 			ClientListener clientListener;
 			try {
-				clientListener = new ClientListener(server.accept());
+				clientListener = new ClientListener(serverInstSocket.accept());
 				Thread threadedClientListener = new Thread(clientListener);
 				threadedClientListener.start();
 			}
