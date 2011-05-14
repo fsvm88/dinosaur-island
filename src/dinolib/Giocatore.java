@@ -9,11 +9,19 @@ import java.util.ArrayList;
 public class Giocatore {
 	private String nome;
 	private String password;
-	private int token = 0;
+	private String token;
 	private int numeroDinosauri = 0;
 	
 	private ArrayList<Dinosauro> Dinosauri = new ArrayList<Dinosauro>();
-		
+	
+	public Giocatore (String nome, String password, String newtoken, Dinosauro Specie ) {
+		this.nome = nome;
+		this.password = password;
+		this.token = newtoken;
+		this.numeroDinosauri = 1;
+		Dinosauri.add(Specie);
+	}
+	
 	/**
 	 * @return il nome
 	 */
@@ -62,10 +70,10 @@ public class Giocatore {
 	public void setDinosauri(ArrayList<Dinosauro> dinosauri) {
 		Dinosauri = dinosauri;
 	}
-	public void setToken(int token) {
+	public void setToken(String token) {
 		this.token = token;
 	}
-	public int getToken() {
+	public String getToken() {
 		return token;
 	}
 }
