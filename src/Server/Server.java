@@ -1,6 +1,5 @@
 package Server;
 
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -37,10 +36,12 @@ public class Server {
 	 * Implementare Giocatori come hashmap con nome come chiave
 	 */
 	public Mappa rifMappa;
-	public ConcurrentHashMap<String, Giocatore> Giocatori;
+	protected ConcurrentHashMap<String, Giocatore> Giocatori;
+	protected String nomeGiocatoreCorrente;
 	private ServerSocket serverInstSocket;
+	protected int qualcunoStaGiocando = 0;
 	
-	public Server(){
+ 	public Server(){
 		/**
 		 * Il passo 1 è implementato come semplice definizione di attributi di classe dei riferimenti
 		 * Il passo 2 è implementato con caricaPartitaDaFile
@@ -113,7 +114,7 @@ public class Server {
 			System.exit(-1);
 		}
 		boolean running = true;
-		while (running ) {
+		while (running) {
 			ClientListener clientListener;
 			try {
 				clientListener = new ClientListener(serverInstSocket.accept());
