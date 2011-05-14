@@ -1,7 +1,6 @@
 package dinolib;
 
 import java.util.ArrayList;
-
 /**
  * @author fabio
  *
@@ -10,16 +9,13 @@ public class Giocatore {
 	private String nome;
 	private String password;
 	private String token;
-	private int numeroDinosauri = 0;
 	
 	private ArrayList<Dinosauro> Dinosauri = new ArrayList<Dinosauro>();
 	
-	public Giocatore (String nome, String password, String newtoken, Dinosauro Specie ) {
+	public Giocatore (String nome, String password, String newtoken) {
 		this.nome = nome;
 		this.password = password;
 		this.token = newtoken;
-		this.numeroDinosauri = 1;
-		Dinosauri.add(Specie);
 	}
 	
 	/**
@@ -27,24 +23,6 @@ public class Giocatore {
 	 */
 	public String getNome() {
 		return nome;
-	}
-	/**
-	 * @param nome il nome da impostare
-	 */
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-	/**
-	 * @return il numeroDinosauri
-	 */
-	public int getNumeroDinosauri() {
-		return numeroDinosauri;
-	}
-	/**
-	 * @param numeroDinosauri il numeroDinosauri da impostare
-	 */
-	public void setNumeroDinosauri(int num_dinosauri) {
-		this.numeroDinosauri = num_dinosauri;
 	}
 	/**
 	 * @return the password
@@ -55,8 +33,8 @@ public class Giocatore {
 	/**
 	 * @param password the password to set
 	 */
-	public void setPassword(String password) {
-		this.password = password;
+	public void setPassword(String newPassword) {
+		this.password = newPassword;
 	}
 	/**
 	 * @return the dinosauri
@@ -65,10 +43,16 @@ public class Giocatore {
 		return Dinosauri;
 	}
 	/**
-	 * @param dinosauri the dinosauri to set
+	 * @param Dinosauri funzioni per le manipolazioni sulla lista dei dinosauri
 	 */
-	public void setDinosauri(ArrayList<Dinosauro> dinosauri) {
-		Dinosauri = dinosauri;
+	public void aggiungiDinosauro(Dinosauro nuovoDinosauro) {
+		Dinosauri.add(nuovoDinosauro);
+	}
+	public void rimuoviDinosauro(Dinosauro vecchioDinosauro) {
+		Dinosauri.remove(vecchioDinosauro);
+	}
+	public int numeroDinosauro() {
+		return Dinosauri.size();
 	}
 	public void setToken(String token) {
 		this.token = token;

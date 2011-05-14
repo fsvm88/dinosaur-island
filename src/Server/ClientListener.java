@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -66,9 +67,9 @@ public class ClientListener extends Server implements Runnable {
 		Scanner scanner = new Scanner(inLine);
 		scanner.useDelimiter(","); 
 		if (scanner.next() == "@login") {
-			String tempString = scanner.next(Pattern.compile("[^user=]"));
-			if ( userExists(tempString) ) {
-				myPlayer = super.Giocatori.get(tempString);
+			String tempUser = scanner.next(Pattern.compile("[^user=]"));
+			if ( userExists(tempUser) ) {
+				myPlayer = super.Giocatori.get(tempUser);
 				String tempPwd = scanner.next(Pattern.compile("[^pass=]"));
 				if ( passwordIsValid(myPlayer, tempPwd) ) {
 					setLogged(true);
@@ -98,9 +99,39 @@ public class ClientListener extends Server implements Runnable {
 			}
 		}
 		else if (scanner.next() == "@creaUtente") {
-			
+			String tempUser = scanner.next(Pattern.compile("[^user=]"));
+			if ( ! userExists(tempUser) ) {
+				String tempPwd = scanner.next(Pattern.compile("[^pass=]"));
+				myPlayer = new Giocatore(tempUser, tempPwd, getNewToken());
+				super.Giocatori.put(tempUser, myPlayer);
+				try {
+					writeLineToOutput("@ok," + myPlayer.getToken());
+				}
+				catch (IOException e) {
+					terminateThreadOnIOException("Unable to write data to output stream!");
+					return;
+				}
+			}
+			else {
+				try {
+					writeLineToOutput("@no,@autenticazioneFallita");
+				}
+				catch (IOException e) {
+					terminateThreadOnIOException("Unable to write data to output stream!");
+					return;
+				}
+			}
 		}
-	}
+		else {
+			try {
+				writeLineToOutput("@no,@autenticazioneFallita");
+			}
+			catch (IOException e) {
+			terminateThreadOnIOException("Unable to write data to output stream!");
+					return;
+				}
+			}
+		}
 	
 	private String readLineFromInput () throws IOException {
 		return incomingData.readLine();
@@ -140,5 +171,11 @@ public class ClientListener extends Server implements Runnable {
 	
 	private void setLogged(boolean status) {
 		logged = status;
+	}
+	
+	private String getNewToken() {
+		String myNewToken = null;
+		
+		return myNewToken;
 	}
 }
