@@ -55,7 +55,7 @@ public class ClientListener extends Server implements Runnable {
 	//	if (super.nomeGiocatoreCorrente == super.Giocatori.)
 	}
 	
-	private boolean allowLoginOrCreation () {
+	private void allowLoginOrCreation () {
 		String inLine;
 		try {
 			inLine = readLineFromInput();
