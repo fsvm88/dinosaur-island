@@ -1,6 +1,6 @@
 import dinolib;
 
-public class ClientListener implements Runnable {
+public class ClientListener extends Server implements Runnable {
 	private boolean stopThread = false;
 	public void run () {
 		while ( ! stopThread ) {
