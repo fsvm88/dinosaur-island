@@ -106,9 +106,8 @@ public class Server {
 		}
 		while (running) {
 			ClientListener clientListener;
-			String buffer;
 			try {
-				clientListener = new ClientListener(server.accept(), buffer);
+				clientListener = new ClientListener(server.accept());
 				Thread threadedClientListener = new Thread(clientListener);
 				threadedClientListener.start();
 			}
