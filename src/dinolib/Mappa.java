@@ -3,6 +3,9 @@ package dinolib;
  * @author fabio
  *
  */
+
+import dinolib.Cella;
+
 public class Mappa {
 	private final int FIXED_WATER_PERCENT = 20;
 	private final int FIXED_EARTH_PERCENT = (100 - this.FIXED_WATER_PERCENT);
@@ -14,7 +17,7 @@ public class Mappa {
 	private int conteggioTerraStatico = 0;
 	private Cella[][] MappaACelle;
 	
-	Mappa (int lato) {
+	public Mappa (int lato) {
 		latoDellaMappa = lato;
 		calcolaNumeroCelleDaPercentuali();
 		popolaMappa();
@@ -36,7 +39,7 @@ public class Mappa {
 	
 	private void calcolaNumeroCelleDaPercentuali () {
 		conteggioAcquaStatico = ( ( calcolaCelle() / 100 ) * FIXED_WATER_PERCENT );
-		conteggioTerraStatico = calcolaCelle() - conteggioAcqua;
+		conteggioTerraStatico = calcolaCelle() - conteggioAcquaStatico;
 	}
 		
 	/**
@@ -48,7 +51,7 @@ public class Mappa {
 		 */
 		for (int i = 0; i < latoDellaMappa; i++) {
 			for (int j = 0; j < latoDellaMappa; j++) {
-				MappaACelle[i][j] = new Acqua;
+				MappaACelle[i][j] = new Acqua();
 			}
 		}
 		/*
@@ -58,7 +61,7 @@ public class Mappa {
 		
 		for (int i = 0; i < latoDellaMappa; i++) {
 			for (int j = 0; j < latoDellaMappa; j++) {
-				MappaACelle[i][j] = new Acqua;
+				MappaACelle[i][j] = new Acqua();
 			}
 		}
 	}
