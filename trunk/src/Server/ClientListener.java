@@ -183,9 +183,7 @@ public class ClientListener extends Server implements Runnable {
 			}
 			else writeLineToOutput("@no,@autenticazioneFallita");
 		}
-		else {
-			return;
-		}
+		else return;
 	}
 	
 	/**
@@ -194,13 +192,16 @@ public class ClientListener extends Server implements Runnable {
 	 * @throws IOException
 	 */
 	private void gestisciCreazioneUtente(Scanner scanner) throws IOException {
-		String tempUser = scanner.next(Pattern.compile("[^user=]"));
-		if ( ! userExists(tempUser) ) {
-			String tempPwd = scanner.next(Pattern.compile("[^pass=]"));
-			myPlayer = new Giocatore(tempUser, tempPwd, getNewToken());
-			super.Giocatori.put(tempUser, myPlayer);
-			writeLineToOutput("@ok");
+		if ( scanner.hasNext() ){
+			String tempUser = scanner.next(Pattern.compile("[^user=]"));
+			if ( ! userExists(tempUser) ) {
+				String tempPwd = scanner.next(Pattern.compile("[^pass=]"));
+				myPlayer = new Giocatore(tempUser, tempPwd, getNewToken());
+				super.Giocatori.put(tempUser, myPlayer);
+				writeLineToOutput("@ok");
+			}
+			else writeLineToOutput("@no,@usernameOccupato");
 		}
-		else writeLineToOutput("@no,@usernameOccupato");
+		else return;
 	}
 }
