@@ -37,12 +37,6 @@ public class Giocatore {
 		this.password = newPassword;
 	}
 	/**
-	 * @return the dinosauri
-	 */
-	public ArrayList<Dinosauro> getDinosauri() {
-		return Dinosauri;
-	}
-	/**
 	 * @param Dinosauri funzioni per le manipolazioni sulla lista dei dinosauri
 	 */
 	public void aggiungiDinosauro(Dinosauro nuovoDinosauro) {
@@ -51,7 +45,7 @@ public class Giocatore {
 	public void rimuoviDinosauro(Dinosauro vecchioDinosauro) {
 		Dinosauri.remove(vecchioDinosauro);
 	}
-	public int numeroDinosauro() {
+	public int numeroDinosauri() {
 		return Dinosauri.size();
 	}
 	public void setToken(String token) {
