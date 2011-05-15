@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -19,6 +18,7 @@ public class ClientListener extends Server implements Runnable {
 	private BufferedReader incomingData = null;
 	private PrintWriter outgoingData = null;
 	private boolean logged = false;
+	private boolean inGame = false;
 	
 	Giocatore myPlayer = null;
 	
@@ -44,11 +44,20 @@ public class ClientListener extends Server implements Runnable {
 					allowLoginOrCreation();
 				}
 				catch (IOException e) {
-					terminateThreadOnIOException("IOException while trying to communicate with the client, killing the thread..");
+					terminateThreadOnIOException("IOException while trying to communicate with the client..");
+				}
+			}
+			else if ( isLogged() ) {
+				try {
+					loggatoLeggiComandi();
+				}
+				catch (IOException e) {
+					terminateThreadOnIOException("IOException while trying to communicate with the client..");
 				}
 			}
 			else {
-				
+				System.out.println("Invalid status for thread, killing it..");
+				stopTheThread();
 			}
 		}
 	}
@@ -60,8 +69,9 @@ public class ClientListener extends Server implements Runnable {
 		stopThread = true;
 	}
 	
-	private void isMioTurno () {
-	//	if (super.nomeGiocatoreCorrente == super.Giocatori.)
+	private boolean isMioTurno () {
+		if (super.nomeGiocatoreCorrente.equals(myPlayer.getNome())) return true;
+		else return false;
 	}
 	
 	/**
@@ -82,10 +92,10 @@ public class ClientListener extends Server implements Runnable {
 		outgoingData.println(toSend);
 	}
 	
-	/**
+	/** 
 	 * Termina il thread su eccezione:
-	 * dà notifica con motivazione e imposta il parametro per lo stop 
-	 * @param cause
+	 * dà notifica con motivazione e imposta il parametro per lo stop
+	 * @param cause 
 	 */
 	private void terminateThreadOnIOException (String cause) {
 		System.out.println(cause);
@@ -123,18 +133,22 @@ public class ClientListener extends Server implements Runnable {
 	}
 	
 	/**
-	 * Helper per impostare lo stato dell'utente
+	 * Due helper per impostare lo stato del login dell'utente
 	 * @param status
 	 */
-	private void setLogged(boolean status) {
-		logged = status;
+	private void iAmLogged() {
+		logged = true;
+	}
+	
+	private void iAmNotLogged() {
+		logged = false;
 	}
 	
 	/**
 	 * Helper per la generazione di un nuovo token alfanumerico
 	 * @return
 	 */
-	private String getNewToken() {
+	private static String getNewToken() {
 		return Long.toString(Double.doubleToLongBits(Math.random()));
 	}
 	
@@ -173,7 +187,7 @@ public class ClientListener extends Server implements Runnable {
 				if ( scanner.hasNext() ) {
 					String tempPwd = scanner.next(Pattern.compile("[^pass=]"));
 					if ( passwordIsValid(myPlayer, tempPwd) ) {
-						setLogged(true);
+						iAmLogged();
 						String newToken = getNewToken();
 						writeLineToOutput("@ok," + newToken);
 						myPlayer.setToken(newToken);
@@ -196,12 +210,182 @@ public class ClientListener extends Server implements Runnable {
 			String tempUser = scanner.next(Pattern.compile("[^user=]"));
 			if ( ! userExists(tempUser) ) {
 				String tempPwd = scanner.next(Pattern.compile("[^pass=]"));
-				myPlayer = new Giocatore(tempUser, tempPwd, getNewToken());
-				super.Giocatori.put(tempUser, myPlayer);
+				Giocatore tempPlayer = new Giocatore(tempUser, tempPwd, getNewToken()); 
+				super.Giocatori.put(tempUser, tempPlayer);
 				writeLineToOutput("@ok");
 			}
 			else writeLineToOutput("@no,@usernameOccupato");
 		}
 		else return;
+	}
+	
+	/**
+	 * Helper per gestire i comandi da utente loggato correttamente
+	 * Dal protocollo si deduce che il token è sempre il secondo argomento di qualunque comando una volta che l'utente è loggato.
+	 * Implementa il controllo del token FUORI dalle varie funzioni che implementano i comandi, di modo da risparmiare MOLTO codice.
+	 * @throws IOException
+	 */
+	private void loggatoLeggiComandi() throws IOException {
+		do {
+			Scanner scanner = new Scanner(readLineFromInput());
+			scanner.useDelimiter(",");
+			if (readAndValidateTokenFromInput(scanner)) {
+				if (scanner.hasNext()) {
+					String tempInput = scanner.next();
+					/* comandi fuori partita*/
+					if (tempInput.equals("@creaRazza")) creaNuovaRazza(scanner);
+					else if (tempInput.equals("@accessoPartita")) accediAPartita();
+					else if (tempInput.equals("@uscitaPartita")) esciDallaPartita();
+					else if (tempInput.equals("@listaGiocatori")) listaDeiGiocatori();
+					else if (tempInput.equals("@classifica")) classifica();
+					else if (tempInput.equals("@logout")) handleLogout();
+					/* comandi in partita */
+					else if (isInGame()) {
+						/* comandi di informazione */
+						if (tempInput.equals("@mappaGenerale")) sendMappaGeneale();
+						else if (tempInput.equals("@listaDinosauri")) sendListaDinosauri();
+						else if (tempInput.equals("@vistaLocale")) sendVistaLocale();
+						else if (tempInput.equals("@statoDinosauro")) sendStatoDinosauro();
+						/* comandi di azione */
+						else if (tempInput.equals("@muoviDinosauro")) sendStatoDinosauro();
+						else if (tempInput.equals("@cresciDinosauro")) cresciDinosauro();
+						else if (tempInput.equals("@deponiUovo")) deponiUovo();
+						/* comandi di turno */
+						else if (tempInput.equals("@confermaTurno")) confermaTurno();
+						else if (tempInput.equals("@passaTurno")) passaTurno();
+						else if (tempInput.equals("@cambioTurno")) broadcastCambioTurno();
+						else writeLineToOutput("@no");
+					}
+					else writeLineToOutput("@no");
+				}
+				else writeLineToOutput("@no");
+			}
+			else writeLineToOutput("@no,tokenNonValido");
+		} while (isLogged());
+
+	}
+	
+	private void passaTurno() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void confermaTurno() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void deponiUovo() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void cresciDinosauro() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void sendStatoDinosauro() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void sendVistaLocale() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void sendListaDinosauri() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void sendMappaGeneale() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private boolean isInGame() {
+		return inGame;
+	}
+		
+	private void iAmInGame() {
+		inserisciDinosauriNellaMappa();
+		inGame = true;
+	}
+	
+	private void iAmNotInGame() {
+		rimuoviDinosauriDallaMappa();
+		inGame = false;
+	}
+
+	private void classifica() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void listaDeiGiocatori() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void esciDallaPartita() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void accediAPartita() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void creaNuovaRazza(Scanner scanner) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * Helper per garantire la correttezza del token che è sempre il secondo parametro dei comandi da utente loggato.
+	 * @param scanner
+	 * @return
+	 * @throws IOException
+	 */
+	private boolean readAndValidateTokenFromInput (Scanner scanner) throws IOException {
+		if ( scanner.hasNext() ) {
+			if ( scanner.next(Pattern.compile("[^token=]")).equals(myPlayer.getToken() )) {
+				return true;
+			}
+			else return false;
+		}
+		else writeLineToOutput("@no");
+		return false;
+	}
+	
+	/**
+	 * Gestisce il logout dell'utente
+	 */
+	private void handleLogout() throws IOException {
+		if (isLogged()) {
+			if (isInGame()) {
+				quitTheGame();
+				iAmNotLogged();
+				writeLineToOutput("@ok");
+				return;
+			}
+			else {
+				iAmNotLogged();
+				writeLineToOutput("@ok");
+				return;
+			}
+		}
+		else writeLineToOutput("@no");
+	}
+
+	/**
+	 * Helper per l'uscita dalla partita
+	 */
+	private void quitTheGame() {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -3,7 +3,9 @@ package Server;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 import dinolib.Giocatore;
 import dinolib.Mappa;
@@ -91,10 +93,16 @@ public class Server {
 		
 	}
 	
+	/**
+	 * Helper per la creazione di una mappa nuova
+	 */
 	private void creaNuovaMappa() {
 		rifMappa = new Mappa(LATO_MAPPA);
 	}
 	
+	/**
+	 * Helper per l'inizializzazione e la gestione dei socket per i client tramite threading
+	 */
 	public void listenSocket () {
 		try {
 			serverInstSocket = new ServerSocket(PORTA_DI_GIOCO);
@@ -118,4 +126,7 @@ public class Server {
 		}
 	}
 	
+	protected void broadcastCambioTurno() {
+		
+	}
 }
