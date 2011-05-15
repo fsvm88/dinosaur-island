@@ -3,10 +3,7 @@ package Server;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
-
 import dinolib.Giocatore;
 import dinolib.Mappa;
 

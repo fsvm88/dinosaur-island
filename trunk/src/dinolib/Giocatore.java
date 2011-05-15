@@ -9,6 +9,7 @@ public class Giocatore {
 	private String nome;
 	private String password;
 	private String token;
+	private String nomeRazzaDinosauro;
 	
 	private ArrayList<Dinosauro> Dinosauri = new ArrayList<Dinosauro>();
 	
@@ -53,5 +54,13 @@ public class Giocatore {
 	}
 	public String getToken() {
 		return token;
+	}
+
+	public void setNomeRazzaDinosauro(String nomeRazzaDinosauro) {
+		this.nomeRazzaDinosauro = nomeRazzaDinosauro;
+	}
+
+	public String getNomeRazzaDinosauro() {
+		return nomeRazzaDinosauro;
 	}
 }

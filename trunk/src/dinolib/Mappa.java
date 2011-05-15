@@ -31,6 +31,27 @@ public class Mappa {
 	}
 	
 	/**
+	 * Dice se la casella è libera, ovvero: è una casella terra semplice
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public boolean isLibera(int x, int y) {
+		if ( MappaACelle[x][y].toString().toLowerCase() == "terra" ) return true;
+		else return false;
+	}
+	
+	/**
+	 * Restituisce il tipo della cella in x, y
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public String getTipoCella(int x, int y) {
+		return MappaACelle[x][y].toString().toLowerCase();
+	}
+	
+	/**
 	 * calcola il numero di Celle con il lato fornito
 	 */
 	private int calcolaCelle () {
@@ -41,7 +62,7 @@ public class Mappa {
 		conteggioAcquaStatico = ( ( calcolaCelle() / 100 ) * FIXED_WATER_PERCENT );
 		conteggioTerraStatico = calcolaCelle() - conteggioAcquaStatico;
 	}
-		
+	
 	/**
 	 * popola la mappa seguendo l'algoritmo descritto sotto
 	 */

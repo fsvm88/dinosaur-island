@@ -5,9 +5,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+import dinolib.Carnivoro;
+import dinolib.Erbivoro;
 import dinolib.Giocatore;
 
 
@@ -314,9 +317,26 @@ public class ClientListener extends Server implements Runnable {
 		inGame = true;
 	}
 	
+	private void inserisciDinosauriNellaMappa() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private void iAmNotInGame() {
-		rimuoviDinosauriDallaMappa();
 		inGame = false;
+	}
+	
+	/**
+	 * Helper per l'uscita dalla partita
+	 */
+	private void quitTheGame() {
+		rimuoviDinosauriDallaMappa();
+		iAmNotInGame();
+	}
+
+	private void rimuoviDinosauriDallaMappa() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void classifica() {
@@ -339,9 +359,61 @@ public class ClientListener extends Server implements Runnable {
 		
 	}
 
-	private void creaNuovaRazza(Scanner scanner) {
-		// TODO Auto-generated method stub
-		
+	private int getNewRandomIntValueOnMyMap() {
+		Random rnd = new Random();
+		int myNewRandomValue = rnd.nextInt(rifMappa.getLatoDellaMappa());
+		return myNewRandomValue; 
+	}
+	
+	private void creaNuovaRazza(Scanner scanner) throws IOException {
+		if (scanner.hasNext() && !existsRazza()) {
+			String nomeRazza = scanner.next(Pattern.compile("[^nome=]"));
+			if (scanner.hasNext() && (!existsNomeRazza()) ) {
+				String tipoRazza = scanner.next(Pattern.compile("[^tipo=]"));
+				if (tipoRazza.equals("c") || tipoRazza.equals("e")) {
+					if (tipoRazza == "c") {
+						myPlayer.setNomeRazzaDinosauro(nomeRazza);
+						int x = getNewRandomIntValueOnMyMap();
+						int y = getNewRandomIntValueOnMyMap();
+						do {
+							if (rifMappa.isLibera(x,y)) {
+								myPlayer.aggiungiDinosauro(new Carnivoro(x,y));
+								break;
+							}
+						} while (true);
+					}
+					else if (tipoRazza == "e") {
+						myPlayer.setNomeRazzaDinosauro(nomeRazza);
+						int x = getNewRandomIntValueOnMyMap();
+						int y = getNewRandomIntValueOnMyMap();
+						do {
+							if (rifMappa.isLibera(x,y)) {
+								myPlayer.aggiungiDinosauro(new Erbivoro(x,y));
+								break;
+							}
+						} while (true);
+					}
+					else writeLineToOutput("@no");
+				}
+				else writeLineToOutput("@no");
+			}
+			else writeLineToOutput("@no,@nomeRazzaOccupato");
+		}
+		else writeLineToOutput("@no,@razzaGiaCreata");
+	}
+
+	/**
+	 * Se esiste almeno un dinosauro significa che la razza esiste già
+	 * @return
+	 */
+	private boolean existsRazza() {
+		if (myPlayer.numeroDinosauri() > 0) return true;
+		else return false;
+	}
+
+	private boolean existsNomeRazza() {
+		if (myPlayer.getNomeRazzaDinosauro() != null) return true;
+		return false;
 	}
 
 	/**
@@ -379,13 +451,5 @@ public class ClientListener extends Server implements Runnable {
 			}
 		}
 		else writeLineToOutput("@no");
-	}
-
-	/**
-	 * Helper per l'uscita dalla partita
-	 */
-	private void quitTheGame() {
-		// TODO Auto-generated method stub
-		
 	}
 }

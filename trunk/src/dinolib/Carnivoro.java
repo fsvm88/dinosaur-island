@@ -11,7 +11,7 @@ public class Carnivoro extends Dinosauro {
 	 * @param x
 	 * @param y
 	 */
-	Carnivoro (int x, int y) {
+	public Carnivoro (int x, int y) {
 		super(x, y);
 		super.setSpostamentoMaxPerTurno(SPOSTAMENTO_MAX_PER_TURNO);
 		super.setForza(MOLTIPLICATORE_FORZA);
