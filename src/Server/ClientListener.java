@@ -40,7 +40,12 @@ public class ClientListener extends Server implements Runnable {
 			 * 2. Se esiste loggalo e mandagli un token
 			 */
 			if ( ! isLogged() ) {
-				allowLoginOrCreation();
+				try {
+					allowLoginOrCreation();
+				}
+				catch (IOException e) {
+					terminateThreadOnIOException("IOException while trying to communicate with the client, killing the thread..");
+				}
 			}
 			else {
 				
@@ -56,82 +61,22 @@ public class ClientListener extends Server implements Runnable {
 	//	if (super.nomeGiocatoreCorrente == super.Giocatori.)
 	}
 	
-	private void allowLoginOrCreation () {
-		String inLine;
-		try {
-			inLine = readLineFromInput();
-		} catch (IOException e) {
-			terminateThreadOnIOException("Unable to read data from input stream!");
-			return;
-		}
+	private void allowLoginOrCreation () throws IOException {
+		String inLine = readLineFromInput();
 		Scanner scanner = new Scanner(inLine);
 		scanner.useDelimiter(","); 
-		if (scanner.next() == "@login") {
-			String tempUser = scanner.next(Pattern.compile("[^user=]"));
-			if ( userExists(tempUser) ) {
-				myPlayer = super.Giocatori.get(tempUser);
-				String tempPwd = scanner.next(Pattern.compile("[^pass=]"));
-				if ( passwordIsValid(myPlayer, tempPwd) ) {
-					setLogged(true);
-					try {
-						writeLineToOutput("@ok," + myPlayer.getToken());
-					} catch (IOException e) {
-						terminateThreadOnIOException("Unable to write data to output stream!");
-						return;
-					}
-				}
-				else {
-					try {
-						writeLineToOutput("@no,@autenticazioneFallita");
-					} catch (IOException e) {
-						terminateThreadOnIOException("Unable to write data to output stream!");
-						return;
-					}
-				}
-			}
-			else {
-				try {
-					writeLineToOutput("@no,@autenticazioneFallita");
-				} catch (IOException e) {
-					terminateThreadOnIOException("Unable to write data to output stream!");
-					return;
-				}
-			}
+		if (scanner.hasNext() && (scanner.next() == "@login")) {
+			gestisciLogin(scanner);
+			return;
 		}
-		else if (scanner.next() == "@creaUtente") {
-			String tempUser = scanner.next(Pattern.compile("[^user=]"));
-			if ( ! userExists(tempUser) ) {
-				String tempPwd = scanner.next(Pattern.compile("[^pass=]"));
-				myPlayer = new Giocatore(tempUser, tempPwd, getNewToken());
-				super.Giocatori.put(tempUser, myPlayer);
-				try {
-					writeLineToOutput("@ok," + myPlayer.getToken());
-				}
-				catch (IOException e) {
-					terminateThreadOnIOException("Unable to write data to output stream!");
-					return;
-				}
-			}
-			else {
-				try {
-					writeLineToOutput("@no,@autenticazioneFallita");
-				}
-				catch (IOException e) {
-					terminateThreadOnIOException("Unable to write data to output stream!");
-					return;
-				}
-			}
+		else if (scanner.hasNext() && (scanner.next() == "@creaUtente")) {
+			gestisciCreazioneUtente(scanner);
+			return;
 		}
 		else {
-			try {
-				writeLineToOutput("@no,@autenticazioneFallita");
-			}
-			catch (IOException e) {
-			terminateThreadOnIOException("Unable to write data to output stream!");
-					return;
-				}
-			}
+			writeLineToOutput("@no");
 		}
+	}
 	
 	private String readLineFromInput () throws IOException {
 		return incomingData.readLine();
@@ -143,7 +88,7 @@ public class ClientListener extends Server implements Runnable {
 	
 	private void terminateThreadOnIOException (String cause) {
 		System.out.println(cause);
-		System.out.println("Terminating current thread!");
+		System.out.println("Killing this thread!");
 		stopTheThread();
 	}
 	
@@ -174,8 +119,46 @@ public class ClientListener extends Server implements Runnable {
 	}
 	
 	private String getNewToken() {
-		String myNewToken = null;
-		
-		return myNewToken;
+		return Long.toHexString(Double.doubleToLongBits(Math.random()));
+	}
+	
+	private void gestisciLogin(Scanner scanner) throws IOException {
+		if ( scanner.hasNext() ){
+			String tempUser = scanner.next(Pattern.compile("[^user=]"));
+			if ( userExists(tempUser) ) {
+				myPlayer = super.Giocatori.get(tempUser);
+				if ( scanner.hasNext() ) {
+					String tempPwd = scanner.next(Pattern.compile("[^pass=]"));
+					if ( passwordIsValid(myPlayer, tempPwd) ) {
+						setLogged(true);
+						String newToken = getNewToken();
+						writeLineToOutput("@ok," + newToken);
+						myPlayer.setToken(newToken);
+					}
+					else {
+						writeLineToOutput("@no,@autenticazioneFallita");
+					}
+				}
+			}
+			else {
+				writeLineToOutput("@no,@autenticazioneFallita");
+			}
+		}
+		else {
+			return;
+		}
+	}
+	
+	private void gestisciCreazioneUtente(Scanner scanner) throws IOException {
+		String tempUser = scanner.next(Pattern.compile("[^user=]"));
+		if ( ! userExists(tempUser) ) {
+			String tempPwd = scanner.next(Pattern.compile("[^pass=]"));
+			myPlayer = new Giocatore(tempUser, tempPwd, getNewToken());
+			super.Giocatori.put(tempUser, myPlayer);
+			writeLineToOutput("@ok," + myPlayer.getToken());
+		}
+		else {
+			writeLineToOutput("@no,@autenticazioneFallita");
+		}
 	}
 }
