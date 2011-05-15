@@ -29,7 +29,7 @@ public class Server {
 	 * il socketServer
 	 */
 	private final int LATO_MAPPA = 40;
-	private final int PORTA_DI_GIOCO = 54532;
+	private final int PORTA_DI_GIOCO = 32845;
 	/**
 	 * Passo 1
 	 * Crea rif. agli oggetti (mappa, giocatori) ma NON istanziarli
