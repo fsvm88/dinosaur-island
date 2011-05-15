@@ -1,20 +1,16 @@
 package dinolib;
 
 import java.util.Random;
-
 /**
  * @author fabio
- *
+ * Questa classe implementa l'oggetto Dinosauro
+ * con le sue proprietà. È fornita di metodi setter e getter per comodità.
+ * Implementa l'istanza di un solo dinosauro, il
+ * compito del tracking di più dinosauri è lasciato alla logica giocatore.
+ * La logica gestisce anche le azioni.
  */
 public class Dinosauro {
-	/**Questa classe implementa l'oggetto Dinosauro
-	 * con le sue proprietà. È fornita di metodi setter
-	 * e getter per comodità.
-	 * Implementa l'istanza di un solo dinosauro, il
-	 * compito del tracking di più dinosauri è lasciato 
-	 * alla logica giocatore.
-	 * La logica gestisce anche le azioni. */
-	
+	/** Dichiarazione di alcune variabili di classe */
 	private int turnoDiVita = 0;
 	private int vitaMax = 0;
 	private int energiaAttuale = 0;
@@ -24,8 +20,8 @@ public class Dinosauro {
 	private int y = 0;
 	private int forza = 0;
 	private int spostamentoMaxPerTurno = 0;
-	
-	int DIMENSIONE_MASSIMA = 5;
+	/** Dichiarazione di una costante di gioco*/
+	private final int DIMENSIONE_MASSIMA = 5;
 	
 	Dinosauro (int x, int y) /**
 	 * @param turnoDiVita vita attuale del dinosauro
@@ -169,5 +165,9 @@ public class Dinosauro {
 			this.setEnergiaMax((1000*this.getDimensione()));
 			this.setForza(moltiplicatore_forza);
 		}
+	}
+	
+	public String toString () {
+		return this.getClass().getName();
 	}
 }
