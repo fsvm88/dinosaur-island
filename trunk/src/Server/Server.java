@@ -72,18 +72,8 @@ public class Server {
 		 * Carica file di mappa, se esiste deve esistere anche il file dei giocatori.
 		 * In caso il primo o l'altro non esistano l'eccezione viene gestita e passata al chiamante, che quindi assume un primo avvios
 		 */
-		try {
-			caricaFileDiMappa("mappa.dat");
-		}
-		catch (FileNotFoundException e){
-			throw e;
-		}
-		try {
-			caricaFileGiocatori("giocatori.dat");
-		}
-		catch (FileNotFoundException e){
-			throw e;
-		}
+		caricaFileDiMappa("mappa.dat");
+		caricaFileGiocatori("giocatori.dat");
 	}
 	
 	/**
