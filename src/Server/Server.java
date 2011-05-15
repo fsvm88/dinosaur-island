@@ -110,7 +110,7 @@ public class Server {
 			serverInstSocket = new ServerSocket(PORTA_DI_GIOCO);
 		}
 		catch (IOException e) {
-			System.out.println("Could not listen on port" + PORTA_DI_GIOCO);
+			System.out.println("Could not listen on port " + PORTA_DI_GIOCO);
 			System.exit(-1);
 		}
 		boolean running = true;
@@ -122,7 +122,7 @@ public class Server {
 				threadedClientListener.start();
 			}
 			catch (IOException e) {
-				System.out.println("Accept failed on" + PORTA_DI_GIOCO);
+				System.out.println("Accept failed on " + PORTA_DI_GIOCO);
 				System.exit(-1);
 			}
 		}
