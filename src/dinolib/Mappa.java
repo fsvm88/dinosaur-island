@@ -42,6 +42,15 @@ public class Mappa {
 	}
 	
 	/**
+	 * Rimuove un dinosauro dalla cella e la reimposta su Terra
+	 * @param x
+	 * @param y
+	 */
+	public void rimuoviDinosauroDallaCella(int x, int y) {
+		MappaACelle[x][y] = new Terra();
+	}
+	
+	/**
 	 * Dice se la casella è libera, ovvero: è una casella terra semplice
 	 * @param x
 	 * @param y

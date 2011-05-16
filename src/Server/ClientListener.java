@@ -10,10 +10,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import dinolib.Carnivoro;
-import dinolib.Erbivoro;
-import dinolib.Giocatore;
-import dinolib.Dinosauro;
+import dinolib.*;
 
 
 public class ClientListener extends Server implements Runnable {
@@ -333,10 +330,19 @@ public class ClientListener extends Server implements Runnable {
 		rimuoviDinosauriDallaMappa();
 		iAmNotInGame();
 	}
-
+	
+	private void rimuoviDinosauroDallaCella(int x, int y) {
+		rifMappa.rimuoviDinosauroDallaCella(x, y);
+	}
+	
 	private void rimuoviDinosauriDallaMappa() {
-		// TODO Auto-generated method stub
-		
+		/* Usa iteratore per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
+		Iterator<Dinosauro> IteratorePerDinosauriDelGiocatore = myPlayer.dammiIteratoreSuiDinosauri();
+		while (IteratorePerDinosauriDelGiocatore.hasNext()) {
+			Dinosauro tempDinosauro = IteratorePerDinosauriDelGiocatore.next();
+			int x = tempDinosauro.getX(), y = tempDinosauro.getY();
+			rimuoviDinosauroDallaCella(x, y);
+		}
 	}
 
 	private void classifica() {
@@ -350,8 +356,8 @@ public class ClientListener extends Server implements Runnable {
 	}
 
 	private void esciDallaPartita() {
-		// TODO Auto-generated method stub
-		
+		quitTheGame();
+		iAmNotInGame();
 	}
 
 	private void accediAPartita() {
@@ -442,17 +448,19 @@ public class ClientListener extends Server implements Runnable {
 						do {
 							if (rifMappa.isLibera(x,y)) {
 								myPlayer.aggiungiDinosauro(new Carnivoro(x,y));
+								rifMappa.spawnDinosauro(x, y);
 								break;
 							}
 						} while (true);
 					}
 					else if (tipoRazza == "e") {
 						myPlayer.setNomeRazzaDinosauro(nomeRazza);
-						int x = getNewRandomIntValueOnMyMap();
-						int y = getNewRandomIntValueOnMyMap();
 						do {
+							int x = getNewRandomIntValueOnMyMap();
+							int y = getNewRandomIntValueOnMyMap();
 							if (rifMappa.isLibera(x,y)) {
 								myPlayer.aggiungiDinosauro(new Erbivoro(x,y));
+								rifMappa.spawnDinosauro(x, y);
 								break;
 							}
 						} while (true);
