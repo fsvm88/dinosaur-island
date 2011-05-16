@@ -1,6 +1,7 @@
 package dinolib;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 /**
  * @author fabio
  *
@@ -17,6 +18,10 @@ public class Giocatore {
 		this.nome = nome;
 		this.password = password;
 		this.token = newtoken;
+	}
+	
+	public Iterator<Dinosauro> dammiIteratoreSuiDinosauri() {
+		return Dinosauri.iterator();
 	}
 	
 	/**
