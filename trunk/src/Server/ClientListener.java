@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -12,6 +13,7 @@ import java.util.regex.Pattern;
 import dinolib.Carnivoro;
 import dinolib.Erbivoro;
 import dinolib.Giocatore;
+import dinolib.Dinosauro;
 
 
 public class ClientListener extends Server implements Runnable {
@@ -249,14 +251,17 @@ public class ClientListener extends Server implements Runnable {
 						else if (tempInput.equals("@listaDinosauri")) sendListaDinosauri();
 						else if (tempInput.equals("@vistaLocale")) sendVistaLocale();
 						else if (tempInput.equals("@statoDinosauro")) sendStatoDinosauro();
-						/* comandi di azione */
-						else if (tempInput.equals("@muoviDinosauro")) sendStatoDinosauro();
-						else if (tempInput.equals("@cresciDinosauro")) cresciDinosauro();
-						else if (tempInput.equals("@deponiUovo")) deponiUovo();
-						/* comandi di turno */
-						else if (tempInput.equals("@confermaTurno")) confermaTurno();
-						else if (tempInput.equals("@passaTurno")) passaTurno();
-						else if (tempInput.equals("@cambioTurno")) broadcastCambioTurno();
+						if (isMioTurno()) {
+							/* comandi di azione */
+							if (tempInput.equals("@muoviDinosauro")) sendStatoDinosauro();
+							else if (tempInput.equals("@cresciDinosauro")) cresciDinosauro();
+							else if (tempInput.equals("@deponiUovo")) deponiUovo();
+							/* comandi di turno */
+							else if (tempInput.equals("@confermaTurno")) confermaTurno();
+							else if (tempInput.equals("@passaTurno")) passaTurno();
+							else if (tempInput.equals("@cambioTurno")) broadcastCambioTurno();
+							else writeLineToOutput("@no");
+						}
 						else writeLineToOutput("@no");
 					}
 					else writeLineToOutput("@no");
@@ -317,11 +322,6 @@ public class ClientListener extends Server implements Runnable {
 		inGame = true;
 	}
 	
-	private void inserisciDinosauriNellaMappa() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	private void iAmNotInGame() {
 		inGame = false;
 	}
@@ -355,8 +355,72 @@ public class ClientListener extends Server implements Runnable {
 	}
 
 	private void accediAPartita() {
-		// TODO Auto-generated method stub
-		
+		if (existsRazza() && existsNomeRazza()) {
+			iAmInGame();
+		}
+	}
+	
+	/**
+	 * Controlla che la Cella sia libera e prova a inserire il dinosauro nella posizione richiesta.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	private boolean tryActualSpawn(int x, int y) {
+		if (rifMappa.isLibera(x, y)) {
+			rifMappa.spawnDinosauro(x, y);
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Prova a inserire il dinosauro nella Cella più vicina.
+	 * Viene chiamata quando la cella salvata in memoria è già occupata.
+	 * @param x
+	 * @param y
+	 * @param maxDistance
+	 * @param tempDinosauro
+	 * @return
+	 */
+	private boolean tryNearestSpawn(int x, int y, int maxDistance, Dinosauro tempDinosauro) {
+		int i = -1;
+		int j = -1;
+		do {
+			for (i = -maxDistance; i < (maxDistance+1); i++) {
+				if (tryActualSpawn(i+x, j+y)) {
+					tempDinosauro.setXY(i+x, j+y);
+					return true;
+				}
+			}
+			j++;
+		} while (j<maxDistance && (0<(i+x)) &&
+				((i+x)<rifMappa.getLatoDellaMappa()) &&
+				(0<(j+y)) &&
+				((j+y)<rifMappa.getLatoDellaMappa()) );
+		return false;
+	}
+	
+	/**
+	 * Quando l'utente esegue il login aggiunge i dinosauri alla mappa.
+	 */
+	private void inserisciDinosauriNellaMappa() {
+		/* Usa iteratore per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
+		Iterator<Dinosauro> IteratorePerDinosauriDelGiocatore = myPlayer.dammiIteratoreSuiDinosauri();
+		while (IteratorePerDinosauriDelGiocatore.hasNext()) {
+			Dinosauro tempDinosauro = IteratorePerDinosauriDelGiocatore.next();
+			int x = tempDinosauro.getX(), y = tempDinosauro.getY();
+			if (tryActualSpawn(x, y)) return;
+			else {
+				int i = 1;
+				do {
+					if (tryNearestSpawn(x, y, i, tempDinosauro)) {
+						return;
+					}
+					else i++;
+				} while (true);
+			}
+		}
 	}
 
 	private int getNewRandomIntValueOnMyMap() {

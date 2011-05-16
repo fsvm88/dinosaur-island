@@ -31,14 +31,29 @@ public class Mappa {
 	}
 	
 	/**
+	 * Dice se la cella è occupata da un dinosauro
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public boolean isOccupataDaDinosauro(int x, int y) {
+		if (MappaACelle[x][y].toString().toLowerCase() == "occupatadadinosauro") return true;
+		else return false;
+	}
+	
+	/**
 	 * Dice se la casella è libera, ovvero: è una casella terra semplice
 	 * @param x
 	 * @param y
 	 * @return
 	 */
 	public boolean isLibera(int x, int y) {
-		if ( MappaACelle[x][y].toString().toLowerCase() == "terra" ) return true;
+		if ( MappaACelle[x][y].toString().toLowerCase().equals("terra") ) return true;
 		else return false;
+	}
+	
+	public void spawnDinosauro(int x, int y) {
+		MappaACelle[x][y] = new OccupataDaDinosauro();
 	}
 	
 	/**
