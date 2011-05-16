@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -327,6 +329,22 @@ public class ClientListener extends Server implements Runnable {
 	}
 	
 	/**
+	 * Comando per restituire la lista dei giocatori al client.
+	 * @throws IOException 
+	 */
+	private void listaDeiGiocatori() throws IOException {
+		Iterator<Entry<String, Giocatore>> iteratoreSuListaGiocatori = super.Giocatori.entrySet().iterator();
+		String buffer = "@ok,";
+		if (iteratoreSuListaGiocatori.hasNext()) {
+			while (iteratoreSuListaGiocatori.hasNext()) {
+				buffer = buffer + iteratoreSuListaGiocatori.next();
+			}
+			writeLineToOutput(buffer);
+		}
+		else writeLineToOutput("@no");
+	}
+	
+	/**
 	 * Comando per gestire il logout dell'utente
 	 */
 	private void handleLogout() throws IOException {
@@ -380,11 +398,6 @@ public class ClientListener extends Server implements Runnable {
 	}
 	
 	private void classifica() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void listaDeiGiocatori() {
 		// TODO Auto-generated method stub
 		
 	}
