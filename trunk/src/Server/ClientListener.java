@@ -340,6 +340,7 @@ public class ClientListener extends Server implements Runnable {
 				buffer = buffer + iteratoreSuListaGiocatori.next();
 			}
 			writeLineToOutput(buffer);
+			return;
 		}
 		else writeLineToOutput("@no");
 	}
