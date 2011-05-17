@@ -358,7 +358,7 @@ public class ClientListener extends Server implements Runnable {
 		else writeLineToOutput("@no");
 	}
 	
-	private void sendListaDinosauri() {
+	private void sendListaDinosauri() throws IOException {
 		if (existsRazza(myPlayer)) {
 			String buffer = "@ok";
 			Iterator<Dinosauro> iteratoreListaDinosauri = myPlayer.dammiIteratoreSuiDinosauri();
@@ -369,7 +369,6 @@ public class ClientListener extends Server implements Runnable {
 		}
 		else writeLineToOutput("@no,@nonInPartita");
 	}
-	
 	
 	private void passaTurno() {
 		// TODO Auto-generated method stub
