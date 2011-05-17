@@ -20,6 +20,7 @@ public class Dinosauro {
 	private int y = 0;
 	private int forza = 0;
 	private int spostamentoMaxPerTurno = 0;
+	private String idDinosauro = null;
 	/** Dichiarazione di una costante di gioco*/
 	private final int DIMENSIONE_MASSIMA = 5;
 	
@@ -39,6 +40,7 @@ public class Dinosauro {
 		energiaAttuale = 750;
 		dimensione = 1;
 		energiaMax = 1000*dimensione;
+		idDinosauro = Long.toString(Double.doubleToLongBits(Math.random()));
 	}
 
 
@@ -166,8 +168,10 @@ public class Dinosauro {
 			this.setForza(moltiplicatore_forza);
 		}
 	}
-	
+
+	public String getIdDinosauro() {
+		return idDinosauro;
+	}
 	public String toString () {
 		return this.getClass().getName();
-	}
-}
+	}}
