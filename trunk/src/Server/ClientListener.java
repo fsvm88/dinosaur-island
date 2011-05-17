@@ -358,6 +358,19 @@ public class ClientListener extends Server implements Runnable {
 		else writeLineToOutput("@no");
 	}
 	
+	private void sendListaDinosauri() {
+		if (existsRazza(myPlayer)) {
+			String buffer = "@ok";
+			Iterator<Dinosauro> iteratoreListaDinosauri = myPlayer.dammiIteratoreSuiDinosauri();
+			while (iteratoreListaDinosauri.hasNext()) {
+				buffer = buffer + "," + iteratoreListaDinosauri.next().getIdDinosauro();
+			}
+			writeLineToOutput(buffer);
+		}
+		else writeLineToOutput("@no,@nonInPartita");
+	}
+	
+	
 	private void passaTurno() {
 		// TODO Auto-generated method stub
 		
@@ -384,11 +397,6 @@ public class ClientListener extends Server implements Runnable {
 	}
 
 	private void sendVistaLocale() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private void sendListaDinosauri() {
 		// TODO Auto-generated method stub
 		
 	}
