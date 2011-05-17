@@ -38,7 +38,7 @@ public class Server {
 	 * Crea rif. agli oggetti (mappa, giocatori) ma NON istanziarli
 	 * Implementare Giocatori come hashmap con nome come chiave
 	 */
-	public Mappa rifMappa;
+	protected Mappa rifMappa;
 	protected ConcurrentHashMap<String, Giocatore> Giocatori;
 	protected String nomeGiocatoreCorrente;
 	private ServerSocket serverInstSocket;
@@ -121,6 +121,7 @@ public class Server {
 				clientListener = new ClientListener(serverInstSocket.accept());
 				Thread threadedClientListener = new Thread(clientListener);
 				threadedClientListener.start();
+				System.out.println("Server started successfully, creating threads on need..");
 			}
 			catch (IOException e) {
 				System.out.println("Accept failed on " + PORTA_DI_GIOCO);
