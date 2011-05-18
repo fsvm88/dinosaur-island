@@ -139,6 +139,18 @@ public class Dinosauro extends Specie {
 	public void setY(int y) {
 		this.y = y;
 	}
+	
+	/**
+	 * Setter of the properties <tt>x</tt> and <tt>y</tt>.
+	 * @param x  The x to set.
+	 * @param y  The y to set.
+	 * @uml.property  name="x"
+	 * @uml.property  name="y"
+	 */
+	public void setXY(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
 
 	/**
 	 * @uml.property  name="forza"

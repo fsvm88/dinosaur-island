@@ -1,15 +1,14 @@
 package dinolib;
 
 import java.util.ArrayList;
-
+import dinolib.*;
 
 public class Giocatore {
-
 	/**
 	 * Contiene il nome del giocatore corrente.
 	 * @uml.property  name="nome"
 	 */
-	private String nome = new java.lang.String();
+	private String nome = null;
 
 	/**
 	 * Getter of the property <tt>nome</tt>
@@ -21,19 +20,10 @@ public class Giocatore {
 	}
 
 	/**
-	 * Setter of the property <tt>nome</tt>
-	 * @param nome  The nome to set.
-	 * @uml.property  name="nome"
-	 */
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	/**
 	 * Contiene la password dell'utente.
 	 * @uml.property  name="password"
 	 */
-	private String password = new java.lang.String();
+	private String password = null;
 
 	/**
 	 * Getter of the property <tt>password</tt>
@@ -45,18 +35,9 @@ public class Giocatore {
 	}
 
 	/**
-	 * Setter of the property <tt>password</tt>
-	 * @param password  The password to set.
-	 * @uml.property  name="password"
-	 */
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	/**
 	 * @uml.property  name="Dinosauri"
 	 */
-	private ArrayList dinosauri = new java.util.ArrayList();
+	private ArrayList dinosauri = null;
 
 	/**
 	 * Getter of the property <tt>Dinosauri</tt>
@@ -99,5 +80,8 @@ public class Giocatore {
 	public void setSpecieDiDinosauri(Specie specieDiDinosauri) {
 		this.specieDiDinosauri = specieDiDinosauri;
 	}
-
+	
+	public void getNumeroDinosauri() {
+		return specieDiDinosauri.getNumeroDinosauri();
+	}
 }
