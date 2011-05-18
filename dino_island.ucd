@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" name="dino_island" size="1211,532" id="" metadata="uml2-1.0" initialized="true" scrolledX="585" scrolledY="45" tag="1000" key="32303037303533312D313030302064696E6F5F69736C616E642F666162696F">
+<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" name="dino_island" size="1211,532" id="" metadata="uml2-1.0" initialized="true" tag="1000" key="32303037303533312D313030302064696E6F5F69736C616E642F666162696F">
   <children xsi:type="editmodel:PackageEditModel" name="server" size="556,391" id="server">
     <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.0/@children.1/@sourceConnections.0 //@children.0/@children.1/@sourceConnections.1" name="Server" location="16,43" size="92,68" id="server/Server" runTimeClassModel="main([Ljava.lang.String;)">
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
@@ -26,7 +26,7 @@
     </children>
     <packagePreferences xsi:type="editmodel:UMLClassDiagramPackagePreference"/>
   </children>
-  <children xsi:type="editmodel:PackageEditModel" name="dinolib" location="660,0" size="1119,681" id="dinolib">
+  <children xsi:type="editmodel:PackageEditModel" name="dinolib" location="660,0" size="1135,681" id="dinolib">
     <children xsi:type="editmodel:ClassEditModel" name="Giocatore" location="50,50" size="175,94" id="dinolib/Giocatore" runTimeClassModel="Dinosauri,nome,specieDiDinosauri,password">
       <children xsi:type="editmodel:CompartmentEditModel" size="152,54">
         <children xsi:type="editmodel:AttributeEditModel" name="nome" id="dinolib/Giocatore#nome"/>

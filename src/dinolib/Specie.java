@@ -58,6 +58,10 @@ public class Specie {
 	public void getNumeroDinosauri(){
 	}
 
+	/**
+	 * Stub di un costruttore vuoto per garantire coerenza con la sottoclasse.
+	 */
+	protected Specie() { };
 
 	/**
 	 * Implementa la costruzione della classe Specie.
