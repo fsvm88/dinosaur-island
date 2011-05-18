@@ -1,4 +1,4 @@
-package Server;
+package old_Server;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -7,9 +7,9 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-import dinolib.Dinosauro;
-import dinolib.Giocatore;
-import dinolib.Mappa;
+import dinolib2.Dinosauro;
+import dinolib2.Giocatore;
+import dinolib2.Mappa;
 
 public class Server {
 	/*

@@ -1,22 +1,22 @@
-package dinolib;
+package dinolib2;
 /**
  * @author fabio
  *
  */
-public class Carnivoro extends Dinosauro {
-	private final int SPOSTAMENTO_MAX_PER_TURNO=3;
+public class Erbivoro extends Dinosauro {
+	private final int SPOSTAMENTO_MAX_PER_TURNO=2;
 	private final int MOLTIPLICATORE_FORZA=1;
 	
 	/**
 	 * @param x
 	 * @param y
 	 */
-	public Carnivoro (int x, int y) {
+	public Erbivoro (int x, int y) {
 		super(x, y);
 		super.setSpostamentoMaxPerTurno(SPOSTAMENTO_MAX_PER_TURNO);
 		super.setForza(MOLTIPLICATORE_FORZA);
 	}
-
+		
 	/**
 	 * fa crescere il dinosauro
 	 */

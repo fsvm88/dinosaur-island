@@ -1,4 +1,4 @@
-package dinolib;
+package dinolib2;
 
 import java.util.ArrayList;
 import java.util.Iterator;
