@@ -1,6 +1,7 @@
 package dinolib;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /** 
  * Astrae la collezione dei dinosauri rispetto al giocatore.
@@ -26,7 +27,7 @@ public class Specie {
 	 * ArrayList con tutti i dinosauri presenti nella specie.
 	 * @uml.property  name="Dinosauri"
 	 */
-	private ArrayList dinosauri;
+	private ArrayList<Dinosauro> dinosauri;
 
 	/**
 	 * Getter of the property <tt>Dinosauri</tt>
@@ -36,7 +37,13 @@ public class Specie {
 	public ArrayList getDinosauri() {
 		return dinosauri;
 	}
-
+	
+	/**
+	 * 
+	 */
+	public Iterator<Dinosauro> getIteratoreSuiDinosauri () {
+		return dinosauri.iterator();
+	}
 
 	/**
 	 * Aggiunge un dinosauro alla lista di dinosauri della Specie.
@@ -55,7 +62,8 @@ public class Specie {
 	/**
 	 * Restituisce il numero di dinosauri nella lista.
 	 */
-	public void getNumeroDinosauri(){
+	public int getNumeroDinosauri(){
+		return dinosauri.size();
 	}
 
 	/**

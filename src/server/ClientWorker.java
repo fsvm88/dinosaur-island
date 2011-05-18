@@ -10,16 +10,13 @@ import java.util.Scanner;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import dinolib.Giocatore;
-import dinolib2.Carnivoro;
-import dinolib2.Dinosauro;
-import dinolib2.Erbivoro;
+import dinolib.*;
 
 
 /** 
  * Implementa l'ascoltatore per i client. Ascolta i comandi e gestisce le giuste risposte.
  */
-public class ClientWorker extends Server {
+public class ClientWorker extends Server implements Runnable {
 	/**
 	 * Variabile per fermare il thread.
 	 * @uml.property name="stopThread"
@@ -69,6 +66,35 @@ public class ClientWorker extends Server {
 		}
 		catch (IOException e) {
 			terminateThreadOnIOException("Cannot initialize input/output streams!");
+		}
+	}
+	
+	public void run () {
+		while ( ! stopThread ) {
+			/**
+			 * 1. Controlla se il giocatore che vuole loggarsi esiste
+			 * 2. Se esiste loggalo e mandagli un token
+			 */
+			if ( ! isLogged() ) {
+				try {
+					allowLoginOrCreation();
+				}
+				catch (IOException e) {
+					terminateThreadOnIOException("IOException while trying to communicate with the client..");
+				}
+			}
+			else if ( isLogged() ) {
+				try {
+					loggatoLeggiComandi();
+				}
+				catch (IOException e) {
+					terminateThreadOnIOException("IOException while trying to communicate with the client..");
+				}
+			}
+			else {
+				System.out.println("Invalid status for thread, killing it..");
+				stopTheThread();
+			}
 		}
 	}
 
@@ -142,15 +168,6 @@ public class ClientWorker extends Server {
 	/* Seguono un mare di helper comuni a tutti i thread e spostabili nella main class.*/
 
 	/**
-	 * Helper per rimuovere il dinosauro dalla mappa.
-	 * @param x
-	 * @param y
-	 */
-	protected void rimuoviDinosauroDallaCella(int x, int y) {
-		rifMappa.rimuoviDinosauroDallaCella(x, y);
-	}
-
-	/**
 	 * Helper per la generazione di un nuovo token alfanumerico.
 	 * @return
 	 */
@@ -193,11 +210,12 @@ public class ClientWorker extends Server {
 	 */
 	protected void rimuoviDinosauriDallaMappa(Giocatore curPlayer) {
 		/* Usa iteratore per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
-		Iterator<Dinosauro> IteratorePerDinosauriDelGiocatore = curPlayer.dammiIteratoreSuiDinosauri();
+		Iterator<Dinosauro> IteratorePerDinosauriDelGiocatore = myPlayer.getSpecieDiDinosauri().getIteratoreSuiDinosauri();
 		while (IteratorePerDinosauriDelGiocatore.hasNext()) {
 			Dinosauro tempDinosauro = IteratorePerDinosauriDelGiocatore.next();
-			int x = tempDinosauro.getX(), y = tempDinosauro.getY();
-			rimuoviDinosauroDallaCella(x, y);
+			int x = tempDinosauro.getX();
+			int y = tempDinosauro.getY();
+//TODO			rimuoviDinosauroDallaCella(x, y);
 		}
 	}
 
@@ -206,7 +224,7 @@ public class ClientWorker extends Server {
 	 */
 	protected void inserisciDinosauriNellaMappa(Giocatore curPlayer) {
 		/* Usa iteratore per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
-		Iterator<Dinosauro> IteratorePerDinosauriDelGiocatore = curPlayer.dammiIteratoreSuiDinosauri();
+		Iterator<Dinosauro> IteratorePerDinosauriDelGiocatore = myPlayer.getSpecieDiDinosauri().getIteratoreSuiDinosauri();
 		while (IteratorePerDinosauriDelGiocatore.hasNext()) {
 			Dinosauro tempDinosauro = IteratorePerDinosauriDelGiocatore.next();
 			int x = tempDinosauro.getX(), y = tempDinosauro.getY();
@@ -277,7 +295,7 @@ public class ClientWorker extends Server {
 	 * @return
 	 */
 	protected boolean existsRazza() {
-		if (myPlayer. > 0) return true;
+		if (myPlayer.getNumeroDinosauri() > 0) return true;
 		else return false;
 	}
 
