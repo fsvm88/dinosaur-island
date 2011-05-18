@@ -218,7 +218,7 @@ public class Dinosauro extends Specie {
 	/**
 	 * Costruttore visibile solo alle sottoclassi da usare come costruttore comune per Carnivoro e Erbivoro.
 	 */
-	protected Dinosauro(int x, int y){
+	protected Dinosauro(int x, int y) {
 		this.x = x;
 		this.y = y;
 		Random generator = new Random();

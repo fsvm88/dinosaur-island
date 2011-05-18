@@ -1,13 +1,17 @@
 package dinolib;
 
+import java.util.ArrayList;
 
+/** 
+ * Astrae la collezione dei dinosauri rispetto al giocatore.
+ */
 public class Specie {
 
 	/**
 	 * Variabile che definisce il nome della specie di Dinosauri.
 	 * @uml.property  name="nomeRazza"
 	 */
-	private String nomeRazza = new java.lang.String();
+	private String nomeRazza;
 
 	/** 
 	 * Getter of the property <tt>nomeSpecie</tt>
@@ -18,13 +22,49 @@ public class Specie {
 		return nomeRazza;
 	}
 
-	/** 
-	 * Setter of the property <tt>nomeSpecie</tt>
-	 * @param nomeSpecie  The nomeSpecie to set.
-	 * @uml.property  name="nomeRazza"
+	/**
+	 * ArrayList con tutti i dinosauri presenti nella specie.
+	 * @uml.property  name="Dinosauri"
 	 */
-	public void setNomeRazza(String nomeRazza) {
-		this.nomeRazza = nomeRazza;
+	private ArrayList dinosauri;
+
+	/**
+	 * Getter of the property <tt>Dinosauri</tt>
+	 * @return  Returns the dinosauri.
+	 * @uml.property  name="Dinosauri"
+	 */
+	public ArrayList getDinosauri() {
+		return dinosauri;
 	}
 
+
+	/**
+	 * Aggiunge un dinosauro alla lista di dinosauri della Specie.
+	 */
+	public void aggiungiDinosauroAllaSpecie(Dinosauro dinosauro){
+	}
+
+
+	/**
+	 * Rimuove il dinosauro con l'ID scelto dalla specie.
+	 */
+	public void rimuoviDinosauroDallaSpecie(String idDinosauro){
+	}
+
+
+	/**
+	 * Restituisce il numero di dinosauri nella lista.
+	 */
+	public void getNumeroDinosauri(){
+	}
+
+
+	/**
+	 * Implementa la costruzione della classe Specie.
+	 * Richiede il nuovo nome della razza e l'istanza del nuovo dinosauro.
+	 */
+	public Specie(String nomeRazza, Dinosauro nuovodinosauro) {
+		this.nomeRazza = nomeRazza;
+		aggiungiDinosauroAllaSpecie(nuovodinosauro);
+	}
 }

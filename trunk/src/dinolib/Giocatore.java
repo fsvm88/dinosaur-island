@@ -76,4 +76,28 @@ public class Giocatore {
 		this.dinosauri = dinosauri;
 	}
 
+	/**
+	 * Fa riferimento a un oggetto Specie, viene inizializzato a zero fino a che non viene costruita la specie tramite l'implementazione in server.
+	 * @uml.property  name="specieDiDinosauri"
+	 */
+	private Specie specieDiDinosauri;
+
+	/**
+	 * Getter of the property <tt>specieDiDinosauri</tt>
+	 * @return  Returns the specieDiDinosauri.
+	 * @uml.property  name="specieDiDinosauri"
+	 */
+	public Specie getSpecieDiDinosauri() {
+		return specieDiDinosauri;
+	}
+
+	/**
+	 * Setter of the property <tt>specieDiDinosauri</tt>
+	 * @param specieDiDinosauri  The specieDiDinosauri to set.
+	 * @uml.property  name="specieDiDinosauri"
+	 */
+	public void setSpecieDiDinosauri(Specie specieDiDinosauri) {
+		this.specieDiDinosauri = specieDiDinosauri;
+	}
+
 }
