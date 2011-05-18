@@ -1,4 +1,4 @@
-package dinolib;
+package dinolib2;
 
 public class Cella {	
 	public String toString () {

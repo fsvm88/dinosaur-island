@@ -1,10 +1,10 @@
-package dinolib;
+package dinolib2;
 /**
  * @author fabio
  *
  */
 
-import dinolib.Cella;
+import dinolib2.Cella;
 
 public class Mappa {
 	private final int FIXED_WATER_PERCENT = 20;

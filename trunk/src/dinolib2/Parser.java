@@ -1,4 +1,4 @@
-package dinolib;
+package dinolib2;
 /**
  * @author fabio
  */

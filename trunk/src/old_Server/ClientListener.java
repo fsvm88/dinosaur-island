@@ -1,4 +1,4 @@
-package Server;
+package old_Server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import dinolib.*;
+import dinolib2.*;
 
 public class ClientListener extends Server implements Runnable {
 	private boolean stopThread = false;
