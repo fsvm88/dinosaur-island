@@ -1,6 +1,6 @@
 package server;
 
 
-public class ClientWorker {
+public class ClientWorker extends Server {
 
 }
