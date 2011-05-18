@@ -23,7 +23,7 @@ public class Carnivoro extends Dinosauro {
 	/**
 	 * Implementa la crescita del dinosauro, modificando tutte le variabili necessarie.
 	 */
-	public void Crescita(){
+	public void cresciDinosauro(){
 		super.comuneCrescita(moltiplicatore_FORZA);
 	}
 
