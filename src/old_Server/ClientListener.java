@@ -101,7 +101,7 @@ public class ClientListener extends Server implements Runnable {
 	}
 	
 	/**
-	 * Helper per verificare se l'utente è loggato
+	 * Helper per verificare se l'utente è loggato.
 	 * @return
 	 */
 	private boolean isLogged() {
@@ -109,27 +109,39 @@ public class ClientListener extends Server implements Runnable {
 	}
 	
 	/* Due helper per impostare lo stato del login dell'utente. */
+	/**
+	 * Imposta lo stato su loggato.
+	 */
 	private void iAmLogged() {
 		logged = true;
 	}
 	
+	/**
+	 * Imposta lo stato su falso.
+	 */
 	private void iAmNotLogged() {
 		logged = false;
 	}
 	
 	/**
-	 * Ritorna il valore di inGame, che dice se l'utente sta giocando.
+	 * Ritorna il valore di inGame, dice se l'utente sta giocando.
 	 */
 	private boolean isInGame() {
 		return inGame;
 	}
 	
 	/* Due helper per impostare lo stato dell'utente, sta giocando o no? */
+	/**
+	 * Spawn dei dinosauri e imposta lo stato su "in partita".
+	 */
 	private void iAmInGame() {
 		inserisciDinosauriNellaMappa(myPlayer);
 		inGame = true;
 	}
 	
+	/**
+	 * Imposta lo stato su "non in partita".
+	 */
 	private void iAmNotInGame() {
 		inGame = false;
 	}
@@ -271,6 +283,11 @@ public class ClientListener extends Server implements Runnable {
 		return false;
 	}
 	
+	/**
+	 * Crea una nuova razza di dinosauri per l'utente.
+	 * @param scanner
+	 * @throws IOException
+	 */
 	private void creaNuovaRazza(Scanner scanner) throws IOException {
 		if (scanner.hasNext() && !existsRazza(myPlayer)) {
 			String nomeRazza = scanner.next(Pattern.compile("[^nome=]"));
@@ -357,6 +374,10 @@ public class ClientListener extends Server implements Runnable {
 		else writeLineToOutput("@no");
 	}
 	
+	/**
+	 * Spedisce la lista dei dinosauri all'utente.
+	 * @throws IOException
+	 */
 	private void sendListaDinosauri() throws IOException {
 		if (existsRazza(myPlayer)) {
 			String buffer = "@ok";
