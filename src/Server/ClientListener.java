@@ -240,12 +240,11 @@ public class ClientListener extends Server implements Runnable {
 							/* comandi di turno */
 							else if (tempInput.equals("@confermaTurno")) confermaTurno();
 							else if (tempInput.equals("@passaTurno")) passaTurno();
-							else if (tempInput.equals("@cambioTurno")) broadcastCambioTurno();
 							else writeLineToOutput("@no");
 						}
-						else writeLineToOutput("@no");
+						else writeLineToOutput("@no,@nonIlTuoTurno");
 					}
-					else writeLineToOutput("@no");
+					else writeLineToOutput("@no.@nonInPartita");
 				}
 				else writeLineToOutput("@no");
 			}
