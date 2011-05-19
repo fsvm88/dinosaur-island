@@ -7,8 +7,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import dinolib.Mappa;
-import dinolib2.Giocatore;
-import server.Server;
+import dinolib.Giocatore;
 
 public class Server {
 	/**
