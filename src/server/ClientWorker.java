@@ -295,7 +295,7 @@ public class ClientWorker extends Server implements Runnable {
 	 * @return
 	 */
 	protected boolean existsRazza() {
-		if (myPlayer.getNumeroDinosauri() > 0) return true;
+		if (myPlayer. > 0) return true;
 		else return false;
 	}
 
@@ -467,13 +467,13 @@ public class ClientWorker extends Server implements Runnable {
 	 * @throws IOException
 	 */
 	private void creaNuovaRazza(Scanner scanner) throws IOException {
-		if (scanner.hasNext() && !existsRazza(myPlayer)) {
+		if (scanner.hasNext() && !existsRazza()) {
 			String nomeRazza = scanner.next(Pattern.compile("[^nome=]"));
-			if (scanner.hasNext() && (!existsNomeRazza(myPlayer)) ) {
+			if (scanner.hasNext() && (!existsNomeRazza()) ) {
 				String tipoRazza = scanner.next(Pattern.compile("[^tipo=]"));
 				if (tipoRazza.equals("c") || tipoRazza.equals("e")) {
 					if (tipoRazza == "c") {
-						myPlayer.setNomeRazzaDinosauro(nomeRazza);
+						myPlayer.S....
 						int x = getNewRandomIntValueOnMyMap();
 						int y = getNewRandomIntValueOnMyMap();
 						do {
@@ -509,7 +509,7 @@ public class ClientWorker extends Server implements Runnable {
 	 * Comando per l'accesso alla partita. Verifica che l'utente abbia creato una razza di dinosauri e gli abbia dato un nome.
 	 */
 	private void accediAPartita() {
-		if (existsRazza(myPlayer) && existsNomeRazza(myPlayer)) {
+		if (existsRazza() && existsNomeRazza()) {
 			iAmInGame();
 		}
 	}
@@ -557,7 +557,7 @@ public class ClientWorker extends Server implements Runnable {
 	 * @throws IOException
 	 */
 	private void sendListaDinosauri() throws IOException {
-		if (existsRazza(myPlayer)) {
+		if (existsRazza()) {
 			String buffer = "@ok";
 			Iterator<Dinosauro> iteratoreListaDinosauri = myPlayer.dammiIteratoreSuiDinosauri();
 			while (iteratoreListaDinosauri.hasNext()) {

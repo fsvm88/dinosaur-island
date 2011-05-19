@@ -6,8 +6,7 @@ import java.net.ServerSocket;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-import dinolib.Mappa;
-import dinolib.Giocatore;
+import dinolib.*;
 
 public class Server {
 	/**

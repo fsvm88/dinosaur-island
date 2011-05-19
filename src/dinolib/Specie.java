@@ -1,13 +1,11 @@
 package dinolib;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 
 /** 
  * Astrae la collezione dei dinosauri rispetto al giocatore.
  */
 public class Specie {
-
 	/**
 	 * Variabile che definisce il nome della specie di Dinosauri.
 	 * @uml.property  name="nomeRazza"
@@ -23,41 +21,43 @@ public class Specie {
 		return nomeRazza;
 	}
 
-	/**
-	 * ArrayList con tutti i dinosauri presenti nella specie.
-	 * @uml.property  name="Dinosauri"
+	/** 
+	 * ConcurrentHashMap con tutti i dinosauri presenti nella specie.
+	 * @uml.property name="Dinosauri"
 	 */
-	private ArrayList<Dinosauro> dinosauri;
+	private ConcurrentHashMap<String, Dinosauro> dinosauri = new ConcurrentHashMap<String,Dinosauro>();
 
-	/**
+	/** 
 	 * Getter of the property <tt>Dinosauri</tt>
 	 * @return  Returns the dinosauri.
 	 * @uml.property  name="Dinosauri"
 	 */
-	public ArrayList getDinosauri() {
+	public ConcurrentHashMap<String, Dinosauro> getDinosauri() {
 		return dinosauri;
 	}
 	
 	/**
-	 * 
-	 */
-	public Iterator<Dinosauro> getIteratoreSuiDinosauri () {
-		return dinosauri.iterator();
-	}
-
-	/**
 	 * Aggiunge un dinosauro alla lista di dinosauri della Specie.
 	 */
 	public void aggiungiDinosauroAllaSpecie(Dinosauro dinosauro){
+		dinosauri.put(getNewToken(), dinosauro);
+	}
+	
+	/**
+	 * Helper per la generazione di un nuovo token alfanumerico.
+	 * @return
+	 */
+	private static String getNewToken() {
+		return Long.toString(Double.doubleToLongBits(Math.random()));
 	}
 
 
 	/**
 	 * Rimuove il dinosauro con l'ID scelto dalla specie.
 	 */
-	public void rimuoviDinosauroDallaSpecie(String idDinosauro){
+	public void rimuoviDinosauroDallaSpecie(String idDinosauro) {
+		dinosauri.remove(idDinosauro);
 	}
-
 
 	/**
 	 * Restituisce il numero di dinosauri nella lista.
