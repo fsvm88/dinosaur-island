@@ -176,17 +176,6 @@ public class ClientWorker extends Server implements Runnable {
 	}
 
 	/**
-	 * Helper per verificare la correttezza della password.
-	 * @param curGamer
-	 * @param suppliedPassword
-	 * @return
-	 */
-	protected boolean passwordIsValid(Giocatore curGamer, String suppliedPassword) {
-		if ( curGamer.getPassword().equals(suppliedPassword) ) return true;
-		else return false;
-	}
-
-	/**
 	 * Helper per verificare l'esistenza di un utente.
 	 * @param userToLookFor
 	 * @return
@@ -210,7 +199,7 @@ public class ClientWorker extends Server implements Runnable {
 	 */
 	protected void rimuoviDinosauriDallaMappa(Giocatore curPlayer) {
 		/* Usa iteratore per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
-		Iterator<Dinosauro> IteratorePerDinosauriDelGiocatore = myPlayer.getSpecieDiDinosauri().getIteratoreSuiDinosauri();
+		Iterator<Dinosauro> IteratorePerDinosauriDelGiocatore = myPlayer.getIteratoreSuiDinosauriNellaSpecie();
 		while (IteratorePerDinosauriDelGiocatore.hasNext()) {
 			Dinosauro tempDinosauro = IteratorePerDinosauriDelGiocatore.next();
 			int x = tempDinosauro.getX();
@@ -224,7 +213,7 @@ public class ClientWorker extends Server implements Runnable {
 	 */
 	protected void inserisciDinosauriNellaMappa(Giocatore curPlayer) {
 		/* Usa iteratore per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
-		Iterator<Dinosauro> IteratorePerDinosauriDelGiocatore = myPlayer.getSpecieDiDinosauri().getIteratoreSuiDinosauri();
+		Iterator<Dinosauro> IteratorePerDinosauriDelGiocatore = myPlayer.getIteratoreSuiDinosauriNellaSpecie();
 		while (IteratorePerDinosauriDelGiocatore.hasNext()) {
 			Dinosauro tempDinosauro = IteratorePerDinosauriDelGiocatore.next();
 			int x = tempDinosauro.getX(), y = tempDinosauro.getY();
@@ -295,7 +284,7 @@ public class ClientWorker extends Server implements Runnable {
 	 * @return
 	 */
 	protected boolean existsRazza() {
-		if (myPlayer. > 0) return true;
+		if (myPlayer.getNumeroDinosauri() > 0) return true;
 		else return false;
 	}
 
@@ -304,7 +293,7 @@ public class ClientWorker extends Server implements Runnable {
 	 * @return
 	 */
 	protected boolean existsNomeRazza() {
-		if (myPlayer.getNomeRazzaDinosauro() != null) return true;
+		if (myPlayer.getNomeRazzaDinosauri() != null) return true;
 		return false;
 	}
 
@@ -360,11 +349,11 @@ public class ClientWorker extends Server implements Runnable {
 				myPlayer = super.Giocatori.get(tempUser);
 				if ( scanner.hasNext() ) {
 					String tempPwd = scanner.next(Pattern.compile("[^pass=]"));
-					if ( passwordIsValid(myPlayer, tempPwd) ) {
+					if ( validateUserPassword(tempPwd) ) {
 						iAmLogged();
 						String newToken = getNewToken();
 						writeLineToOutput("@ok," + newToken);
-						myPlayer.setToken(newToken);
+						myPlayer.setTokenUnivoco(newToken);
 					}
 					else writeLineToOutput("@no,@autenticazioneFallita");
 				}
