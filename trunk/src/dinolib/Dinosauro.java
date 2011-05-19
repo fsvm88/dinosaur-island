@@ -199,29 +199,6 @@ public class Dinosauro extends Specie {
 	}
 
 	/**
-	 * @uml.property  name="idDinosauro"
-	 */
-	private String idDinosauro = new java.lang.String();
-
-	/**
-	 * Getter of the property <tt>idDinosauro</tt>
-	 * @return  Returns the idDinosauro.
-	 * @uml.property  name="idDinosauro"
-	 */
-	public String getIdDinosauro() {
-		return idDinosauro;
-	}
-
-	/**
-	 * Setter of the property <tt>idDinosauro</tt>
-	 * @param idDinosauro  The idDinosauro to set.
-	 * @uml.property  name="idDinosauro"
-	 */
-	public void setIdDinosauro(String idDinosauro) {
-		this.idDinosauro = idDinosauro;
-	}
-
-	/**
 	 * @uml.property  name="DIMENSIONE_MASSIMA" readOnly="true"
 	 */
 	private static final int dimensione_MASSIMA = 5;
@@ -240,7 +217,6 @@ public class Dinosauro extends Specie {
 		energiaAttuale = 750;
 		dimensione = 1;
 		energiaMax = 1000*dimensione;
-		idDinosauro = Long.toString(Double.doubleToLongBits(Math.random()));
 	}
 
 	/**
