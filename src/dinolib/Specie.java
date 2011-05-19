@@ -1,5 +1,6 @@
 package dinolib;
 
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 /** 
@@ -78,5 +79,21 @@ public class Specie {
 	public Specie(String nomeRazza, Dinosauro nuovodinosauro) {
 		this.nomeRazza = nomeRazza;
 		aggiungiDinosauroAllaSpecie(nuovodinosauro);
+	}
+	
+	/**
+	 * Restituisce il dinosauro nella specie che ha un certo id.
+	 * @param idDinosauroCercato
+	 * @return
+	 */
+	public Dinosauro getDinosauro(String idDinosauroCercato) {
+		return dinosauri.get(idDinosauroCercato);
+	}
+	
+	/**
+	 * Restituisce un iteratore sui dinosauri presenti nella specie.
+	 */
+	public Iterator<Dinosauro> getIteratoreSuiDinosauri() {
+		return dinosauri.values().iterator();
 	}
 }

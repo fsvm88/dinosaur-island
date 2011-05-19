@@ -1,7 +1,8 @@
 package dinolib;
 
-import java.util.ArrayList;
-import dinolib.*;
+import java.util.Iterator;
+
+import dinolib.Specie;
 
 public class Giocatore {
 	/**
@@ -24,37 +25,36 @@ public class Giocatore {
 	 * @uml.property  name="password"
 	 */
 	private String password = null;
-
+	
 	/**
-	 * Getter of the property <tt>password</tt>
-	 * @return  Returns the password.
-	 * @uml.property  name="password"
+	 * Validate the password and return a boolean value.
+	 * @param passwordToMatch
 	 */
-	public String getPassword() {
-		return password;
+	public boolean passwordIsValid(String suppliedPassword) {
+		if (password.equals(suppliedPassword)) return true;
+		else return false;
 	}
+	
+	/**
+	 * Contiene il token univoco del giocatore per poter comunicare tra server e client.
+	 * @uml.property name="tokenUnivoco"
+	 */
+	private String tokenUnivoco = null;
 
 	/**
-	 * @uml.property  name="Dinosauri"
+	 * Restituisce il valore corrente del token.
+	 * @return
 	 */
-	private ArrayList dinosauri = null;
-
-	/**
-	 * Getter of the property <tt>Dinosauri</tt>
-	 * @return  Returns the dinosauri.
-	 * @uml.property  name="Dinosauri"
-	 */
-	public ArrayList getDinosauri() {
-		return dinosauri;
+	public String getTokenUnivoco() {
+		return tokenUnivoco;
 	}
-
+	
 	/**
-	 * Setter of the property <tt>Dinosauri</tt>
-	 * @param Dinosauri  The dinosauri to set.
-	 * @uml.property  name="Dinosauri"
+	 * Imposta il nuovo valore del token.
+	 * @param tokenUnivoco
 	 */
-	public void setDinosauri(ArrayList dinosauri) {
-		this.dinosauri = dinosauri;
+	public void setTokenUnivoco(String tokenUnivoco) {
+		this.tokenUnivoco = tokenUnivoco;
 	}
 
 	/**
@@ -64,24 +64,34 @@ public class Giocatore {
 	private Specie specieDiDinosauri;
 
 	/**
-	 * Getter of the property <tt>specieDiDinosauri</tt>
-	 * @return  Returns the specieDiDinosauri.
-	 * @uml.property  name="specieDiDinosauri"
+	 * Restituisce il numero di dinosauri presenti nella specie.
+	 * @return
 	 */
-	public Specie getSpecieDiDinosauri() {
-		return specieDiDinosauri;
-	}
-
-	/**
-	 * Setter of the property <tt>specieDiDinosauri</tt>
-	 * @param specieDiDinosauri  The specieDiDinosauri to set.
-	 * @uml.property  name="specieDiDinosauri"
-	 */
-	public void setSpecieDiDinosauri(Specie specieDiDinosauri) {
-		this.specieDiDinosauri = specieDiDinosauri;
+	public int getNumeroDinosauri() {
+		return specieDiDinosauri.getNumeroDinosauri();
 	}
 	
-	public void getNumeroDinosauri() {
-		return specieDiDinosauri.getNumeroDinosauri();
+	/**
+	 * Restituisce un dinosauro presente nella specie.
+	 * @param idDinosauroCercato
+	 * @return
+	 */
+	public Dinosauro getDinosauro(String idDinosauroCercato) {
+		return specieDiDinosauri.getDinosauro(idDinosauroCercato);
+	}
+	
+	/**
+	 * Restituisce il nome della razza dei dinosauri.
+	 * @return
+	 */
+	public String getNomeRazzaDinosauri() {
+		return specieDiDinosauri.getNomeRazza();
+	}
+	
+	/**
+	 * Restituisce un iteratore sui dinosauri nella specie, è un wrapper per la classe Specie.
+	 */
+	public Iterator<Dinosauro> getIteratoreSuiDinosauriNellaSpecie() {
+		return specieDiDinosauri.getIteratoreSuiDinosauri();
 	}
 }

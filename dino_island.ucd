@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" name="dino_island" size="1400,1069" id="" metadata="uml2-1.0" initialized="true" scrolledX="46" scrolledY="533" tag="1000" key="32303037303533312D313030302064696E6F5F69736C616E642F666162696F">
+<editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" name="dino_island" size="1400,1069" id="" metadata="uml2-1.0" initialized="true" scrolledX="156" scrolledY="455" tag="1000" key="32303037303533312D313030302064696E6F5F69736C616E642F666162696F">
   <children xsi:type="editmodel:PackageEditModel" name="server" location="975,34" size="217,347" id="server">
     <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.0/@children.1/@sourceConnections.2" name="ClientWorker" location="50,204" size="151,122" id="server/ClientWorker" runTimeClassModel="stopTheThread(),myPlayer,ClientWorker(Ljava.net.Socket;),run()">
       <children xsi:type="editmodel:CompartmentEditModel" size="128,18">
@@ -22,8 +22,8 @@
       </sourceConnections>
       <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="server/ClientWorker-Soyatec::Import->dinolib/Giocatore*server/ClientWorker-Standard::Call->dinolib/Giocatore" source="//@children.0/@children.0" target="//@children.1/@children.0" targetEnd="//@children.0/@children.0/@sourceConnections.2/@children.2" label="//@children.0/@children.0/@sourceConnections.2/@children.0" sourceEnd="//@children.0/@children.0/@sourceConnections.2/@children.1" connectionRouterKind="Manual">
         <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Import»" size="75,13" anchorKind="MiddlePart"/>
-        <children xsi:type="editmodel:AssociationEndEditModel" location="0,83" attachSource="true"/>
-        <children xsi:type="editmodel:AssociationEndEditModel" location="185,34"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="0,90" attachSource="true"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="252,75"/>
       </sourceConnections>
       <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="server/ClientWorker-Standard::Call->dinolib/Mappa" source="//@children.0/@children.0" target="//@children.1/@children.5" targetEnd="//@children.0/@children.0/@sourceConnections.3/@children.2" label="//@children.0/@children.0/@sourceConnections.3/@children.0" sourceEnd="//@children.0/@children.0/@sourceConnections.3/@children.1" connectionRouterKind="Manual">
         <children xsi:type="editmodel:WireLabelEditModel" name="«Call»" size="34,13" anchorKind="MiddlePart"/>
@@ -31,14 +31,9 @@
         <children xsi:type="editmodel:AssociationEndEditModel" location="108,0"/>
       </sourceConnections>
       <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="server/ClientWorker-Standard::Call->dinolib/Dinosauro*server/ClientWorker-Soyatec::Import->dinolib/Dinosauro" source="//@children.0/@children.0" target="//@children.1/@children.4" targetEnd="//@children.0/@children.0/@sourceConnections.4/@children.2" label="//@children.0/@children.0/@sourceConnections.4/@children.0" sourceEnd="//@children.0/@children.0/@sourceConnections.4/@children.1" connectionRouterKind="Manual">
-        <children xsi:type="editmodel:WireLabelEditModel" name="«Import, Call»" size="0,13" anchorKind="MiddlePart"/>
+        <children xsi:type="editmodel:WireLabelEditModel" name="«Import, Call»" size="75,13" anchorKind="MiddlePart"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="14,122" attachSource="true"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="204,22"/>
-      </sourceConnections>
-      <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="server/ClientWorker-Standard::Call->dinolib/Specie" source="//@children.0/@children.0" target="//@children.1/@children.2" targetEnd="//@children.0/@children.0/@sourceConnections.5/@children.2" label="//@children.0/@children.0/@sourceConnections.5/@children.0" sourceEnd="//@children.0/@children.0/@sourceConnections.5/@children.1" connectionRouterKind="Manual">
-        <children xsi:type="editmodel:WireLabelEditModel" name="«Call»" size="0,13" anchorKind="MiddlePart"/>
-        <children xsi:type="editmodel:AssociationEndEditModel" location="0,102" attachSource="true"/>
-        <children xsi:type="editmodel:AssociationEndEditModel" location="305,0"/>
       </sourceConnections>
       <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
     </children>
@@ -52,17 +47,17 @@
       </children>
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
       <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="server/Server-Soyatec::Import->dinolib/Mappa*server/Server-Standard::Instantiate->dinolib/Mappa" source="//@children.0/@children.1" target="//@children.1/@children.5" targetEnd="//@children.0/@children.1/@sourceConnections.0/@children.2" label="//@children.0/@children.1/@sourceConnections.0/@children.0" sourceEnd="//@children.0/@children.1/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
-        <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate, Import»" size="114,13" anchorKind="MiddlePart"/>
+        <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate, Import»" size="0,13" anchorKind="MiddlePart"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="42,104" attachSource="true"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="116,0"/>
       </sourceConnections>
       <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="server/Server-Soyatec::Import->dinolib/Giocatore" source="//@children.0/@children.1" target="//@children.1/@children.0" targetEnd="//@children.0/@children.1/@sourceConnections.1/@children.2" label="//@children.0/@children.1/@sourceConnections.1/@children.0" sourceEnd="//@children.0/@children.1/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
-        <children xsi:type="editmodel:WireLabelEditModel" name="«Import»" size="49,13" anchorKind="MiddlePart"/>
-        <children xsi:type="editmodel:AssociationEndEditModel" location="0,82" attachSource="true"/>
-        <children xsi:type="editmodel:AssociationEndEditModel" location="185,15"/>
+        <children xsi:type="editmodel:WireLabelEditModel" name="«Import»" size="0,13" anchorKind="MiddlePart"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="0,88" attachSource="true"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="252,48"/>
       </sourceConnections>
       <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="server/Server-Standard::Instantiate->server/ClientWorker*server/Server-Soyatec::Import->server/ClientWorker" source="//@children.0/@children.1" target="//@children.0/@children.0" targetEnd="//@children.0/@children.1/@sourceConnections.2/@children.2" label="//@children.0/@children.1/@sourceConnections.2/@children.0" sourceEnd="//@children.0/@children.1/@sourceConnections.2/@children.1" connectionRouterKind="Manual">
-        <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate, Import»" size="114,13" anchorKind="MiddlePart"/>
+        <children xsi:type="editmodel:WireLabelEditModel" name="«Instantiate, Import»" size="0,13" anchorKind="MiddlePart"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="39,104" attachSource="true"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="55,0"/>
       </sourceConnections>
@@ -70,21 +65,33 @@
     </children>
     <packagePreferences xsi:type="editmodel:UMLClassDiagramPackagePreference"/>
   </children>
-  <children xsi:type="editmodel:PackageEditModel" name="dinolib" location="185,410" size="1119,699" id="dinolib">
-    <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.0/@children.0/@sourceConnections.2 //@children.0/@children.1/@sourceConnections.1" name="Giocatore" location="50,50" size="185,122" id="dinolib/Giocatore" runTimeClassModel="Dinosauri,nome,specieDiDinosauri,password,getNumeroDinosauri()">
-      <children xsi:type="editmodel:CompartmentEditModel" size="162,54">
+  <children xsi:type="editmodel:PackageEditModel" name="dinolib" location="185,410" size="1141,699" id="dinolib">
+    <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.0/@children.0/@sourceConnections.2 //@children.0/@children.1/@sourceConnections.1" name="Giocatore" location="50,50" size="252,248" id="dinolib/Giocatore" runTimeClassModel="getTokenUnivoco(),setTokenUnivoco(Ljava.lang.String;),getDinosauro(Ljava.lang.String;),tokenUnivoco,nome,getNomeRazzaDinosauri(),passwordIsValid(Ljava.lang.String;),getIteratoreSuiDinosauriNellaSpecie(),getNumeroDinosauri()">
+      <children xsi:type="editmodel:CompartmentEditModel" size="162,72">
         <children xsi:type="editmodel:AttributeEditModel" name="nome" id="dinolib/Giocatore#nome"/>
         <children xsi:type="editmodel:AttributeEditModel" name="password" id="dinolib/Giocatore#password"/>
         <children xsi:type="editmodel:AttributeEditModel" name="specieDiDinosauri" id="dinolib/Giocatore#specieDiDinosauri"/>
+        <children xsi:type="editmodel:AttributeEditModel" name="tokenUnivoco" id="dinolib/Giocatore#tokenUnivoco"/>
       </children>
-      <children xsi:type="editmodel:CompartmentEditModel" size="143,18">
+      <children xsi:type="editmodel:CompartmentEditModel" size="229,126">
         <children xsi:type="editmodel:MethodEditModel" name="getNumeroDinosauri" id="dinolib/Giocatore#getNumeroDinosauri()"/>
+        <children xsi:type="editmodel:MethodEditModel" name="getDinosauro" id="dinolib/Giocatore#getDinosauro(Ljava.lang.String;)"/>
+        <children xsi:type="editmodel:MethodEditModel" name="getNomeRazzaDinosauri" id="dinolib/Giocatore#getNomeRazzaDinosauri()"/>
+        <children xsi:type="editmodel:MethodEditModel" name="passwordIsValid" id="dinolib/Giocatore#passwordIsValid(Ljava.lang.String;)"/>
+        <children xsi:type="editmodel:MethodEditModel" name="getTokenUnivoco" id="dinolib/Giocatore#getTokenUnivoco()"/>
+        <children xsi:type="editmodel:MethodEditModel" name="setTokenUnivoco" id="dinolib/Giocatore#setTokenUnivoco(Ljava.lang.String;)"/>
+        <children xsi:type="editmodel:MethodEditModel" name="getIteratoreSuiDinosauriNellaSpecie" id="dinolib/Giocatore#getIteratoreSuiDinosauriNellaSpecie()"/>
       </children>
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
-      <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="dinolib/Giocatore-Soyatec::Import->dinolib/Specie" source="//@children.1/@children.0" target="//@children.1/@children.2" targetEnd="//@children.1/@children.0/@sourceConnections.0/@children.2" label="//@children.1/@children.0/@sourceConnections.0/@children.0" sourceEnd="//@children.1/@children.0/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
-        <children xsi:type="editmodel:WireLabelEditModel" name="«Import»" size="0,13" anchorKind="MiddlePart"/>
-        <children xsi:type="editmodel:AssociationEndEditModel" location="185,61" attachSource="true"/>
-        <children xsi:type="editmodel:AssociationEndEditModel" location="0,61"/>
+      <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="dinolib/Giocatore-Soyatec::Import->dinolib/Specie*dinolib/Giocatore-Standard::Call->dinolib/Specie" source="//@children.1/@children.0" target="//@children.1/@children.2" targetEnd="//@children.1/@children.0/@sourceConnections.0/@children.2" label="//@children.1/@children.0/@sourceConnections.0/@children.0" sourceEnd="//@children.1/@children.0/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
+        <children xsi:type="editmodel:WireLabelEditModel" name="«Call, Import»" size="75,13" anchorKind="MiddlePart"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="252,97" attachSource="true"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="0,97"/>
+      </sourceConnections>
+      <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="dinolib/Giocatore-Soyatec::Import->dinolib/Dinosauro" source="//@children.1/@children.0" target="//@children.1/@children.4" targetEnd="//@children.1/@children.0/@sourceConnections.1/@children.2" label="//@children.1/@children.0/@sourceConnections.1/@children.0" sourceEnd="//@children.1/@children.0/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+        <children xsi:type="editmodel:WireLabelEditModel" name="«Import»" size="49,13" anchorKind="MiddlePart"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="252,228" attachSource="true"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="0,20"/>
       </sourceConnections>
       <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
     </children>
@@ -101,27 +108,29 @@
         <children xsi:type="editmodel:AssociationEndEditModel" location="196,140"/>
       </sourceConnections>
       <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="dinolib/Erbivoro-Standard::Derive->dinolib/Dinosauro" source="//@children.1/@children.1" target="//@children.1/@children.4" targetEnd="//@children.1/@children.1/@sourceConnections.1/@children.2" label="//@children.1/@children.1/@sourceConnections.1/@children.0" sourceEnd="//@children.1/@children.1/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
-        <children xsi:type="editmodel:WireLabelEditModel" name="«Derive»" size="0,13" anchorKind="MiddlePart"/>
+        <children xsi:type="editmodel:WireLabelEditModel" name="«Derive»" size="49,13" anchorKind="MiddlePart"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="96,0" attachSource="true"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="43,248"/>
       </sourceConnections>
       <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
     </children>
-    <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.1/@children.4/@sourceConnections.0 //@children.1/@children.4/@sourceConnections.1 //@children.1/@children.0/@sourceConnections.0 //@children.0/@children.0/@sourceConnections.5" name="Specie" location="315,50" size="321,158" id="dinolib/Specie" runTimeClassModel="aggiungiDinosauroAllaSpecie(Ldinolib.Dinosauro;),Dinosauri,Specie(Ljava.lang.String;Ldinolib.Dinosauro;),nomeRazza,rimuoviDinosauroDallaSpecie(Ljava.lang.String;),getNumeroDinosauri()">
+    <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.1/@children.4/@sourceConnections.0 //@children.1/@children.4/@sourceConnections.1 //@children.1/@children.0/@sourceConnections.0" name="Specie" location="315,50" size="321,194" id="dinolib/Specie" runTimeClassModel="aggiungiDinosauroAllaSpecie(Ldinolib.Dinosauro;),Dinosauri,Specie(Ljava.lang.String;Ldinolib.Dinosauro;),nomeRazza,rimuoviDinosauroDallaSpecie(Ljava.lang.String;),getDinosauro(Ljava.lang.String;),getIteratoreSuiDinosauri(),getNumeroDinosauri()">
       <children xsi:type="editmodel:CompartmentEditModel" size="298,36">
         <children xsi:type="editmodel:AttributeEditModel" name="nomeRazza" id="dinolib/Specie#nomeRazza"/>
         <children xsi:type="editmodel:AttributeEditModel" name="Dinosauri" id="dinolib/Specie#Dinosauri"/>
       </children>
-      <children xsi:type="editmodel:CompartmentEditModel" size="191,72">
+      <children xsi:type="editmodel:CompartmentEditModel" size="191,108">
         <children xsi:type="editmodel:MethodEditModel" name="aggiungiDinosauroAllaSpecie" id="dinolib/Specie#aggiungiDinosauroAllaSpecie(Ldinolib.Dinosauro;)"/>
         <children xsi:type="editmodel:MethodEditModel" name="rimuoviDinosauroDallaSpecie" id="dinolib/Specie#rimuoviDinosauroDallaSpecie(Ljava.lang.String;)"/>
         <children xsi:type="editmodel:MethodEditModel" name="getNumeroDinosauri" id="dinolib/Specie#getNumeroDinosauri()"/>
-        <children xsi:type="editmodel:MethodEditModel" name="Specie" id="dinolib/Specie#Specie(Ljava.lang.String;Ldinolib.Dinosauro;)"/>
+        <children xsi:type="editmodel:MethodEditModel" name="Specie" location="7,68" id="dinolib/Specie#Specie(Ljava.lang.String;Ldinolib.Dinosauro;)"/>
+        <children xsi:type="editmodel:MethodEditModel" name="getDinosauro" id="dinolib/Specie#getDinosauro(Ljava.lang.String;)"/>
+        <children xsi:type="editmodel:MethodEditModel" name="getIteratoreSuiDinosauri" id="dinolib/Specie#getIteratoreSuiDinosauri()"/>
       </children>
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
       <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="dinolib/Specie-Soyatec::Import->dinolib/Dinosauro" source="//@children.1/@children.2" target="//@children.1/@children.4" targetEnd="//@children.1/@children.2/@sourceConnections.0/@children.2" label="//@children.1/@children.2/@sourceConnections.0/@children.0" sourceEnd="//@children.1/@children.2/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
         <children xsi:type="editmodel:WireLabelEditModel" name="«Import»" size="49,13" anchorKind="MiddlePart"/>
-        <children xsi:type="editmodel:AssociationEndEditModel" location="127,158" attachSource="true"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="127,194" attachSource="true"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="121,0"/>
       </sourceConnections>
       <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
@@ -139,13 +148,13 @@
         <children xsi:type="editmodel:AssociationEndEditModel" location="149,248" anchorKind="FixedAtEdge"/>
       </sourceConnections>
       <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="dinolib/Carnivoro-Standard::Derive->dinolib/Dinosauro" source="//@children.1/@children.3" target="//@children.1/@children.4" targetEnd="//@children.1/@children.3/@sourceConnections.1/@children.2" label="//@children.1/@children.3/@sourceConnections.1/@children.0" sourceEnd="//@children.1/@children.3/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
-        <children xsi:type="editmodel:WireLabelEditModel" name="«Derive»" size="0,13" anchorKind="MiddlePart"/>
+        <children xsi:type="editmodel:WireLabelEditModel" name="«Derive»" size="49,13" anchorKind="MiddlePart"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="45,0" attachSource="true"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="158,248"/>
       </sourceConnections>
       <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
     </children>
-    <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.1/@children.3/@sourceConnections.0 //@children.1/@children.3/@sourceConnections.1 //@children.1/@children.1/@sourceConnections.1 //@children.1/@children.2/@sourceConnections.0 //@children.0/@children.0/@sourceConnections.4" name="Dinosauro" location="321,258" size="204,248" id="dinolib/Dinosauro" runTimeClassModel="energiaAttuale,energiaMax,spostamentoMaxPerTurno,turnoDiVita,forza,dimensione,durataVitaMax,y,toString(),x">
+    <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.1/@children.3/@sourceConnections.0 //@children.1/@children.3/@sourceConnections.1 //@children.1/@children.1/@sourceConnections.1 //@children.1/@children.2/@sourceConnections.0 //@children.0/@children.0/@sourceConnections.4 //@children.1/@children.0/@sourceConnections.1" name="Dinosauro" location="321,258" size="204,248" id="dinolib/Dinosauro" runTimeClassModel="energiaAttuale,energiaMax,spostamentoMaxPerTurno,turnoDiVita,forza,dimensione,durataVitaMax,y,toString(),x">
       <children xsi:type="editmodel:CompartmentEditModel" size="181,162">
         <children xsi:type="editmodel:AttributeEditModel" name="dimensione" id="dinolib/Dinosauro#dimensione"/>
         <children xsi:type="editmodel:AttributeEditModel" name="durataVitaMax" id="dinolib/Dinosauro#durataVitaMax"/>
@@ -164,12 +173,12 @@
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
       <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="dinolib/Specie&lt;-dinolib/Dinosauro" source="//@children.1/@children.4" target="//@children.1/@children.2" targetEnd="//@children.1/@children.4/@sourceConnections.0/@children.1" sourceEnd="//@children.1/@children.4/@sourceConnections.0/@children.0" connectionRouterKind="Manual">
         <children xsi:type="editmodel:AssociationEndEditModel" location="101,0" attachSource="true"/>
-        <children xsi:type="editmodel:AssociationEndEditModel" location="107,158"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="107,194"/>
       </sourceConnections>
       <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="dinolib/Dinosauro-Standard::Derive->dinolib/Specie" source="//@children.1/@children.4" target="//@children.1/@children.2" targetEnd="//@children.1/@children.4/@sourceConnections.1/@children.2" label="//@children.1/@children.4/@sourceConnections.1/@children.0" sourceEnd="//@children.1/@children.4/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
-        <children xsi:type="editmodel:WireLabelEditModel" name="«Derive»" size="0,13" anchorKind="MiddlePart"/>
+        <children xsi:type="editmodel:WireLabelEditModel" name="«Derive»" size="49,13" anchorKind="MiddlePart"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="81,0" attachSource="true"/>
-        <children xsi:type="editmodel:AssociationEndEditModel" location="87,158"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="87,194"/>
       </sourceConnections>
       <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
     </children>
@@ -184,9 +193,9 @@
       </children>
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
       <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="dinolib/Mappa-Soyatec::Import->dinolib/Cella" source="//@children.1/@children.5" target="//@children.1/@children.6" targetEnd="//@children.1/@children.5/@sourceConnections.0/@children.2" label="//@children.1/@children.5/@sourceConnections.0/@children.0" sourceEnd="//@children.1/@children.5/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
-        <children xsi:type="editmodel:WireLabelEditModel" name="«Import»" size="0,13" anchorKind="MiddlePart"/>
-        <children xsi:type="editmodel:AssociationEndEditModel" location="57,122" attachSource="true"/>
-        <children xsi:type="editmodel:AssociationEndEditModel" location="27,0"/>
+        <children xsi:type="editmodel:WireLabelEditModel" name="«Import»" size="49,13" anchorKind="MiddlePart"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="77,122" attachSource="true"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="47,0"/>
       </sourceConnections>
       <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
     </children>
@@ -198,41 +207,41 @@
       </children>
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
       <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="dinolib/Mappa&lt;-dinolib/Cella" source="//@children.1/@children.6" target="//@children.1/@children.5" targetEnd="//@children.1/@children.6/@sourceConnections.0/@children.1" sourceEnd="//@children.1/@children.6/@sourceConnections.0/@children.0" connectionRouterKind="Manual">
-        <children xsi:type="editmodel:AssociationEndEditModel" location="47,0" attachSource="true"/>
-        <children xsi:type="editmodel:AssociationEndEditModel" location="77,122"/>
-      </sourceConnections>
-      <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="dinolib/Cella-Standard::Derive->dinolib/Mappa" source="//@children.1/@children.6" target="//@children.1/@children.5" targetEnd="//@children.1/@children.6/@sourceConnections.1/@children.2" label="//@children.1/@children.6/@sourceConnections.1/@children.0" sourceEnd="//@children.1/@children.6/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
-        <children xsi:type="editmodel:WireLabelEditModel" name="«Derive»" size="49,13" anchorKind="MiddlePart"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="67,0" attachSource="true"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="97,122"/>
       </sourceConnections>
+      <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="dinolib/Cella-Standard::Derive->dinolib/Mappa" source="//@children.1/@children.6" target="//@children.1/@children.5" targetEnd="//@children.1/@children.6/@sourceConnections.1/@children.2" label="//@children.1/@children.6/@sourceConnections.1/@children.0" sourceEnd="//@children.1/@children.6/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+        <children xsi:type="editmodel:WireLabelEditModel" name="«Derive»" size="49,13" anchorKind="MiddlePart"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="27,0" attachSource="true"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="57,122"/>
+      </sourceConnections>
       <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
     </children>
-    <children xsi:type="editmodel:ClassEditModel" name="Vegetazione" location="852,358" size="138,30" id="dinolib/Vegetazione" runTimeClassModel="">
+    <children xsi:type="editmodel:ClassEditModel" name="Vegetazione" location="852,358" size="134,30" id="dinolib/Vegetazione" runTimeClassModel="">
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
       <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="dinolib/Cella&lt;-dinolib/Vegetazione" source="//@children.1/@children.7" target="//@children.1/@children.9/@sourceConnections.0" targetEnd="//@children.1/@children.7/@sourceConnections.0/@children.1" sourceEnd="//@children.1/@children.7/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
-        <children xsi:type="editmodel:AssociationEndEditModel" location="69,0" anchorKind="FixedAtEdge" attachSource="true"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="67,0" anchorKind="FixedAtEdge" attachSource="true"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="95,51"/>
       </sourceConnections>
       <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="dinolib/Vegetazione-Standard::Derive->dinolib/Cella" source="//@children.1/@children.7" target="//@children.1/@children.6" targetEnd="//@children.1/@children.7/@sourceConnections.1/@children.2" label="//@children.1/@children.7/@sourceConnections.1/@children.0" sourceEnd="//@children.1/@children.7/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
-        <children xsi:type="editmodel:WireLabelEditModel" name="«Derive»" size="0,13" anchorKind="MiddlePart"/>
+        <children xsi:type="editmodel:WireLabelEditModel" name="«Derive»" size="49,13" anchorKind="MiddlePart"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="27,0" attachSource="true"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="67,86"/>
       </sourceConnections>
       <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
     </children>
-    <children xsi:type="editmodel:ClassEditModel" name="Carogna" location="1020,358" size="106,30" id="dinolib/Carogna" runTimeClassModel="">
+    <children xsi:type="editmodel:ClassEditModel" name="Carogna" location="1020,358" size="105,30" id="dinolib/Carogna" runTimeClassModel="">
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
       <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="dinolib/Cella&lt;-dinolib/Carogna" source="//@children.1/@children.8" target="//@children.1/@children.9/@sourceConnections.0" targetEnd="//@children.1/@children.8/@sourceConnections.0/@children.1" sourceEnd="//@children.1/@children.8/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
-        <children xsi:type="editmodel:AssociationEndEditModel" location="53,0" anchorKind="FixedAtEdge" attachSource="true"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="52,0" anchorKind="FixedAtEdge" attachSource="true"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="95,36"/>
       </sourceConnections>
       <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="dinolib/Carogna-Standard::Derive->dinolib/Cella" source="//@children.1/@children.8" target="//@children.1/@children.6" targetEnd="//@children.1/@children.8/@sourceConnections.1/@children.2" label="//@children.1/@children.8/@sourceConnections.1/@children.0" sourceEnd="//@children.1/@children.8/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
-        <children xsi:type="editmodel:WireLabelEditModel" name="«Derive»" size="0,13" anchorKind="MiddlePart"/>
+        <children xsi:type="editmodel:WireLabelEditModel" name="«Derive»" size="49,13" anchorKind="MiddlePart"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="23,0" attachSource="true"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="96,67"/>
       </sourceConnections>
@@ -253,18 +262,18 @@
       </sourceConnections>
       <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
     </children>
-    <children xsi:type="editmodel:ClassEditModel" name="Terra" location="739,358" size="83,30" id="dinolib/Terra" runTimeClassModel="">
+    <children xsi:type="editmodel:ClassEditModel" name="Terra" location="739,358" size="81,30" id="dinolib/Terra" runTimeClassModel="">
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
       <sourceConnections xsi:type="editmodel:GeneralizationEditModel" autoLocated="true" id="dinolib/Cella&lt;-dinolib/Terra" source="//@children.1/@children.10" target="//@children.1/@children.9/@sourceConnections.0" targetEnd="//@children.1/@children.10/@sourceConnections.0/@children.1" sourceEnd="//@children.1/@children.10/@sourceConnections.0/@children.0" connectionRouterKind="GeneralizationManhattan">
-        <children xsi:type="editmodel:AssociationEndEditModel" location="41,0" anchorKind="FixedAtEdge" attachSource="true"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="40,0" anchorKind="FixedAtEdge" attachSource="true"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="95,63"/>
       </sourceConnections>
       <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="dinolib/Terra-Standard::Derive->dinolib/Cella" source="//@children.1/@children.10" target="//@children.1/@children.6" targetEnd="//@children.1/@children.10/@sourceConnections.1/@children.2" label="//@children.1/@children.10/@sourceConnections.1/@children.0" sourceEnd="//@children.1/@children.10/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
-        <children xsi:type="editmodel:WireLabelEditModel" name="«Derive»" location="866,775" size="0,13" anchorKind="MiddlePart"/>
-        <children xsi:type="editmodel:AssociationEndEditModel" location="77,0" attachSource="true"/>
-        <children xsi:type="editmodel:AssociationEndEditModel" location="4,86"/>
+        <children xsi:type="editmodel:WireLabelEditModel" name="«Derive»" location="866,775" size="49,13" anchorKind="MiddlePart"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="76,0" attachSource="true"/>
+        <children xsi:type="editmodel:AssociationEndEditModel" location="3,86"/>
       </sourceConnections>
       <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
     </children>
