@@ -293,17 +293,8 @@ public class ClientWorker extends Server implements Runnable {
 	 * @return
 	 */
 	protected boolean existsRazza() {
-		if (myPlayer.getNumeroDinosauri() > 0) return true;
+		if ((myPlayer.getNumeroDinosauri() > 0) && (myPlayer.getNomeRazzaDinosauri() != null)) return true;
 		else return false;
-	}
-
-	/**
-	 * Helper che verifica l'esistenza del nome della razza del dinosauro
-	 * @return
-	 */
-	protected boolean existsNomeRazza() {
-		if (myPlayer.getNomeRazzaDinosauri() != null) return true;
-		return false;
 	}
 
 	/* Due helper per impostare lo stato dell'utente, sta giocando o no? */
@@ -467,7 +458,7 @@ public class ClientWorker extends Server implements Runnable {
 	private void creaNuovaRazza(Scanner scanner) throws IOException {
 		if (scanner.hasNext() && !existsRazza()) {
 			String nomeRazza = scanner.next(Pattern.compile("[^nome=]"));
-			if (scanner.hasNext() && (!existsNomeRazza()) ) {
+			if (scanner.hasNext()) {
 				String tipoRazza = scanner.next(Pattern.compile("[^tipo=]"));
 				if (tipoRazza.equals("c") || tipoRazza.equals("e")) {
 					if (tipoRazza == "c") {
@@ -503,7 +494,7 @@ public class ClientWorker extends Server implements Runnable {
 	 * Comando per l'accesso alla partita. Verifica che l'utente abbia creato una razza di dinosauri e gli abbia dato un nome.
 	 */
 	private void accediAPartita() {
-		if (existsRazza() && existsNomeRazza()) {
+		if (existsRazza() && existsRazza()) {
 			iAmInGame();
 		}
 	}
