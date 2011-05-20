@@ -1,8 +1,7 @@
 package dinolib;
 
-import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Hashtable;
 
 /** 
  * Astrae la collezione dei dinosauri rispetto al giocatore.
@@ -27,14 +26,14 @@ public class Specie {
 	 * ConcurrentHashMap con tutti i dinosauri presenti nella specie.
 	 * @uml.property name="Dinosauri"
 	 */
-	private ConcurrentHashMap<String, Dinosauro> dinosauri = new ConcurrentHashMap<String,Dinosauro>();
+	private Hashtable<String, Dinosauro> dinosauri = new Hashtable<String,Dinosauro>();
 
 	/** 
 	 * Getter of the property <tt>Dinosauri</tt>
 	 * @return  Returns the dinosauri.
 	 * @uml.property  name="Dinosauri"
 	 */
-	public ConcurrentHashMap<String, Dinosauro> getDinosauri() {
+	public Hashtable<String, Dinosauro> getDinosauri() {
 		return dinosauri;
 	}
 	
@@ -101,7 +100,7 @@ public class Specie {
 	/**
 	 * Restituisce un iteratore sugli id dei dinosauri. Utile solo per inviare la lista dei dinosauri all'utente.
 	 */
-	public Enumeration<String> getEnumerazioneDegliIdDeiDinosauri() {
-		return dinosauri.keys();
+	public Iterator<String> getItIdDinosauri() {
+		return dinosauri.keySet().iterator();
 	}
 }
