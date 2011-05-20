@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Map.Entry;
@@ -13,10 +14,6 @@ import java.util.regex.Pattern;
 import dinolib.Carnivoro;
 import dinolib.Dinosauro;
 import dinolib.Giocatore;
-import dinolib.Mappa;
-import dinolib.Cella;
-import dinolib.Specie;
-
 
 /** 
  * Implementa l'ascoltatore per i client. Ascolta i comandi e gestisce le giuste risposte.
@@ -200,16 +197,22 @@ public class ClientWorker extends Server implements Runnable {
 	}
 
 	/**
+	 * Gestisce la rimozione di un singolo dinosauro da una cella.
+	 */
+	public void rimuoviDinosauroDallaCella(int x, int y) {
+		rifMappa.rimuoviIlDinosauroDallaCella(x, y);
+	}
+	
+	/**
 	 * Gestisce la rimozione di tutti i dinosauri dalla mappa.	
 	 */
 	protected void rimuoviDinosauriDallaMappa(Giocatore curPlayer) {
-		/* Usa iteratore per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
-		Iterator<Dinosauro> IteratorePerDinosauriDelGiocatore = myPlayer.getIteratoreSuiDinosauriNellaSpecie();
-		while (IteratorePerDinosauriDelGiocatore.hasNext()) {
-			Dinosauro tempDinosauro = IteratorePerDinosauriDelGiocatore.next();
-			int x = tempDinosauro.getX();
-			int y = tempDinosauro.getY();
-//TODO			rimuoviDinosauroDallaCella(x, y);
+		/* Usa enumerazione per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
+		Enumeration<String> enumerazioneSugliID = myPlayer.getEnumerazioneDegliIdDeiDinosauri();
+		while (enumerazioneSugliID.hasMoreElements()) {
+			String idCorrente = enumerazioneSugliID.nextElement();
+			Dinosauro tempDinosauro = myPlayer.getDinosauro(idCorrente);
+			rimuoviDinosauroDallaCella(tempDinosauro.getX(), tempDinosauro.getY());
 		}
 	}
 
@@ -217,16 +220,17 @@ public class ClientWorker extends Server implements Runnable {
 	 * Quando l'utente esegue il login aggiunge i dinosauri alla mappa.
 	 */
 	protected void inserisciDinosauriNellaMappa(Giocatore curPlayer) {
-		/* Usa iteratore per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
-		Iterator<Dinosauro> IteratorePerDinosauriDelGiocatore = myPlayer.getIteratoreSuiDinosauriNellaSpecie();
-		while (IteratorePerDinosauriDelGiocatore.hasNext()) {
-			Dinosauro tempDinosauro = IteratorePerDinosauriDelGiocatore.next();
+		/* Usa enumerazione per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
+		Enumeration<String> enumerazioneSugliID = myPlayer.getEnumerazioneDegliIdDeiDinosauri();
+		while (enumerazioneSugliID.hasMoreElements()) {
+			String idCorrente = enumerazioneSugliID.nextElement();
+			Dinosauro tempDinosauro = myPlayer.getDinosauro(idCorrente);
 			int x = tempDinosauro.getX(), y = tempDinosauro.getY();
-			if (tryActualSpawn(x, y)) return;
+			if (tryActualSpawn(x, y, idCorrente)) return;
 			else {
 				int i = 1;
 				do {
-					if (tryNearestSpawn(x, y, i, tempDinosauro)) {
+					if (tryNearestSpawn(x, y, i, idCorrente, tempDinosauro)) {
 						return;
 					}
 					else i++;
@@ -241,9 +245,9 @@ public class ClientWorker extends Server implements Runnable {
 	 * @param y
 	 * @return
 	 */
-	private boolean tryActsualSpawn(int x, int y) {
+	private boolean tryActualSpawn(int x, int y, String idDinosauro) {
 		if (rifMappa.isLibera(x, y)) {
-			rifMappa.spawnDinosauro(x, y);
+			rifMappa.spawnDinosauro(x, y, idDinosauro, rifMappa.getCella(x, y));
 			return true;
 		}
 		return false;
@@ -258,20 +262,20 @@ public class ClientWorker extends Server implements Runnable {
 	 * @param tempDinosauro
 	 * @return
 	 */
-	private boolean tryNearestSpawn(int x, int y, int maxDistance, Dinosauro tempDinosauro) {
+	private boolean tryNearestSpawn(int x, int y, int maxDistance, String idDinosauro, Dinosauro tempDinosauro) {
 		int i = -1;
 		int j = -1;
 		do {
 			for (i = -maxDistance; i < (maxDistance+1); i++) {
-				if (tryActualSpawn(i+x, j+y)) {
+				if (tryActualSpawn(i+x, j+y, idDinosauro)) {
 					tempDinosauro.setXY(i+x, j+y);
 					return true;
 				}
 			}
 			j++;
-		} while (j<maxDistance && (0<(i+x)) &&
+		} while (j<maxDistance && (0<=(i+x)) &&
 				((i+x)<rifMappa.getLatoDellaMappa()) &&
-				(0<(j+y)) &&
+				(0<=(j+y)) &&
 				((j+y)<rifMappa.getLatoDellaMappa()) );
 		return false;
 	}
@@ -354,7 +358,7 @@ public class ClientWorker extends Server implements Runnable {
 				myPlayer = super.Giocatori.get(tempUser);
 				if ( scanner.hasNext() ) {
 					String tempPwd = scanner.next(Pattern.compile("[^pass=]"));
-					if ( passwordIsValid(tempPwd) ) {
+					if ( myPlayer.passwordIsValid(tempPwd) ) {
 						iAmLogged();
 						String newToken = getNewToken();
 						writeLineToOutput("@ok," + newToken);
@@ -378,7 +382,7 @@ public class ClientWorker extends Server implements Runnable {
 			String tempUser = scanner.next(Pattern.compile("[^user=]"));
 			if ( ! userExists(tempUser) ) {
 				String tempPwd = scanner.next(Pattern.compile("[^pass=]"));
-				Giocatore tempPlayer = new Giocatore(tempUser, tempPwd, getNewToken()); 
+				Giocatore tempPlayer = new Giocatore(tempUser, tempPwd); 
 				super.Giocatori.put(tempUser, tempPlayer);
 				writeLineToOutput("@ok");
 			}
@@ -549,9 +553,9 @@ public class ClientWorker extends Server implements Runnable {
 	private void sendListaDinosauri() throws IOException {
 		if (existsRazza()) {
 			String buffer = "@ok";
-			Iterator<Dinosauro> iteratoreListaDinosauri = myPlayer.getIteratoreSuiDinosauri();
-			while (iteratoreListaDinosauri.hasNext()) {
-				buffer = buffer + "," + iteratoreListaDinosauri.next().getIdDinosauro();
+			Enumeration<String> enumerazioneListaIds = myPlayer.getEnumerazioneDegliIdDeiDinosauri();
+			while (enumerazioneListaIds.hasMoreElements()) {
+				buffer = buffer + "," + enumerazioneListaIds.nextElement();
 			}
 			writeLineToOutput(buffer);
 		}

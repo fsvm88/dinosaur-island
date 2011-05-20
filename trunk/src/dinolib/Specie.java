@@ -1,5 +1,6 @@
 package dinolib;
 
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -95,5 +96,12 @@ public class Specie {
 	 */
 	public Iterator<Dinosauro> getIteratoreSuiDinosauri() {
 		return dinosauri.values().iterator();
+	}
+	
+	/**
+	 * Restituisce un iteratore sugli id dei dinosauri. Utile solo per inviare la lista dei dinosauri all'utente.
+	 */
+	public Enumeration<String> getEnumerazioneDegliIdDeiDinosauri() {
+		return dinosauri.keys();
 	}
 }
