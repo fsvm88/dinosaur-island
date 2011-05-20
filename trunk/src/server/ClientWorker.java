@@ -422,7 +422,7 @@ public class ClientWorker extends Server implements Runnable {
 						}
 						else writeLineToOutput("@no,@nonIlTuoTurno");
 					}
-					else writeLineToOutput("@no.@nonInPartita");
+					else writeLineToOutput("@no,@nonInPartita");
 				}
 				else writeLineToOutput("@no");
 			}
