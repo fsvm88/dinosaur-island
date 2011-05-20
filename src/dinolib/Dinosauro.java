@@ -5,6 +5,26 @@ import java.util.Random;
 
 public class Dinosauro extends Specie {
 	/**
+	 * Indica l'energia necessaria per deporre un uovo.
+	 * È dichiarata final static perchè è fissa per ogni dinosauro, indipendente da altri parametri.
+	 * @uml.property name="energiaDeposizioneUovo"
+	 */
+	private static final int energia_DEPOSIZIONE_UOVO = 1500;
+	
+	/**
+	 * Indica l'energia spesa per crescere.
+	 * @uml.property name="energiaCrescita"
+	 */
+	private int energiaCrescita = 0;
+	
+	/**
+	 * Aggiorna l'energia necessaria per la crescita del dinosauro.
+	 */
+	private void aggiornaEnergiaCrescita() {
+		energiaCrescita = energiaMax/2;
+	}
+	
+	/**
 	 * Indica l'energia corrente del dinosauro.
 	 * @uml.property  name="energiaAttuale"
 	 */
@@ -195,6 +215,7 @@ public class Dinosauro extends Specie {
 		energiaMax = 1000*dimensione;
 		spostamento_MAX = nuovo_spostamento_MAX;
 		moltiplicatore_FORZA = nuovo_moltiplicatore_FORZA;
+		this.aggiornaEnergiaCrescita();
 	}
 
 	/**
@@ -220,16 +241,27 @@ public class Dinosauro extends Specie {
 	}
 
 	/**
-	 * Fa crescere il dinosauro, parte comune.
+	 * Fa crescere il dinosauro.
 	 */
-	public void cresci(int moltiplicatore_forza){
+	public void cresci() {
 		if (this.getDimensione() < dimensione_MASSIMA) {
 			this.setDimensione((this.getDimensione()+1));
 			this.setEnergiaMax((1000*this.getDimensione()));
 			this.setForza();
+			this.aggiornaEnergiaCrescita();
 		}
 	}
 
+	/**
+	 * Helper, verifica se il dinosauro è già alla dimensione massima.
+	 * Risponde true se dimensione = dimensione_MAX, false altrimenti.
+	 * @return
+	 */
+	public boolean isAtDimensioneMax() {
+		if (this.getDimensione() >= 5) return true;
+		else return false;
+	}
+	
 	/**
 	 * Override del metodo toString per questa classe in particolare.
 	 */
@@ -260,4 +292,14 @@ public class Dinosauro extends Specie {
 	 * @uml.property name="moltiplicatore_FORZA"
 	 */
 	private int moltiplicatore_FORZA = 0;
+	
+	/**
+	 * Controlla che il dinosauro abbia abbastanza energia per crescere.
+	 * È booleano e ritorna true se energiaAttuale > energiaCrescita; false altrimenti.
+	 * @return
+	 */
+	public boolean haAbbastanzaEnergiaPerCrescere() {
+		if (energiaAttuale > energiaCrescita) return true;
+		else return false;
+	}
 }

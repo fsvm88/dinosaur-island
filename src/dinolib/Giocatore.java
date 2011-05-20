@@ -130,4 +130,15 @@ public class Giocatore {
 	public Iterator<String> getItIdDinosauri() {
 		return specieDiDinosauri.getItIdDinosauri();
 	}
+
+	/**
+	 * Helper booleano per verificare l'esistenza di un dinosauro con un dato ID.
+	 * Ritorna true se esiste, false altrimenti.
+	 * @param idDinosauro
+	 * @return
+	 */
+	public boolean existsDinosauro(String idDinosauro) {
+		if (specieDiDinosauri.validateIdExistance(idDinosauro)) return true;
+		else return false;
+	}
 }
