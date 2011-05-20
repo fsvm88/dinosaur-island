@@ -95,7 +95,80 @@ public class Mappa {
 		conteggioTerraStatico = calcolaCelle() - conteggioAcquaStatico;
 	}
 
+	/**
+	 * Implementa la creazione di una nuova mappa.
+	 */
 	private void popolaMappa() {
 		// TODO : scrivere popolaMappa.
+	}
+
+	/**
+	 * Interroga la cella per vedere se è occupata da dinosauro
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public boolean isOccupataDaDinosauro(int x, int y) {
+		if (MappaACelle[x][y].toString().equals("CellaConDinosauro")) return true;
+		else return false;
+	}
+	
+	/**
+	 * Interroga la cella per vedere se è libera (aka terra semplice).
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public boolean isLibera(int x, int y) {
+		if (MappaACelle[x][y].toString().equals("Terra")) return true;
+		else return false;
+	}
+	
+	/**
+	 * Interroga la cella per sapere di che tipo è.
+	 * Normalmente viene chiamato per sapere se è vegetazione o carogna.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public String getTipoCella(int x, int y) {
+		return MappaACelle[x][y].toString();
+	}
+	
+	/**
+	 * Interroga la cella per sapere se è di tipo acqua.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public boolean isAcqua(int x, int y) {
+		if (MappaACelle[x][y].toString().equals("Acqua")) return true;
+		else return false;
+	}
+	
+	/**
+	 * Inserisce un dinosauro sulla mappa.
+	 * Passa il tipo corrente della cella così che venga tenuta valida.
+	 */
+	public void spawnDinosauro(int x, int y, String idDinosauroOccupante, Cella cellaSuCuiSiTrova) {
+		MappaACelle[x][y] = new CellaConDinosauro(idDinosauroOccupante, cellaSuCuiSiTrova);
+	}
+
+	/**
+	 * Restituisce la cella richiesta.
+	 */
+	public Cella getCella(int x, int y) {
+		return MappaACelle[x][y];
+	}
+	
+	/**
+	 * Rimuove il dinosauro dalla cella corrente e reimposta la cella al suo vecchio valore.
+	 */
+	public void rimuoviIlDinosauroDallaCella(int x, int y) {
+		if ( (MappaACelle[x][y].getIdDelDinosauro() != null) &&
+				(MappaACelle[x][y].getCellaSuCuiSiTrova() != null) ) {
+			Cella vecchiaCella = MappaACelle[x][y].getCellaSuCuiSiTrova();
+			MappaACelle[x][y] = vecchiaCella;
+		}
 	}
 }
