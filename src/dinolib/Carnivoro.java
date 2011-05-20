@@ -1,6 +1,5 @@
 package dinolib;
 
-
 public class Carnivoro extends Dinosauro {
 	/**
 	 * @uml.property  name="SPOSTAMENTO_MAX" readOnly="true"
@@ -15,22 +14,6 @@ public class Carnivoro extends Dinosauro {
 	 * Implementa il costruttore pubblico per il tipo di dinosauro Carnivoro.
 	 */
 	public Carnivoro(int x, int y){
-		super(x, y);
-		super.setSpostamentoMaxPerTurno(spostamento_MAX);
-		super.setForza(moltiplicatore_FORZA);
-	}
-
-	/**
-	 * Implementa la crescita del dinosauro, modificando tutte le variabili necessarie.
-	 */
-	public void cresciDinosauro(){
-		super.comuneCrescita(moltiplicatore_FORZA);
-	}
-
-	/**
-	 * Restituisce la forza del dinosauro, parte specializzata per le sottoclassi.
-	 */
-	public int getForza() {
-		return super.getForzaComune(moltiplicatore_FORZA);
+		super(x, y, spostamento_MAX, moltiplicatore_FORZA);
 	}
 }

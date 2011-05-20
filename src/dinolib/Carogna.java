@@ -34,7 +34,7 @@ public class Carogna extends Cella {
 	/**
 	 * Aggiorna il valore attuale della cella al passare dei turni di gioco
 	 */
-	public void aggiornaCella() {
+	public void aggiornaCellaSulTurno() {
 		int diffTemp = valoreAttuale - (valoreIniziale/20);
 		if (diffTemp <= 0) {
 			valoreAttuale = 0;
