@@ -6,9 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.Scanner;
-import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import dinolib.Carnivoro;
@@ -71,7 +69,7 @@ public class ClientWorker extends Server implements Runnable {
 			terminateThreadOnIOException("Cannot initialize input/output streams!");
 		}
 	}
-	
+
 	public void run () {
 		while ( ! stopThread ) {
 			/**
@@ -203,7 +201,7 @@ public class ClientWorker extends Server implements Runnable {
 	public void rimuoviDinosauroDallaCella(int x, int y) {
 		rifMappa.rimuoviIlDinosauroDallaCella(x, y);
 	}
-	
+
 	/**
 	 * Gestisce la rimozione di tutti i dinosauri dalla mappa.	
 	 */
@@ -513,11 +511,11 @@ public class ClientWorker extends Server implements Runnable {
 	 * @throws IOException 
 	 */
 	private void listaDeiGiocatori() throws IOException {
-		Iterator<Entry<String, Giocatore>> iteratoreSuListaGiocatori = super.Giocatori.entrySet().iterator();
+		Enumeration<String> enumerazioneSuiGiocatori = Giocatori.keys();
 		String buffer = "@ok,";
-		if (iteratoreSuListaGiocatori.hasNext()) {
-			while (iteratoreSuListaGiocatori.hasNext()) {
-				buffer = buffer + iteratoreSuListaGiocatori.next();
+		if (enumerazioneSuiGiocatori.hasMoreElements()) {
+			while (enumerazioneSuiGiocatori.hasMoreElements()) {
+				buffer = buffer + "," + enumerazioneSuiGiocatori.nextElement();
 			}
 			writeLineToOutput(buffer);
 			return;
