@@ -4,7 +4,6 @@ import java.util.Random;
 
 
 public class Dinosauro extends Specie {
-
 	/**
 	 * Indica l'energia corrente del dinosauro.
 	 * @uml.property  name="energiaAttuale"
@@ -163,6 +162,7 @@ public class Dinosauro extends Specie {
 	 * @uml.property  name="forza"
 	 */
 	public int getForza() {
+		setForza();
 		return forza;
 	}
 
@@ -171,31 +171,8 @@ public class Dinosauro extends Specie {
 	 * @param forza  The forza to set.
 	 * @uml.property  name="forza"
 	 */
-	public void setForza(int moltiplicatore) {
-		this.forza = (moltiplicatore*this.getDimensione()*this.getEnergiaAttuale());
-	}
-
-	/**
-	 * @uml.property  name="spostamentoMaxPerTurno"
-	 */
-	private int spostamentoMaxPerTurno = 0;
-
-	/** 
-	 * Getter of the property <tt>spostamentoMax</tt>
-	 * @return  Returns the spostamentoMax.
-	 * @uml.property  name="spostamentoMaxPerTurno"
-	 */
-	public int getSpostamentoMaxPerTurno() {
-		return spostamentoMaxPerTurno;
-	}
-
-	/** 
-	 * Setter of the property <tt>spostamentoMax</tt>
-	 * @param spostamentoMax  The spostamentoMax to set.
-	 * @uml.property  name="spostamentoMaxPerTurno"
-	 */
-	public void setSpostamentoMaxPerTurno(int spostamentoMaxPerTurno) {
-		this.spostamentoMaxPerTurno = spostamentoMaxPerTurno;
+	public void setForza() {
+		this.forza = (moltiplicatore_FORZA*this.getDimensione()*this.getEnergiaAttuale());
 	}
 
 	/**
@@ -203,11 +180,10 @@ public class Dinosauro extends Specie {
 	 */
 	private static final int dimensione_MASSIMA = 5;
 
-
 	/**
 	 * Costruttore visibile solo alle sottoclassi da usare come costruttore comune per Carnivoro e Erbivoro.
 	 */
-	protected Dinosauro(int x, int y) {
+	protected Dinosauro(int x, int y, int nuovo_spostamento_MAX, int nuovo_moltiplicatore_FORZA) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -217,6 +193,8 @@ public class Dinosauro extends Specie {
 		energiaAttuale = 750;
 		dimensione = 1;
 		energiaMax = 1000*dimensione;
+		spostamento_MAX = nuovo_spostamento_MAX;
+		moltiplicatore_FORZA = nuovo_moltiplicatore_FORZA;
 	}
 
 	/**
@@ -233,34 +211,23 @@ public class Dinosauro extends Specie {
 	public int getTurnoDiVita() {
 		return turnoDiVita;
 	}
-
+	
 	/**
-	 * Setter of the property <tt>turnoDiVita</tt>
-	 * @param turnoDiVita  The turnoDiVita to set.
-	 * @uml.property  name="turnoDiVita"
+	 * Aumenta di uno il turno di vita del dinosauro. (Invecchia il dinosauro).
 	 */
-	public void setTurnoDiVita(int turnoDiVita) {
-		this.turnoDiVita = turnoDiVita;
+	public void invecchia() {
+		this.turnoDiVita += 1;
 	}
-
 
 	/**
 	 * Fa crescere il dinosauro, parte comune.
 	 */
-	protected void comuneCrescita(int moltiplicatore_forza){
+	public void cresci(int moltiplicatore_forza){
 		if (this.getDimensione() < dimensione_MASSIMA) {
 			this.setDimensione((this.getDimensione()+1));
 			this.setEnergiaMax((1000*this.getDimensione()));
-			this.setForza(moltiplicatore_forza);
+			this.setForza();
 		}
-	}
-
-	/**
-	 * Implementa la parte comune alle sottoclassi per la restistuzione della forza.
-	 */
-	protected int getForzaComune(int moltiplicatore) {
-		setForza(moltiplicatore);
-		return forza;
 	}
 
 	/**
@@ -269,4 +236,28 @@ public class Dinosauro extends Specie {
 	public String toString () {
 		return this.getClass().getName();
 	}
+
+	/**
+	 * Il getter per la proprietà <tt>Spostamento_Max</tt>
+	 * @return
+	 */
+	public int getSpostamentoMax() {
+		return spostamento_MAX;
+	}
+
+	/**
+	 * Contiene lo spostamento massimo per turno sdel dinosauro impostato dalle sottoclassi.
+	 * Serve a fattorizzare ancora più codice.
+	 * Viene impostato in modo final dal costruttore.
+	 * @uml.property name="spostamento_MAX"
+	 */
+	private int spostamento_MAX = 0;
+	
+	/**
+	 * Contiene il moltiplicatore della forza del dinosauro impostato dalle sottoclassi.
+	 * Serve a fattorizzare ancora più codice.
+	 * Viene impostato in modo final dal costruttore.
+	 * @uml.property name="moltiplicatore_FORZA"
+	 */
+	private int moltiplicatore_FORZA = 0;
 }
