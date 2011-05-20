@@ -122,10 +122,10 @@ public class Server {
 		while (running) {
 			ClientWorker clientWorker;
 			try {
+				System.out.println("Server started successfully, creating threads on need..");
 				clientWorker = new ClientWorker(serverInstSocket.accept());
 				Thread threadedClientWorker = new Thread(clientWorker);
 				threadedClientWorker.start();
-				System.out.println("Server started successfully, creating threads on need..");
 			}
 			catch (IOException e) {
 				System.out.println("Accept failed on " + PORTA_DI_GIOCO);
