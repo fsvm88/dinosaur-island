@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -206,10 +206,10 @@ public class ClientWorker extends Server implements Runnable {
 	 * Gestisce la rimozione di tutti i dinosauri dalla mappa.	
 	 */
 	protected void rimuoviDinosauriDallaMappa(Giocatore curPlayer) {
-		/* Usa enumerazione per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
-		Enumeration<String> enumerazioneSugliID = myPlayer.getEnumerazioneDegliIdDeiDinosauri();
-		while (enumerazioneSugliID.hasMoreElements()) {
-			String idCorrente = enumerazioneSugliID.nextElement();
+		/* Usa iteratore per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
+		Iterator<String> itIdDinosauri = myPlayer.getItIdDinosauri();
+		while (itIdDinosauri.hasNext()) {
+			String idCorrente = itIdDinosauri.next();
 			Dinosauro tempDinosauro = myPlayer.getDinosauro(idCorrente);
 			rimuoviDinosauroDallaCella(tempDinosauro.getX(), tempDinosauro.getY());
 		}
@@ -219,10 +219,10 @@ public class ClientWorker extends Server implements Runnable {
 	 * Quando l'utente esegue il login aggiunge i dinosauri alla mappa.
 	 */
 	protected void inserisciDinosauriNellaMappa(Giocatore curPlayer) {
-		/* Usa enumerazione per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
-		Enumeration<String> enumerazioneSugliID = myPlayer.getEnumerazioneDegliIdDeiDinosauri();
-		while (enumerazioneSugliID.hasMoreElements()) {
-			String idCorrente = enumerazioneSugliID.nextElement();
+		/* Usa iteratore per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
+		Iterator<String> itIdDinosauri = myPlayer.getItIdDinosauri();
+		while (itIdDinosauri.hasNext()) {
+			String idCorrente = itIdDinosauri.next();
 			Dinosauro tempDinosauro = myPlayer.getDinosauro(idCorrente);
 			int x = tempDinosauro.getX(), y = tempDinosauro.getY();
 			if (tryActualSpawn(x, y, idCorrente)) return;
@@ -511,11 +511,11 @@ public class ClientWorker extends Server implements Runnable {
 	 * @throws IOException 
 	 */
 	private void listaDeiGiocatori() throws IOException {
-		Enumeration<String> enumerazioneSuiGiocatori = Giocatori.keys();
+		Iterator<String> itNomiGiocatori = Giocatori.keySet().iterator();
 		String buffer = "@ok,";
-		if (enumerazioneSuiGiocatori.hasMoreElements()) {
-			while (enumerazioneSuiGiocatori.hasMoreElements()) {
-				buffer = buffer + "," + enumerazioneSuiGiocatori.nextElement();
+		if (itNomiGiocatori.hasNext()) {
+			while (itNomiGiocatori.hasNext()) {
+				buffer = buffer + "," + itNomiGiocatori.next();
 			}
 			writeLineToOutput(buffer);
 			return;
@@ -543,9 +543,9 @@ public class ClientWorker extends Server implements Runnable {
 	private void sendListaDinosauri() throws IOException {
 		if (existsRazza()) {
 			String buffer = "@ok";
-			Enumeration<String> enumerazioneListaIds = myPlayer.getEnumerazioneDegliIdDeiDinosauri();
-			while (enumerazioneListaIds.hasMoreElements()) {
-				buffer = buffer + "," + enumerazioneListaIds.nextElement();
+			Iterator<String> itListaIds = myPlayer.getItIdDinosauri();
+			while (itListaIds.hasNext()) {
+				buffer = buffer + "," + itListaIds.next();
 			}
 			writeLineToOutput(buffer);
 		}

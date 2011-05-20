@@ -1,6 +1,5 @@
 package dinolib;
 
-import java.util.Enumeration;
 import java.util.Iterator;
 
 import dinolib.Specie;
@@ -128,7 +127,7 @@ public class Giocatore {
 	/**
 	 * Restituisce una enumerazione sugli id dei dinosauri.
 	 */
-	public Enumeration<String> getEnumerazioneDegliIdDeiDinosauri() {
-		return specieDiDinosauri.getEnumerazioneDegliIdDeiDinosauri();
+	public Iterator<String> getItIdDinosauri() {
+		return specieDiDinosauri.getItIdDinosauri();
 	}
 }

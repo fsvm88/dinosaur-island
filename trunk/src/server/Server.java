@@ -3,8 +3,8 @@ package server;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.Hashtable;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 
 import dinolib.*;
 
@@ -28,7 +28,7 @@ public class Server {
 	 * Definisce la lista dei giocatori.
 	 * @uml.property name="Giocatori"
 	 */
-	protected ConcurrentHashMap<String, Giocatore> Giocatori;
+	protected Hashtable<String, Giocatore> Giocatori;
 	/**
 	 * Definisce la stringa che contiene il nome del giocatore che in questo momento ha il turno.
 	 * @uml.property name="Giocatori"
