@@ -393,40 +393,43 @@ public class ClientWorker extends Server implements Runnable {
 		do {
 			Scanner scanner = new Scanner(readLineFromInput());
 			scanner.useDelimiter(",");
-			if (readAndValidateTokenFromInput(scanner)) {
-				if (scanner.hasNext()) {
-					String tempInput = scanner.next();
-					/* comandi fuori partita*/
-					if (tempInput.equals("@creaRazza")) creaNuovaRazza(scanner);
-					else if (tempInput.equals("@accessoPartita")) accediAPartita();
-					else if (tempInput.equals("@uscitaPartita")) esciDallaPartita();
-					else if (tempInput.equals("@listaGiocatori")) listaDeiGiocatori();
-					else if (tempInput.equals("@classifica")) classifica();
-					else if (tempInput.equals("@logout")) handleLogout();
-					/* comandi in partita */
-					else if (isInGame()) {
-						/* comandi di informazione */
-						if (tempInput.equals("@mappaGenerale")) sendMappaGeneale();
-						else if (tempInput.equals("@listaDinosauri")) sendListaDinosauri();
-						else if (tempInput.equals("@vistaLocale")) sendVistaLocale();
-						else if (tempInput.equals("@statoDinosauro")) sendStatoDinosauro();
-						if (isMioTurno(myPlayer)) {
-							/* comandi di azione */
-							if (tempInput.equals("@muoviDinosauro")) sendStatoDinosauro();
-							else if (tempInput.equals("@cresciDinosauro")) cresciDinosauro();
-							else if (tempInput.equals("@deponiUovo")) deponiUovo();
-							/* comandi di turno */
-							else if (tempInput.equals("@confermaTurno")) confermaTurno();
-							else if (tempInput.equals("@passaTurno")) passaTurno();
-							else writeLineToOutput("@no");
+			if (scanner.hasNext()) {
+				String comando = scanner.next();
+				if (readAndValidateTokenFromInput(scanner)) {
+					if (scanner.hasNext()) {
+						/* comandi fuori partita*/
+						if (comando.equals("@creaRazza")) creaNuovaRazza(scanner);
+						else if (comando.equals("@accessoPartita")) accediAPartita();
+						else if (comando.equals("@uscitaPartita")) esciDallaPartita();
+						else if (comando.equals("@listaGiocatori")) listaDeiGiocatori();
+						else if (comando.equals("@classifica")) classifica();
+						else if (comando.equals("@logout")) handleLogout();
+						/* comandi in partita */
+						else if (isInGame()) {
+							/* comandi di informazione */
+							if (comando.equals("@mappaGenerale")) sendMappaGeneale();
+							else if (comando.equals("@listaDinosauri")) sendListaDinosauri();
+							else if (comando.equals("@vistaLocale")) sendVistaLocale();
+							else if (comando.equals("@statoDinosauro")) sendStatoDinosauro();
+							if (isMioTurno(myPlayer)) {
+								/* comandi di azione */
+								if (comando.equals("@muoviDinosauro")) sendStatoDinosauro();
+								else if (comando.equals("@cresciDinosauro")) cresciDinosauro(scanner);
+								else if (comando.equals("@deponiUovo")) deponiUovo();
+								/* comandi di turno */
+								else if (comando.equals("@confermaTurno")) confermaTurno();
+								else if (comando.equals("@passaTurno")) passaTurno();
+								else writeLineToOutput("@no");
+							}
+							else writeLineToOutput("@no,@nonIlTuoTurno");
 						}
-						else writeLineToOutput("@no,@nonIlTuoTurno");
+						else writeLineToOutput("@no,@nonInPartita");
 					}
-					else writeLineToOutput("@no,@nonInPartita");
+					else writeLineToOutput("@no");
 				}
-				else writeLineToOutput("@no");
+				else writeLineToOutput("@no,tokenNonValido");
 			}
-			else writeLineToOutput("@no,tokenNonValido");
+			else writeLineToOutput("@no");
 		} while (isLogged());
 	}
 
@@ -563,13 +566,39 @@ public class ClientWorker extends Server implements Runnable {
 	}
 
 	private void deponiUovo() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stubmoltiplicatore_forza
 
 	}
 
-	private void cresciDinosauro() {
-		// TODO Auto-generated method stub
+	/**
+	 * Chiama la funzione di crescita del dinosauro.
+	 */
+	private void cresciDinosauro(Scanner scanner) throws IOException {
+		String idDinosauro = validateEsistenzaDinosauro(scanner);
+		if (idDinosauro != null) {
+			Dinosauro tempDinosauro = myPlayer.getDinosauro(idDinosauro);
+			if (!tempDinosauro.isAtDimensioneMax()) {
+				if (tempDinosauro.haAbbastanzaEnergiaPerCrescere()) {
+					tempDinosauro.cresci();
+					writeLineToOutput("ok");
+				}
+				else writeLineToOutput("@no,@mortePerInedia");
+			}
+			else writeLineToOutput("@no,@raggiuntaDimensioneMax");
+		}
+		else writeLineToOutput("@no,@idNonValido");
+	}
 
+	/**
+	 * Helper per verificare l'esistenza del dinosauro e fattorizzare un po' di codice di controllo.
+	 * @param scanner
+	 * @return
+	 * @throws IOException
+	 */
+	private String validateEsistenzaDinosauro(Scanner scanner) throws IOException {
+		String idDinosauro = scanner.next(Pattern.compile("[^idDino=]"));
+		if (myPlayer.existsDinosauro(idDinosauro)) return idDinosauro;
+		else return null;
 	}
 
 	private void sendStatoDinosauro() {

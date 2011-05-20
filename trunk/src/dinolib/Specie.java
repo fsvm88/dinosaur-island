@@ -103,4 +103,14 @@ public class Specie {
 	public Iterator<String> getItIdDinosauri() {
 		return dinosauri.keySet().iterator();
 	}
+	
+	/**
+	 * Helper booleano per verificare l'esistenza di un id (cioè l'esistenza di un dinosauro.
+	 * @param idDaCercare
+	 * @return
+	 */
+	public boolean validateIdExistance(String idDaCercare) {
+		if (dinosauri.containsKey(idDaCercare)) return true;
+		else return false;
+	}
 }
