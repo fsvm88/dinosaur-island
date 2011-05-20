@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import dinolib.Carnivoro;
 import dinolib.Dinosauro;
+import dinolib.Erbivoro;
 import dinolib.Giocatore;
 
 /** 
@@ -476,7 +477,7 @@ public class ClientWorker extends Server implements Runnable {
 							int x = getNewRandomIntValueOnMyMap();
 							int y = getNewRandomIntValueOnMyMap();
 							if (rifMappa.isLibera(x,y)) {
-								myPlayer.creaNuovaRazzaDiDinosauri(nomeRazza, new Carnivoro(x,y));
+								myPlayer.creaNuovaRazzaDiDinosauri(nomeRazza, new Erbivoro(x,y));
 								break;
 							}
 						} while (true);
