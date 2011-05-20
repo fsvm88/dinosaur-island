@@ -25,7 +25,7 @@ public class Giocatore {
 	 * @uml.property  name="password"
 	 */
 	private String password = null;
-	
+
 	/**
 	 * Validate the password and return a boolean value.
 	 * @param passwordToMatch
@@ -34,7 +34,7 @@ public class Giocatore {
 		if (password.equals(suppliedPassword)) return true;
 		else return false;
 	}
-	
+
 	/**
 	 * Contiene il token univoco del giocatore per poter comunicare tra server e client.
 	 * @uml.property name="tokenUnivoco"
@@ -48,7 +48,7 @@ public class Giocatore {
 	public String getTokenUnivoco() {
 		return tokenUnivoco;
 	}
-	
+
 	/**
 	 * Imposta il nuovo valore del token.
 	 * @param tokenUnivoco
@@ -70,7 +70,7 @@ public class Giocatore {
 	public int getNumeroDinosauri() {
 		return specieDiDinosauri.getNumeroDinosauri();
 	}
-	
+
 	/**
 	 * Restituisce un dinosauro presente nella specie.
 	 * @param idDinosauroCercato
@@ -79,7 +79,7 @@ public class Giocatore {
 	public Dinosauro getDinosauro(String idDinosauroCercato) {
 		return specieDiDinosauri.getDinosauro(idDinosauroCercato);
 	}
-	
+
 	/**
 	 * Restituisce il nome della razza dei dinosauri.
 	 * @return
@@ -87,11 +87,40 @@ public class Giocatore {
 	public String getNomeRazzaDinosauri() {
 		return specieDiDinosauri.getNomeRazza();
 	}
-	
+
 	/**
 	 * Restituisce un iteratore sui dinosauri nella specie, è un wrapper per la classe Specie.
 	 */
 	public Iterator<Dinosauro> getIteratoreSuiDinosauriNellaSpecie() {
 		return specieDiDinosauri.getIteratoreSuiDinosauri();
+	}
+
+
+	/**
+	 * Costruttore pubblico per la classe giocatore. Richiede solo nome utente e password.
+	 */
+	public Giocatore(String nome, String password) {
+		this.nome = nome;
+		this.password = password;
+	}
+	
+	/**
+	 * Aggiunge un nuovo dinosauro alla razza.
+	 * Genera un token univoco e lo assegna al dinosauro in questione.
+	 * Richiede come parametro un nuovo oggetto di tipo di dinosauro.
+	 */
+	public void aggiungiDinosauroAllaRazza(Dinosauro nuovoDinosauro) {
+		specieDiDinosauri.aggiungiDinosauroAllaSpecie(nuovoDinosauro);
+	}
+	
+	/**
+	 * Crea la razza di dinosauri e assegna un tipo specie.
+	 * Richiede il nuovo nome della razza come parametro.
+	 * Modifica il campo privato specieDiDinosauri.
+	 * @param nuovoNomeRazza
+	 * @param nuovoDinosauro
+	 */
+	public void creaNuovaRazzaDiDinosauri(String nuovoNomeRazza, Dinosauro nuovoDinosauro) {
+		specieDiDinosauri = new Specie(nuovoNomeRazza, nuovoDinosauro);
 	}
 }
