@@ -10,7 +10,12 @@ import java.util.Scanner;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import dinolib.*;
+import dinolib.Carnivoro;
+import dinolib.Dinosauro;
+import dinolib.Giocatore;
+import dinolib.Mappa;
+import dinolib.Cella;
+import dinolib.Specie;
 
 
 /** 
@@ -236,7 +241,7 @@ public class ClientWorker extends Server implements Runnable {
 	 * @param y
 	 * @return
 	 */
-	private boolean tryActualSpawn(int x, int y) {
+	private boolean tryActsualSpawn(int x, int y) {
 		if (rifMappa.isLibera(x, y)) {
 			rifMappa.spawnDinosauro(x, y);
 			return true;
@@ -349,7 +354,7 @@ public class ClientWorker extends Server implements Runnable {
 				myPlayer = super.Giocatori.get(tempUser);
 				if ( scanner.hasNext() ) {
 					String tempPwd = scanner.next(Pattern.compile("[^pass=]"));
-					if ( validateUserPassword(tempPwd) ) {
+					if ( passwordIsValid(tempPwd) ) {
 						iAmLogged();
 						String newToken = getNewToken();
 						writeLineToOutput("@ok," + newToken);
@@ -441,7 +446,7 @@ public class ClientWorker extends Server implements Runnable {
 	 */
 	private boolean readAndValidateTokenFromInput (Scanner scanner) throws IOException {
 		if ( scanner.hasNext() ) {
-			if ( scanner.next(Pattern.compile("[^token=]")).equals(myPlayer.getToken() )) {
+			if ( scanner.next(Pattern.compile("[^token=]")).equals(myPlayer.getTokenUnivoco() )) {
 				return true;
 			}
 			else return false;
@@ -462,25 +467,21 @@ public class ClientWorker extends Server implements Runnable {
 				String tipoRazza = scanner.next(Pattern.compile("[^tipo=]"));
 				if (tipoRazza.equals("c") || tipoRazza.equals("e")) {
 					if (tipoRazza == "c") {
-						myPlayer.S....
 						int x = getNewRandomIntValueOnMyMap();
 						int y = getNewRandomIntValueOnMyMap();
 						do {
 							if (rifMappa.isLibera(x,y)) {
-								myPlayer.aggiungiDinosauro(new Carnivoro(x,y));
-								rifMappa.spawnDinosauro(x, y);
+								myPlayer.creaNuovaRazzaDiDinosauri(nomeRazza, new Carnivoro(x,y));
 								break;
 							}
 						} while (true);
 					}
 					else if (tipoRazza == "e") {
-						myPlayer.setNomeRazzaDinosauro(nomeRazza);
 						do {
 							int x = getNewRandomIntValueOnMyMap();
 							int y = getNewRandomIntValueOnMyMap();
 							if (rifMappa.isLibera(x,y)) {
-								myPlayer.aggiungiDinosauro(new Erbivoro(x,y));
-								rifMappa.spawnDinosauro(x, y);
+								myPlayer.creaNuovaRazzaDiDinosauri(nomeRazza, new Carnivoro(x,y));
 								break;
 							}
 						} while (true);
@@ -548,7 +549,7 @@ public class ClientWorker extends Server implements Runnable {
 	private void sendListaDinosauri() throws IOException {
 		if (existsRazza()) {
 			String buffer = "@ok";
-			Iterator<Dinosauro> iteratoreListaDinosauri = myPlayer.dammiIteratoreSuiDinosauri();
+			Iterator<Dinosauro> iteratoreListaDinosauri = myPlayer.getIteratoreSuiDinosauri();
 			while (iteratoreListaDinosauri.hasNext()) {
 				buffer = buffer + "," + iteratoreListaDinosauri.next().getIdDinosauro();
 			}
