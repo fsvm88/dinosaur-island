@@ -40,8 +40,13 @@ public class Specie {
 	/**
 	 * Aggiunge un dinosauro alla lista di dinosauri della Specie.
 	 */
-	public void aggiungiDinosauroAllaSpecie(Dinosauro dinosauro){
-		dinosauri.put(getNewToken(), dinosauro);
+	public void aggiungiDinosauroAllaSpecie(Dinosauro dinosauro, String nuovoIdDinosauro){
+		if (nuovoIdDinosauro == null) {
+			dinosauri.put(getNewToken(), dinosauro);
+		}
+		else if (nuovoIdDinosauro != null) {
+			dinosauri.put(nuovoIdDinosauro, dinosauro);
+		}
 	}
 	
 	/**
@@ -78,7 +83,7 @@ public class Specie {
 	 */
 	public Specie(String nomeRazza, Dinosauro nuovodinosauro) {
 		this.nomeRazza = nomeRazza;
-		aggiungiDinosauroAllaSpecie(nuovodinosauro);
+		aggiungiDinosauroAllaSpecie(nuovodinosauro, null);
 	}
 	
 	/**

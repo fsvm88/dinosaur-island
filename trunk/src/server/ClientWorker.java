@@ -233,7 +233,7 @@ public class ClientWorker extends Server implements Runnable {
 						return;
 					}
 					else i++;
-				} while (true);
+				} while (i < 40);
 			}
 		}
 	}
@@ -251,6 +251,7 @@ public class ClientWorker extends Server implements Runnable {
 		}
 		return false;
 	}
+
 
 	/**
 	 * Prova a inserire il dinosauro nella Cella più vicina.
@@ -407,7 +408,7 @@ public class ClientWorker extends Server implements Runnable {
 						/* comandi in partita */
 						else if (isInGame()) {
 							/* comandi di informazione */
-							if (comando.equals("@mappaGenerale")) sendMappaGeneale();
+							if (comando.equals("@mappaGenerale")) sendMappaGenerale();
 							else if (comando.equals("@listaDinosauri")) sendListaDinosauri();
 							else if (comando.equals("@vistaLocale")) sendVistaLocale();
 							else if (comando.equals("@statoDinosauro")) sendStatoDinosauro(scanner);
@@ -415,7 +416,7 @@ public class ClientWorker extends Server implements Runnable {
 								/* comandi di azione */
 								if (comando.equals("@muoviDinosauro")) muoviDinosauro();
 								else if (comando.equals("@cresciDinosauro")) cresciDinosauro(scanner);
-								else if (comando.equals("@deponiUovo")) deponiUovo();
+								else if (comando.equals("@deponiUovo")) deponiUovo(scanner);
 								/* comandi di turno */
 								else if (comando.equals("@confermaTurno")) confermaTurno();
 								else if (comando.equals("@passaTurno")) passaTurno();
@@ -569,10 +570,57 @@ public class ClientWorker extends Server implements Runnable {
 		// TODO Auto-generated method stub
 
 	}
+	
+	/**
+	 * Prova a inserire un dinosauro appena nato. Questo metodo viene usato da deponiUovo.
+	 * @return
+	 */
+	private boolean trySpawnOfAnEgg(int x, int y, Dinosauro newDinosauro, String newIdDinosauro) {
+		int i = 1;
+		do {
+			if (tryNearestSpawn(x, y, i, newIdDinosauro, newDinosauro)) {
+				myPlayer.aggiungiDinosauroAllaRazza(newDinosauro, newIdDinosauro);
+				return true;
+			}
+			else i++;
+		} while (i<40);
+		return false;
+	}
 
-	private void deponiUovo() {
-		// TODO Auto-generated method stubmoltiplicatore_forza
-
+	/**
+	 * Gestisce il comando che depone l'uovo.
+	 * @param scanner
+	 * @throws IOException
+	 */
+	private void deponiUovo(Scanner scanner) throws IOException {
+		if (myPlayer.getNumeroDinosauri() < 5) {
+			String idDinosauro = scanner.next(Pattern.compile("[^idDino=]"));
+			Dinosauro curDinosauro = myPlayer.getDinosauro(idDinosauro);
+			if (curDinosauro.haAbbastanzaEnergiaPerDeporreUnUovo()){
+				int x = curDinosauro.getX();
+				int y = curDinosauro.getY();
+				String newIdDinosauro = getNewToken();
+				if (curDinosauro.getTipoRazza().equals("Carnivoro")) {
+					Dinosauro newDinosauro = new Carnivoro(x, y);
+					newDinosauro.nonSonoUsabile();
+					if (trySpawnOfAnEgg(x, y, newDinosauro, newIdDinosauro)) {
+						writeLineToOutput("@ok" + "," + newIdDinosauro);
+					}
+					else writeLineToOutput("@no");
+				}
+				else if (curDinosauro.getTipoRazza().equals("Erbivoro")) {
+					Dinosauro newDinosauro = new Erbivoro(x, y);
+					newDinosauro.nonSonoUsabile();
+					if (trySpawnOfAnEgg(x, y, newDinosauro, newIdDinosauro)) {
+						writeLineToOutput("@ok" + "," + newIdDinosauro);
+					}
+					else writeLineToOutput("@no");
+				}
+				else writeLineToOutput("@no");
+			}
+			else writeLineToOutput("@no,@mortePerInedia");
+		}
+		else writeLineToOutput("@no,@raggiuntoNumeroMaxDinosauri");
 	}
 
 	/**
@@ -593,7 +641,7 @@ public class ClientWorker extends Server implements Runnable {
 		}
 		else writeLineToOutput("@no,@idNonValido");
 	}
-	
+
 	/**
 	 * Invia lo stato del dinosauro richiesto all'utente.
 	 * @param scanner
@@ -605,13 +653,13 @@ public class ClientWorker extends Server implements Runnable {
 			Dinosauro tempDinosauro = myPlayer.getDinosauro(idDinosauro);
 			String buffer = "@statoDinosauro";
 			buffer = buffer + "," +
-				myPlayer.getNome() + "," +
-				myPlayer.getNomeRazzaDinosauri() + "," +
-				myPlayer.getTipoRazza().toLowerCase().charAt(0) + "," +
-				"{" + tempDinosauro.getX() + "," + tempDinosauro.getY() + "}" +
-				tempDinosauro.getDimensione() + "," +
-				tempDinosauro.getEnergiaAttuale() + "," +
-				tempDinosauro.getTurnoDiVita();
+			myPlayer.getNome() + "," +
+			myPlayer.getNomeRazzaDinosauri() + "," +
+			myPlayer.getTipoRazza().toLowerCase().charAt(0) + "," +
+			"{" + tempDinosauro.getX() + "," + tempDinosauro.getY() + "}" +
+			tempDinosauro.getDimensione() + "," +
+			tempDinosauro.getEnergiaAttuale() + "," +
+			tempDinosauro.getTurnoDiVita();
 			writeLineToOutput(buffer);
 		}
 		else if (!myPlayer.existsDinosauro(idDinosauro)) {
@@ -624,11 +672,11 @@ public class ClientWorker extends Server implements Runnable {
 						Dinosauro tempDinosauro = tempGiocatore.getDinosauro(idDinosauro);
 						String buffer = "@statoDinosauro";
 						buffer = buffer + "," +
-							tempGiocatore.getNome() + "," +
-							tempGiocatore.getNomeRazzaDinosauri() + "," +
-							tempGiocatore.getTipoRazza().toLowerCase().charAt(0) + "," +
-							"{" + tempDinosauro.getX() + "," + tempDinosauro.getY() + "}" +
-							tempDinosauro.getDimensione();
+						tempGiocatore.getNome() + "," +
+						tempGiocatore.getNomeRazzaDinosauri() + "," +
+						tempGiocatore.getTipoRazza().toLowerCase().charAt(0) + "," +
+						"{" + tempDinosauro.getX() + "," + tempDinosauro.getY() + "}" +
+						tempDinosauro.getDimensione();
 						writeLineToOutput(buffer);
 					}
 				}
@@ -642,7 +690,7 @@ public class ClientWorker extends Server implements Runnable {
 
 	}
 
-	private void sendMappaGeneale() {
+	private void sendMappaGenerale() {
 		// TODO Auto-generated method stub
 
 	}
@@ -651,14 +699,4 @@ public class ClientWorker extends Server implements Runnable {
 		// TODO Auto-generated method stub
 
 	}
-
-	/**
-	 * Helper per riflettere le coordinate sulla mappa.
-	 * @param coord
-	 * @return
-	 */
-	/*	private int mirrorCoord(int coord) {
-		return 
-	}
-	 */
 }

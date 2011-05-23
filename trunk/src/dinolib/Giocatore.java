@@ -109,8 +109,8 @@ public class Giocatore {
 	 * Genera un token univoco e lo assegna al dinosauro in questione.
 	 * Richiede come parametro un nuovo oggetto di tipo di dinosauro.
 	 */
-	public void aggiungiDinosauroAllaRazza(Dinosauro nuovoDinosauro) {
-		specieDiDinosauri.aggiungiDinosauroAllaSpecie(nuovoDinosauro);
+	public void aggiungiDinosauroAllaRazza(Dinosauro nuovoDinosauro, String nuovoIdDinosauro) {
+		specieDiDinosauri.aggiungiDinosauroAllaSpecie(nuovoDinosauro, nuovoIdDinosauro);
 	}
 	
 	/**
