@@ -3,6 +3,8 @@ package dinolib;
 import java.util.Iterator;
 import java.util.Hashtable;
 
+import dinolib.CommonUtils;
+
 /** 
  * Astrae la collezione dei dinosauri rispetto al giocatore.
  */
@@ -42,21 +44,12 @@ public class Specie {
 	 */
 	public void aggiungiDinosauroAllaSpecie(Dinosauro dinosauro, String nuovoIdDinosauro){
 		if (nuovoIdDinosauro == null) {
-			dinosauri.put(getNewToken(), dinosauro);
+			dinosauri.put(CommonUtils.getNewToken(), dinosauro);
 		}
 		else if (nuovoIdDinosauro != null) {
 			dinosauri.put(nuovoIdDinosauro, dinosauro);
 		}
 	}
-	
-	/**
-	 * Helper per la generazione di un nuovo token alfanumerico.
-	 * @return
-	 */
-	private static String getNewToken() {
-		return Long.toString(Double.doubleToLongBits(Math.random()));
-	}
-
 
 	/**
 	 * Rimuove il dinosauro con l'ID scelto dalla specie.
