@@ -13,6 +13,7 @@ import dinolib.Carnivoro;
 import dinolib.Dinosauro;
 import dinolib.Erbivoro;
 import dinolib.Giocatore;
+import dinolib.CommonUtils;
 
 /** 
  * Implementa l'ascoltatore per i client. Ascolta i comandi e gestisce le giuste risposte.
@@ -167,15 +168,6 @@ public class ClientWorker extends Server implements Runnable {
 	}
 
 	/* Seguono un mare di helper comuni a tutti i thread e spostabili nella main class.*/
-
-	/**
-	 * Helper per la generazione di un nuovo token alfanumerico.
-	 * @return
-	 */
-	protected static String getNewToken() {
-		return Long.toString(Double.doubleToLongBits(Math.random()));
-	}
-
 	/**
 	 * Helper per verificare l'esistenza di un utente.
 	 * @param userToLookFor
@@ -278,14 +270,6 @@ public class ClientWorker extends Server implements Runnable {
 				(0<=(j+y)) &&
 				((j+y)<rifMappa.getLatoDellaMappa()) );
 		return false;
-	}
-
-	/**
-	 * Ritorna un valore casuale 0<rnd.nextInt()<LATO_DELLA_MAPPA
-	 * @return
-	 */
-	protected int getNewRandomIntValueOnMyMap() {
-		return rnd.nextInt(rifMappa.getLatoDellaMappa());
 	}
 
 	/**
@@ -463,8 +447,8 @@ public class ClientWorker extends Server implements Runnable {
 				String tipoRazza = scanner.next(Pattern.compile("[^tipo=]"));
 				if (tipoRazza.equals("c") || tipoRazza.equals("e")) {
 					if (tipoRazza == "c") {
-						int x = getNewRandomIntValueOnMyMap();
-						int y = getNewRandomIntValueOnMyMap();
+						int x = CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa());
+						int y = CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa());
 						do {
 							if (rifMappa.isLibera(x,y)) {
 								myPlayer.creaNuovaRazzaDiDinosauri(nomeRazza, new Carnivoro(x,y));
@@ -474,8 +458,8 @@ public class ClientWorker extends Server implements Runnable {
 					}
 					else if (tipoRazza == "e") {
 						do {
-							int x = getNewRandomIntValueOnMyMap();
-							int y = getNewRandomIntValueOnMyMap();
+							int x = CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa());
+							int y = CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa());
 							if (rifMappa.isLibera(x,y)) {
 								myPlayer.creaNuovaRazzaDiDinosauri(nomeRazza, new Erbivoro(x,y));
 								break;
