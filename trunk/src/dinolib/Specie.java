@@ -113,4 +113,15 @@ public class Specie {
 		if (dinosauri.containsKey(idDaCercare)) return true;
 		else return false;
 	}
+	
+	/**
+	 * Helper per restituire il tipo della razza del dinosauro.
+	 */
+	public String getTipoRazza() {
+		Iterator<Dinosauro> itTemp = getIteratoreSuiDinosauri();
+		if (itTemp.hasNext()) {
+			return itTemp.next().getTipoRazza();
+		}
+		return null;
+	}
 }

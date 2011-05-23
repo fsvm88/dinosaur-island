@@ -141,4 +141,8 @@ public class Giocatore {
 		if (specieDiDinosauri.validateIdExistance(idDinosauro)) return true;
 		else return false;
 	}
+	
+	public String getTipoRazza () {
+		return specieDiDinosauri.getTipoRazza();
+	}
 }
