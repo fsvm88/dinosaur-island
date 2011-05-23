@@ -72,7 +72,6 @@ public class Mappa {
 	 */
 	private int conteggioTerraStatico = 0;
 
-
 	/**
 	 * Restituisce il lato della mappa.
 	 */

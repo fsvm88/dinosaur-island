@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <editmodel:ClassDiagramEditModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:editmodel="editmodel.xmi" xmlns:options="options.xmi" name="dino_island" size="1400,1069" id="" metadata="uml2-1.0" initialized="true" scrolledX="46" scrolledY="1656" tag="1000" key="32303037303533312D313030302064696E6F5F69736C616E642F666162696F">
   <children xsi:type="editmodel:PackageEditModel" name="server" location="975,34" size="267,365" id="server">
-    <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.0/@children.1/@sourceConnections.1" name="ClientWorker" location="50,204" size="201,140" id="server/ClientWorker" runTimeClassModel="rimuoviDinosauroDallaCella(II),stopTheThread(),myPlayer,ClientWorker(Ljava.net.Socket;),run()">
+    <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.0/@children.1/@sourceConnections.1" name="ClientWorker" location="50,204" size="201,140" id="server/ClientWorker" runTimeClassModel="rimuoviDinosauroDallaCella(II),myPlayer,stopTheThread(),ClientWorker(Ljava.net.Socket;),run()">
       <children xsi:type="editmodel:CompartmentEditModel" size="125,18">
         <children xsi:type="editmodel:AttributeEditModel" name="myPlayer" id="server/ClientWorker#myPlayer"/>
       </children>
@@ -52,7 +52,7 @@
         <children xsi:type="editmodel:AssociationEndEditModel" location="0,90" attachSource="true"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="242,99"/>
       </sourceConnections>
-      <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="server/Server-Standard::Instantiate->server/ClientWorker*server/Server-Soyatec::Import->server/ClientWorker" source="//@children.0/@children.1" target="//@children.0/@children.0" targetEnd="//@children.0/@children.1/@sourceConnections.1/@children.2" label="//@children.0/@children.1/@sourceConnections.1/@children.0" sourceEnd="//@children.0/@children.1/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
+      <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="server/Server->Standard::Instantiate" source="//@children.0/@children.1" target="//@children.0/@children.0" targetEnd="//@children.0/@children.1/@sourceConnections.1/@children.2" label="//@children.0/@children.1/@sourceConnections.1/@children.0" sourceEnd="//@children.0/@children.1/@sourceConnections.1/@children.1" connectionRouterKind="Manual">
         <children xsi:type="editmodel:WireLabelEditModel" name="«Import, Instantiate»" size="110,13" anchorKind="MiddlePart"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="38,104" attachSource="true"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="80,0"/>
@@ -71,7 +71,7 @@
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
       <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
     </children>
-    <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.0/@children.1/@sourceConnections.0" name="Giocatore" location="50,50" size="242,356" id="dinolib/Giocatore" runTimeClassModel="Giocatore(Ljava.lang.String;Ljava.lang.String;),getTokenUnivoco(),existsDinosauro(Ljava.lang.String;),getTipoRazza(),getNomeRazzaDinosauri(),passwordIsValid(Ljava.lang.String;),getIteratoreSuiDinosauriNellaSpecie(),aggiungiDinosauroAllaRazza(Ldinolib.Dinosauro;Ljava.lang.String;),setTokenUnivoco(Ljava.lang.String;),creaNuovaRazzaDiDinosauri(Ljava.lang.String;Ldinolib.Dinosauro;),getItIdDinosauri(),getDinosauro(Ljava.lang.String;),tokenUnivoco,nome,getNumeroDinosauri()">
+    <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.0/@children.1/@sourceConnections.0" name="Giocatore" location="50,50" size="242,356" id="dinolib/Giocatore" runTimeClassModel="Giocatore(Ljava.lang.String;Ljava.lang.String;),getTokenUnivoco(),existsDinosauro(Ljava.lang.String;),getTipoRazza(),getNomeRazzaDinosauri(),passwordIsValid(Ljava.lang.String;),getIteratoreSuiDinosauriNellaSpecie(),aggiungiDinosauroAllaRazza(Ldinolib.Dinosauro;Ljava.lang.String;),setTokenUnivoco(Ljava.lang.String;),creaNuovaRazzaDiDinosauri(Ljava.lang.String;Ldinolib.Dinosauro;),getItIdDinosauri(),nome,getDinosauro(Ljava.lang.String;),tokenUnivoco,getNumeroDinosauri()">
       <children xsi:type="editmodel:CompartmentEditModel" size="152,72">
         <children xsi:type="editmodel:AttributeEditModel" name="nome" id="dinolib/Giocatore#nome"/>
         <children xsi:type="editmodel:AttributeEditModel" name="password" id="dinolib/Giocatore#password"/>
@@ -101,7 +101,7 @@
       </sourceConnections>
       <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
     </children>
-    <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.1/@children.4/@sourceConnections.0 //@children.1/@children.4/@sourceConnections.1 //@children.1/@children.5/@sourceConnections.1 //@children.1/@children.3/@sourceConnections.0 //@children.1/@children.1/@sourceConnections.0" name="Dinosauro" location="380,538" size="267,410" id="dinolib/Dinosauro" runTimeClassModel="energiaAttuale,sonoUsabile(),haAbbastanzaEnergiaPerCrescere(),isAtDimensioneMax(),invecchia(),nonSonoUsabile(),getTipoRazza(),dimensione,haAbbastanzaEnergiaPerDeporreUnUovo(),durataVitaMax,isUsabile(),toString(),energiaMax,cresci(),getSpostamentoMax(),turnoDiVita,forza,y,x">
+    <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.1/@children.4/@sourceConnections.0 //@children.1/@children.4/@sourceConnections.1 //@children.1/@children.5/@sourceConnections.1 //@children.1/@children.3/@sourceConnections.0 //@children.1/@children.1/@sourceConnections.0" name="Dinosauro" location="380,538" size="267,410" id="dinolib/Dinosauro" runTimeClassModel="energiaAttuale,sonoUsabile(),haAbbastanzaEnergiaPerCrescere(),isAtDimensioneMax(),invecchia(),nonSonoUsabile(),getTipoRazza(),dimensione,haAbbastanzaEnergiaPerDeporreUnUovo(),durataVitaMax,isUsabile(),toString(),energiaMax,cresci(),turnoDiVita,getSpostamentoMax(),forza,y,x">
       <children xsi:type="editmodel:CompartmentEditModel" size="134,162">
         <children xsi:type="editmodel:AttributeEditModel" name="dimensione" id="dinolib/Dinosauro#dimensione"/>
         <children xsi:type="editmodel:AttributeEditModel" name="durataVitaMax" id="dinolib/Dinosauro#durataVitaMax"/>
@@ -138,7 +138,7 @@
       </sourceConnections>
       <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
     </children>
-    <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.1/@children.2/@sourceConnections.0 //@children.1/@children.2/@sourceConnections.1" name="Specie" location="385,240" size="257,248" id="dinolib/Specie" runTimeClassModel="Dinosauri,Specie(Ljava.lang.String;Ldinolib.Dinosauro;),validateIdExistance(Ljava.lang.String;),nomeRazza,getItIdDinosauri(),rimuoviDinosauroDallaSpecie(Ljava.lang.String;),getDinosauro(Ljava.lang.String;),getTipoRazza(),getNumeroDinosauri(),aggiungiDinosauroAllaSpecie(Ldinolib.Dinosauro;Ljava.lang.String;),getIteratoreSuiDinosauri()">
+    <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.1/@children.2/@sourceConnections.0 //@children.1/@children.2/@sourceConnections.1" name="Specie" location="385,240" size="257,248" id="dinolib/Specie" runTimeClassModel="Dinosauri,Specie(Ljava.lang.String;Ldinolib.Dinosauro;),nomeRazza,validateIdExistance(Ljava.lang.String;),getItIdDinosauri(),rimuoviDinosauroDallaSpecie(Ljava.lang.String;),getDinosauro(Ljava.lang.String;),getTipoRazza(),getIteratoreSuiDinosauri(),aggiungiDinosauroAllaSpecie(Ldinolib.Dinosauro;Ljava.lang.String;),getNumeroDinosauri()">
       <children xsi:type="editmodel:CompartmentEditModel" size="234,36">
         <children xsi:type="editmodel:AttributeEditModel" name="nomeRazza" id="dinolib/Specie#nomeRazza"/>
         <children xsi:type="editmodel:AttributeEditModel" name="Dinosauri" id="dinolib/Specie#Dinosauri"/>
@@ -155,7 +155,7 @@
         <children xsi:type="editmodel:MethodEditModel" name="aggiungiDinosauroAllaSpecie" id="dinolib/Specie#aggiungiDinosauroAllaSpecie(Ldinolib.Dinosauro;Ljava.lang.String;)"/>
       </children>
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
-      <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="dinolib/Specie-Soyatec::Import->dinolib/Dinosauro*dinolib/Specie-Standard::Call->dinolib/Dinosauro" source="//@children.1/@children.3" target="//@children.1/@children.2" targetEnd="//@children.1/@children.3/@sourceConnections.0/@children.2" label="//@children.1/@children.3/@sourceConnections.0/@children.0" sourceEnd="//@children.1/@children.3/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
+      <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="dinolib/Specie->Soyatec::Import" source="//@children.1/@children.3" target="//@children.1/@children.2" targetEnd="//@children.1/@children.3/@sourceConnections.0/@children.2" label="//@children.1/@children.3/@sourceConnections.0/@children.0" sourceEnd="//@children.1/@children.3/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
         <children xsi:type="editmodel:WireLabelEditModel" name="«Import, Call»" size="74,13" anchorKind="MiddlePart"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="108,248" attachSource="true"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="113,0"/>
@@ -294,7 +294,7 @@
       </sourceConnections>
       <classifierPreferences xsi:type="editmodel:UMLClassDiagramClassifierPreference" showStereotype="true" attributeSorter="Natural" methodSorter="Natural" innerClassSorter="Natural" showPublicAttributes="true" showPackageAttributes="true" showStaticAttributes="true" showPublicMethods="true" showPackageMethods="true" showStaticMethods="true" showPublicInnerClasses="true" showPackageInnerClasses="true" showStaticInnerClasses="true" packageIndication="3" showAttributeProperty="true"/>
     </children>
-    <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.1/@children.6/@sourceConnections.0 //@children.1/@children.6/@sourceConnections.1 //@children.0/@children.0/@sourceConnections.1" name="Mappa" location="206,1116" size="207,248" id="dinolib/Mappa" runTimeClassModel="spawnDinosauro(IILjava.lang.String;Ldinolib.Cella;),getTipoCella(II),MappaACelle,getCella(II),isOccupataDaDinosauro(II),getLatoDellaMappa(),rimuoviIlDinosauroDallaCella(II),Mappa(I),isAcqua(II),latoDellaMappa,isLibera(II)">
+    <children xsi:type="editmodel:ClassEditModel" targetConnections="//@children.1/@children.6/@sourceConnections.0 //@children.1/@children.6/@sourceConnections.1 //@children.0/@children.0/@sourceConnections.1" name="Mappa" location="206,1116" size="207,248" id="dinolib/Mappa" runTimeClassModel="spawnDinosauro(IILjava.lang.String;Ldinolib.Cella;),getTipoCella(II),MappaACelle,getCella(II),isOccupataDaDinosauro(II),rimuoviIlDinosauroDallaCella(II),getLatoDellaMappa(),Mappa(I),isAcqua(II),latoDellaMappa,isLibera(II)">
       <children xsi:type="editmodel:CompartmentEditModel" size="121,36">
         <children xsi:type="editmodel:AttributeEditModel" name="MappaACelle" id="dinolib/Mappa#MappaACelle"/>
         <children xsi:type="editmodel:AttributeEditModel" name="latoDellaMappa" id="dinolib/Mappa#latoDellaMappa"/>
@@ -311,7 +311,7 @@
         <children xsi:type="editmodel:MethodEditModel" name="isLibera" id="dinolib/Mappa#isLibera(II)"/>
       </children>
       <children xsi:type="editmodel:CompartmentEditModel" size="0,0"/>
-      <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="dinolib/Mappa-Soyatec::Import->dinolib/Cella*dinolib/Mappa-Standard::Call->dinolib/Cella" source="//@children.1/@children.11" target="//@children.1/@children.6" targetEnd="//@children.1/@children.11/@sourceConnections.0/@children.2" label="//@children.1/@children.11/@sourceConnections.0/@children.0" sourceEnd="//@children.1/@children.11/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
+      <sourceConnections xsi:type="editmodel:DependencyEditModel" autoLocated="true" id="dinolib/Mappa->Soyatec::Import" source="//@children.1/@children.11" target="//@children.1/@children.6" targetEnd="//@children.1/@children.11/@sourceConnections.0/@children.2" label="//@children.1/@children.11/@sourceConnections.0/@children.0" sourceEnd="//@children.1/@children.11/@sourceConnections.0/@children.1" connectionRouterKind="Manual">
         <children xsi:type="editmodel:WireLabelEditModel" name="«Import, Call»" size="74,13" anchorKind="MiddlePart"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="123,248" attachSource="true"/>
         <children xsi:type="editmodel:AssociationEndEditModel" location="170,15"/>
