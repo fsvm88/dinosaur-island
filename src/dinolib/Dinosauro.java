@@ -5,6 +5,34 @@ import java.util.Random;
 
 public class Dinosauro extends Specie {
 	/**
+	 * Contiene un valore che dice se il dinosauro è utilizzabile direttamente o no.
+	 * Serve per deponi uovo (posticipare l'utilizzo di un dinosauro) o per verificare che il dinosauro abbia ancora mosse a disposizione.
+	 * @uml.property name="usabile"
+	 */
+	private boolean usabile = false;
+	
+	/**
+	 * Getter per la proprietà <tt>usabile</tt>
+	 */
+	public boolean isUsabile() {
+		return usabile;
+	}
+	
+	/**
+	 * Setter su non usabile per la proprietà <tt>usabile</tt>
+	 */
+	public void nonSonoUsabile() {
+		usabile = false;
+	}
+	
+	/**
+	 * Setter su usabile per la proprietà <tt>usabile</tt>
+	 */
+	public void sonoUsabile() {
+		usabile = true;
+	}
+	
+	/**
 	 * Indica l'energia necessaria per deporre un uovo.
 	 * È dichiarata final static perchè è fissa per ogni dinosauro, indipendente da altri parametri.
 	 * @uml.property name="energiaDeposizioneUovo"
@@ -216,6 +244,7 @@ public class Dinosauro extends Specie {
 		spostamento_MAX = nuovo_spostamento_MAX;
 		moltiplicatore_FORZA = nuovo_moltiplicatore_FORZA;
 		this.aggiornaEnergiaCrescita();
+		this.sonoUsabile();
 	}
 
 	/**
@@ -300,6 +329,16 @@ public class Dinosauro extends Specie {
 	 */
 	public boolean haAbbastanzaEnergiaPerCrescere() {
 		if (energiaAttuale > energiaCrescita) return true;
+		else return false;
+	}
+	
+	/**
+	 * Controlla che il dinosauro abbia abbastanza energia per deporre un uomo.
+	 * È booleano e ritorna true se energiaAttuale > energiaCrescita; false altrimenti.
+	 * @return
+	 */
+	public boolean haAbbastanzaEnergiaPerDeporreUnUovo() {
+		if (energiaAttuale > energia_DEPOSIZIONE_UOVO) return true;
 		else return false;
 	}
 
