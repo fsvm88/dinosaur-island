@@ -288,7 +288,7 @@ public class Dinosauro extends Specie {
 	/**
 	 * Contiene il moltiplicatore della forza del dinosauro impostato dalle sottoclassi.
 	 * Serve a fattorizzare ancora più codice.
-	 * Viene impostato in modo final dal costruttore.
+	 * Viene impostato in modo final dal costr.
 	 * @uml.property name="moltiplicatore_FORZA"
 	 */
 	private int moltiplicatore_FORZA = 0;
@@ -301,5 +301,13 @@ public class Dinosauro extends Specie {
 	public boolean haAbbastanzaEnergiaPerCrescere() {
 		if (energiaAttuale > energiaCrescita) return true;
 		else return false;
+	}
+
+	/**
+	 * Restituisce come String il nome della classe per avere il nome della razza di dinosauri.
+	 * @return
+	 */
+	public String getTipoRazza() {
+		return this.getClass().getName();
 	}
 }

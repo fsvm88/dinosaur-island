@@ -410,10 +410,10 @@ public class ClientWorker extends Server implements Runnable {
 							if (comando.equals("@mappaGenerale")) sendMappaGeneale();
 							else if (comando.equals("@listaDinosauri")) sendListaDinosauri();
 							else if (comando.equals("@vistaLocale")) sendVistaLocale();
-							else if (comando.equals("@statoDinosauro")) sendStatoDinosauro();
+							else if (comando.equals("@statoDinosauro")) sendStatoDinosauro(scanner);
 							if (isMioTurno(myPlayer)) {
 								/* comandi di azione */
-								if (comando.equals("@muoviDinosauro")) sendStatoDinosauro();
+								if (comando.equals("@muoviDinosauro")) muoviDinosauro();
 								else if (comando.equals("@cresciDinosauro")) cresciDinosauro(scanner);
 								else if (comando.equals("@deponiUovo")) deponiUovo();
 								/* comandi di turno */
@@ -432,8 +432,6 @@ public class ClientWorker extends Server implements Runnable {
 			else writeLineToOutput("@no");
 		} while (isLogged());
 	}
-
-	/* Helper per verificare l'integrità del token */
 
 	/**
 	 * Helper per garantire la correttezza del token che è sempre il secondo parametro dei comandi da utente loggato.
@@ -565,6 +563,13 @@ public class ClientWorker extends Server implements Runnable {
 
 	}
 
+	/* Helper per verificare l'integrità del token */
+
+	private void muoviDinosauro() {
+		// TODO Auto-generated method stub
+
+	}
+
 	private void deponiUovo() {
 		// TODO Auto-generated method stubmoltiplicatore_forza
 
@@ -574,8 +579,8 @@ public class ClientWorker extends Server implements Runnable {
 	 * Chiama la funzione di crescita del dinosauro.
 	 */
 	private void cresciDinosauro(Scanner scanner) throws IOException {
-		String idDinosauro = validateEsistenzaDinosauro(scanner);
-		if (idDinosauro != null) {
+		String idDinosauro = scanner.next(Pattern.compile("[^idDino=]"));
+		if (myPlayer.existsDinosauro(idDinosauro)) {
 			Dinosauro tempDinosauro = myPlayer.getDinosauro(idDinosauro);
 			if (!tempDinosauro.isAtDimensioneMax()) {
 				if (tempDinosauro.haAbbastanzaEnergiaPerCrescere()) {
@@ -588,22 +593,48 @@ public class ClientWorker extends Server implements Runnable {
 		}
 		else writeLineToOutput("@no,@idNonValido");
 	}
-
+	
 	/**
-	 * Helper per verificare l'esistenza del dinosauro e fattorizzare un po' di codice di controllo.
+	 * Invia lo stato del dinosauro richiesto all'utente.
 	 * @param scanner
-	 * @return
 	 * @throws IOException
 	 */
-	private String validateEsistenzaDinosauro(Scanner scanner) throws IOException {
+	private void sendStatoDinosauro(Scanner scanner) throws IOException {
 		String idDinosauro = scanner.next(Pattern.compile("[^idDino=]"));
-		if (myPlayer.existsDinosauro(idDinosauro)) return idDinosauro;
-		else return null;
-	}
-
-	private void sendStatoDinosauro() {
-		// TODO Auto-generated method stub
-
+		if (myPlayer.existsDinosauro(idDinosauro)) {
+			Dinosauro tempDinosauro = myPlayer.getDinosauro(idDinosauro);
+			String buffer = "@statoDinosauro";
+			buffer = buffer + "," +
+				myPlayer.getNome() + "," +
+				myPlayer.getNomeRazzaDinosauri() + "," +
+				myPlayer.getTipoRazza().toLowerCase().charAt(0) + "," +
+				"{" + tempDinosauro.getX() + "," + tempDinosauro.getY() + "}" +
+				tempDinosauro.getDimensione() + "," +
+				tempDinosauro.getEnergiaAttuale() + "," +
+				tempDinosauro.getTurnoDiVita();
+			writeLineToOutput(buffer);
+		}
+		else if (!myPlayer.existsDinosauro(idDinosauro)) {
+			Iterator<Giocatore> itSuiGiocatori = Giocatori.values().iterator();
+			while (itSuiGiocatori.hasNext()) {
+				Giocatore tempGiocatore = itSuiGiocatori.next();
+				Iterator<String> itSuIdDinosauri = tempGiocatore.getItIdDinosauri();
+				while (itSuIdDinosauri.hasNext()) {
+					if (itSuIdDinosauri.next() == idDinosauro) {
+						Dinosauro tempDinosauro = tempGiocatore.getDinosauro(idDinosauro);
+						String buffer = "@statoDinosauro";
+						buffer = buffer + "," +
+							tempGiocatore.getNome() + "," +
+							tempGiocatore.getNomeRazzaDinosauri() + "," +
+							tempGiocatore.getTipoRazza().toLowerCase().charAt(0) + "," +
+							"{" + tempDinosauro.getX() + "," + tempDinosauro.getY() + "}" +
+							tempDinosauro.getDimensione();
+						writeLineToOutput(buffer);
+					}
+				}
+			}
+		}
+		else writeLineToOutput("@no,@idNonValido");
 	}
 
 	private void sendVistaLocale() {
@@ -620,4 +651,14 @@ public class ClientWorker extends Server implements Runnable {
 		// TODO Auto-generated method stub
 
 	}
+
+	/**
+	 * Helper per riflettere le coordinate sulla mappa.
+	 * @param coord
+	 * @return
+	 */
+	/*	private int mirrorCoord(int coord) {
+		return 
+	}
+	 */
 }
