@@ -564,8 +564,6 @@ public class ClientWorker extends Server implements Runnable {
 
 	}
 
-	/* Helper per verificare l'integrità del token */
-
 	private void muoviDinosauro() {
 		// TODO Auto-generated method stub
 
