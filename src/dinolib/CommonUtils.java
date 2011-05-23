@@ -1,7 +1,9 @@
 package dinolib;
 
+import java.io.IOException;
 import java.util.Random;
-
+import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class CommonUtils {
 	/**

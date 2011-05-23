@@ -179,15 +179,6 @@ public class ClientWorker extends Server implements Runnable {
 	}
 
 	/**
-	 * Helper per verificare che sia il turno del giocatore che chiama la funzione. 
-	 * @return
-	 */
-	protected boolean isMioTurno (Giocatore curPlayer) {
-		if (nomeGiocatoreCorrente.equals(curPlayer.getNome())) return true;
-		else return false;
-	}
-
-	/**
 	 * Gestisce la rimozione di un singolo dinosauro da una cella.
 	 */
 	public void rimuoviDinosauroDallaCella(int x, int y) {
@@ -210,7 +201,7 @@ public class ClientWorker extends Server implements Runnable {
 	/**
 	 * Quando l'utente esegue il login aggiunge i dinosauri alla mappa.
 	 */
-	protected void inserisciDinosauriNellaMappa(Giocatore curPlayer) {
+	protected void inserisciDinosauriNellaMappa() {
 		/* Usa iteratore per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
 		Iterator<String> itIdDinosauri = myPlayer.getItIdDinosauri();
 		while (itIdDinosauri.hasNext()) {
@@ -225,7 +216,7 @@ public class ClientWorker extends Server implements Runnable {
 						return;
 					}
 					else i++;
-				} while (i < 40);
+				} while (i < rifMappa.getLatoDellaMappa());
 			}
 		}
 	}
@@ -272,21 +263,12 @@ public class ClientWorker extends Server implements Runnable {
 		return false;
 	}
 
-	/**
-	 * Se esiste almeno un dinosauro significa che la razza esiste già
-	 * @return
-	 */
-	protected boolean existsRazza() {
-		if ((myPlayer.getNumeroDinosauri() > 0) && (myPlayer.getNomeRazzaDinosauri() != null)) return true;
-		else return false;
-	}
-
 	/* Due helper per impostare lo stato dell'utente, sta giocando o no? */
 	/**
 	 * Spawn dei dinosauri e imposta lo stato su "in partita".
 	 */
 	private void iAmInGame() {
-		inserisciDinosauriNellaMappa(myPlayer);
+		inserisciDinosauriNellaMappa();
 		inGame = true;
 	}
 
@@ -380,7 +362,7 @@ public class ClientWorker extends Server implements Runnable {
 			scanner.useDelimiter(",");
 			if (scanner.hasNext()) {
 				String comando = scanner.next();
-				if (readAndValidateTokenFromInput(scanner)) {
+				if (readAndValidateTokenFromInput(scanner, myPlayer)) {
 					if (scanner.hasNext()) {
 						/* comandi fuori partita*/
 						if (comando.equals("@creaRazza")) creaNuovaRazza(scanner);
@@ -396,7 +378,7 @@ public class ClientWorker extends Server implements Runnable {
 							else if (comando.equals("@listaDinosauri")) sendListaDinosauri();
 							else if (comando.equals("@vistaLocale")) sendVistaLocale();
 							else if (comando.equals("@statoDinosauro")) sendStatoDinosauro(scanner);
-							if (isMioTurno(myPlayer)) {
+							if (isMioTurno(super.nomeGiocatoreCorrente, myPlayer)) {
 								/* comandi di azione */
 								if (comando.equals("@muoviDinosauro")) muoviDinosauro();
 								else if (comando.equals("@cresciDinosauro")) cresciDinosauro(scanner);
@@ -417,39 +399,22 @@ public class ClientWorker extends Server implements Runnable {
 			else writeLineToOutput("@no");
 		} while (isLogged());
 	}
-
-	/**
-	 * Helper per garantire la correttezza del token che è sempre il secondo parametro dei comandi da utente loggato.
-	 * @param scanner
-	 * @return
-	 * @throws IOException
-	 */
-	private boolean readAndValidateTokenFromInput (Scanner scanner) throws IOException {
-		if ( scanner.hasNext() ) {
-			if ( scanner.next(Pattern.compile("[^token=]")).equals(myPlayer.getTokenUnivoco() )) {
-				return true;
-			}
-			else return false;
-		}
-		else writeLineToOutput("@no");
-		return false;
-	}
-
+	
 	/**
 	 * Crea una nuova razza di dinosauri per l'utente.
 	 * @param scanner
 	 * @throws IOException
 	 */
 	private void creaNuovaRazza(Scanner scanner) throws IOException {
-		if (scanner.hasNext() && !existsRazza()) {
+		if (scanner.hasNext() && !existsRazza(myPlayer)) {
 			String nomeRazza = scanner.next(Pattern.compile("[^nome=]"));
 			if (scanner.hasNext()) {
 				String tipoRazza = scanner.next(Pattern.compile("[^tipo=]"));
 				if (tipoRazza.equals("c") || tipoRazza.equals("e")) {
 					if (tipoRazza == "c") {
-						int x = CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa());
-						int y = CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa());
 						do {
+							int x = CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa());
+							int y = CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa());
 							if (rifMappa.isLibera(x,y)) {
 								myPlayer.creaNuovaRazzaDiDinosauri(nomeRazza, new Carnivoro(x,y));
 								break;
@@ -479,7 +444,7 @@ public class ClientWorker extends Server implements Runnable {
 	 * Comando per l'accesso alla partita. Verifica che l'utente abbia creato una razza di dinosauri e gli abbia dato un nome.
 	 */
 	private void accediAPartita() {
-		if (existsRazza() && existsRazza()) {
+		if (existsRazza(myPlayer)) {
 			iAmInGame();
 		}
 	}
@@ -527,7 +492,7 @@ public class ClientWorker extends Server implements Runnable {
 	 * @throws IOException
 	 */
 	private void sendListaDinosauri() throws IOException {
-		if (existsRazza()) {
+		if (existsRazza(myPlayer)) {
 			String buffer = "@ok";
 			Iterator<String> itListaIds = myPlayer.getItIdDinosauri();
 			while (itListaIds.hasNext()) {
@@ -552,7 +517,7 @@ public class ClientWorker extends Server implements Runnable {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	/**
 	 * Prova a inserire un dinosauro appena nato. Questo metodo viene usato da deponiUovo.
 	 * @return
@@ -565,7 +530,7 @@ public class ClientWorker extends Server implements Runnable {
 				return true;
 			}
 			else i++;
-		} while (i<40);
+		} while (i<rifMappa.getLatoDellaMappa());
 		return false;
 	}
 
@@ -680,5 +645,39 @@ public class ClientWorker extends Server implements Runnable {
 	private void classifica() {
 		// TODO Auto-generated method stub
 
+	}
+	
+	/**
+	 * Se esiste almeno un dinosauro significa che la razza esiste già
+	 * @return
+	 */
+	private static boolean existsRazza(Giocatore curPlayer) {
+		if ((curPlayer.getNumeroDinosauri() > 0) && (curPlayer.getNomeRazzaDinosauri() != null)) return true;
+		else return false;
+	}
+	
+	/**
+	 * Helper per verificare che sia il turno del giocatore che chiama la funzione. 
+	 * @return
+	 */
+	private static boolean isMioTurno (String nomeDelGiocatoreCorrente, Giocatore curPlayer) {
+		if (nomeDelGiocatoreCorrente.equals(curPlayer.getNome())) return true;
+		else return false;
+	}
+	
+	/**
+	 * Helper per garantire la correttezza del token che è sempre il secondo parametro dei comandi da utente loggato.
+	 * @param scanner
+	 * @return
+	 * @throws IOException
+	 */
+	private static boolean readAndValidateTokenFromInput (Scanner scanner, Giocatore curPlayer) throws IOException {
+		if ( scanner.hasNext() ) {
+			if ( scanner.next(Pattern.compile("[^token=]")).equals(curPlayer.getTokenUnivoco() )) {
+				return true;
+			}
+			else return false;
+		}
+		return false;
 	}
 }
