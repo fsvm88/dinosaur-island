@@ -173,7 +173,7 @@ public class ClientWorker extends Server implements Runnable {
 	 * @param userToLookFor
 	 * @return
 	 */
-	protected boolean userExists(String userToLookFor) {
+	private boolean userExists(String userToLookFor) {
 		if (Giocatori.containsKey(userToLookFor)) return true;
 		else return false;
 	}
@@ -188,7 +188,7 @@ public class ClientWorker extends Server implements Runnable {
 	/**
 	 * Gestisce la rimozione di tutti i dinosauri dalla mappa.	
 	 */
-	protected void rimuoviDinosauriDallaMappa(Giocatore curPlayer) {
+	private void rimuoviDinosauriDallaMappa(Giocatore curPlayer) {
 		/* Usa iteratore per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
 		Iterator<String> itIdDinosauri = myPlayer.getItIdDinosauri();
 		while (itIdDinosauri.hasNext()) {
@@ -201,7 +201,7 @@ public class ClientWorker extends Server implements Runnable {
 	/**
 	 * Quando l'utente esegue il login aggiunge i dinosauri alla mappa.
 	 */
-	protected void inserisciDinosauriNellaMappa() {
+	private void inserisciDinosauriNellaMappa() {
 		/* Usa iteratore per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
 		Iterator<String> itIdDinosauri = myPlayer.getItIdDinosauri();
 		while (itIdDinosauri.hasNext()) {
@@ -234,7 +234,6 @@ public class ClientWorker extends Server implements Runnable {
 		}
 		return false;
 	}
-
 
 	/**
 	 * Prova a inserire il dinosauro nella Cella più vicina.
@@ -317,7 +316,7 @@ public class ClientWorker extends Server implements Runnable {
 					String tempPwd = scanner.next(Pattern.compile("[^pass=]"));
 					if ( myPlayer.passwordIsValid(tempPwd) ) {
 						iAmLogged();
-						String newToken = getNewToken();
+						String newToken = CommonUtils.getNewToken();
 						writeLineToOutput("@ok," + newToken);
 						myPlayer.setTokenUnivoco(newToken);
 					}
@@ -546,7 +545,7 @@ public class ClientWorker extends Server implements Runnable {
 			if (curDinosauro.haAbbastanzaEnergiaPerDeporreUnUovo()){
 				int x = curDinosauro.getX();
 				int y = curDinosauro.getY();
-				String newIdDinosauro = getNewToken();
+				String newIdDinosauro = CommonUtils.getNewToken();
 				if (curDinosauro.getTipoRazza().equals("Carnivoro")) {
 					Dinosauro newDinosauro = new Carnivoro(x, y);
 					newDinosauro.nonSonoUsabile();
