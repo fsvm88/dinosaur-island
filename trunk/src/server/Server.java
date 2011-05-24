@@ -1,11 +1,9 @@
 package server;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.util.Hashtable;
@@ -119,6 +117,7 @@ public class Server {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
+	@SuppressWarnings("unchecked")
 	private void caricaFileGiocatori(String nomefile) throws IOException, ClassNotFoundException, FileNotFoundException {
 		ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(nomefile)));
 		Giocatori = (Hashtable<String, Giocatore>) ois.readObject();
