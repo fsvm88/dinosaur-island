@@ -302,6 +302,17 @@ public class ClientWorker extends Server implements Runnable {
 		}
 	}
 
+	
+	/**
+	 * Fa il parsing di tutti i possibili argomenti di un comando e passa alla logica il compito di eseguirli.
+	 * NON viene usato per il login o la creazione di un utente.
+	 * Serve solo per l'esecuzione di ALTRI comandi.
+	 */
+	private void parseAllCmds() {
+		
+	}
+	
+	
 	/**
 	 * Gestisce il login dell'utente
 	 * @param scanner
