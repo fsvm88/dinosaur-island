@@ -1,7 +1,12 @@
 package server;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.util.Hashtable;
 import java.util.Random;
@@ -67,7 +72,18 @@ public class Server {
 			caricaPartitaDaFile();
 		}
 		catch (FileNotFoundException e) {
+			System.out.println("No save files found, creating a new map..");
 			creaNuovaMappa();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("IOException while trying to open save files. Exiting..");
+			System.exit(-1);
+		}
+		catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			System.out.println("ClassNotFoundException while trying to read save files. Exiting..");
+			System.exit(-1);
 		}
 		listenSocket();
 	}
@@ -75,8 +91,10 @@ public class Server {
 	/**
 	 * Implementa Passo 2
 	 * Se i file di salvataggio esistono li carica, altrimenti assume primo avvio
+	 * @throws ClassNotFoundException 
+	 * @throws IOException 
 	 */
-	private void caricaPartitaDaFile() throws FileNotFoundException {
+	private void caricaPartitaDaFile() throws IOException, ClassNotFoundException, FileNotFoundException {
 		/**
 		 * Carica file di mappa, se esiste deve esistere anche il file dei giocatori.
 		 * In caso il primo o l'altro non esistano l'eccezione viene gestita e passata al chiamante, che quindi assume un primo avvios
@@ -88,16 +106,22 @@ public class Server {
 	/**
 	 * Implementa il caricamento del file di mappa, se esiste
 	 * Se non esiste lancia FileNotFoundException
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 */
-	private void caricaFileDiMappa(String nomefile) throws FileNotFoundException {
-
+	private void caricaFileDiMappa(String nomefile) throws IOException, ClassNotFoundException, FileNotFoundException {
+		ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(nomefile)));
+		rifMappa = (Mappa) ois.readObject();
 	}
 	/**
 	 * Implementa il caricamento del file giocatori se esiste
 	 * Se non esiste lancia FileNotFoundException
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 */
-	private void caricaFileGiocatori(String nomefile) throws FileNotFoundException {
-
+	private void caricaFileGiocatori(String nomefile) throws IOException, ClassNotFoundException, FileNotFoundException {
+		ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(nomefile)));
+		Giocatori = (Hashtable<String, Giocatore>) ois.readObject();
 	}
 
 	/**
