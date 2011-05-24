@@ -19,4 +19,15 @@ public class CommonUtils {
 		Random rnd = new Random();
 		return rnd.nextInt(latoDellaMappa);
 	}
+	
+	/**
+	 * Trasla la Y rispetto alla mappa stoccata sul server.
+	 * Serve per gestire le richieste dal client.
+	 * La x rimane uguale quindi non ha bisogno di ulteriori rifiniture.
+	 * @param yToTranslate
+	 * @return
+	 */
+	public static int translateY (int yToTranslate, int modulus) {
+		return modulus - yToTranslate;
+	}
 }
