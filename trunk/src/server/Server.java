@@ -133,12 +133,4 @@ public class Server {
 			}
 		}
 	}
-
-	/**
-	 * Helper per la generazione di un nuovo token alfanumerico.
-	 * @return
-	 */
-	protected static String getNewToken() {
-		return Long.toString(Double.doubleToLongBits(Math.random()));
-	}
 }
