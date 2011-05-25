@@ -11,40 +11,40 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import dinolib.MieLogicExceptions;
+import dinolib.UserExistsException;
 
 public class Logica {
 	/**
 	 * Definisce staticamente il lato della mappa.
 	 * @uml.property name="LATO_MAPPA"
 	 */
-	private final int lato_MAPPA = 40;
+	private static final int lato_MAPPA = 40;
 	/**
 	 * Definisce il riferimento alla mappa.
 	 * @uml.property name="rifMappa"
 	 */
-	private Mappa rifMappa;
+	private static Mappa rifMappa;
 	/**
 	 * Definisce la lista dei giocatori.
 	 * @uml.property name="Giocatori"
 	 */
-	private Hashtable<String, Giocatore> Giocatori;
+	private static Hashtable<String, Giocatore> Giocatori;
 	/**
 	 * Definisce la stringa che contiene il nome del giocatore che in questo momento ha il turno.
 	 * @uml.property name="Giocatori"
 	 */
-	private String nomeGiocatoreCorrente;
+	private static String nomeGiocatoreCorrente = null;
 	/**
 	 * Definisce una variabile che assicura che qualcuno sta giocando.
 	 * @uml.property name="qualcunoStaGiocando"
 	 */
-	protected boolean qualcunoStaGiocando = false;
+	private boolean qualcunoStaGiocando = false;
 	/**
 	 * Definisce il generatore di numeri casuali.
 	 * @uml.property name="rnd"
 	 */
 	Random rnd = new Random();
-	
+
 	public Logica () {
 		try {
 			caricaPartitaDaFile();
@@ -99,14 +99,14 @@ public class Logica {
 		ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(nomefile)));
 		Giocatori = (Hashtable<String, Giocatore>) ois.readObject();
 	}
-	
+
 	/**
 	 * Helper per la creazione di una mappa nuova
 	 */
 	private void creaNuovaMappa() {
 		rifMappa = new Mappa(lato_MAPPA);
 	}
-	
+
 	/* Seguono un mare di helper comuni a tutti i thread e spostabili nella main class.*/
 	/**
 	 * Helper per verificare l'esistenza di un utente.
@@ -117,7 +117,7 @@ public class Logica {
 		if (Giocatori.containsKey(userToLookFor)) return true;
 		else return false;
 	}
-	
+
 	/**
 	 * Gestisce la rimozione di tutti i dinosauri dalla mappa.	
 	 */
@@ -213,129 +213,107 @@ public class Logica {
 
 	/* Tre metodi (uno principale, due helper) per il login o la creazione dell'utente. */
 
-	/**
-	 * Funzione per la gestione di login o creazione utente.
-	 * Se l'utente non esiste la logica principale richiama sempre questa funzione in attesa che l'utente esegua il login o si registri
-	 * @throws IOException
-	 */
-	private void allowLoginOrCreation () throws IOException {
-		String inLine = readLineFromInput();
-		Scanner scanner = new Scanner(inLine);
-		scanner.useDelimiter(","); 
-		if (scanner.hasNext() && (scanner.next() == "@login")) {
-			gestisciLogin(scanner);
+	private static Iterator<String> returnIteratoreSulleChiaviGiocatori() {
+		return Giocatori.keySet().iterator();
+	}
+
+	private static Iterator<Giocatore> returnIteratoreSuiGiocatori() {
+		return Giocatori.values().iterator();
+	}
+
+	private static boolean existsUser(String user) throws UserExistsException {
+		Iterator<String> itGiocatori = returnIteratoreSulleChiaviGiocatori();
+		while (itGiocatori.hasNext()) {
+			if (itGiocatori.next().equals(user)) throw new UserExistsException();
+		}
+		return false;
+	}
+
+	public static void doCreaUtente(String user, String pwd) {
+		Giocatori.put(user, new Giocatore(user, pwd));
+	}
+
+	public static void saCreaUtente(String user, String pwd) throws UserExistsException {
+		if (!existsUser(user)) {
+			doCreaUtente(user, pwd);
 			return;
 		}
-		else if (scanner.hasNext() && (scanner.next() == "@creaUtente")) {
-			gestisciCreazioneUtente(scanner);
-			return;
-		}
-		else {
-			writeLineToOutput("@no");
-		}
 	}
 
-	
-	
-	
-	
+	public static Giocatore ritornaGiocatoreRichiestoPerNome(String nomeGiocatoreRichiesto) {
+		return Giocatori.get(nomeGiocatoreRichiesto);
+	}
+
+	public static String saLoginUtente(String user, String pwd) throws AuthenticationFailedException {
+		Iterator<String> itGiocatori = returnIteratoreSulleChiaviGiocatori();
+		while (itGiocatori.hasNext()) {
+			String tempNomeGiocatore = itGiocatori.next();
+			if (tempNomeGiocatore.equals(user)) {
+				Giocatore tempGiocatore = ritornaGiocatoreRichiestoPerNome(user);
+				if (tempGiocatore.passwordIsValid(pwd)) {
+					tempGiocatore.setTokenUnivoco(CommonUtils.getNewToken());
+					tempGiocatore.iAmLogged();
+					return tempGiocatore.getTokenUnivoco();
+				}
+				else throw new AuthenticationFailedException();
+			}
+		}
+		throw new AuthenticationFailedException();
+	}
+
+	private static Giocatore ritornaGiocatoreRichiestoPerToken(String token) {
+		Iterator<Giocatore> itGiocatori = returnIteratoreSuiGiocatori();
+		while (itGiocatori.hasNext()) {
+			Giocatore tempGiocatore = itGiocatori.next();
+			if (tempGiocatore.getTokenUnivoco().equals(token)) {
+				return tempGiocatore;
+			}
+		}
+		return null;
+	}
+
+	private static boolean existsUserWithToken (String token) throws InvalidTokenException {
+		Giocatore tmpGiocatore = ritornaGiocatoreRichiestoPerToken(token);
+		if (tmpGiocatore != null) return true;
+		else return false;
+	}
+
+	private static boolean existsRaceWithSameName (String nomeRazza) {
+		Iterator<Giocatore> itGiocatori = returnIteratoreSuiGiocatori();
+		while (itGiocatori.hasNext()) {
+			Giocatore tempGiocatore = itGiocatori.next();
+			if (tempGiocatore.getNomeRazzaDinosauri().equals(nomeRazza)) return true;
+		}
+		return false;
+	}
+
+	private static boolean existsRaceForPlayer (String token) {
+		Giocatore giocatore = ritornaGiocatoreRichiestoPerToken(token);
+		if (giocatore.getNomeRazzaDinosauri() != null) return true;
+		else return false;
+	}
+
 	/**
-	 * Gestisce il login dell'utente
-	 * @param scanner
-	 * @throws IOException
+	 * Crea una nuova razza di dinosauri per l'utente.
 	 */
-	private void gestisciLogin(Scanner scanner) throws IOException {
-		if ( scanner.hasNext() ){
-			String tempUser = scanner.next(Pattern.compile("[^user=]"));
-			if ( userExists(tempUser) ) {
-				myPlayer = super.Giocatori.get(tempUser);
-				if ( scanner.hasNext() ) {
-					String tempPwd = scanner.next(Pattern.compile("[^pass=]"));
-					if ( myPlayer.passwordIsValid(tempPwd) ) {
-						iAmLogged();
-						String newToken = CommonUtils.getNewToken();
-						writeLineToOutput("@ok," + newToken);
-						myPlayer.setTokenUnivoco(newToken);
-					}
-					else writeLineToOutput("@no,@autenticazioneFallita");
+	public static void saCreaRazzaETipo(String token, String nomeRazza, String tipoRazza) throws RaceAlreadyCreatedException, RaceNameExistsException, InvalidTokenException {
+		if (existsUserWithToken(token) && !existsRaceWithSameName(nomeRazza)) {
+			if (!existsRaceForPlayer(token)) {
+				Giocatore tempGiocatore = ritornaGiocatoreRichiestoPerToken(token);
+				Dinosauro tempDinosauro;
+				if (tipoRazza.equals("c")) {
+					tempDinosauro = new Carnivoro(CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa()), CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa()));
+					tempGiocatore.creaNuovaRazzaDiDinosauri(nomeRazza, tempDinosauro);
+				}
+				else if (tipoRazza.equals("e")) {
+					tempDinosauro = new Erbivoro(CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa()), CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa()));
+					tempGiocatore.creaNuovaRazzaDiDinosauri(nomeRazza, tempDinosauro);
 				}
 			}
-			else writeLineToOutput("@no,@autenticazioneFallita");
 		}
-		else return;
 	}
 
-	/**
-	 * Gestisce la registrazione di un utente
-	 * @param scanner
-	 * @throws IOException
-	 */
-	private void gestisciCreazioneUtente(Scanner scanner) throws IOException {
-		if ( scanner.hasNext() ){
-			String tempUser = scanner.next(Pattern.compile("[^user=]"));
-			if ( ! userExists(tempUser) ) {
-				String tempPwd = scanner.next(Pattern.compile("[^pass=]"));
-				Giocatore tempPlayer = new Giocatore(tempUser, tempPwd); 
-				super.Giocatori.put(tempUser, tempPlayer);
-				writeLineToOutput("@ok");
-			}
-			else writeLineToOutput("@no,@usernameOccupato");
-		}
-		else return;
-	}
 
-	/* Funzione principale per gestire i comandi di un utente loggato correttamente e a seguire tutti i metodi per i comandi individuali. */
-
-	/**
-	 * Helper per gestire i comandi da utente loggato correttamente
-	 * Dal protocollo si deduce che il token è sempre il secondo argomento di qualunque comando una volta che l'utente è loggato.
-	 * Implementa il controllo del token FUORI dalle varie funzioni che implementano i comandi, di modo da risparmiare MOLTO codice.
-	 * @throws IOException
-	 */
-	private void loggatoLeggiComandi() throws IOException {
-		do {
-			Scanner scanner = new Scanner(readLineFromInput());
-			scanner.useDelimiter(",");
-			if (scanner.hasNext()) {
-				String comando = scanner.next();
-				if (readAndValidateTokenFromInput(scanner, myPlayer)) {
-					if (scanner.hasNext()) {
-						/* comandi fuori partita*/
-						if (comando.equals("@creaRazza")) creaNuovaRazza(scanner);
-						else if (comando.equals("@accessoPartita")) accediAPartita();
-						else if (comando.equals("@uscitaPartita")) esciDallaPartita();
-						else if (comando.equals("@listaGiocatori")) listaDeiGiocatori();
-						else if (comando.equals("@classifica")) classifica();
-						else if (comando.equals("@logout")) handleLogout();
-						/* comandi in partita */
-						else if (isInGame()) {
-							/* comandi di informazione */
-							if (comando.equals("@mappaGenerale")) sendMappaGenerale();
-							else if (comando.equals("@listaDinosauri")) sendListaDinosauri();
-							else if (comando.equals("@vistaLocale")) sendVistaLocale();
-							else if (comando.equals("@statoDinosauro")) sendStatoDinosauro(scanner);
-							if (isMioTurno(super.nomeGiocatoreCorrente, myPlayer)) {
-								/* comandi di azione */
-								if (comando.equals("@muoviDinosauro")) muoviDinosauro();
-								else if (comando.equals("@cresciDinosauro")) cresciDinosauro(scanner);
-								else if (comando.equals("@deponiUovo")) deponiUovo(scanner);
-								/* comandi di turno */
-								else if (comando.equals("@confermaTurno")) confermaTurno();
-								else if (comando.equals("@passaTurno")) passaTurno();
-								else writeLineToOutput("@no");
-							}
-							else writeLineToOutput("@no,@nonIlTuoTurno");
-						}
-						else writeLineToOutput("@no,@nonInPartita");
-					}
-					else writeLineToOutput("@no");
-				}
-				else writeLineToOutput("@no,tokenNonValido");
-			}
-			else writeLineToOutput("@no");
-		} while (isLogged());
-	}
-	
 	/**
 	 * Crea una nuova razza di dinosauri per l'utente.
 	 * @param scanner
@@ -582,7 +560,7 @@ public class Logica {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	/**
 	 * Se esiste almeno un dinosauro significa che la razza esiste già
 	 * @return
@@ -591,7 +569,7 @@ public class Logica {
 		if ((curPlayer.getNumeroDinosauri() > 0) && (curPlayer.getNomeRazzaDinosauri() != null)) return true;
 		else return false;
 	}
-	
+
 	/**
 	 * Helper per verificare che sia il turno del giocatore che chiama la funzione. 
 	 * @return
@@ -600,20 +578,6 @@ public class Logica {
 		if (nomeDelGiocatoreCorrente.equals(curPlayer.getNome())) return true;
 		else return false;
 	}
-	
-	/**
-	 * Helper per garantire la correttezza del token che è sempre il secondo parametro dei comandi da utente loggato.
-	 * @param scanner
-	 * @return
-	 * @throws IOException
-	 */
-	private static boolean readAndValidateTokenFromInput (Scanner scanner, Giocatore curPlayer) throws IOException {
-		if ( scanner.hasNext() ) {
-			if ( scanner.next(Pattern.compile("[^token=]")).equals(curPlayer.getTokenUnivoco() )) {
-				return true;
-			}
-			else return false;
-		}
-		return false;
-	}
+
+
 }
