@@ -145,4 +145,60 @@ public class Giocatore {
 	public String getTipoRazza () {
 		return specieDiDinosauri.getTipoRazza();
 	}
+	
+	/**
+	 * Variabile per gestire il login degli utenti.
+	 * @uml.property name="logged"
+	 */
+	private boolean logged = false;
+	/**
+	 * Variabile per gestire il fatto che l'utente è in partita.
+	 * @uml.property name="inGame"
+	 */
+	private boolean inGame = false;
+	
+	/* Due helper per impostare lo stato del login dell'utente. */
+	/**
+	 * Helper comune per la classe sotto
+	 */
+	private void toggle(boolean toToggle) {
+		if (toToggle) {
+			toToggle = false;
+			return;
+		}
+		else if (!toToggle) {
+			toToggle = true;
+			return;
+		}
+	}
+	
+	
+	/**
+	 * Fa il toggle del valore di logged.
+	 */
+	public void toggleLogged() {
+		toggle(logged);
+	}
+	
+	/**
+	 * Fa il toggle del valore di inGame.
+	 */
+	public void toggleInGame() {
+		toggle(inGame);
+	}
+
+	/**
+	 * Helper per verificare se l'utente sta giocando.
+	 */
+	public boolean isInGame() {
+		return inGame;
+	}
+	
+	/**
+	 * Helper per verificare se l'utente è loggato.
+	 * @return
+	 */
+	public boolean isLogged() {
+		return logged;
+	}
 }
