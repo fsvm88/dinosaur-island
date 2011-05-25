@@ -159,34 +159,33 @@ public class Giocatore {
 	
 	/* Due helper per impostare lo stato del login dell'utente. */
 	/**
-	 * Helper comune per la classe sotto
+	 * Imposta logged a true, l'utente è loggato.
 	 */
-	private void toggle(boolean toToggle) {
-		if (toToggle) {
-			toToggle = false;
-			return;
-		}
-		else if (!toToggle) {
-			toToggle = true;
-			return;
-		}
-	}
-	
-	
-	/**
-	 * Fa il toggle del valore di logged.
-	 */
-	public void toggleLogged() {
-		toggle(logged);
+	public void iAmLogged() {
+		logged = true;
 	}
 	
 	/**
-	 * Fa il toggle del valore di inGame.
+	 * Imposta logged a false, l'utente non è loggato.
 	 */
-	public void toggleInGame() {
-		toggle(inGame);
+	public void iAmNotLogged() {
+		logged = false;
 	}
-
+	
+	/**
+	 * Imposta inGame a true, l'utente è in partita.
+	 */
+	public void iAmInGame() {
+		inGame = true;
+	}
+	
+	/**
+	 * Imposta inGame a false, l'utente non è in partita.
+	 */
+	public void iAmNotInGame() {
+		inGame = false;
+	}
+	
 	/**
 	 * Helper per verificare se l'utente sta giocando.
 	 */

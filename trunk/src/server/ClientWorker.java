@@ -16,6 +16,7 @@ import dinolib.Dinosauro;
 import dinolib.Erbivoro;
 import dinolib.Giocatore;
 import dinolib.CommonUtils;
+import dinolib.Logica;
 
 /** 
  * Implementa l'ascoltatore per i client. Ascolta i comandi e gestisce le giuste risposte.
@@ -120,8 +121,14 @@ public class ClientWorker extends Server implements Runnable {
 				String user = null;
 				String pwd = null;
 				estraiUserPwd(scanner, user, pwd);
-				if (comando.equals("@creaUtente")) bufferDaStampare = logica.creaUtente(user, pwd);
-				if (comando.equals("@login")) bufferDaStampare = logica.loginUtente(user, pwd);
+				if (comando.equals("@creaUtente")) {
+					Logica.saCreaUtente(user, pwd);
+					writeLineToOutput("@ok");
+				}
+				if (comando.equals("@login")) {
+					bufferDaStampare = Logica.saLoginUtente(user, pwd);
+					writeLineToOutput("@ok," + bufferDaStampare);
+				}
 			}
 			else if (!isLoginOrCreation(comando)) {
 				String token = null;
@@ -133,7 +140,8 @@ public class ClientWorker extends Server implements Runnable {
 						String tipoRazza = null;
 						estraiRazzaETipo(scanner, nomeRazza, tipoRazza);
 						if (validaRazzaETipo(nomeRazza, tipoRazza)) {
-							bufferDaStampare = logica.creaRazzaETipo(token, nomeRazza, tipoRazza);
+							Logica.saCreaRazzaETipo(token, nomeRazza, tipoRazza);
+							writeLineToOutput("@ok");
 						}
 					}
 					else if (comando.equals("@accessoPartita")) bufferDaStampare = logica.accediAPartita(token);
