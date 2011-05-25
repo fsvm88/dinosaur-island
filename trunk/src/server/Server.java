@@ -143,10 +143,9 @@ public class Server {
 		}
 		boolean running = true;
 		while (running) {
-			ClientWorker clientWorker;
 			try {
 				System.out.println("Server started successfully, creating threads on need..");
-				clientWorker = new ClientWorker(serverInstSocket.accept());
+				ClientWorker clientWorker = new ClientWorker(serverInstSocket.accept());
 				Thread threadedClientWorker = new Thread(clientWorker);
 				threadedClientWorker.start();
 			}
