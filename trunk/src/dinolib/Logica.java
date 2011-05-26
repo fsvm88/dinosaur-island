@@ -371,57 +371,32 @@ public class Logica {
 			}
 		}
 	}
-
-
+	
 	/**
-	 * Crea una nuova razza di dinosauri per l'utente.
-	 * @param scanner
-	 * @throws IOException
+	 * Helper per verificare che l'utente sia effettivamente loggato.
+	 * @return 
+	 * @throws InvalidTokenException 
 	 */
-	private void creaNuovaRazza(Scanner scanner) throws IOException {
-		if (scanner.hasNext() && !existsRazza(myPlayer)) {
-			String nomeRazza = scanner.next(Pattern.compile("[^nome=]"));
-			if (scanner.hasNext()) {
-				String tipoRazza = scanner.next(Pattern.compile("[^tipo=]"));
-				if (tipoRazza.equals("c") || tipoRazza.equals("e")) {
-					if (tipoRazza == "c") {
-						do {
-							int x = CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa());
-							int y = CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa());
-							if (rifMappa.isLibera(x,y)) {
-								myPlayer.creaNuovaRazzaDiDinosauri(nomeRazza, new Carnivoro(x,y));
-								break;
-							}
-						} while (true);
-					}
-					else if (tipoRazza == "e") {
-						do {
-							int x = CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa());
-							int y = CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa());
-							if (rifMappa.isLibera(x,y)) {
-								myPlayer.creaNuovaRazzaDiDinosauri(nomeRazza, new Erbivoro(x,y));
-								break;
-							}
-						} while (true);
-					}
-					else writeLineToOutput("@no");
-				}
-				else writeLineToOutput("@no");
-			}
-			else writeLineToOutput("@no,@nomeRazzaOccupato");
+	public boolean userIsLogged(String token) throws InvalidTokenException {
+		if (existsUserWithToken(token)) {
+			if (Giocatori.get(TokenENome.get(token)).isLogged()) return true;
+			else return false;
 		}
-		else writeLineToOutput("@no,@razzaGiaCreata");
+		else throw new InvalidTokenException();
 	}
-
+	
 	/**
-	 * Comando per l'accesso alla partita. Verifica che l'utente abbia creato una razza di dinosauri e gli abbia dato un nome.
+	 * Implementa l'accesso alla partita.
 	 */
-	private void accediAPartita() {
-		if (existsRazza(myPlayer)) {
-			iAmInGame();
+	public void aAccediAPartita(String token) throws TroppiGiocatoriException, RazzaNonCreataException, InvalidTokenException {
+		if (!Giocatori.get(TokenENome.get(token)).isInGame()) { // TODO aggiungere check per tetto max giocatori
+			
 		}
+		else return;
 	}
-
+	
+	
+	
 	/**
 	 * Helper/Comando per l'uscita dalla partita: rimuove i dinosauri e imposta lo stato di "fuori dal gioco"
 	 */
