@@ -122,12 +122,12 @@ public class ClientWorker extends Server implements Runnable {
 				String pwd = null;
 				estraiUserPwd(scanner, user, pwd);
 				if (comando.equals("@creaUtente")) {
-					Logica.saCreaUtente(user, pwd);
+					logica.aCreaUtente(user, pwd);
 					writeLineToOutput("@ok");
 				}
 				if (comando.equals("@login")) {
-					bufferDaStampare = Logica.saLoginUtente(user, pwd);
-					writeLineToOutput("@ok," + bufferDaStampare);
+					logica.aLoginUtente(user, pwd);
+					writeLineToOutput("@ok," + logica.aGetTokenUtente(user));
 				}
 			}
 			else if (!isLoginOrCreation(comando)) {
@@ -140,7 +140,7 @@ public class ClientWorker extends Server implements Runnable {
 						String tipoRazza = null;
 						estraiRazzaETipo(scanner, nomeRazza, tipoRazza);
 						if (validaRazzaETipo(nomeRazza, tipoRazza)) {
-							Logica.saCreaRazzaETipo(token, nomeRazza, tipoRazza);
+							logica.aCreaRazzaETipo(token, nomeRazza, tipoRazza);
 							writeLineToOutput("@ok");
 						}
 					}
