@@ -18,17 +18,24 @@ public class Logica {
 	 * Definisce staticamente il lato della mappa.
 	 * @uml.property name="LATO_MAPPA"
 	 */
-	private static final int lato_MAPPA = 40;
+	private final int lato_MAPPA = 40;
 	/**
 	 * Definisce il riferimento alla mappa.
 	 * @uml.property name="rifMappa"
 	 */
-	private static Mappa rifMappa;
+	private Mappa rifMappa;
 	/**
 	 * Definisce la lista dei giocatori.
 	 * @uml.property name="Giocatori"
 	 */
-	private static Hashtable<String, Giocatore> Giocatori;
+	private Hashtable<String, Giocatore> Giocatori;
+	/**
+	 * Accoppia il token al giocatore.
+	 * Chiavi: token
+	 * Value: nomi giocatori.
+	 * @uml.property name="NomeEToken"
+	 */
+	private Hashtable<String, String> TokenENome;
 	/**
 	 * Definisce la stringa che contiene il nome del giocatore che in questo momento ha il turno.
 	 * @uml.property name="Giocatori"
@@ -213,72 +220,124 @@ public class Logica {
 
 	/* Tre metodi (uno principale, due helper) per il login o la creazione dell'utente. */
 
-	private static Iterator<String> returnIteratoreSulleChiaviGiocatori() {
+	/**
+	 * Ritorna un iteratore sulle chiavi dei giocatori.
+	 * @return
+	 */
+	private Iterator<String> returnIteratoreSulleChiaviGiocatori() {
 		return Giocatori.keySet().iterator();
 	}
 
-	private static Iterator<Giocatore> returnIteratoreSuiGiocatori() {
+	/**
+	 * Ritorna un iteratore sui giocatori.
+	 * @return
+	 */
+	private Iterator<Giocatore> returnIteratoreSuiGiocatori() {
 		return Giocatori.values().iterator();
 	}
 
-	private static boolean existsUser(String user) throws UserExistsException {
-		Iterator<String> itGiocatori = returnIteratoreSulleChiaviGiocatori();
-		while (itGiocatori.hasNext()) {
-			if (itGiocatori.next().equals(user)) throw new UserExistsException();
-		}
-		return false;
+	/**
+	 * Verifica se esiste l'utente, nel caso fa il throw di UserExistsException.
+	 */
+	private boolean existsUser(String user) throws UserExistsException {
+		if (Giocatori.containsKey(user)) throw new UserExistsException();
+		else return false;
 	}
 
-	public static void doCreaUtente(String user, String pwd) {
+	/**
+	 * Crea un utente a partire da username e password.
+	 * @param user
+	 * @param pwd
+	 */
+	private void doCreaUtente(String user, String pwd) {
 		Giocatori.put(user, new Giocatore(user, pwd));
 	}
 
-	public static void saCreaUtente(String user, String pwd) throws UserExistsException {
+	/**
+	 * Adattatore per creare l'utente
+	 * @param user
+	 * @param pwd
+	 * @throws UserExistsException
+	 */
+	public void aCreaUtente(String user, String pwd) throws UserExistsException {
 		if (!existsUser(user)) {
 			doCreaUtente(user, pwd);
 			return;
 		}
 	}
 
-	public static Giocatore ritornaGiocatoreRichiestoPerNome(String nomeGiocatoreRichiesto) {
+	/**
+	 * Ritorna il Giocatore richiesto tramite il suo nome.
+	 * @param nomeGiocatoreRichiesto
+	 * @return
+	 */
+	public Giocatore ritornaGiocatoreRichiestoPerNome(String nomeGiocatoreRichiesto) {
 		return Giocatori.get(nomeGiocatoreRichiesto);
 	}
 
-	public static String saLoginUtente(String user, String pwd) throws AuthenticationFailedException {
-		Iterator<String> itGiocatori = returnIteratoreSulleChiaviGiocatori();
-		while (itGiocatori.hasNext()) {
-			String tempNomeGiocatore = itGiocatori.next();
-			if (tempNomeGiocatore.equals(user)) {
-				Giocatore tempGiocatore = ritornaGiocatoreRichiestoPerNome(user);
-				if (tempGiocatore.passwordIsValid(pwd)) {
-					tempGiocatore.setTokenUnivoco(CommonUtils.getNewToken());
-					tempGiocatore.iAmLogged();
-					return tempGiocatore.getTokenUnivoco();
-				}
-				else throw new AuthenticationFailedException();
+	/**
+	 * Adattatore per creare l'utente
+	 * @param user
+	 * @param pwd
+	 * @throws UserExistsException
+	 */
+	public void aLoginUtente(String user, String pwd) throws AuthenticationFailedException {
+		if (Giocatori.containsKey(user)) {
+			Giocatore tempGiocatore = ritornaGiocatoreRichiestoPerNome(user);
+			if (tempGiocatore.passwordIsValid(pwd)) {
+				TokenENome.put(CommonUtils.getNewToken(), user);
+				tempGiocatore.iAmLogged();
+				return;
 			}
 		}
 		throw new AuthenticationFailedException();
 	}
 
-	private static Giocatore ritornaGiocatoreRichiestoPerToken(String token) {
-		Iterator<Giocatore> itGiocatori = returnIteratoreSuiGiocatori();
-		while (itGiocatori.hasNext()) {
-			Giocatore tempGiocatore = itGiocatori.next();
-			if (tempGiocatore.getTokenUnivoco().equals(token)) {
-				return tempGiocatore;
+	/**
+	 * Helper per restituire il token dell'utente richiesto.
+	 * @param user
+	 * @return
+	 * @throws InvalidTokenException 
+	 */
+	public String aGetTokenUtente(String user) throws InvalidTokenException {
+		if (TokenENome.containsValue(user)) {
+			Iterator<String> itToken = TokenENome.keySet().iterator();
+			String tempToken = null;
+			while (itToken.hasNext()) {
+				tempToken = itToken.next();
+				if (TokenENome.get(tempToken).equals(user)) {
+					return tempToken;
+				}
 			}
 		}
-		return null;
+		throw new InvalidTokenException();
 	}
 
-	private static boolean existsUserWithToken (String token) throws InvalidTokenException {
-		Giocatore tmpGiocatore = ritornaGiocatoreRichiestoPerToken(token);
-		if (tmpGiocatore != null) return true;
+	/**
+	 * Ritorna il giocatore richiesto tramite il token.
+	 * @param token
+	 * @return
+	 */
+	private Giocatore ritornaGiocatoreRichiestoPerToken(String token) throws InvalidTokenException {
+		if (existsUserWithToken(token)) {
+			String nomeGiocatore = TokenENome.get(token);
+			return Giocatori.get(nomeGiocatore);
+		}
+		else return null;
+	}
+
+	/**
+	 * Helper per verificare che effettivamente il token sia registrato.
+	 * @param token
+	 * @return
+	 * @throws InvalidTokenException
+	 */
+	private boolean existsUserWithToken (String token) throws InvalidTokenException {
+		if (TokenENome.containsKey(token)) return true;
 		else return false;
 	}
 
-	private static boolean existsRaceWithSameName (String nomeRazza) {
+	private boolean existsRaceWithSameName (String nomeRazza) {
 		Iterator<Giocatore> itGiocatori = returnIteratoreSuiGiocatori();
 		while (itGiocatori.hasNext()) {
 			Giocatore tempGiocatore = itGiocatori.next();
@@ -287,7 +346,7 @@ public class Logica {
 		return false;
 	}
 
-	private static boolean existsRaceForPlayer (String token) {
+	private boolean existsRaceForPlayer (String token) throws InvalidTokenException {
 		Giocatore giocatore = ritornaGiocatoreRichiestoPerToken(token);
 		if (giocatore.getNomeRazzaDinosauri() != null) return true;
 		else return false;
@@ -296,7 +355,7 @@ public class Logica {
 	/**
 	 * Crea una nuova razza di dinosauri per l'utente.
 	 */
-	public static void saCreaRazzaETipo(String token, String nomeRazza, String tipoRazza) throws RaceAlreadyCreatedException, RaceNameExistsException, InvalidTokenException {
+	public void aCreaRazzaETipo(String token, String nomeRazza, String tipoRazza) throws RaceAlreadyCreatedException, RaceNameExistsException, InvalidTokenException {
 		if (existsUserWithToken(token) && !existsRaceWithSameName(nomeRazza)) {
 			if (!existsRaceForPlayer(token)) {
 				Giocatore tempGiocatore = ritornaGiocatoreRichiestoPerToken(token);
