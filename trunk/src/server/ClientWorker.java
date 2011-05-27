@@ -183,15 +183,15 @@ public class ClientWorker extends Server implements Runnable {
 						else if (comando.equals("@mappaGenerale")) bufferDaStampare = logica.sendMappaGenerale(token);
 						else if (comando.equals("@listaDinosauri")) {
 							bufferDaStampare = logica.aSendListaDinosauri(token);
-							writeOkToOutput(bufferDaStampare);
+							writeLineToOutput("@listaDinosauri" + "," bufferDaStampare);
 						}
 						/* comandi di turno */
 						else if (comando.equals("@confermaTurno")) bufferDaStampare = logica.confermaTurno(token);
 						else if (comando.equals("@passaTurno")) bufferDaStampare = logica.passaTurno(token);
 						else if (scanner.hasNext()) {
 							String idDinosauro = scanner.next();
-							if (comando.equals("@vistaLocale")) bufferDaStampare = logica.vistaLocale(token, idDinosauro);
-							else if (comando.equals("@statoDinosauro")) bufferDaStampare = logica.statoDinosauro(token, idDinosauro);
+							if (comando.equals("@vistaLocale")) bufferDaStampare = logica.aVistaLocale(token, idDinosauro);
+							else if (comando.equals("@statoDinosauro")) bufferDaStampare = logica.aStatoDinosauro(token, idDinosauro);
 							else if (comando.equals("@cresciDinosauro")) bufferDaStampare = logica.cresciDinosauro(token, idDinosauro);
 							else if (comando.equals("@deponiUovo")) bufferDaStampare = logica.deponiUovo(token, idDinosauro);
 							else if (comando.equals("@muoviDinosauro")) {
@@ -225,8 +225,8 @@ public class ClientWorker extends Server implements Runnable {
 	 * @param toSend
 	 * @throws IOException
 	 */
-	private void writeLineToOutput (String toSend) throws IOException {
-		outgoingData.println(toSend);
+	private void writeLineToOutput (String...toSend) throws IOException {
+		outgoingData.println(toSend[0]);
 	}
 
 	/**
