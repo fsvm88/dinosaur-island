@@ -8,14 +8,17 @@ import java.io.ObjectInputStream;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Random;
-import java.util.Scanner;
-import java.util.regex.Pattern;
 
 import dinolib.UserExistsException;
 
 public class Logica {
 	/**
-	 * Definisce staticamente il lato della mappa.
+	 * Definisce staticamente e definitivamente il numero massimo di giocatori ammessi in partita.
+	 * @uml.property name="NUMERO_MASSIMO_GIOCATORI_INGAME"
+	 */
+	private final int numero_MASSIMO_GIOCATORI_INGAME = 8;
+	/**
+	 * Definisce staticamente e definitivamente il lato della mappa.
 	 * @uml.property name="LATO_MAPPA"
 	 */
 	private final int lato_MAPPA = 40;
@@ -118,7 +121,7 @@ public class Logica {
 	 * Rimuove un dinosauro dalla cella.
 	 */
 	private void rimuoviDinosauroDallaCella(int x, int y) {
-		Cella tempCella = rifMappa.getCella(x, y);
+		rifMappa.rimuoviIlDinosauroDallaCella(x, y);
 	}
 	
 	/**
@@ -363,22 +366,81 @@ public class Logica {
 		}
 		else throw new InvalidTokenException();
 	}
+	
+	/**
+	 * Verifica se il numero massimo di utenti è connesso. Se sì lancia una eccezione, altrimenti ritorna false.
+	 * ATTENZIONE! Il valore di ritorno di di default è FALSE! (Contrariamente a tutti gli altri helper).
+	 * @return
+	 * @throws TroppiGiocatoriException
+	 */
+	private boolean massimoNumeroUtentiConnesso() throws TroppiGiocatoriException {
+		Iterator<Giocatore> itGiocatori = returnIteratoreSuiGiocatori();
+		int i = 0;
+		while (itGiocatori.hasNext()) {
+			if (itGiocatori.next().isInGame()) i++;
+		}
+		if (i < numero_MASSIMO_GIOCATORI_INGAME) return false;
+		else throw new TroppiGiocatoriException();
+	}
 
+	/**
+	 * Helper per sapere se qualcuno sta giocando.
+	 * @return
+	 */
+	private boolean isSomeonePlaying() {
+		if (qualcunoStaGiocando) return true;
+		else return false;
+	}
+	
+	/**
+	 * Helper per far sapere che qualcuno sta giocando.
+	 * @return
+	 */
+	private boolean someoneIsPlaying() {
+		if (qualcunoStaGiocando) return true;
+		else return false;
+	}
+	
+	/**
+	 * Helper per far sapere che nessuno sta giocando.
+	 * @return
+	 */
+	private boolean nobodyIsPlaying() {
+		if (qualcunoStaGiocando) return true;
+		else return false;
+	}
+	
+	/**
+	 * Verifica (fa il controllo) che qualcuno stia giocando. Basta un giocatore qualunque, ecco perchè il ciclo si spezza con un return immediato.
+	 * @return
+	 */
+	private void verifySomeoneIsPlaying() {
+		Iterator<Giocatore> itGiocatori = returnIteratoreSuiGiocatori();
+		while (itGiocatori.hasNext()) {
+			if (itGiocatori.next().isInGame()) {
+				someoneIsPlaying();
+				return;
+			}
+		}
+	}
+	
 	/**
 	 * Implementa l'accesso alla partita.
 	 * @throws NonInPartitaException 
 	 */
 	public void aAccediAPartita(String token) throws TroppiGiocatoriException, RazzaNonCreataException, InvalidTokenException, NonInPartitaException {
 		Giocatore tempGiocatore = ritornaGiocatoreRichiestoPerToken(token);
-		if (playerIsInGame(token)) { // TODO aggiungere check per tetto max giocatori
-			if (tempGiocatore.getNomeRazzaDinosauri() != null) {
-				inserisciDinosauriNellaMappa(token); // TODO implementare bene il corpo di questa funzione.
+		if (playerIsInGame(token) &&
+				!massimoNumeroUtentiConnesso()) {
+			if (tempGiocatore.hasRazza()) {
+				if (!isSomeonePlaying()) someoneIsPlaying();
+				inserisciDinosauriNellaMappa(token);
 			}
 			else throw new RazzaNonCreataException();
 		}
 		else return;
 	}
-
+	
 	/**
 	 * Codice per l'uscita dalla partita. Viene chiamato direttamente o tramite l'adattatore.
 	 * @throws InvalidTokenException 
@@ -386,6 +448,7 @@ public class Logica {
 	private void esciDallaPartita(Giocatore tempGiocatore) throws InvalidTokenException {
 		rimuoviDinosauriDallaMappa(tempGiocatore);
 		tempGiocatore.iAmNotInGame();
+		verifySomeoneIsPlaying();
 	}
 
 	/**
@@ -443,7 +506,7 @@ public class Logica {
 			}
 		}
 	}
-
+	
 	/**
 	 * Spedisce la lista dei dinosauri all'utente.
 	 * @throws IOException
@@ -498,7 +561,7 @@ public class Logica {
 	}
 
 	/**
-	 * Verifica se il dinosauro può deporre un uovo, altrimenti lancia eccezione con causa.
+	 * Verifica se il dinosauro può deporre un uovo.
 	 * @throws GenericDinosauroException 
 	 * @throws InvalidTokenException 
 	 */
@@ -509,7 +572,7 @@ public class Logica {
 	}
 
 	/**
-	 * Verifica se il dinosauro ha abbastanza energia per deporre un uovo, altrimenti lancia eccezione con causa.
+	 * Verifica se il dinosauro ha abbastanza energia per crescere, altrimenti lancia eccezione con causa.
 	 * @throws GenericDinosauroException 
 	 */
 	private boolean haAbbastanzaEnergiaPerCrescere(Dinosauro dinosauro) throws GenericDinosauroException {
@@ -528,7 +591,7 @@ public class Logica {
 	}
 
 	/**
-	 * Verifica se il dinosauro può deporre un uovo, altrimenti lancia eccezione con causa.
+	 * Verifica se il dinosauro può crescere.
 	 * @throws GenericDinosauroException 
 	 */
 	private boolean puoCrescere(Dinosauro dinosauro) throws GenericDinosauroException {

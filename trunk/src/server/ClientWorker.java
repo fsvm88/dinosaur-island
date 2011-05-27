@@ -59,7 +59,7 @@ public class ClientWorker extends Server implements Runnable {
 		}
 	}
 
-	private static void estraiUserPwd(Scanner scanner, String utenteDaParse, String passwordDaParse) {
+	private void estraiUserPwd(Scanner scanner, String utenteDaParse, String passwordDaParse) {
 		if (scanner.hasNext()) {
 			utenteDaParse = scanner.next();
 			if (scanner.hasNext()) {
@@ -68,24 +68,24 @@ public class ClientWorker extends Server implements Runnable {
 		}
 	}
 
-	private static String getToken(Scanner scanner) {
+	private String getToken(Scanner scanner) {
 		if (scanner.hasNext()) {
 			return scanner.next();
 		}
 		else return null;
 	}
 
-	private static boolean isLoginOrCreation(String comando) {
+	private boolean isLoginOrCreation(String comando) {
 		if (comando.equals("@creaUtente") || comando.equals("@login")) return true;
 		else return false;
 	}
 
-	private static boolean isGoodToken(String token) {
+	private boolean isGoodToken(String token) {
 		if (token != null) return true;
 		else return false;
 	}
 
-	private static void estraiRazzaETipo(Scanner scanner, String nomeRazza, String tipo) {
+	private void estraiRazzaETipo(Scanner scanner, String nomeRazza, String tipo) {
 		if (scanner.hasNext()) {
 			nomeRazza = scanner.next();
 			if (scanner.hasNext()) {
@@ -94,12 +94,12 @@ public class ClientWorker extends Server implements Runnable {
 		}
 	}
 
-	private static boolean validaRazzaETipo(String nomeRazza, String tipo) {
+	private boolean validaRazzaETipo(String nomeRazza, String tipo) {
 		if ((nomeRazza != null) && (tipo != null) ) return true;
 		else return false;
 	}
 
-	private static boolean estraiXeY(Scanner scanner, int x, int y) {
+	private boolean estraiXeY(Scanner scanner, int x, int y) {
 		if (scanner.hasNext()) {
 			x = scanner.nextInt();
 			if (scanner.hasNext()) {
