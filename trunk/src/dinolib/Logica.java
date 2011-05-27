@@ -40,7 +40,7 @@ public class Logica {
 	 * Definisce la stringa che contiene il nome del giocatore che in questo momento ha il turno.
 	 * @uml.property name="Giocatori"
 	 */
-	private static String nomeGiocatoreCorrente = null;
+	private String nomeGiocatoreCorrente = null;
 	/**
 	 * Definisce una variabile che assicura che qualcuno sta giocando.
 	 * @uml.property name="qualcunoStaGiocando"
@@ -114,39 +114,35 @@ public class Logica {
 		rifMappa = new Mappa(lato_MAPPA);
 	}
 
-	/* Seguono un mare di helper comuni a tutti i thread e spostabili nella main class.*/
 	/**
-	 * Helper per verificare l'esistenza di un utente.
-	 * @param userToLookFor
-	 * @return
+	 * Rimuove un dinosauro dalla cella.
 	 */
-	private boolean userExists(String userToLookFor) {
-		if (Giocatori.containsKey(userToLookFor)) return true;
-		else return false;
+	private void rimuoviDinosauroDallaCella(int x, int y) {
+		Cella tempCella = rifMappa.getCella(x, y);
 	}
-
+	
 	/**
 	 * Gestisce la rimozione di tutti i dinosauri dalla mappa.	
+	 * @throws InvalidTokenException 
 	 */
-	private void rimuoviDinosauriDallaMappa(Giocatore curPlayer) {
-		/* Usa iteratore per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
-		Iterator<String> itIdDinosauri = myPlayer.getItIdDinosauri();
+	private void rimuoviDinosauriDallaMappa(Giocatore tempGiocatore) throws InvalidTokenException {
+		Iterator<String> itIdDinosauri = tempGiocatore.getItIdDinosauri();
 		while (itIdDinosauri.hasNext()) {
 			String idCorrente = itIdDinosauri.next();
-			Dinosauro tempDinosauro = myPlayer.getDinosauro(idCorrente);
+			Dinosauro tempDinosauro = tempGiocatore.getDinosauro(idCorrente);
 			rimuoviDinosauroDallaCella(tempDinosauro.getX(), tempDinosauro.getY());
 		}
 	}
 
 	/**
 	 * Quando l'utente esegue il login aggiunge i dinosauri alla mappa.
+	 * @throws InvalidTokenException 
 	 */
-	private void inserisciDinosauriNellaMappa() {
-		/* Usa iteratore per iterare tutti i dinosauri dell'utente e impostarli sulla mappa */
-		Iterator<String> itIdDinosauri = myPlayer.getItIdDinosauri();
+	private void inserisciDinosauriNellaMappa(String token) throws InvalidTokenException {
+		Iterator<String> itIdDinosauri = ritornaGiocatoreRichiestoPerToken(token).getItIdDinosauri();
 		while (itIdDinosauri.hasNext()) {
 			String idCorrente = itIdDinosauri.next();
-			Dinosauro tempDinosauro = myPlayer.getDinosauro(idCorrente);
+			Dinosauro tempDinosauro = ritornaGiocatoreRichiestoPerToken(token).getDinosauro(idCorrente);
 			int x = tempDinosauro.getX(), y = tempDinosauro.getY();
 			if (tryActualSpawn(x, y, idCorrente)) return;
 			else {
@@ -201,25 +197,6 @@ public class Logica {
 				((j+y)<rifMappa.getLatoDellaMappa()) );
 		return false;
 	}
-
-	/* Due helper per impostare lo stato dell'utente, sta giocando o no? */
-	/**
-	 * Spawn dei dinosauri e imposta lo stato su "in partita".
-	 */
-	private void iAmInGame() {
-		inserisciDinosauriNellaMappa();
-		inGame = true;
-	}
-
-	/**
-	 * Imposta lo stato su "non in partita".
-	 */
-	private void iAmNotInGame() {
-		inGame = false;
-	}
-
-	/* Tre metodi (uno principale, due helper) per il login o la creazione dell'utente. */
-
 	/**
 	 * Ritorna un iteratore sulle chiavi dei giocatori.
 	 * @return
@@ -389,12 +366,13 @@ public class Logica {
 
 	/**
 	 * Implementa l'accesso alla partita.
+	 * @throws NonInPartitaException 
 	 */
-	public void aAccediAPartita(String token) throws TroppiGiocatoriException, RazzaNonCreataException, InvalidTokenException {
+	public void aAccediAPartita(String token) throws TroppiGiocatoriException, RazzaNonCreataException, InvalidTokenException, NonInPartitaException {
 		Giocatore tempGiocatore = ritornaGiocatoreRichiestoPerToken(token);
-		if (tempGiocatore.isInGame()) { // TODO aggiungere check per tetto max giocatori
+		if (playerIsInGame(token)) { // TODO aggiungere check per tetto max giocatori
 			if (tempGiocatore.getNomeRazzaDinosauri() != null) {
-
+				inserisciDinosauriNellaMappa(token); // TODO implementare bene il corpo di questa funzione.
 			}
 			else throw new RazzaNonCreataException();
 		}
@@ -403,8 +381,9 @@ public class Logica {
 
 	/**
 	 * Codice per l'uscita dalla partita. Viene chiamato direttamente o tramite l'adattatore.
+	 * @throws InvalidTokenException 
 	 */
-	private void esciDallaPartita(Giocatore tempGiocatore) {
+	private void esciDallaPartita(Giocatore tempGiocatore) throws InvalidTokenException {
 		rimuoviDinosauriDallaMappa(tempGiocatore);
 		tempGiocatore.iAmNotInGame();
 	}
@@ -451,12 +430,13 @@ public class Logica {
 
 	/**
 	 * Metodo per gestire il logout dell'utente
+	 * @throws NonInPartitaException 
 	 */
-	public void aLogout(String token) throws InvalidTokenException {
+	public void aLogout(String token) throws InvalidTokenException, NonInPartitaException {
 		if (existsUserWithToken(token)) {
 			Giocatore tempGiocatore = ritornaGiocatoreRichiestoPerToken(token);
 			if (tempGiocatore.isLogged()) {
-				if (tempGiocatore.isInGame()) {
+				if (playerIsInGame(token)) {
 					esciDallaPartita(tempGiocatore);
 				}
 				tempGiocatore.iAmNotLogged();
@@ -469,7 +449,7 @@ public class Logica {
 	 * @throws IOException
 	 */
 	public String aSendListaDinosauri(String token) throws InvalidTokenException, NonInPartitaException {
-		if (existsUserWithToken(token) && ritornaGiocatoreRichiestoPerToken(token).isInGame()) {
+		if (existsUserWithToken(token) && playerIsInGame(token)) {
 			String buffer = null;
 			if (ritornaGiocatoreRichiestoPerToken(token).hasRazza()) {
 				Iterator<String> itIdDinosauri = ritornaGiocatoreRichiestoPerToken(token).getItIdDinosauri();
@@ -480,9 +460,9 @@ public class Logica {
 			}
 			return buffer;
 		}
-		else throw new NonInPartitaException();
+		return null;
 	}
-	
+
 	private void passaTurno() {
 		// TODO Auto-generated method stub
 
@@ -499,14 +479,74 @@ public class Logica {
 	}
 
 	/**
+	 * Verifica se il dinosauro ha abbastanza energia per deporre un uovo, altrimenti lancia eccezione con causa.
+	 * @throws GenericDinosauroException 
+	 */
+	private boolean haAbbastanzaEnergiaPerDeporreUnUovo(Dinosauro dinosauro) throws GenericDinosauroException {
+		if (dinosauro.haAbbastanzaEnergiaPerDeporreUnUovo()) return true;
+		else throw new GenericDinosauroException("mortePerInedia");
+	}
+
+	/**
+	 * Verifica se la specie ha già 5 dinosauri. Se la specie ha dimensione massima lancia eccezione con causa.
+	 * @throws GenericDinosauroException 
+	 * @throws InvalidTokenException 
+	 */
+	private boolean haNumeroMassimoPerSpecie(String token) throws GenericDinosauroException, InvalidTokenException {
+		if (ritornaGiocatoreRichiestoPerToken(token).specieHaNumeroMassimo()) return true;
+		else throw new GenericDinosauroException("raggiuntoNumeroMaxDinosauri");
+	}
+
+	/**
+	 * Verifica se il dinosauro può deporre un uovo, altrimenti lancia eccezione con causa.
+	 * @throws GenericDinosauroException 
+	 * @throws InvalidTokenException 
+	 */
+	private boolean puoDeporreUnUovo(String token, Dinosauro dinosauro) throws GenericDinosauroException, InvalidTokenException {
+		if (haAbbastanzaEnergiaPerDeporreUnUovo(dinosauro) &&
+				!haNumeroMassimoPerSpecie(token)) return true;
+		else return false;
+	}
+
+	/**
+	 * Verifica se il dinosauro ha abbastanza energia per deporre un uovo, altrimenti lancia eccezione con causa.
+	 * @throws GenericDinosauroException 
+	 */
+	private boolean haAbbastanzaEnergiaPerCrescere(Dinosauro dinosauro) throws GenericDinosauroException {
+		if (dinosauro.haAbbastanzaEnergiaPerCrescere()) return true;
+		else throw new GenericDinosauroException("mortePerInedia");
+	}
+
+	/**
+	 * Verifica se la specie ha già 5 dinosauri. Se la specie ha dimensione massima lancia eccezione con causa.
+	 * @throws GenericDinosauroException 
+	 * @throws InvalidTokenException 
+	 */
+	private boolean haDimensioneMassima(Dinosauro dinosauro) throws GenericDinosauroException {
+		if (dinosauro.isAtDimensioneMax()) return true;
+		else throw new GenericDinosauroException("raggiuntoNumeroMaxDinosauri");
+	}
+
+	/**
+	 * Verifica se il dinosauro può deporre un uovo, altrimenti lancia eccezione con causa.
+	 * @throws GenericDinosauroException 
+	 */
+	private boolean puoCrescere(Dinosauro dinosauro) throws GenericDinosauroException {
+		if (haAbbastanzaEnergiaPerCrescere(dinosauro) &&
+				!haDimensioneMassima(dinosauro)) return true;
+		else return false;
+	}
+
+	/**
 	 * Prova a inserire un dinosauro appena nato. Questo metodo viene usato da deponiUovo.
 	 * @return
+	 * @throws InvalidTokenException 
 	 */
-	private boolean trySpawnOfAnEgg(int x, int y, Dinosauro newDinosauro, String newIdDinosauro) {
+	private boolean trySpawnOfAnEgg(String token, int x, int y, Dinosauro newDinosauro, String newIdDinosauro) throws InvalidTokenException {
 		int i = 1;
 		do {
 			if (tryNearestSpawn(x, y, i, newIdDinosauro, newDinosauro)) {
-				myPlayer.aggiungiDinosauroAllaRazza(newDinosauro, newIdDinosauro);
+				ritornaGiocatoreRichiestoPerToken(token).aggiungiDinosauroAllaRazza(newDinosauro, newIdDinosauro);
 				return true;
 			}
 			else i++;
@@ -518,118 +558,119 @@ public class Logica {
 	 * Gestisce il comando che depone l'uovo.
 	 * @param scanner
 	 * @throws IOException
+	 * @throws GenericDinosauroException 
+	 * @throws NonInPartitaException 
+	 * @throws InvalidIDException 
+	 * @throws InvalidTokenException 
 	 */
-	private void deponiUovo(Scanner scanner) throws IOException {
-		if (myPlayer.getNumeroDinosauri() < 5) {
-			String idDinosauro = scanner.next(Pattern.compile("[^idDino=]"));
-			Dinosauro curDinosauro = myPlayer.getDinosauro(idDinosauro);
-			if (curDinosauro.haAbbastanzaEnergiaPerDeporreUnUovo()){
-				int x = curDinosauro.getX();
-				int y = curDinosauro.getY();
+	public String deponiUovo(String token, String idDinosauro) throws IOException, InvalidTokenException, InvalidIDException, NonInPartitaException, GenericDinosauroException {
+		if (existsUserWithToken(token) &&
+				playerHasDinosauro(token, idDinosauro) &&
+				playerIsInGame(token) &&
+				isMioTurno(token)) { // TODO aggiungere limite mosse
+			Dinosauro curDinosauro = ritornaGiocatoreRichiestoPerToken(token).getDinosauro(idDinosauro);
+			int x = curDinosauro.getX();
+			int y = curDinosauro.getY();
+			if (puoDeporreUnUovo(token, curDinosauro)) {
 				String newIdDinosauro = CommonUtils.getNewToken();
 				if (curDinosauro.getTipoRazza().equals("Carnivoro")) {
 					Dinosauro newDinosauro = new Carnivoro(x, y);
 					newDinosauro.nonSonoUsabile();
-					if (trySpawnOfAnEgg(x, y, newDinosauro, newIdDinosauro)) {
-						writeLineToOutput("@ok" + "," + newIdDinosauro);
-					}
-					else writeLineToOutput("@no");
+					trySpawnOfAnEgg(token, x, x, newDinosauro, newIdDinosauro);
+					return newIdDinosauro;
 				}
 				else if (curDinosauro.getTipoRazza().equals("Erbivoro")) {
 					Dinosauro newDinosauro = new Erbivoro(x, y);
 					newDinosauro.nonSonoUsabile();
-					if (trySpawnOfAnEgg(x, y, newDinosauro, newIdDinosauro)) {
-						writeLineToOutput("@ok" + "," + newIdDinosauro);
-					}
-					else writeLineToOutput("@no");
+					trySpawnOfAnEgg(token, x, y, newDinosauro, newIdDinosauro);
+					return newIdDinosauro;
 				}
-				else writeLineToOutput("@no");
 			}
-			else writeLineToOutput("@no,@mortePerInedia");
 		}
-		else writeLineToOutput("@no,@raggiuntoNumeroMaxDinosauri");
+		return null;
+	}
+
+	/**
+	 * Verifica se l'utente possiede il dinosauro con l'id cercato, altrimenti lancia eccezione.
+	 * @return 
+	 */
+	private boolean playerHasDinosauro(String token, String idDinosauro) throws InvalidIDException, InvalidTokenException {
+		if (ritornaGiocatoreRichiestoPerToken(token).existsDinosauro(idDinosauro)) return true;
+		else throw new InvalidIDException();
 	}
 
 	/**
 	 * Chiama la funzione di crescita del dinosauro.
 	 */
-	private void cresciDinosauro(Scanner scanner) throws IOException {
-		String idDinosauro = scanner.next(Pattern.compile("[^idDino=]"));
-		if (myPlayer.existsDinosauro(idDinosauro)) {
-			Dinosauro tempDinosauro = myPlayer.getDinosauro(idDinosauro);
-			if (!tempDinosauro.isAtDimensioneMax()) {
-				if (tempDinosauro.haAbbastanzaEnergiaPerCrescere()) {
-					tempDinosauro.cresci();
-					writeLineToOutput("ok");
-				}
-				else writeLineToOutput("@no,@mortePerInedia");
+	public void aCresciDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException, GenericDinosauroException, NonInPartitaException, NonIlTuoTurnoException {
+		if (existsUserWithToken(token) &&
+				playerHasDinosauro(token, idDinosauro) &&
+				playerIsInGame(token) &&
+				isMioTurno(token)) {
+			if (puoCrescere(ritornaGiocatoreRichiestoPerToken(token).getDinosauro(idDinosauro))) {
+				ritornaGiocatoreRichiestoPerToken(token).getDinosauro(idDinosauro).cresci();
 			}
-			else writeLineToOutput("@no,@raggiuntaDimensioneMax");
 		}
-		else writeLineToOutput("@no,@idNonValido");
 	}
 
 	/**
-	 * Assembla una stringa con molti token individuali.
-	 * @param strings
+	 * Verifica se l'utente è in partita, altrimenti lancia eccezione.
+	 * @throws InvalidTokenException 
+	 * @throws NonInPartitaException 
 	 */
-	private void assemblaBufferMultiArg(String buffer, String...strings) {
-		int i = 0;
-		while (i < strings.length) {
-			assemblaBuffer(buffer, strings[i]);
-			i++;
-		}
+	private boolean playerIsInGame(String token) throws InvalidTokenException, NonInPartitaException {
+		if (ritornaGiocatoreRichiestoPerToken(token).isInGame()) return true;
+		else throw new NonInPartitaException();
 	}
-	
+
 	/**
 	 * Assembla lo stato comune del dinosauro
 	 */
 	private void assemblaStatoComuneDinosauro(String buffer, Giocatore tempGiocatore, Dinosauro tempDinosauro) {
-		assemblaBufferMultiArg(buffer,
-				tempGiocatore.getNome(),
-				tempGiocatore.getNomeRazzaDinosauri(),
-				tempGiocatore.getTipoRazza().toLowerCase().charAt(0),
-				"{", tempDinosauro.getX(), ",", tempDinosauro.getY(), "}",
-				tempDinosauro.getDimensione());
+		buffer = tempGiocatore.getNome() + "," +
+		tempGiocatore.getNomeRazzaDinosauri() + "," +
+		tempGiocatore.getTipoRazza().toLowerCase().charAt(0) + "," +
+		"{" + "," + tempDinosauro.getX() + "," + tempDinosauro.getY() + "," + "}" + "," +
+		tempDinosauro.getDimensione();
 	}
-	
+
 	/**
 	 * Invia lo stato del dinosauro richiesto all'utente.
 	 * @param scanner
 	 * @throws IOException
 	 */
-	public String aStatoDinosauro(String token, String idDinosauro) throws InvalidTokenException {
-		if (existsUserWithToken(token) && ritornaGiocatoreRichiestoPerToken(token).existsDinosauro(idDinosauro)) {
+	public String aStatoDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException, NonInPartitaException {
+		if (existsUserWithToken(token) && playerHasDinosauro(token, idDinosauro)) {
 			Giocatore tempGiocatore = ritornaGiocatoreRichiestoPerToken(token);
 			Dinosauro tempDinosauro = tempGiocatore.getDinosauro(idDinosauro);
 			String buffer = null;
 			assemblaStatoComuneDinosauro(buffer, tempGiocatore, tempDinosauro);
-			assemblaBufferMultiArg(buffer,
-					(Integer) tempDinosauro.getEnergiaAttuale(),
-					(Integer) tempDinosauro.getTurnoDiVita());
+			buffer = buffer + "," +
+			tempDinosauro.getEnergiaAttuale() + "," +
+			tempDinosauro.getTurnoDiVita();
 			return buffer;
 		}
-		else if (!myPlayer.existsDinosauro(idDinosauro)) {
-			Iterator<Giocatore> itSuiGiocatori = Giocatori.values().iterator();
+		else if (existsUserWithToken(token) && !playerHasDinosauro(token, idDinosauro)) {
+			Iterator<Giocatore> itSuiGiocatori = returnIteratoreSuiGiocatori();
 			while (itSuiGiocatori.hasNext()) {
 				Giocatore tempGiocatore = itSuiGiocatori.next();
 				Iterator<String> itSuIdDinosauri = tempGiocatore.getItIdDinosauri();
 				while (itSuIdDinosauri.hasNext()) {
 					if (itSuIdDinosauri.next() == idDinosauro) {
 						Dinosauro tempDinosauro = tempGiocatore.getDinosauro(idDinosauro);
-						String buffer = "@statoDinosauro";
+						String buffer = null;
+						assemblaStatoComuneDinosauro(buffer, tempGiocatore, tempDinosauro);
 						buffer = buffer + "," +
-						tempGiocatore.getNome() + "," +
-						tempGiocatore.getNomeRazzaDinosauri() + "," +
-						tempGiocatore.getTipoRazza().toLowerCase().charAt(0) + "," +
-						"{" + tempDinosauro.getX() + "," + tempDinosauro.getY() + "}" +
-						tempDinosauro.getDimensione();
-						writeLineToOutput(buffer);
+						tempDinosauro.getEnergiaAttuale() + "," +
+						tempDinosauro.getTurnoDiVita();
+						return buffer;
 					}
+
 				}
 			}
 		}
-		else writeLineToOutput("@no,@idNonValido");
+		else throw new InvalidIDException();
+		return null;
 	}
 
 	private void sendVistaLocale() {
@@ -646,24 +687,13 @@ public class Logica {
 		// TODO Auto-generated method stub
 
 	}
-
-	/**
-	 * Se esiste almeno un dinosauro significa che la razza esiste già
-	 * @return
-	 */
-	private static boolean existsRazza(Giocatore curPlayer) {
-		if ((curPlayer.getNumeroDinosauri() > 0) && (curPlayer.getNomeRazzaDinosauri() != null)) return true;
-		else return false;
-	}
-
 	/**
 	 * Helper per verificare che sia il turno del giocatore che chiama la funzione. 
 	 * @return
+	 * @throws InvalidTokenException 
 	 */
-	private static boolean isMioTurno (String nomeDelGiocatoreCorrente, Giocatore curPlayer) {
-		if (nomeDelGiocatoreCorrente.equals(curPlayer.getNome())) return true;
+	private boolean isMioTurno (String token) throws InvalidTokenException {
+		if (nomeGiocatoreCorrente.equals(ritornaGiocatoreRichiestoPerToken(token).getNome())) return true;
 		else return false;
 	}
-
-
 }

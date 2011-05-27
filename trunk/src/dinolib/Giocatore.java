@@ -12,6 +12,12 @@ public class Giocatore {
 	private String nome = null;
 
 	/**
+	 * Contiene il numero massimo di dinosauri per specie. È una costante di gioco.
+	 * @uml.property name="numero_MAX_DINOSAURI"
+	 */
+	private final int numero_MAX_DINOSAURI = 5;
+	
+	/**
 	 * Getter of the property <tt>nome</tt>
 	 * @return  Returns the nome.
 	 * @uml.property  name="nome"
@@ -208,6 +214,15 @@ public class Giocatore {
 	public boolean hasRazza() {
 		if ((getNomeRazzaDinosauri() != null) &&
 				(getNumeroDinosauri() > 0)) return true;
+		else return false;
+	}
+	
+	/**
+	 * Helper per verificare se la specie ha il numero massimo di dinosauri.
+	 * @return
+	 */
+	public boolean specieHaNumeroMassimo() {
+		if (getNumeroDinosauri() >= numero_MAX_DINOSAURI) return true;
 		else return false;
 	}
 }

@@ -183,7 +183,7 @@ public class ClientWorker extends Server implements Runnable {
 						else if (comando.equals("@mappaGenerale")) bufferDaStampare = logica.sendMappaGenerale(token);
 						else if (comando.equals("@listaDinosauri")) {
 							bufferDaStampare = logica.aSendListaDinosauri(token);
-							writeLineToOutput("@listaDinosauri" + "," bufferDaStampare);
+							writeLineToOutput("@listaDinosauri" + "," + bufferDaStampare);
 						}
 						/* comandi di turno */
 						else if (comando.equals("@confermaTurno")) bufferDaStampare = logica.confermaTurno(token);
@@ -191,9 +191,18 @@ public class ClientWorker extends Server implements Runnable {
 						else if (scanner.hasNext()) {
 							String idDinosauro = scanner.next();
 							if (comando.equals("@vistaLocale")) bufferDaStampare = logica.aVistaLocale(token, idDinosauro);
-							else if (comando.equals("@statoDinosauro")) bufferDaStampare = logica.aStatoDinosauro(token, idDinosauro);
-							else if (comando.equals("@cresciDinosauro")) bufferDaStampare = logica.cresciDinosauro(token, idDinosauro);
-							else if (comando.equals("@deponiUovo")) bufferDaStampare = logica.deponiUovo(token, idDinosauro);
+							else if (comando.equals("@statoDinosauro")) {
+								bufferDaStampare = logica.aStatoDinosauro(token, idDinosauro);
+								writeLineToOutput("@statoDinosauro" + "," + bufferDaStampare);
+							}
+							else if (comando.equals("@cresciDinosauro")) {
+								logica.aCresciDinosauro(token, idDinosauro);
+								writeOkToOutput();
+							}
+							else if (comando.equals("@deponiUovo")) {
+								bufferDaStampare = logica.deponiUovo(token, idDinosauro);
+								writeOkToOutput(bufferDaStampare);
+							}
 							else if (comando.equals("@muoviDinosauro")) {
 								int x = 0;
 								int y = 0;
