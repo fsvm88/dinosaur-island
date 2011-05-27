@@ -570,24 +570,44 @@ public class Logica {
 	}
 
 	/**
+	 * Assembla una stringa con molti token individuali.
+	 * @param strings
+	 */
+	private void assemblaBufferMultiArg(String buffer, String...strings) {
+		int i = 0;
+		while (i < strings.length) {
+			assemblaBuffer(buffer, strings[i]);
+			i++;
+		}
+	}
+	
+	/**
+	 * Assembla lo stato comune del dinosauro
+	 */
+	private void assemblaStatoComuneDinosauro(String buffer, Giocatore tempGiocatore, Dinosauro tempDinosauro) {
+		assemblaBufferMultiArg(buffer,
+				tempGiocatore.getNome(),
+				tempGiocatore.getNomeRazzaDinosauri(),
+				tempGiocatore.getTipoRazza().toLowerCase().charAt(0),
+				"{", tempDinosauro.getX(), ",", tempDinosauro.getY(), "}",
+				tempDinosauro.getDimensione());
+	}
+	
+	/**
 	 * Invia lo stato del dinosauro richiesto all'utente.
 	 * @param scanner
 	 * @throws IOException
 	 */
-	private void sendStatoDinosauro(Scanner scanner) throws IOException {
-		String idDinosauro = scanner.next(Pattern.compile("[^idDino=]"));
-		if (myPlayer.existsDinosauro(idDinosauro)) {
-			Dinosauro tempDinosauro = myPlayer.getDinosauro(idDinosauro);
-			String buffer = "@statoDinosauro";
-			buffer = buffer + "," +
-			myPlayer.getNome() + "," +
-			myPlayer.getNomeRazzaDinosauri() + "," +
-			myPlayer.getTipoRazza().toLowerCase().charAt(0) + "," +
-			"{" + tempDinosauro.getX() + "," + tempDinosauro.getY() + "}" +
-			tempDinosauro.getDimensione() + "," +
-			tempDinosauro.getEnergiaAttuale() + "," +
-			tempDinosauro.getTurnoDiVita();
-			writeLineToOutput(buffer);
+	public String aStatoDinosauro(String token, String idDinosauro) throws InvalidTokenException {
+		if (existsUserWithToken(token) && ritornaGiocatoreRichiestoPerToken(token).existsDinosauro(idDinosauro)) {
+			Giocatore tempGiocatore = ritornaGiocatoreRichiestoPerToken(token);
+			Dinosauro tempDinosauro = tempGiocatore.getDinosauro(idDinosauro);
+			String buffer = null;
+			assemblaStatoComuneDinosauro(buffer, tempGiocatore, tempDinosauro);
+			assemblaBufferMultiArg(buffer,
+					(Integer) tempDinosauro.getEnergiaAttuale(),
+					(Integer) tempDinosauro.getTurnoDiVita());
+			return buffer;
 		}
 		else if (!myPlayer.existsDinosauro(idDinosauro)) {
 			Iterator<Giocatore> itSuiGiocatori = Giocatori.values().iterator();
