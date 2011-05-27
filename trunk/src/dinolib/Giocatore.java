@@ -200,4 +200,14 @@ public class Giocatore {
 	public boolean isLogged() {
 		return logged;
 	}
+	
+	/**
+	 * Helper per verificare che l'utente abbia una razza di dinosauri.
+	 * @return
+	 */
+	public boolean hasRazza() {
+		if ((getNomeRazzaDinosauri() != null) &&
+				(getNumeroDinosauri() > 0)) return true;
+		else return false;
+	}
 }

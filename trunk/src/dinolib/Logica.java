@@ -320,8 +320,7 @@ public class Logica {
 	 */
 	private Giocatore ritornaGiocatoreRichiestoPerToken(String token) throws InvalidTokenException {
 		if (existsUserWithToken(token)) {
-			String nomeGiocatore = TokenENome.get(token);
-			return Giocatori.get(nomeGiocatore);
+			return Giocatori.get(TokenENome.get(token));
 		}
 		else return null;
 	}
@@ -346,10 +345,14 @@ public class Logica {
 		return false;
 	}
 
+	/**
+	 * Helper per verificare l'esistenza della razza per il giocatore con il dato token.
+	 * @param token
+	 * @return
+	 * @throws InvalidTokenException
+	 */
 	private boolean existsRaceForPlayer (String token) throws InvalidTokenException {
-		Giocatore giocatore = ritornaGiocatoreRichiestoPerToken(token);
-		if (giocatore.getNomeRazzaDinosauri() != null) return true;
-		else return false;
+		return ritornaGiocatoreRichiestoPerToken(token).hasRazza();
 	}
 
 	/**
@@ -358,20 +361,19 @@ public class Logica {
 	public void aCreaRazzaETipo(String token, String nomeRazza, String tipoRazza) throws RaceAlreadyCreatedException, RaceNameExistsException, InvalidTokenException {
 		if (existsUserWithToken(token) && !existsRaceWithSameName(nomeRazza)) {
 			if (!existsRaceForPlayer(token)) {
-				Giocatore tempGiocatore = ritornaGiocatoreRichiestoPerToken(token);
 				Dinosauro tempDinosauro;
 				if (tipoRazza.equals("c")) {
 					tempDinosauro = new Carnivoro(CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa()), CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa()));
-					tempGiocatore.creaNuovaRazzaDiDinosauri(nomeRazza, tempDinosauro);
+					ritornaGiocatoreRichiestoPerToken(token).creaNuovaRazzaDiDinosauri(nomeRazza, tempDinosauro);
 				}
 				else if (tipoRazza.equals("e")) {
 					tempDinosauro = new Erbivoro(CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa()), CommonUtils.getNewRandomIntValueOnMyMap(rifMappa.getLatoDellaMappa()));
-					tempGiocatore.creaNuovaRazzaDiDinosauri(nomeRazza, tempDinosauro);
+					ritornaGiocatoreRichiestoPerToken(token).creaNuovaRazzaDiDinosauri(nomeRazza, tempDinosauro);
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Helper per verificare che l'utente sia effettivamente loggato.
 	 * @return 
@@ -379,78 +381,108 @@ public class Logica {
 	 */
 	public boolean userIsLogged(String token) throws InvalidTokenException {
 		if (existsUserWithToken(token)) {
-			if (Giocatori.get(TokenENome.get(token)).isLogged()) return true;
+			if (ritornaGiocatoreRichiestoPerToken(token).isLogged()) return true;
 			else return false;
 		}
 		else throw new InvalidTokenException();
 	}
-	
+
 	/**
 	 * Implementa l'accesso alla partita.
 	 */
 	public void aAccediAPartita(String token) throws TroppiGiocatoriException, RazzaNonCreataException, InvalidTokenException {
-		if (!Giocatori.get(TokenENome.get(token)).isInGame()) { // TODO aggiungere check per tetto max giocatori
-			
+		Giocatore tempGiocatore = ritornaGiocatoreRichiestoPerToken(token);
+		if (tempGiocatore.isInGame()) { // TODO aggiungere check per tetto max giocatori
+			if (tempGiocatore.getNomeRazzaDinosauri() != null) {
+
+			}
+			else throw new RazzaNonCreataException();
 		}
 		else return;
 	}
-	
-	
-	
+
 	/**
-	 * Helper/Comando per l'uscita dalla partita: rimuove i dinosauri e imposta lo stato di "fuori dal gioco"
+	 * Codice per l'uscita dalla partita. Viene chiamato direttamente o tramite l'adattatore.
 	 */
-	private void esciDallaPartita() {
-		rimuoviDinosauriDallaMappa(myPlayer);
-		iAmNotInGame();
+	private void esciDallaPartita(Giocatore tempGiocatore) {
+		rimuoviDinosauriDallaMappa(tempGiocatore);
+		tempGiocatore.iAmNotInGame();
 	}
 
 	/**
-	 * Comando per restituire la lista dei giocatori al client.
+	 * Adattatore per l'uscita dalla partita.
+	 * @param token
+	 * @throws InvalidTokenException
+	 */
+	public void aEsciDallaPartita(String token) throws InvalidTokenException {
+		if (existsUserWithToken(token)) esciDallaPartita(ritornaGiocatoreRichiestoPerToken(token));
+	}
+
+	/**
+	 * Helper per le funzioni che restituiscono liste
+	 * @param buffer
+	 * @param toAppend
+	 */
+	private void assemblaBuffer(String buffer, String toAppend) {
+		if (buffer != null) 
+			buffer = buffer + "," + toAppend;
+		else 
+			buffer = toAppend;
+	}
+	/**
+	 * Adattatore del comando per restituire la lista dei giocatori al client.
 	 * @throws IOException 
 	 */
-	private void listaDeiGiocatori() throws IOException {
-		Iterator<String> itNomiGiocatori = Giocatori.keySet().iterator();
-		String buffer = "@ok,";
-		if (itNomiGiocatori.hasNext()) {
+	public String aListaDeiGiocatori(String token) throws InvalidTokenException {
+		if (existsUserWithToken(token)) {
+			Iterator<String> itNomiGiocatori = returnIteratoreSulleChiaviGiocatori();
+			String buffer = null;
 			while (itNomiGiocatori.hasNext()) {
-				buffer = buffer + "," + itNomiGiocatori.next();
+				String curNomeGiocatore = itNomiGiocatori.next();
+				if (Giocatori.get(curNomeGiocatore).isLogged() &&
+						Giocatori.get(curNomeGiocatore).isInGame()) {
+					assemblaBuffer(buffer, curNomeGiocatore);
+				}
 			}
-			writeLineToOutput(buffer);
-			return;
+			return buffer;
 		}
-		else writeLineToOutput("@no");
+		return null;
 	}
 
 	/**
-	 * Comando per gestire il logout dell'utente
+	 * Metodo per gestire il logout dell'utente
 	 */
-	private void handleLogout() throws IOException {
-		if (isLogged()) {
-			if (isInGame()) esciDallaPartita();
-			iAmNotLogged();
-			writeLineToOutput("@ok");
-			return;
+	public void aLogout(String token) throws InvalidTokenException {
+		if (existsUserWithToken(token)) {
+			Giocatore tempGiocatore = ritornaGiocatoreRichiestoPerToken(token);
+			if (tempGiocatore.isLogged()) {
+				if (tempGiocatore.isInGame()) {
+					esciDallaPartita(tempGiocatore);
+				}
+				tempGiocatore.iAmNotLogged();
+			}
 		}
-		else writeLineToOutput("@no");
 	}
 
 	/**
 	 * Spedisce la lista dei dinosauri all'utente.
 	 * @throws IOException
 	 */
-	private void sendListaDinosauri() throws IOException {
-		if (existsRazza(myPlayer)) {
-			String buffer = "@ok";
-			Iterator<String> itListaIds = myPlayer.getItIdDinosauri();
-			while (itListaIds.hasNext()) {
-				buffer = buffer + "," + itListaIds.next();
+	public String aSendListaDinosauri(String token) throws InvalidTokenException, NonInPartitaException {
+		if (existsUserWithToken(token) && ritornaGiocatoreRichiestoPerToken(token).isInGame()) {
+			String buffer = null;
+			if (ritornaGiocatoreRichiestoPerToken(token).hasRazza()) {
+				Iterator<String> itIdDinosauri = ritornaGiocatoreRichiestoPerToken(token).getItIdDinosauri();
+				while (itIdDinosauri.hasNext()) {
+					assemblaBuffer(buffer, itIdDinosauri.next());
+				}
+				return buffer;
 			}
-			writeLineToOutput(buffer);
+			return buffer;
 		}
-		else writeLineToOutput("@no,@nonInPartita");
+		else throw new NonInPartitaException();
 	}
-
+	
 	private void passaTurno() {
 		// TODO Auto-generated method stub
 
