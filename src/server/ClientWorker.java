@@ -165,14 +165,26 @@ public class ClientWorker extends Server implements Runnable {
 							logica.aAccediAPartita(token);
 							writeOkToOutput();
 						}
-						else if (comando.equals("@uscitaPartita")) bufferDaStampare = logica.esciDallaPartita(token);
-						else if (comando.equals("@listaGiocatori")) bufferDaStampare = logica.listaDeiGiocatori(token);
+						else if (comando.equals("@uscitaPartita")) {
+							logica.aEsciDallaPartita(token);
+							writeOkToOutput();
+						}
+						else if (comando.equals("@listaGiocatori")) {
+							bufferDaStampare = logica.aListaDeiGiocatori(token);
+							writeOkToOutput(bufferDaStampare);
+						}
 						else if (comando.equals("@classifica")) bufferDaStampare = logica.classifica(token);
-						else if (comando.equals("@logout")) bufferDaStampare = logica.handleLogout(token);
+						else if (comando.equals("@logout")) {
+							logica.aLogout(token);
+							writeOkToOutput();
+						}
 						/* comandi in partita */
 						/* comandi di informazione */
 						else if (comando.equals("@mappaGenerale")) bufferDaStampare = logica.sendMappaGenerale(token);
-						else if (comando.equals("@listaDinosauri")) bufferDaStampare = logica.sendListaDinosauri(token);
+						else if (comando.equals("@listaDinosauri")) {
+							bufferDaStampare = logica.aSendListaDinosauri(token);
+							writeOkToOutput(bufferDaStampare);
+						}
 						/* comandi di turno */
 						else if (comando.equals("@confermaTurno")) bufferDaStampare = logica.confermaTurno(token);
 						else if (comando.equals("@passaTurno")) bufferDaStampare = logica.passaTurno(token);
