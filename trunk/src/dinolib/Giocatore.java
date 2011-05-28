@@ -225,4 +225,19 @@ public class Giocatore {
 		if (getNumeroDinosauri() >= numero_MAX_DINOSAURI) return true;
 		else return false;
 	}
+	
+	/**
+	 * Getter per il punteggio della specie.
+	 */
+	public int getPunteggio() {
+		return specieDiDinosauri.getPunteggio();
+	}
+	
+	/**
+	 * Helper per sapere se la specie è estinta.
+	 */
+	public boolean isSpecieEstinta() {
+		if (specieDiDinosauri.isEstinta()) return true;
+		else return false;
+	}
 }

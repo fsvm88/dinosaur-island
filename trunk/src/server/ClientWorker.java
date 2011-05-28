@@ -173,7 +173,10 @@ public class ClientWorker extends Server implements Runnable {
 							bufferDaStampare = logica.aListaDeiGiocatori(token);
 							writeOkToOutput(bufferDaStampare);
 						}
-						else if (comando.equals("@classifica")) bufferDaStampare = logica.classifica(token);
+						else if (comando.equals("@classifica")) {
+							bufferDaStampare = logica.aClassifica(token);
+							writeLineToOutput("@classifica" + "," + bufferDaStampare);
+						}
 						else if (comando.equals("@logout")) {
 							logica.aLogout(token);
 							writeOkToOutput();

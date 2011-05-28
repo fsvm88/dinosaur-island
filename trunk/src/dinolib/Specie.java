@@ -40,6 +40,42 @@ public class Specie {
 	}
 	
 	/**
+	 * Contiene il punteggio corrente della specie.
+	 * @uml.property name="punteggio"
+	 */
+	private int punteggio = 0;
+	
+	/**
+	 * Dice se la razza si è già estinta o meno.
+	 * @uml.property name="isEstinta"
+	 */
+	private boolean isEstinta = false;
+	
+	/**
+	 * Helper per verificare se la specie è estinta o meno.
+	 */
+	public boolean isEstinta() {
+		return isEstinta;
+	}
+	
+	/**
+	 * Restituisce il punteggio corrente della specie.
+	 */
+	public int getPunteggio() {
+		return punteggio;
+	}
+	
+	/**
+	 * Aggiorna il punteggio della specie.
+	 */
+	public void aggiornaPunteggio() {
+		Iterator<String> itDinosauri = getItIdDinosauri();
+		while (itDinosauri.hasNext()) {
+			punteggio = (punteggio + (1+dinosauri.get(itDinosauri.next()).getDimensione())); 
+		}
+	}
+	
+	/**
 	 * Aggiunge un dinosauro alla lista di dinosauri della Specie.
 	 */
 	public void aggiungiDinosauroAllaSpecie(Dinosauro dinosauro, String nuovoIdDinosauro){
@@ -50,12 +86,28 @@ public class Specie {
 			dinosauri.put(nuovoIdDinosauro, dinosauro);
 		}
 	}
+	
+	private void laRazzaEEstinta() {
+		isEstinta = true;
+	}
+	
+	/**
+	 * Uccide la razza di dinosauri.
+	 * Imposta isEstinta a true e dealloca gli oggetti.
+	 */
+	private void uccidiRazza() {
+		laRazzaEEstinta();
+		dinosauri = null;
+	}
 
 	/**
 	 * Rimuove il dinosauro con l'ID scelto dalla specie.
 	 */
 	public void rimuoviDinosauroDallaSpecie(String idDinosauro) {
 		dinosauri.remove(idDinosauro);
+		if (dinosauri.size() == 0) {
+			uccidiRazza();
+		}
 	}
 
 	/**

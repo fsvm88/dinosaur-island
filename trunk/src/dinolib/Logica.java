@@ -745,10 +745,38 @@ public class Logica {
 		// TODO Auto-generated method stub
 
 	}
+	
+	/**
+	 * Helper per assemblare il punteggio per un singolo giocatore.
+	 * @param buffer
+	 * @param giocatore
+	 * @return
+	 */
+	private void assemblaPunteggio(String buffer, Giocatore giocatore) {
+		assemblaBuffer(buffer, giocatore.getNome());
+		assemblaBuffer(buffer, giocatore.getNomeRazzaDinosauri());
+		buffer = buffer + "," + giocatore.getPunteggio();
+		if (giocatore.isSpecieEstinta()) assemblaBuffer(buffer, "s");
+		else assemblaBuffer(buffer, "n");
+	}
 
-	private void classifica() {
-		// TODO Auto-generated method stub
-
+	/**
+	 * Ritorna la classifica di gioco.
+	 * @return
+	 * @throws InvalidTokenException 
+	 * @throws NonInPartitaException 
+	 */
+	public String aClassifica(String token) throws InvalidTokenException {
+		if (existsUserWithToken(token) &&
+				userIsLogged(token)) {
+			String buffer = null;
+			Iterator<Giocatore> itGiocatori = returnIteratoreSuiGiocatori();
+			while (itGiocatori.hasNext()) {
+				assemblaPunteggio(buffer, itGiocatori.next());
+			}
+			return buffer;
+		}
+		return null;
 	}
 	/**
 	 * Helper per verificare che sia il turno del giocatore che chiama la funzione. 
