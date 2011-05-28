@@ -74,7 +74,7 @@ public class Logica {
 			System.exit(-1);
 		}
 	}
-
+	
 	/**
 	 * Se i file di salvataggio esistono li carica, altrimenti assume primo avvio
 	 * @throws ClassNotFoundException 
@@ -189,7 +189,7 @@ public class Logica {
 		do {
 			for (i = -maxDistance; i < (maxDistance+1); i++) {
 				if (tryActualSpawn(i+x, j+y, idDinosauro)) {
-					tempDinosauro.setXY(i+x, j+y);
+					tempDinosauro.setXY(i+x, j+CommonUtils.translateYforServer(y, rifMappa.getLatoDellaMappa()));
 					return true;
 				}
 			}
@@ -449,6 +449,8 @@ public class Logica {
 		rimuoviDinosauriDallaMappa(tempGiocatore);
 		tempGiocatore.iAmNotInGame();
 		verifySomeoneIsPlaying();
+		if (isSomeonePlaying()) return;
+		else nomeGiocatoreCorrente = null;
 	}
 
 	/**
@@ -639,7 +641,7 @@ public class Logica {
 				if (curDinosauro.getTipoRazza().equals("Carnivoro")) {
 					Dinosauro newDinosauro = new Carnivoro(x, y);
 					newDinosauro.nonSonoUsabile();
-					trySpawnOfAnEgg(token, x, x, newDinosauro, newIdDinosauro);
+					trySpawnOfAnEgg(token, x, y, newDinosauro, newIdDinosauro);
 					return newIdDinosauro;
 				}
 				else if (curDinosauro.getTipoRazza().equals("Erbivoro")) {
@@ -693,7 +695,7 @@ public class Logica {
 		buffer = tempGiocatore.getNome() + "," +
 		tempGiocatore.getNomeRazzaDinosauri() + "," +
 		tempGiocatore.getTipoRazza().toLowerCase().charAt(0) + "," +
-		"{" + "," + tempDinosauro.getX() + "," + tempDinosauro.getY() + "," + "}" + "," +
+		"{" + "," + tempDinosauro.getX() + "," + CommonUtils.translateYforClient(tempDinosauro.getY(), rifMappa.getLatoDellaMappa()) + "," + "}" + "," +
 		tempDinosauro.getDimensione();
 	}
 
@@ -736,9 +738,16 @@ public class Logica {
 		return null;
 	}
 
-	private void sendVistaLocale() {
-		// TODO Auto-generated method stub
-
+	public String aVistaLocale(String token, String idDinosauro) throws InvalidTokenException, NonInPartitaException, InvalidIDException {
+		if (existsUserWithToken(token) &&
+				playerIsInGame(token) &&
+				playerHasDinosauro(token, idDinosauro)) {
+			String buffer = null;
+			Dinosauro tempDinosauro = ritornaGiocatoreRichiestoPerToken(token).getDinosauro(idDinosauro);
+			buffer = "{" + tempDinosauro.getX() + "," + CommonUtils.translateYforClient(tempDinosauro.getY(), rifMappa.getLatoDellaMappa()) + "}";
+			
+		}
+		return null;
 	}
 
 	private void sendMappaGenerale() {
