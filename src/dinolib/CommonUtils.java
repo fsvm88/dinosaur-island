@@ -21,13 +21,28 @@ public class CommonUtils {
 	}
 	
 	/**
-	 * Trasla la Y rispetto alla mappa stoccata sul server.
-	 * Serve per gestire le richieste dal client.
+	 * Trasla la Y di modo da far corrispondere una matrice a un piano cartesiano.
 	 * La x rimane uguale quindi non ha bisogno di ulteriori rifiniture.
+	 * La traslazione viene fatta a bassissimo livello, di modo da limitare la complessità per la logica di alto livello.
+	 * Viene chiamata da oggetti come Mappa. (serve il server)
 	 * @param yToTranslate
+	 * @param modulus
 	 * @return
 	 */
-	public static int translateY (int yToTranslate, int modulus) {
+	public static int translateYforServer (int yToTranslate, int modulus) {
 		return modulus - yToTranslate;
+	}
+	
+	/**
+	 * Trasla la Y di modo da far corrispondere una matrice a un piano cartesiano.
+	 * La x rimane uguale quindi non ha bisogno di ulteriori rifiniture.
+	 * La traslazione viene fatta a bassissimo livello, di modo da limitare la complessità per la logica di alto livello.
+	 * Viene chiamata da logica di alto livello come Logica. (serve il client)
+	 * @param yToTranslate
+	 * @param modulus
+	 * @return
+	 */
+	public static int translateYforClient(int yToTranslate, int modulus) {
+		return modulus + yToTranslate;
 	}
 }
