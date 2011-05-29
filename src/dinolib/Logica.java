@@ -74,7 +74,7 @@ public class Logica {
 			System.exit(-1);
 		}
 	}
-	
+
 	/**
 	 * Se i file di salvataggio esistono li carica, altrimenti assume primo avvio
 	 * @throws ClassNotFoundException 
@@ -123,7 +123,7 @@ public class Logica {
 	private void rimuoviDinosauroDallaCella(int x, int y) {
 		rifMappa.rimuoviIlDinosauroDallaCella(x, y);
 	}
-	
+
 	/**
 	 * Gestisce la rimozione di tutti i dinosauri dalla mappa.	
 	 * @throws InvalidTokenException 
@@ -184,20 +184,24 @@ public class Logica {
 	 * @return
 	 */
 	private boolean tryNearestSpawn(int x, int y, int maxDistance, String idDinosauro, Dinosauro tempDinosauro) {
-		int i = -1;
-		int j = -1;
+		int i = -maxDistance;
+		int j = -maxDistance;
 		do {
-			for (i = -maxDistance; i < (maxDistance+1); i++) {
+			i = -maxDistance;
+			do {
+
 				if (tryActualSpawn(i+x, j+y, idDinosauro)) {
 					tempDinosauro.setXY(i+x, j+CommonUtils.translateYforServer(y, rifMappa.getLatoDellaMappa()));
 					return true;
 				}
-			}
+				i++;
+			} while ((i<(maxDistance+1)) &&
+					(0<=(i+x)) &&
+					((i+x)<rifMappa.getLatoDellaMappa()));
 			j++;
-		} while (j<maxDistance && (0<=(i+x)) &&
-				((i+x)<rifMappa.getLatoDellaMappa()) &&
+		} while ((j<(maxDistance+1)) &&
 				(0<=(j+y)) &&
-				((j+y)<rifMappa.getLatoDellaMappa()) );
+				((j+y)<rifMappa.getLatoDellaMappa()));
 		return false;
 	}
 	/**
@@ -366,7 +370,7 @@ public class Logica {
 		}
 		else throw new InvalidTokenException();
 	}
-	
+
 	/**
 	 * Verifica se il numero massimo di utenti è connesso. Se sì lancia una eccezione, altrimenti ritorna false.
 	 * ATTENZIONE! Il valore di ritorno di di default è FALSE! (Contrariamente a tutti gli altri helper).
@@ -391,7 +395,7 @@ public class Logica {
 		if (qualcunoStaGiocando) return true;
 		else return false;
 	}
-	
+
 	/**
 	 * Helper per far sapere che qualcuno sta giocando.
 	 * @return
@@ -400,7 +404,7 @@ public class Logica {
 		if (qualcunoStaGiocando) return true;
 		else return false;
 	}
-	
+
 	/**
 	 * Helper per far sapere che nessuno sta giocando.
 	 * @return
@@ -409,7 +413,7 @@ public class Logica {
 		if (qualcunoStaGiocando) return true;
 		else return false;
 	}
-	
+
 	/**
 	 * Verifica (fa il controllo) che qualcuno stia giocando. Basta un giocatore qualunque, ecco perchè il ciclo si spezza con un return immediato.
 	 * @return
@@ -423,7 +427,7 @@ public class Logica {
 			}
 		}
 	}
-	
+
 	/**
 	 * Implementa l'accesso alla partita.
 	 * @throws NonInPartitaException 
@@ -440,7 +444,7 @@ public class Logica {
 		}
 		else return;
 	}
-	
+
 	/**
 	 * Codice per l'uscita dalla partita. Viene chiamato direttamente o tramite l'adattatore.
 	 * @throws InvalidTokenException 
@@ -508,7 +512,7 @@ public class Logica {
 			}
 		}
 	}
-	
+
 	/**
 	 * Spedisce la lista dei dinosauri all'utente.
 	 * @throws IOException
@@ -738,14 +742,86 @@ public class Logica {
 		return null;
 	}
 
+	/**
+	 * Ritorna la x più a sinistra possibile rispetto a quella specificata.
+	 * @param x
+	 * @param rangeVista
+	 * @return
+	 */
+	private int doSubtraction(int coord, int rangeVista) {
+		int subtraction = (coord - rangeVista);
+		if (subtraction<0) return 0;
+		else if (subtraction>=rifMappa.getLatoDellaMappa()) return (rifMappa.getLatoDellaMappa()-1);
+		else return subtraction;
+	}
+
+	private int doAddition(int coord, int rangeVista) {
+		int addition = (coord + rangeVista);
+		if (addition<0) return 0;
+		else if (addition>=rifMappa.getLatoDellaMappa()) return (rifMappa.getLatoDellaMappa()-1);
+		else return addition;
+	}
+
+	private String getCellaDellaMappaPerBuffer(int x, int y) {
+		Character tipoCella = rifMappa.getTipoCella(x, y).toLowerCase().charAt(0);
+		if ((tipoCella.equals("t")) ||
+				(tipoCella.equals("a"))) {
+			return "[" + tipoCella.charValue() + "]";
+		}
+		else if ((tipoCella.equals("v")) ||
+				tipoCella.equals("c")) {
+			return "[" + tipoCella.charValue() + "," + rifMappa.getCella(x, y).getValoreAttuale() + "]";
+		}
+		else if ((tipoCella.equals("d"))) {
+			return "[" + tipoCella.charValue() + "," + rifMappa.getCella(x, y).getIdDelDinosauro() + "]";
+		}
+		return null;
+	}
+
+	private String getRigaDellaMappa(int yRiga, int fromX, int toX) {
+		String tmpBuf = null;
+		int i = fromX;
+		if (fromX == toX) {
+			return getCellaDellaMappaPerBuffer(fromX, yRiga);
+		}
+		else {
+			while ((i<toX)) {
+				tmpBuf = getCellaDellaMappaPerBuffer(i, yRiga) + " ";
+				i++;
+			}
+			tmpBuf = getCellaDellaMappaPerBuffer(toX, yRiga);
+			return tmpBuf;
+		}
+	}
+
+	/**
+	 * Invia la vista locale del dinosauro richiesto all'utente.
+	 * @param token
+	 * @param idDinosauro
+	 * @return
+	 * @throws InvalidTokenException
+	 * @throws NonInPartitaException
+	 * @throws InvalidIDException
+	 */
 	public String aVistaLocale(String token, String idDinosauro) throws InvalidTokenException, NonInPartitaException, InvalidIDException {
 		if (existsUserWithToken(token) &&
 				playerIsInGame(token) &&
 				playerHasDinosauro(token, idDinosauro)) {
 			String buffer = null;
 			Dinosauro tempDinosauro = ritornaGiocatoreRichiestoPerToken(token).getDinosauro(idDinosauro);
-			buffer = "{" + tempDinosauro.getX() + "," + CommonUtils.translateYforClient(tempDinosauro.getY(), rifMappa.getLatoDellaMappa()) + "}";
-			
+			int rangeVista = tempDinosauro.getRangeVista();
+			int leftCornerX = doSubtraction(tempDinosauro.getX(), rangeVista);
+			int bottomCornerY = doSubtraction(tempDinosauro.getY(), rangeVista);
+			int rightCornerX = doAddition(tempDinosauro.getX(), rangeVista);
+			int topCornerY = doAddition(tempDinosauro.getY(), rangeVista);
+			buffer = "{" + leftCornerX + "," + CommonUtils.translateYforClient(bottomCornerY, rifMappa.getLatoDellaMappa()) + "}";
+			buffer = buffer + "," + "{" + (topCornerY-bottomCornerY) + "," + (rightCornerX-leftCornerX) + "}" + ",";
+			int j = bottomCornerY;
+			do {
+				buffer = getRigaDellaMappa(j, leftCornerX, rightCornerX) + ";";
+				j++;
+			} while (j<topCornerY);
+			return buffer;
 		}
 		return null;
 	}
@@ -754,7 +830,7 @@ public class Logica {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	/**
 	 * Helper per assemblare il punteggio per un singolo giocatore.
 	 * @param buffer

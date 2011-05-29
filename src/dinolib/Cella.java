@@ -27,7 +27,7 @@ public class Cella extends Mappa {
 	 * @uml.property  name="idDelDinosauro"
 	 */
 	public String getIdDelDinosauro() {
-		if (this.toString().equals("CellaConDinosauro")) {
+		if (this.toString().equals("Dinosauro")) {
 			return idDelDinosauro;
 		}
 		else return null;
@@ -45,9 +45,47 @@ public class Cella extends Mappa {
 	 * @uml.property  name="cellaSuCuiSiTrova"
 	 */
 	public Cella getCellaSuCuiSiTrova() {
-		if (this.toString().equals("CellaConDinosauro")) {
+		if (this.toString().equals("Dinosauro")) {
 			return cellaSuCuiSiTrova;
 		}
 		else return null;
 	}
+	/**
+	 * Contiene il valore iniziale dell'energia massima ricavabile dalla carogna.
+	 * @uml.property  name="valoreIniziale"
+	 */
+	protected int valoreIniziale = 0;
+	/**
+	 * Contiene il valore attuale della massima energia ricavabile dalla carogna.
+	 * @uml.property  name="valoreAttuale"
+	 */
+	protected int valoreAttuale = 0;
+	/**
+	 * Getter of the property <tt>valoreAttuale</tt>
+	 * @return  Returns the valoreAttuale.
+	 * @uml.property  name="valoreAttuale"
+	 */
+	public int getValoreAttuale() {
+		return valoreAttuale;
+	}
+	
+	/**
+	 * Aggiorna il valore della cella quando questa viene mangiata.
+	 */
+	public void mangia(int valoreMangiato) {
+		int diffTemp = valoreAttuale - valoreMangiato;
+		if (diffTemp <= 0) {
+			valoreAttuale = 0;
+		}
+		else if (diffTemp > 0) {
+			valoreAttuale = diffTemp;
+		}
+	}
+	
+	/**
+	 * Stub per esporre il metodo comune.
+	 * Nel caso sia una cella senza vegetazione o carogna non fa nulla.
+	 * Nel caso la cella invece sia vegetazione o carogna viene chiamato il metodo delle sottoclassi.
+	 */
+	public void aggiornaCellaSulTurno() {}
 }

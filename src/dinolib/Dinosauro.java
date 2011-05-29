@@ -349,4 +349,23 @@ public class Dinosauro extends Specie {
 	public String getTipoRazza() {
 		return this.getClass().getName();
 	}
+	
+	/**
+	 * Restituisce un valore che indica quante caselle il dinosauro vede attorno a sè (range di visuale).
+	 * Dipende dalla dimensione del dinosauro.
+	 * @return
+	 */
+	public int getRangeVista() {
+		switch (getDimensione()) {
+		case 1:
+			return 2;
+		case 2:
+		case 3:
+			return 3;
+		case 4:
+		case 5:
+			return 4;
+		}
+		return 2;
+	}
 }
