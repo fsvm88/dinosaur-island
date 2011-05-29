@@ -542,9 +542,12 @@ public class Logica {
 
 	}
 
-	private void muoviDinosauro() {
-		// TODO Auto-generated method stub
-
+	private void aMuoviDinosauro(String token, String idDinosauro, int toX, int toY) throws InvalidTokenException, NonInPartitaException, InvalidIDException {
+		if (existsUserWithToken(token) &&
+				playerIsInGame(token) &&
+				playerHasDinosauro(token, idDinosauro)) {
+			
+		}
 	}
 
 	/**
@@ -755,6 +758,12 @@ public class Logica {
 		else return subtraction;
 	}
 
+	/**
+	 * Fa l'addizione per le coordinate, che rimangano in range.
+	 * @param coord
+	 * @param rangeVista
+	 * @return
+	 */
 	private int doAddition(int coord, int rangeVista) {
 		int addition = (coord + rangeVista);
 		if (addition<0) return 0;
@@ -762,6 +771,12 @@ public class Logica {
 		else return addition;
 	}
 
+	/**
+	 * Fa la sottrazione per le coordinate, che rimangano in range.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	private String getCellaDellaMappaPerBuffer(int x, int y) {
 		Character tipoCella = rifMappa.getTipoCella(x, y).toLowerCase().charAt(0);
 		if ((tipoCella.equals("t")) ||
@@ -778,6 +793,13 @@ public class Logica {
 		return null;
 	}
 
+	/**
+	 * Restituisce una riga intera della mappa formattata.
+	 * @param yRiga
+	 * @param fromX
+	 * @param toX
+	 * @return
+	 */
 	private String getRigaDellaMappa(int yRiga, int fromX, int toX) {
 		String tmpBuf = null;
 		int i = fromX;
@@ -826,9 +848,18 @@ public class Logica {
 		return null;
 	}
 
-	private void sendMappaGenerale() {
-		// TODO Auto-generated method stub
-
+	public String aSendMappaGenerale(String token) throws InvalidTokenException, NonInPartitaException {
+		if (existsUserWithToken(token) &&
+				playerIsInGame(token)) {
+			String buffer = null;
+			buffer = "{" + rifMappa.getLatoDellaMappa() + "," + rifMappa.getLatoDellaMappa() + "}" + ",";
+			int i = 0;
+			while (i<rifMappa.getLatoDellaMappa()) {
+				buffer = buffer + getRigaDellaMappa(i, 0, rifMappa.getLatoDellaMappa()) + ";"; // TODO implementare il buio della mappa!! Chiedere esercitatore!
+				i++;
+			}
+		}
+		return null;
 	}
 
 	/**
