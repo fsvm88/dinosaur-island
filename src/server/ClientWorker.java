@@ -183,7 +183,10 @@ public class ClientWorker extends Server implements Runnable {
 						}
 						/* comandi in partita */
 						/* comandi di informazione */
-						else if (comando.equals("@mappaGenerale")) bufferDaStampare = logica.sendMappaGenerale(token);
+						else if (comando.equals("@mappaGenerale")) {
+							bufferDaStampare = logica.aSendMappaGenerale(token);
+							writeLineToOutput("@mappaGenerale" + "," + bufferDaStampare);
+						}
 						else if (comando.equals("@listaDinosauri")) {
 							bufferDaStampare = logica.aSendListaDinosauri(token);
 							writeLineToOutput("@listaDinosauri" + "," + bufferDaStampare);
@@ -213,7 +216,7 @@ public class ClientWorker extends Server implements Runnable {
 								int x = 0;
 								int y = 0;
 								if (estraiXeY(scanner, x, y)) {
-									bufferDaStampare = logica.muoviDinosauro(token, idDinosauro, x, y);
+									bufferDaStampare = logica.aMuoviDinosauro(token, idDinosauro, x, y);
 								}
 								else writeLineToOutput("@no");
 							}
