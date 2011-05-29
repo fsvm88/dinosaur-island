@@ -195,7 +195,7 @@ public class ClientWorker extends Server implements Runnable {
 							String idDinosauro = scanner.next();
 							if (comando.equals("@vistaLocale")) {
 								bufferDaStampare = logica.aVistaLocale(token, idDinosauro);
-								writeLineToOutput("@vista")
+								writeLineToOutput("@vistaLocale" + "," + bufferDaStampare);
 							}
 							else if (comando.equals("@statoDinosauro")) {
 								bufferDaStampare = logica.aStatoDinosauro(token, idDinosauro);

@@ -7,4 +7,11 @@ public class CellaConDinosauro extends Cella {
 	public CellaConDinosauro(String idDinosauroOccupante, Cella cellaSuCuiSiTrova){
 		super(idDinosauroOccupante, cellaSuCuiSiTrova);
 	}
+	/**
+	 * Override del metodo di default toString.
+	 * Non posso usare il nome "Dinosauro" per la classe, quindi devo ridefinire toString di modo da semplificare la logica di alto livello.
+	 */
+	public String toString() {
+		return "Dinosauro";
+	}
 }

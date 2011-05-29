@@ -124,8 +124,8 @@ public class Mappa {
 	}
 	
 	/**
-	 * Interroga la cella per sapere di che tipo è.
-	 * Normalmente viene chiamato per sapere se è vegetazione o carogna.
+	 * Interroga la cella per sapere di che tipo è. 
+	 * Helper molto generico per qualunque tipo di cella.
 	 * @param x
 	 * @param y
 	 * @return
