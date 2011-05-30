@@ -40,29 +40,7 @@ public class Giocatore {
 		if (password.equals(suppliedPassword)) return true;
 		else return false;
 	}
-
-	/**
-	 * Contiene il token univoco del giocatore per poter comunicare tra server e client.
-	 * @uml.property name="tokenUnivoco"
-	 */
-	private String tokenUnivoco = null;
-
-	/**
-	 * Restituisce il valore corrente del token.
-	 * @return
-	 */
-	public String getTokenUnivoco() {
-		return tokenUnivoco;
-	}
-
-	/**
-	 * Imposta il nuovo valore del token.
-	 * @param tokenUnivoco
-	 */
-	public void setTokenUnivoco(String tokenUnivoco) {
-		this.tokenUnivoco = tokenUnivoco;
-	}
-
+	
 	/**
 	 * Fa riferimento a un oggetto Specie, viene inizializzato a zero fino a che non viene costruita la specie tramite l'implementazione in server.
 	 * @uml.property  name="specieDiDinosauri"
@@ -112,8 +90,7 @@ public class Giocatore {
 	
 	/**
 	 * Aggiunge un nuovo dinosauro alla razza.
-	 * Genera un token univoco e lo assegna al dinosauro in questione.
-	 * Richiede come parametro un nuovo oggetto di tipo di dinosauro.
+	 * Richiede come parametro un nuovo oggetto di tipo di dinosauro e l'ID del dinosauro.
 	 */
 	public void aggiungiDinosauroAllaRazza(Dinosauro nuovoDinosauro, String nuovoIdDinosauro) {
 		specieDiDinosauri.aggiungiDinosauroAllaSpecie(nuovoDinosauro, nuovoIdDinosauro);
