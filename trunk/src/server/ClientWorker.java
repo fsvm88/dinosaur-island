@@ -138,85 +138,85 @@ public class ClientWorker extends Server implements Runnable {
 				String pwd = null;
 				estraiUserPwd(scanner, user, pwd);
 				if (comando.equals("@creaUtente")) {
-					logica.aCreaUtente(user, pwd);
+					socketAdaptor.aCreaUtente(user, pwd);
 					writeOkToOutput();
 				}
 				if (comando.equals("@login")) {
-					logica.aLoginUtente(user, pwd);
-					writeOkToOutput(logica.aGetTokenUtente(user));
+					socketAdaptor.aLoginUtente(user, pwd);
+					writeOkToOutput(socketAdaptor.aGetTokenUtente(user));
 				}
 			}
 			else if (!isLoginOrCreation(comando)) {
 				String token = null;
 				getToken(scanner);
 				if (isGoodToken(token)) {
-					if (logica.userIsLogged(token)) {
+					if (socketAdaptor.aUserIsLogged(token)) {
 						/* comandi fuori partita*/
 						if (comando.equals("@creaRazza")) {
 							String nomeRazza = null;
 							String tipoRazza = null;
 							estraiRazzaETipo(scanner, nomeRazza, tipoRazza);
 							if (validaRazzaETipo(nomeRazza, tipoRazza)) {
-								logica.aCreaRazzaETipo(token, nomeRazza, tipoRazza);
+								socketAdaptor.aCreaRazzaETipo(token, nomeRazza, tipoRazza);
 								writeOkToOutput();
 							}
 						}
 						else if (comando.equals("@accessoPartita")) {
-							logica.aAccediAPartita(token);
+							socketAdaptor.aAccediAPartita(token);
 							writeOkToOutput();
 						}
 						else if (comando.equals("@uscitaPartita")) {
-							logica.aEsciDallaPartita(token);
+							socketAdaptor.aEsciDallaPartita(token);
 							writeOkToOutput();
 						}
 						else if (comando.equals("@listaGiocatori")) {
-							bufferDaStampare = logica.aListaDeiGiocatori(token);
+							bufferDaStampare = socketAdaptr.aListaDeiGiocatori(token);
 							writeOkToOutput(bufferDaStampare);
 						}
 						else if (comando.equals("@classifica")) {
-							bufferDaStampare = logica.aClassifica(token);
+							bufferDaStampare = socketAdaptor.aClassifica(token);
 							writeLineToOutput("@classifica" + "," + bufferDaStampare);
 						}
 						else if (comando.equals("@logout")) {
-							logica.aLogout(token);
+							socketAdaptor.aLogout(token);
 							writeOkToOutput();
 						}
 						/* comandi in partita */
 						/* comandi di informazione */
 						else if (comando.equals("@mappaGenerale")) {
-							bufferDaStampare = logica.aSendMappaGenerale(token);
+							bufferDaStampare = socketAdaptor.aSendMappaGenerale(token);
 							writeLineToOutput("@mappaGenerale" + "," + bufferDaStampare);
 						}
 						else if (comando.equals("@listaDinosauri")) {
-							bufferDaStampare = logica.aSendListaDinosauri(token);
+							bufferDaStampare = socketAdaptor.aSendListaDinosauri(token);
 							writeLineToOutput("@listaDinosauri" + "," + bufferDaStampare);
 						}
 						/* comandi di turno */
-						else if (comando.equals("@confermaTurno")) bufferDaStampare = logica.confermaTurno(token);
-						else if (comando.equals("@passaTurno")) bufferDaStampare = logica.passaTurno(token);
+						else if (comando.equals("@confermaTurno")) bufferDaStampare = socketAdaptor.aConfermaTurno(token);
+						else if (comando.equals("@passaTurno")) bufferDaStampare = socketAdaptor.aPassaTurno(token);
 						else if (scanner.hasNext()) {
 							String idDinosauro = scanner.next();
 							if (comando.equals("@vistaLocale")) {
-								bufferDaStampare = logica.aVistaLocale(token, idDinosauro);
+								bufferDaStampare = socketAdaptor.aVistaLocale(token, idDinosauro);
 								writeLineToOutput("@vistaLocale" + "," + bufferDaStampare);
 							}
 							else if (comando.equals("@statoDinosauro")) {
-								bufferDaStampare = logica.aStatoDinosauro(token, idDinosauro);
+								bufferDaStampare = socketAdaptor.aStatoDinosauro(token, idDinosauro);
 								writeLineToOutput("@statoDinosauro" + "," + bufferDaStampare);
 							}
 							else if (comando.equals("@cresciDinosauro")) {
-								logica.aCresciDinosauro(token, idDinosauro);
+								socketAdaptor.aCresciDinosauro(token, idDinosauro);
 								writeOkToOutput();
 							}
 							else if (comando.equals("@deponiUovo")) {
-								bufferDaStampare = logica.deponiUovo(token, idDinosauro);
+								bufferDaStampare = socketAdaptor.aDeponiUovo(token, idDinosauro);
 								writeOkToOutput(bufferDaStampare);
 							}
 							else if (comando.equals("@muoviDinosauro")) {
 								int x = 0;
 								int y = 0;
 								if (estraiXeY(scanner, x, y)) {
-									bufferDaStampare = logica.aMuoviDinosauro(token, idDinosauro, x, y);
+									bufferDaStampare = socketAdaptor.aMuoviDinosauro(token, idDinosauro, x, y);
 								}
 								else writeLineToOutput("@no");
 							}

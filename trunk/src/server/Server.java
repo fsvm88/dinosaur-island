@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 import dinolib.Logica;
+import dinolib.SocketAdaptor;
 
 public class Server {
 	/**
@@ -20,6 +21,10 @@ public class Server {
 	 * Dichiara la classe logica che gestisce tutta la logica di gioco indipendentemente dall'interfaccia di comunicazione.
 	 */
 	protected Logica logica = new Logica();
+	/**
+	 * Dichiara l'oggetto attraverso cui passano le comunicazioni su socket.
+	 */
+	protected SocketAdaptor socketAdaptor = new SocketAdaptor(logica);
 	
 	/**
 	 * @param args
