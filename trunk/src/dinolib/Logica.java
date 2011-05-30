@@ -142,10 +142,10 @@ public class Logica {
 	 * @throws InvalidTokenException 
 	 */
 	public void inserisciDinosauriNellaMappa(String token) throws InvalidTokenException {
-		Iterator<String> itIdDinosauri = ritornaGiocatoreRichiestoPerToken(token).getItIdDinosauri();
+		Iterator<String> itIdDinosauri = getPlayerByToken(token).getItIdDinosauri();
 		while (itIdDinosauri.hasNext()) {
 			String idCorrente = itIdDinosauri.next();
-			Dinosauro tempDinosauro = ritornaGiocatoreRichiestoPerToken(token).getDinosauro(idCorrente);
+			Dinosauro tempDinosauro = getPlayerByToken(token).getDinosauro(idCorrente);
 			int x = tempDinosauro.getX(), y = tempDinosauro.getY();
 			if (tryActualSpawn(x, y, idCorrente)) return;
 			else {
@@ -223,7 +223,7 @@ public class Logica {
 	/**
 	 * Verifica se esiste l'utente, nel caso fa il throw di UserExistsException.
 	 */
-	boolean existsUser(String user) throws UserExistsException {
+	boolean existsUserWithName(String user) throws UserExistsException {
 		if (Giocatori.containsKey(user)) throw new UserExistsException();
 		else return false;
 	}
@@ -250,7 +250,7 @@ public class Logica {
 	 * @param nomeGiocatoreRichiesto
 	 * @return
 	 */
-	public Giocatore ritornaGiocatoreRichiestoPerNome(String nomeGiocatoreRichiesto) {
+	public Giocatore getPlayerByName(String nomeGiocatoreRichiesto) {
 		return Giocatori.get(nomeGiocatoreRichiesto);
 	}
 
@@ -263,8 +263,8 @@ public class Logica {
 	 * @param token
 	 * @return
 	 */
-	Giocatore ritornaGiocatoreRichiestoPerToken(String token) throws InvalidTokenException {
-		if (existsUserWithToken(token)) {
+	Giocatore getPlayerByToken(String token) throws InvalidTokenException {
+		if (existsPlayerWithToken(token)) {
 			return Giocatori.get(TokenENome.get(token));
 		}
 		else return null;
@@ -276,12 +276,12 @@ public class Logica {
 	 * @return
 	 * @throws InvalidTokenException
 	 */
-	boolean existsUserWithToken (String token) throws InvalidTokenException {
+	boolean existsPlayerWithToken (String token) throws InvalidTokenException {
 		if (TokenENome.containsKey(token)) return true;
 		else return false;
 	}
 
-	boolean existsRaceWithSameName (String nomeRazza) {
+	boolean existsRaceWithName (String nomeRazza) {
 		Iterator<Giocatore> itGiocatori = returnIteratoreSuiGiocatori();
 		while (itGiocatori.hasNext()) {
 			Giocatore tempGiocatore = itGiocatori.next();
@@ -297,7 +297,7 @@ public class Logica {
 	 * @throws InvalidTokenException
 	 */
 	boolean existsRaceForPlayer (String token) throws InvalidTokenException {
-		return ritornaGiocatoreRichiestoPerToken(token).hasRazza();
+		return getPlayerByToken(token).hasRazza();
 	}
 	/**
 	 * Verifica se il numero massimo di utenti è connesso. Se sì lancia una eccezione, altrimenti ritorna false.
@@ -305,7 +305,7 @@ public class Logica {
 	 * @return
 	 * @throws TroppiGiocatoriException
 	 */
-	public boolean massimoNumeroUtentiConnesso() throws TroppiGiocatoriException {
+	public boolean maxPlayersInGame() throws TroppiGiocatoriException {
 		Iterator<Giocatore> itGiocatori = returnIteratoreSuiGiocatori();
 		int i = 0;
 		while (itGiocatori.hasNext()) {
@@ -363,7 +363,7 @@ public class Logica {
 	 * @throws InvalidTokenException 
 	 */
 	public void esciDallaPartita(String token) throws InvalidTokenException {
-		Giocatore tempGiocatore = ritornaGiocatoreRichiestoPerToken(token);
+		Giocatore tempGiocatore = getPlayerByToken(token);
 		rimuoviDinosauriDallaMappa(tempGiocatore);
 		tempGiocatore.iAmNotInGame();
 		verifySomeoneIsPlaying();
@@ -378,7 +378,7 @@ public class Logica {
 	 * @throws NonInPartitaException
 	 */
 	public void doLogout(String token) throws InvalidTokenException, NonInPartitaException {
-		Giocatore tempGiocatore = ritornaGiocatoreRichiestoPerToken(token);
+		Giocatore tempGiocatore = getPlayerByToken(token);
 		if (tempGiocatore.isLogged()) {
 			if (playerIsInGame(token)) {
 				esciDallaPartita(token);
@@ -405,7 +405,7 @@ public class Logica {
 		int i = 1;
 		do {
 			if (tryNearestSpawn(x, y, i, newIdDinosauro, newDinosauro)) {
-				ritornaGiocatoreRichiestoPerToken(token).aggiungiDinosauroAllaRazza(newDinosauro, newIdDinosauro);
+				getPlayerByToken(token).aggiungiDinosauroAllaRazza(newDinosauro, newIdDinosauro);
 				return true;
 			}
 			else i++;
@@ -416,7 +416,7 @@ public class Logica {
 	 * @return 
 	 */
 	public boolean playerHasDinosauro(String token, String idDinosauro) throws InvalidIDException, InvalidTokenException {
-		if (ritornaGiocatoreRichiestoPerToken(token).existsDinosauro(idDinosauro)) return true;
+		if (getPlayerByToken(token).existsDinosauro(idDinosauro)) return true;
 		else throw new InvalidIDException();
 	}
 
@@ -428,7 +428,7 @@ public class Logica {
 	 * @throws NonInPartitaException 
 	 */
 	public boolean playerIsInGame(String token) throws InvalidTokenException, NonInPartitaException {
-		if (ritornaGiocatoreRichiestoPerToken(token).isInGame()) return true;
+		if (getPlayerByToken(token).isInGame()) return true;
 		else throw new NonInPartitaException();
 	}
 	/**
@@ -462,14 +462,14 @@ public class Logica {
 	 * @throws InvalidTokenException 
 	 */
 	public boolean isMioTurno (String token) throws InvalidTokenException {
-		if (nomeGiocatoreCorrente.equals(ritornaGiocatoreRichiestoPerToken(token).getNome())) return true;
+		if (nomeGiocatoreCorrente.equals(getPlayerByToken(token).getNome())) return true;
 		else return false;
 	}
 
 	/**
 	 * Aggiunge alla lista degli utenti connessi un giocatore che si è appena connesso.
 	 */
-	public void aggiungiUtenteConnesso(String newId, String nomeUser) {
+	public void addPlayerToConnTable(String newId, String nomeUser) {
 		TokenENome.put(newId, nomeUser);
 	}
 
@@ -513,7 +513,7 @@ public class Logica {
 	 * @throws InvalidTokenException
 	 */
 	public void createNewRaceForPlayer(String token, String raceName, Dinosauro dinosauro) throws InvalidTokenException {
-		ritornaGiocatoreRichiestoPerToken(token).creaNuovaRazzaDiDinosauri(raceName, dinosauro);
+		getPlayerByToken(token).creaNuovaRazzaDiDinosauri(raceName, dinosauro);
 	}
 	
 	/**
