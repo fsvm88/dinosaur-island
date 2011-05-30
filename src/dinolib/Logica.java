@@ -62,6 +62,8 @@ public class Logica {
 		catch (FileNotFoundException e) {
 			System.out.println("No save files found, creating a new map..");
 			creaNuovaMappa();
+			Giocatori = new Hashtable<String, Giocatore>();
+			TokenENome = new Hashtable<String, String>();
 		}
 		catch (IOException e) {
 			e.printStackTrace();

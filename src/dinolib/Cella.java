@@ -1,5 +1,8 @@
 package dinolib;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.SortedSet;
 
 public class Cella extends Mappa {
 	protected Cella() { }
@@ -7,6 +10,7 @@ public class Cella extends Mappa {
 	protected Cella(String idDelDinosauro, Cella cellaSuCuiSiTrova) {
 		this.idDelDinosauro = idDelDinosauro;
 		this.cellaSuCuiSiTrova = cellaSuCuiSiTrova;
+		visitedFrom = new HashSet<String>();
 	}
 	/**
 	 * Override del metodo di default toString. Dato che viene ereditato dalle sottoclassi lo definisco solo qui.
@@ -88,4 +92,27 @@ public class Cella extends Mappa {
 	 * Nel caso la cella invece sia vegetazione o carogna viene chiamato il metodo delle sottoclassi.
 	 */
 	public void aggiornaCellaSulTurno() {}
+	
+	/**
+	 * Contiene la lista dei nomi dei giocatori che hanno visitato la cella.
+	 */
+	private HashSet<String> visitedFrom;
+	
+	/**
+	 * Controlla se la cella è stata visitata dall'utente.
+	 * @param userName
+	 * @return
+	 */
+	public boolean isUserPassed(String userName) {
+		if (visitedFrom.contains(userName)) return true;
+		else return false;
+	}
+	
+	/**
+	 * Aggiunge l'utente alla lista che dice se è passato per questa cella.
+	 * @param userName
+	 */
+	public void userIsPassed(String userName) {
+		visitedFrom.add(userName);
+	}
 }
