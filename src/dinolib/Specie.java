@@ -29,15 +29,6 @@ public class Specie {
 	 * @uml.property name="Dinosauri"
 	 */
 	private Hashtable<String, Dinosauro> dinosauri = new Hashtable<String,Dinosauro>();
-
-	/** 
-	 * Getter of the property <tt>Dinosauri</tt>
-	 * @return  Returns the dinosauri.
-	 * @uml.property  name="Dinosauri"
-	 */
-	public Hashtable<String, Dinosauro> getDinosauri() {
-		return dinosauri;
-	}
 	
 	/**
 	 * Contiene il punteggio corrente della specie.
@@ -78,7 +69,7 @@ public class Specie {
 	/**
 	 * Aggiunge un dinosauro alla lista di dinosauri della Specie.
 	 */
-	public void aggiungiDinosauroAllaSpecie(Dinosauro dinosauro, String nuovoIdDinosauro){
+	public void aggiungiDinosauro(Dinosauro dinosauro, String nuovoIdDinosauro){
 		if (nuovoIdDinosauro == null) {
 			dinosauri.put(CommonUtils.getNewToken(), dinosauro);
 		}
@@ -103,7 +94,7 @@ public class Specie {
 	/**
 	 * Rimuove il dinosauro con l'ID scelto dalla specie.
 	 */
-	public void rimuoviDinosauroDallaSpecie(String idDinosauro) {
+	public void rimuoviDinosauro(String idDinosauro) {
 		dinosauri.remove(idDinosauro);
 		if (dinosauri.size() == 0) {
 			uccidiRazza();
@@ -128,7 +119,7 @@ public class Specie {
 	 */
 	public Specie(String nomeRazza, Dinosauro nuovodinosauro) {
 		this.nomeRazza = nomeRazza;
-		aggiungiDinosauroAllaSpecie(nuovodinosauro, null);
+		aggiungiDinosauro(nuovodinosauro, null);
 	}
 	
 	/**
@@ -143,7 +134,7 @@ public class Specie {
 	/**
 	 * Restituisce un iteratore sui dinosauri presenti nella specie.
 	 */
-	public Iterator<Dinosauro> getIteratoreSuiDinosauri() {
+	public Iterator<Dinosauro> getItDinosauri() {
 		return dinosauri.values().iterator();
 	}
 	
@@ -159,7 +150,7 @@ public class Specie {
 	 * @param idDaCercare
 	 * @return
 	 */
-	public boolean validateIdExistance(String idDaCercare) {
+	public boolean existsDinosauroWithId(String idDaCercare) {
 		if (dinosauri.containsKey(idDaCercare)) return true;
 		else return false;
 	}
@@ -168,7 +159,7 @@ public class Specie {
 	 * Helper per restituire il tipo della razza del dinosauro.
 	 */
 	public String getTipoRazza() {
-		Iterator<Dinosauro> itTemp = getIteratoreSuiDinosauri();
+		Iterator<Dinosauro> itTemp = getItDinosauri();
 		if (itTemp.hasNext()) {
 			return itTemp.next().getTipoRazza();
 		}

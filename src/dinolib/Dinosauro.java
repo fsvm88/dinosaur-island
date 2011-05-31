@@ -9,27 +9,27 @@ public class Dinosauro extends Specie {
 	 * Serve per deponi uovo (posticipare l'utilizzo di un dinosauro) o per verificare che il dinosauro abbia ancora mosse a disposizione.
 	 * @uml.property name="usabile"
 	 */
-	private boolean usabile = false;
+	private boolean isUsabile = false;
 	
 	/**
 	 * Getter per la proprietà <tt>usabile</tt>
 	 */
 	public boolean isUsabile() {
-		return usabile;
+		return isUsabile;
 	}
 	
 	/**
 	 * Setter su non usabile per la proprietà <tt>usabile</tt>
 	 */
-	public void nonSonoUsabile() {
-		usabile = false;
+	public void nonUsabile() {
+		isUsabile = false;
 	}
 	
 	/**
 	 * Setter su usabile per la proprietà <tt>usabile</tt>
 	 */
-	public void sonoUsabile() {
-		usabile = true;
+	public void usabile() {
+		isUsabile = true;
 	}
 	
 	/**
@@ -244,7 +244,7 @@ public class Dinosauro extends Specie {
 		spostamento_MAX = nuovo_spostamento_MAX;
 		moltiplicatore_FORZA = nuovo_moltiplicatore_FORZA;
 		this.aggiornaEnergiaCrescita();
-		this.sonoUsabile();
+		this.usabile();
 	}
 
 	/**
@@ -327,7 +327,7 @@ public class Dinosauro extends Specie {
 	 * È booleano e ritorna true se energiaAttuale > energiaCrescita; false altrimenti.
 	 * @return
 	 */
-	public boolean haAbbastanzaEnergiaPerCrescere() {
+	public boolean hasEnergyToGrow() {
 		if (energiaAttuale > energiaCrescita) return true;
 		else return false;
 	}
@@ -337,7 +337,7 @@ public class Dinosauro extends Specie {
 	 * È booleano e ritorna true se energiaAttuale > energiaCrescita; false altrimenti.
 	 * @return
 	 */
-	public boolean haAbbastanzaEnergiaPerDeporreUnUovo() {
+	public boolean hasEnergyToRepl() {
 		if (energiaAttuale > energia_DEPOSIZIONE_UOVO) return true;
 		else return false;
 	}

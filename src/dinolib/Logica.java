@@ -279,7 +279,7 @@ public class Logica {
 		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
 		while (itGiocatori.hasNext()) {
 			Giocatore tempGiocatore = itGiocatori.next();
-			if (tempGiocatore.getNomeRazzaDinosauri().equals(nomeRazza)) return true;
+			if (tempGiocatore.getNomeRazza().equals(nomeRazza)) return true;
 		}
 		return false;
 	}
@@ -358,7 +358,7 @@ public class Logica {
 	public void doEsciDallaPartita(String token) throws InvalidTokenException {
 		Giocatore tempGiocatore = getPlayerByToken(token);
 		rimuoviDinosauriDallaMappa(tempGiocatore);
-		tempGiocatore.iAmNotInGame();
+		tempGiocatore.notInGame();
 		updatePlayingStatus();
 		if (isSomeonePlaying()) return;
 		else nomeGiocatoreCorrente = null;
@@ -376,7 +376,7 @@ public class Logica {
 			if (isPlayerInGame(token)) {
 				doEsciDallaPartita(token);
 			}
-			tempGiocatore.iAmNotLogged();
+			tempGiocatore.notLogged();
 		}
 	}
 
@@ -398,7 +398,7 @@ public class Logica {
 		int i = 1;
 		do {
 			if (tryNearestSpawn(x, y, i, newIdDinosauro, newDinosauro)) {
-				getPlayerByToken(token).aggiungiDinosauroAllaRazza(newDinosauro, newIdDinosauro);
+				getPlayerByToken(token).aggiungiDinosauro(newDinosauro, newIdDinosauro);
 				return true;
 			}
 			else i++;
@@ -506,7 +506,7 @@ public class Logica {
 	 * @throws InvalidTokenException
 	 */
 	public void createNewRaceForPlayer(String token, String raceName, Dinosauro dinosauro) throws InvalidTokenException {
-		getPlayerByToken(token).creaNuovaRazzaDiDinosauri(raceName, dinosauro);
+		getPlayerByToken(token).creaNuovaRazza(raceName, dinosauro);
 	}
 	
 	/**
