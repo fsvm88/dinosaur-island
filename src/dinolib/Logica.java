@@ -31,14 +31,14 @@ public class Logica {
 	 * Definisce la lista dei giocatori.
 	 * @uml.property name="Giocatori"
 	 */
-	private Hashtable<String, Giocatore> Giocatori;
+	private Hashtable<String, Giocatore> listaGiocatori;
 	/**
 	 * Accoppia il token al giocatore.
 	 * Chiavi: token
 	 * Value: nomi giocatori.
 	 * @uml.property name="NomeEToken"
 	 */
-	private Hashtable<String, String> TokenENome;
+	private Hashtable<String, String> connectionTable;
 	/**
 	 * Definisce la stringa che contiene il nome del giocatore che in questo momento ha il turno.
 	 * @uml.property name="Giocatori"
@@ -62,8 +62,8 @@ public class Logica {
 		catch (FileNotFoundException e) {
 			System.out.println("No save files found, creating a new map..");
 			creaNuovaMappa();
-			Giocatori = new Hashtable<String, Giocatore>();
-			TokenENome = new Hashtable<String, String>();
+			listaGiocatori = new Hashtable<String, Giocatore>();
+			connectionTable = new Hashtable<String, String>();
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -87,7 +87,7 @@ public class Logica {
 		 * Carica file di mappa, se esiste deve esistere anche il file dei giocatori.
 		 * In caso il primo o l'altro non esistano l'eccezione viene gestita e passata al chiamante, che quindi assume un primo avvios
 		 */
-		caricaFileDiMappa("mappa.dat");
+		caricaFileMappa("mappa.dat");
 		caricaFileGiocatori("giocatori.dat");
 	}
 	/**
@@ -96,7 +96,7 @@ public class Logica {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	private void caricaFileDiMappa(String nomefile) throws IOException, ClassNotFoundException, FileNotFoundException {
+	private void caricaFileMappa(String nomefile) throws IOException, ClassNotFoundException, FileNotFoundException {
 		ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(nomefile)));
 		rifMappa = (Mappa) ois.readObject();
 	}
@@ -109,7 +109,7 @@ public class Logica {
 	@SuppressWarnings("unchecked")
 	private void caricaFileGiocatori(String nomefile) throws IOException, ClassNotFoundException, FileNotFoundException {
 		ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(nomefile)));
-		Giocatori = (Hashtable<String, Giocatore>) ois.readObject();
+		listaGiocatori = (Hashtable<String, Giocatore>) ois.readObject();
 	}
 
 	/**
@@ -207,67 +207,53 @@ public class Logica {
 		return false;
 	}
 	/**
-	 * Ritorna un iteratore sulle chiavi dei giocatori.
-	 * @return
-	 */
-	private Iterator<String> returnIteratoreSulleChiaviGiocatori() {
-		return Giocatori.keySet().iterator();
-	}
-
-	/**
 	 * Ritorna un iteratore sui giocatori.
 	 * @return
 	 */
-	public Iterator<Giocatore> returnIteratoreSuiGiocatori() {
-		return Giocatori.values().iterator();
+	public Iterator<Giocatore> getIteratorOnPlayers() {
+		return listaGiocatori.values().iterator();
 	}
 
 	/**
 	 * Verifica se esiste l'utente, nel caso fa il throw di UserExistsException.
 	 */
-	boolean existsUserWithName(String user) throws UserExistsException {
-		if (Giocatori.containsKey(user)) throw new UserExistsException();
+	boolean existsUserWithName(String user) {
+		if (listaGiocatori.containsKey(user)) return true;
 		else return false;
 	}
-
 	/**
 	 * Verifica se l'utente con il nome richiesto è connesso.
+	 * @throws UserExistsException 
 	 */
-	public boolean playerIsConnected(String nome) {
-		if (TokenENome.containsValue(nome)) return true;
+	public boolean isPlayerConnected(String nome) {
+		if (existsUserWithName(nome) &&
+			connectionTable.containsValue(nome)) return true;
 		else return false;
 	}
-
 	/**
 	 * Crea un utente a partire da username e password.
 	 * @param user
 	 * @param pwd
 	 */
 	public void doCreaUtente(String user, String pwd) {
-		Giocatori.put(user, new Giocatore(user, pwd));
+		listaGiocatori.put(user, new Giocatore(user, pwd));
 	}
-
 	/**
 	 * Ritorna il Giocatore richiesto tramite il suo nome.
 	 * @param nomeGiocatoreRichiesto
 	 * @return
 	 */
 	public Giocatore getPlayerByName(String nomeGiocatoreRichiesto) {
-		return Giocatori.get(nomeGiocatoreRichiesto);
+		return listaGiocatori.get(nomeGiocatoreRichiesto);
 	}
-
-
-
-
-
 	/**
 	 * Ritorna il giocatore richiesto tramite il token.
 	 * @param token
 	 * @return
 	 */
-	Giocatore getPlayerByToken(String token) throws InvalidTokenException {
+	public Giocatore getPlayerByToken(String token) throws InvalidTokenException {
 		if (existsPlayerWithToken(token)) {
-			return Giocatori.get(TokenENome.get(token));
+			return listaGiocatori.get(connectionTable.get(token));
 		}
 		else return null;
 	}
@@ -278,13 +264,19 @@ public class Logica {
 	 * @return
 	 * @throws InvalidTokenException
 	 */
-	boolean existsPlayerWithToken (String token) throws InvalidTokenException {
-		if (TokenENome.containsKey(token)) return true;
+	public boolean existsPlayerWithToken (String token) throws InvalidTokenException {
+		if (connectionTable.containsKey(token)) return true;
 		else return false;
 	}
 
-	boolean existsRaceWithName (String nomeRazza) {
-		Iterator<Giocatore> itGiocatori = returnIteratoreSuiGiocatori();
+	/**
+	 * Helper per verificare che esista una razza con il nome specificato.
+	 * Serve per controllare che il nome richiesto non sia già in uso.
+	 * @param nomeRazza
+	 * @return
+	 */
+	public boolean existsRaceWithName (String nomeRazza) {
+		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
 		while (itGiocatori.hasNext()) {
 			Giocatore tempGiocatore = itGiocatori.next();
 			if (tempGiocatore.getNomeRazzaDinosauri().equals(nomeRazza)) return true;
@@ -301,14 +293,15 @@ public class Logica {
 	boolean existsRaceForPlayer (String token) throws InvalidTokenException {
 		return getPlayerByToken(token).hasRazza();
 	}
+	
 	/**
 	 * Verifica se il numero massimo di utenti è connesso. Se sì lancia una eccezione, altrimenti ritorna false.
 	 * ATTENZIONE! Il valore di ritorno di di default è FALSE! (Contrariamente a tutti gli altri helper).
 	 * @return
 	 * @throws TroppiGiocatoriException
 	 */
-	public boolean maxPlayersInGame() throws TroppiGiocatoriException {
-		Iterator<Giocatore> itGiocatori = returnIteratoreSuiGiocatori();
+	public boolean isMaxPlayersInGame() throws TroppiGiocatoriException {
+		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
 		int i = 0;
 		while (itGiocatori.hasNext()) {
 			if (itGiocatori.next().isInGame()) i++;
@@ -345,11 +338,11 @@ public class Logica {
 	}
 
 	/**
-	 * Verifica (fa il controllo) che qualcuno stia giocando. Basta un giocatore qualunque, ecco perchè il ciclo si spezza con un return immediato.
+	 * Controlla che qualcuno stia giocando e aggiorna lo stato di gioco. Basta un giocatore qualunque in gioco, ecco perchè il ciclo si spezza con un return immediato.
 	 * @return
 	 */
-	private void verifySomeoneIsPlaying() {
-		Iterator<Giocatore> itGiocatori = returnIteratoreSuiGiocatori();
+	private void updatePlayingStatus() {
+		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
 		while (itGiocatori.hasNext()) {
 			if (itGiocatori.next().isInGame()) {
 				someoneIsPlaying();
@@ -358,17 +351,15 @@ public class Logica {
 		}
 	}
 
-
-
 	/**
 	 * Codice per l'uscita dalla partita. Viene chiamato direttamente o tramite l'adattatore.
 	 * @throws InvalidTokenException 
 	 */
-	public void esciDallaPartita(String token) throws InvalidTokenException {
+	public void doEsciDallaPartita(String token) throws InvalidTokenException {
 		Giocatore tempGiocatore = getPlayerByToken(token);
 		rimuoviDinosauriDallaMappa(tempGiocatore);
 		tempGiocatore.iAmNotInGame();
-		verifySomeoneIsPlaying();
+		updatePlayingStatus();
 		if (isSomeonePlaying()) return;
 		else nomeGiocatoreCorrente = null;
 	}
@@ -382,8 +373,8 @@ public class Logica {
 	public void doLogout(String token) throws InvalidTokenException, NonInPartitaException {
 		Giocatore tempGiocatore = getPlayerByToken(token);
 		if (tempGiocatore.isLogged()) {
-			if (playerIsInGame(token)) {
-				esciDallaPartita(token);
+			if (isPlayerInGame(token)) {
+				doEsciDallaPartita(token);
 			}
 			tempGiocatore.iAmNotLogged();
 		}
@@ -429,7 +420,7 @@ public class Logica {
 	 * @throws InvalidTokenException 
 	 * @throws NonInPartitaException 
 	 */
-	public boolean playerIsInGame(String token) throws InvalidTokenException, NonInPartitaException {
+	public boolean isPlayerInGame(String token) throws InvalidTokenException, NonInPartitaException {
 		if (getPlayerByToken(token).isInGame()) return true;
 		else throw new NonInPartitaException();
 	}
@@ -472,7 +463,7 @@ public class Logica {
 	 * Aggiunge alla lista degli utenti connessi un giocatore che si è appena connesso.
 	 */
 	public void addPlayerToConnTable(String newId, String nomeUser) {
-		TokenENome.put(newId, nomeUser);
+		connectionTable.put(newId, nomeUser);
 	}
 
 	/**
@@ -480,7 +471,7 @@ public class Logica {
 	 * @return
 	 */
 	public Iterator<String> getIteratorOnPIds () {
-		return TokenENome.keySet().iterator();
+		return connectionTable.keySet().iterator();
 	}
 
 	/**
@@ -493,7 +484,7 @@ public class Logica {
 		String tempToken = null;
 		while (itToken.hasNext()) {
 			tempToken = itToken.next();
-			if (TokenENome.get(tempToken).equals(user)) {
+			if (connectionTable.get(tempToken).equals(user)) {
 				return tempToken;
 			}
 		}
@@ -523,7 +514,7 @@ public class Logica {
 	 * @return
 	 */
 	public Iterator<String> getIteratorOnPNames() {
-		return TokenENome.values().iterator();
+		return connectionTable.values().iterator();
 	}
 	
 	/**

@@ -28,7 +28,7 @@ public class SocketAdaptor {
 		if (myLogica.existsPlayerWithToken(token) &&
 				aUserIsLogged(token)) {
 			String buffer = null;
-			Iterator<Giocatore> itGiocatori = myLogica.returnIteratoreSuiGiocatori();
+			Iterator<Giocatore> itGiocatori = myLogica.getIteratorOnPlayers();
 			while (itGiocatori.hasNext()) {
 				assemblaPunteggio(buffer, itGiocatori.next());
 			}
@@ -107,7 +107,7 @@ public class SocketAdaptor {
 	 */
 	public String aVistaLocale(String token, String idDinosauro) throws InvalidTokenException, NonInPartitaException, InvalidIDException {
 		if (myLogica.existsPlayerWithToken(token) &&
-				myLogica.playerIsInGame(token) &&
+				myLogica.isPlayerInGame(token) &&
 				myLogica.playerHasDinosauro(token, idDinosauro)) {
 			String buffer = null;
 			Dinosauro tempDinosauro = myLogica.getPlayerByToken(token).getDinosauro(idDinosauro);
@@ -130,7 +130,7 @@ public class SocketAdaptor {
 
 	public String aSendMappaGenerale(String token) throws InvalidTokenException, NonInPartitaException {
 		if (myLogica.existsPlayerWithToken(token) &&
-				myLogica.playerIsInGame(token)) {
+				myLogica.isPlayerInGame(token)) {
 			String buffer = null;
 			int latoDellaMappa = myLogica.getLatoDellaMappa();
 			buffer = "{" + latoDellaMappa + "," + latoDellaMappa + "}" + ",";
@@ -171,7 +171,7 @@ public class SocketAdaptor {
 			return buffer;
 		}
 		else if (myLogica.existsPlayerWithToken(token) && !myLogica.playerHasDinosauro(token, idDinosauro)) {
-			Iterator<Giocatore> itSuiGiocatori = myLogica.returnIteratoreSuiGiocatori();
+			Iterator<Giocatore> itSuiGiocatori = myLogica.getIteratorOnPlayers();
 			while (itSuiGiocatori.hasNext()) {
 				Giocatore tempGiocatore = itSuiGiocatori.next();
 				Iterator<String> itSuIdDinosauri = tempGiocatore.getItIdDinosauri();
@@ -198,7 +198,7 @@ public class SocketAdaptor {
 	public void aCresciDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException, GenericDinosauroException, NonInPartitaException, NonIlTuoTurnoException {
 		if (myLogica.existsPlayerWithToken(token) &&
 				myLogica.playerHasDinosauro(token, idDinosauro) &&
-				myLogica.playerIsInGame(token) &&
+				myLogica.isPlayerInGame(token) &&
 				myLogica.isMioTurno(token)) {
 			if (puoCrescere(myLogica.getPlayerByToken(token).getDinosauro(idDinosauro))) {
 				myLogica.getPlayerByToken(token).getDinosauro(idDinosauro).cresci();
@@ -218,7 +218,7 @@ public class SocketAdaptor {
 	public String aDeponiUovo(String token, String idDinosauro) throws IOException, InvalidTokenException, InvalidIDException, NonInPartitaException, GenericDinosauroException {
 		if (myLogica.existsPlayerWithToken(token) &&
 				myLogica.playerHasDinosauro(token, idDinosauro) &&
-				myLogica.playerIsInGame(token) &&
+				myLogica.isPlayerInGame(token) &&
 				myLogica.isMioTurno(token)) { // TODO aggiungere limite mosse
 			Dinosauro curDinosauro = myLogica.getPlayerByToken(token).getDinosauro(idDinosauro);
 			int x = curDinosauro.getX();
@@ -244,7 +244,7 @@ public class SocketAdaptor {
 	
 	public String aMuoviDinosauro(String token, String idDinosauro, int toX, int toY) throws InvalidTokenException, NonInPartitaException, InvalidIDException {
 		if (myLogica.existsPlayerWithToken(token) &&
-				myLogica.playerIsInGame(token) &&
+				myLogica.isPlayerInGame(token) &&
 				myLogica.playerHasDinosauro(token, idDinosauro)) {
 			
 		}
@@ -325,7 +325,7 @@ public class SocketAdaptor {
 	 * @throws IOException
 	 */
 	public String aSendListaDinosauri(String token) throws InvalidTokenException, NonInPartitaException {
-		if (myLogica.existsPlayerWithToken(token) && myLogica.playerIsInGame(token)) {
+		if (myLogica.existsPlayerWithToken(token) && myLogica.isPlayerInGame(token)) {
 			String buffer = null;
 			if (myLogica.getPlayerByToken(token).hasRazza()) {
 				Iterator<String> itIdDinosauri = myLogica.getPlayerByToken(token).getItIdDinosauri();
@@ -344,7 +344,7 @@ public class SocketAdaptor {
 	 * @throws InvalidTokenException
 	 */
 	public void aEsciDallaPartita(String token) throws InvalidTokenException {
-		if (myLogica.existsPlayerWithToken(token)) myLogica.esciDallaPartita(token);
+		if (myLogica.existsPlayerWithToken(token)) myLogica.doEsciDallaPartita(token);
 	}
 
 	/**
@@ -383,8 +383,8 @@ public class SocketAdaptor {
 	 */
 	public void aAccediAPartita(String token) throws TroppiGiocatoriException, RazzaNonCreataException, InvalidTokenException, NonInPartitaException {
 		Giocatore tempGiocatore = myLogica.getPlayerByToken(token);
-		if (myLogica.playerIsInGame(token) &&
-				!myLogica.maxPlayersInGame()) {
+		if (myLogica.isPlayerInGame(token) &&
+				!myLogica.isMaxPlayersInGame()) {
 			if (tempGiocatore.hasRazza()) {
 				if (!myLogica.isSomeonePlaying()) myLogica.someoneIsPlaying();
 				myLogica.inserisciDinosauriNellaMappa(token);
@@ -419,7 +419,7 @@ public class SocketAdaptor {
 	 * @throws InvalidTokenException 
 	 */
 	public String aGetTokenUtente(String user) throws InvalidTokenException {
-		if (myLogica.playerIsConnected(user)) {
+		if (myLogica.isPlayerConnected(user)) {
 			return myLogica.getPlayerToken(user);
 		}
 		throw new InvalidTokenException();
