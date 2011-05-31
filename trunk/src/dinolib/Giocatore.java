@@ -45,14 +45,14 @@ public class Giocatore {
 	 * Fa riferimento a un oggetto Specie, viene inizializzato a zero fino a che non viene costruita la specie tramite l'implementazione in server.
 	 * @uml.property  name="specieDiDinosauri"
 	 */
-	private Specie specieDiDinosauri;
+	private Specie specie;
 
 	/**
 	 * Restituisce il numero di dinosauri presenti nella specie.
 	 * @return
 	 */
 	public int getNumeroDinosauri() {
-		return specieDiDinosauri.getNumeroDinosauri();
+		return specie.getNumeroDinosauri();
 	}
 
 	/**
@@ -61,22 +61,22 @@ public class Giocatore {
 	 * @return
 	 */
 	public Dinosauro getDinosauro(String idDinosauroCercato) {
-		return specieDiDinosauri.getDinosauro(idDinosauroCercato);
+		return specie.getDinosauro(idDinosauroCercato);
 	}
 
 	/**
 	 * Restituisce il nome della razza dei dinosauri.
 	 * @return
 	 */
-	public String getNomeRazzaDinosauri() {
-		return specieDiDinosauri.getNomeRazza();
+	public String getNomeRazza() {
+		return specie.getNomeRazza();
 	}
 
 	/**
 	 * Restituisce un iteratore sui dinosauri nella specie, è un wrapper per la classe Specie.
 	 */
-	public Iterator<Dinosauro> getIteratoreSuiDinosauriNellaSpecie() {
-		return specieDiDinosauri.getIteratoreSuiDinosauri();
+	public Iterator<Dinosauro> getItDinosauri() {
+		return specie.getItDinosauri();
 	}
 
 
@@ -92,8 +92,8 @@ public class Giocatore {
 	 * Aggiunge un nuovo dinosauro alla razza.
 	 * Richiede come parametro un nuovo oggetto di tipo di dinosauro e l'ID del dinosauro.
 	 */
-	public void aggiungiDinosauroAllaRazza(Dinosauro nuovoDinosauro, String nuovoIdDinosauro) {
-		specieDiDinosauri.aggiungiDinosauroAllaSpecie(nuovoDinosauro, nuovoIdDinosauro);
+	public void aggiungiDinosauro(Dinosauro nuovoDinosauro, String nuovoIdDinosauro) {
+		specie.aggiungiDinosauro(nuovoDinosauro, nuovoIdDinosauro);
 	}
 	
 	/**
@@ -103,15 +103,15 @@ public class Giocatore {
 	 * @param nuovoNomeRazza
 	 * @param nuovoDinosauro
 	 */
-	public void creaNuovaRazzaDiDinosauri(String nuovoNomeRazza, Dinosauro nuovoDinosauro) {
-		specieDiDinosauri = new Specie(nuovoNomeRazza, nuovoDinosauro);
+	public void creaNuovaRazza(String nuovoNomeRazza, Dinosauro nuovoDinosauro) {
+		specie = new Specie(nuovoNomeRazza, nuovoDinosauro);
 	}
 	
 	/**
 	 * Restituisce una enumerazione sugli id dei dinosauri.
 	 */
 	public Iterator<String> getItIdDinosauri() {
-		return specieDiDinosauri.getItIdDinosauri();
+		return specie.getItIdDinosauri();
 	}
 
 	/**
@@ -121,59 +121,59 @@ public class Giocatore {
 	 * @return
 	 */
 	public boolean existsDinosauro(String idDinosauro) {
-		if (specieDiDinosauri.validateIdExistance(idDinosauro)) return true;
+		if (specie.existsDinosauroWithId(idDinosauro)) return true;
 		else return false;
 	}
 	
 	public String getTipoRazza () {
-		return specieDiDinosauri.getTipoRazza();
+		return specie.getTipoRazza();
 	}
 	
 	/**
 	 * Variabile per gestire il login degli utenti.
 	 * @uml.property name="logged"
 	 */
-	private boolean logged = false;
+	private boolean iAmLogged = false;
 	/**
 	 * Variabile per gestire il fatto che l'utente è in partita.
 	 * @uml.property name="inGame"
 	 */
-	private boolean inGame = false;
+	private boolean iAmInGame = false;
 	
 	/* Due helper per impostare lo stato del login dell'utente. */
 	/**
 	 * Imposta logged a true, l'utente è loggato.
 	 */
-	public void iAmLogged() {
-		logged = true;
+	public void logged() {
+		iAmLogged = true;
 	}
 	
 	/**
 	 * Imposta logged a false, l'utente non è loggato.
 	 */
-	public void iAmNotLogged() {
-		logged = false;
+	public void notLogged() {
+		iAmLogged = false;
 	}
 	
 	/**
 	 * Imposta inGame a true, l'utente è in partita.
 	 */
-	public void iAmInGame() {
-		inGame = true;
+	public void inGame() {
+		iAmInGame = true;
 	}
 	
 	/**
 	 * Imposta inGame a false, l'utente non è in partita.
 	 */
-	public void iAmNotInGame() {
-		inGame = false;
+	public void notInGame() {
+		iAmInGame = false;
 	}
 	
 	/**
 	 * Helper per verificare se l'utente sta giocando.
 	 */
 	public boolean isInGame() {
-		return inGame;
+		return iAmInGame;
 	}
 	
 	/**
@@ -181,7 +181,7 @@ public class Giocatore {
 	 * @return
 	 */
 	public boolean isLogged() {
-		return logged;
+		return iAmLogged;
 	}
 	
 	/**
@@ -189,7 +189,7 @@ public class Giocatore {
 	 * @return
 	 */
 	public boolean hasRazza() {
-		if ((getNomeRazzaDinosauri() != null) &&
+		if ((getNomeRazza() != null) &&
 				(getNumeroDinosauri() > 0)) return true;
 		else return false;
 	}
@@ -207,14 +207,14 @@ public class Giocatore {
 	 * Getter per il punteggio della specie.
 	 */
 	public int getPunteggio() {
-		return specieDiDinosauri.getPunteggio();
+		return specie.getPunteggio();
 	}
 	
 	/**
 	 * Helper per sapere se la specie è estinta.
 	 */
 	public boolean isSpecieEstinta() {
-		if (specieDiDinosauri.isEstinta()) return true;
+		if (specie.isEstinta()) return true;
 		else return false;
 	}
 }

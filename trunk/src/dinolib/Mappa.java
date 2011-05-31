@@ -7,29 +7,11 @@ public class Mappa {
 	 * @uml.property  name="MappaACelle" multiplicity="(0 -1)" dimension="2"
 	 */
 	private Cella[][] MappaACelle;
-
-	/**
-	 * Getter of the property <tt>MappaACelle</tt>
-	 * @return  Returns the MappaACelle.
-	 * @uml.property  name="MappaACelle"
-	 */
-	public Cella[][] getMappaACelle() {
-		return MappaACelle;
-	}
 	
 	/**
 	 * Costruttore protetto per soddisfare la sottoclasse Cella
 	 */
 	protected Mappa() { }
-
-	/**
-	 * Setter of the property <tt>MappaACelle</tt>
-	 * @param MappaACelle  The MappaACelle to set.
-	 * @uml.property  name="MappaACelle"
-	 */
-	public void setMappaACelle(Cella[][] mappaACelle) {
-		MappaACelle = mappaACelle;
-	}
 
 	/**
 	 * Percentuale della mappa che deve essere composta di acqua.
@@ -82,7 +64,7 @@ public class Mappa {
 	/**
 	 * Calcola il numero di Celle con il lato fornito.
 	 */
-	private int calcolaCelle () {
+	private int calcolaTotaleCelle () {
 		return (latoDellaMappa*latoDellaMappa);
 	}
 
@@ -90,8 +72,8 @@ public class Mappa {
 	 * Calcola il numero di Celle per di Acqua e Terra sulla Mappa.
 	 */
 	private void calcolaNumeroCelleDaPercentuali () {
-		conteggioAcquaStatico = ( ( calcolaCelle() / 100 ) * fixed_WATER_PERCENT );
-		conteggioTerraStatico = calcolaCelle() - conteggioAcquaStatico;
+		conteggioAcquaStatico = ( ( calcolaTotaleCelle() / 100 ) * fixed_WATER_PERCENT );
+		conteggioTerraStatico = calcolaTotaleCelle() - conteggioAcquaStatico;
 	}
 
 	/**
