@@ -13,7 +13,7 @@ public class Carnivoro extends Dinosauro {
 	/**
 	 * Implementa il costruttore pubblico per il tipo di dinosauro Carnivoro.
 	 */
-	public Carnivoro(int x, int y){
+	protected Carnivoro(int x, int y){
 		super(x, y, spostamento_MAX, moltiplicatore_FORZA);
 	}
 }
