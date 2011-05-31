@@ -58,14 +58,13 @@ public class ClientWorker extends Server implements Runnable {
 			terminateThreadOnIOException("Cannot initialize input/output streams!");
 		}
 	}
-
-	private void estraiUserPwd(Scanner scanner, String utenteDaParse, String passwordDaParse) {
-		if (scanner.hasNext()) {
-			utenteDaParse = scanner.next();
-			if (scanner.hasNext()) {
-				passwordDaParse = scanner.next();
-			}
-		}
+	
+	private String estraiUser(Scanner scanner) {
+		return scanner.next();
+	}
+	
+	private String estraiPwd(Scanner scanner) {
+		return scanner.next();
 	}
 
 	private String getToken(Scanner scanner) {
@@ -85,29 +84,16 @@ public class ClientWorker extends Server implements Runnable {
 		else return false;
 	}
 
-	private void estraiRazzaETipo(Scanner scanner, String nomeRazza, String tipo) {
-		if (scanner.hasNext()) {
-			nomeRazza = scanner.next();
-			if (scanner.hasNext()) {
-				tipo = scanner.next();
-			} 
-		}
+	private String estraiRazza(Scanner scanner) {
+		return scanner.next();
+	}
+	
+	private String estraiTipo(Scanner scanner) {
+		return scanner.next();
 	}
 
 	private boolean validaRazzaETipo(String nomeRazza, String tipo) {
 		if ((nomeRazza != null) && (tipo != null) ) return true;
-		else return false;
-	}
-
-	private boolean estraiXeY(Scanner scanner, int x, int y) {
-		if (scanner.hasNext()) {
-			x = scanner.nextInt();
-			if (scanner.hasNext()) {
-				y = scanner.nextInt();
-				return true;
-			}
-			return false;
-		}
 		else return false;
 	}
 
@@ -136,7 +122,14 @@ public class ClientWorker extends Server implements Runnable {
 			if (isLoginOrCreation(comando)) {
 				String user = null;
 				String pwd = null;
-				estraiUserPwd(scanner, user, pwd);
+				if (scanner.hasNext()) {
+					user = estraiUser(scanner);
+					if (scanner.hasNext()) {
+						pwd = estraiPwd(scanner);
+					}
+					else writeLineToOutput("@no");
+				}
+				else writeLineToOutput("@no");
 				if (comando.equals("@creaUtente")) {
 					socketAdaptor.saCreaUtente(user, pwd);
 					writeOkToOutput();
@@ -155,7 +148,14 @@ public class ClientWorker extends Server implements Runnable {
 						if (comando.equals("@creaRazza")) {
 							String nomeRazza = null;
 							String tipoRazza = null;
-							estraiRazzaETipo(scanner, nomeRazza, tipoRazza);
+							if (scanner.hasNext()) {
+								nomeRazza = estraiRazza(scanner);
+								if (scanner.hasNext()) {
+									tipoRazza = estraiTipo(scanner);
+								}
+								else writeLineToOutput("@no");
+							}
+							else writeLineToOutput("@no");
 							if (validaRazzaETipo(nomeRazza, tipoRazza)) {
 								socketAdaptor.saCreaRazzaETipo(token, nomeRazza, tipoRazza);
 								writeOkToOutput();
@@ -215,8 +215,13 @@ public class ClientWorker extends Server implements Runnable {
 							else if (comando.equals("@muoviDinosauro")) {
 								int x = 0;
 								int y = 0;
-								if (estraiXeY(scanner, x, y)) {
-									bufferDaStampare = socketAdaptor.saMuoviDinosauro(token, idDinosauro, x, y);
+								if (scanner.hasNextInt()) {
+									x = scanner.nextInt();
+									if (scanner.hasNextInt()) {
+										y = scanner.nextInt();
+										bufferDaStampare = socketAdaptor.saMuoviDinosauro(token, idDinosauro, x, y);
+									}
+									else writeLineToOutput("@no");
 								}
 								else writeLineToOutput("@no");
 							}

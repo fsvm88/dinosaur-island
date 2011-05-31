@@ -30,7 +30,7 @@ public class SocketAdaptor {
 			String buffer = null;
 			Iterator<Giocatore> itGiocatori = myLogica.getIteratorOnPlayers();
 			while (itGiocatori.hasNext()) {
-				assemblaPunteggio(buffer, itGiocatori.next());
+				buffer = assemblaPunteggio(buffer, itGiocatori.next());
 			}
 			return buffer;
 		}
@@ -39,16 +39,17 @@ public class SocketAdaptor {
 	
 	/**
 	 * Helper per assemblare il punteggio per un singolo giocatore.
-	 * @param buffer
+	 * @param newBuffer
 	 * @param giocatore
 	 * @return
 	 */
-	private void assemblaPunteggio(String buffer, Giocatore giocatore) {
-		assemblaBuffer(buffer, giocatore.getNome());
-		assemblaBuffer(buffer, giocatore.getNomeRazza());
-		buffer = buffer + "," + giocatore.getPunteggio();
-		if (giocatore.isSpecieEstinta()) assemblaBuffer(buffer, "s");
-		else assemblaBuffer(buffer, "n");
+	private String assemblaPunteggio(String newBuffer, Giocatore giocatore) {
+		newBuffer = assemblaBuffer(newBuffer, giocatore.getNome());
+		newBuffer = assemblaBuffer(newBuffer, giocatore.getNomeRazza());
+		newBuffer = newBuffer + "," + giocatore.getPunteggio();
+		if (giocatore.isSpecieEstinta()) newBuffer = assemblaBuffer(newBuffer, "s");
+		else newBuffer = assemblaBuffer(newBuffer, "n");
+		return newBuffer;
 	}
 	/**
 	 * Fa la sottrazione per le coordinate, che rimangano in range.
@@ -146,8 +147,8 @@ public class SocketAdaptor {
 	/**
 	 * Assembla lo stato comune del dinosauro
 	 */
-	private void assemblaStatoComuneDinosauro(String buffer, Giocatore tempGiocatore, Dinosauro tempDinosauro) {
-		buffer = tempGiocatore.getNome() + "," +
+	private String assemblaStatoComuneDinosauro(Giocatore tempGiocatore, Dinosauro tempDinosauro) {
+		return tempGiocatore.getNome() + "," +
 		tempGiocatore.getNomeRazza() + "," +
 		tempGiocatore.getTipoRazza().toLowerCase().charAt(0) + "," +
 		"{" + "," + tempDinosauro.getX() + "," + CommonUtils.translateYforClient(tempDinosauro.getY(), myLogica.getLatoDellaMappa()) + "," + "}" + "," +
@@ -164,7 +165,7 @@ public class SocketAdaptor {
 			Giocatore tempGiocatore = myLogica.getPlayerByToken(token);
 			Dinosauro tempDinosauro = tempGiocatore.getDinosauro(idDinosauro);
 			String buffer = null;
-			assemblaStatoComuneDinosauro(buffer, tempGiocatore, tempDinosauro);
+			buffer = "," + assemblaStatoComuneDinosauro(tempGiocatore, tempDinosauro);
 			buffer = buffer + "," +
 			tempDinosauro.getEnergiaAttuale() + "," +
 			tempDinosauro.getTurnoDiVita();
@@ -179,7 +180,7 @@ public class SocketAdaptor {
 					if (itSuIdDinosauri.next() == idDinosauro) {
 						Dinosauro tempDinosauro = tempGiocatore.getDinosauro(idDinosauro);
 						String buffer = null;
-						assemblaStatoComuneDinosauro(buffer, tempGiocatore, tempDinosauro);
+						buffer = "," + assemblaStatoComuneDinosauro(tempGiocatore, tempDinosauro);
 						buffer = buffer + "," +
 						tempDinosauro.getEnergiaAttuale() + "," +
 						tempDinosauro.getTurnoDiVita();
@@ -330,7 +331,7 @@ public class SocketAdaptor {
 			if (myLogica.getPlayerByToken(token).hasRazza()) {
 				Iterator<String> itIdDinosauri = myLogica.getPlayerByToken(token).getItIdDinosauri();
 				while (itIdDinosauri.hasNext()) {
-					assemblaBuffer(buffer, itIdDinosauri.next());
+					buffer = assemblaBuffer(buffer, itIdDinosauri.next());
 				}
 				return buffer;
 			}
@@ -352,11 +353,12 @@ public class SocketAdaptor {
 	 * @param buffer
 	 * @param toAppend
 	 */
-	private void assemblaBuffer(String buffer, String toAppend) {
+	private String assemblaBuffer(String buffer, String toAppend) {
 		if (buffer != null) 
 			buffer = buffer + "," + toAppend;
 		else 
 			buffer = toAppend;
+		return buffer;
 	}
 	/**
 	 * Adattatore del comando per restituire la lista dei giocatori al client.
@@ -370,7 +372,7 @@ public class SocketAdaptor {
 				String curNomeGiocatore = itNomiGiocatori.next();
 				if (myLogica.getPlayerByName(curNomeGiocatore).isLogged() &&
 						myLogica.getPlayerByName(curNomeGiocatore).isInGame()) {
-					assemblaBuffer(buffer, curNomeGiocatore);
+					buffer = assemblaBuffer(buffer, curNomeGiocatore);
 				}
 			}
 			return buffer;
