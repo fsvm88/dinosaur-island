@@ -14,7 +14,7 @@ public class Erbivoro extends Dinosauro {
 	/**
 	 * Implementa il costruttore pubblico per la sottoclasse Erbivoro.
 	 */
-	public Erbivoro(int x, int y){
+	protected Erbivoro(int x, int y){
 		super(x, y, spostamento_MAX, moltiplicatore_FORZA);
 	}
 }

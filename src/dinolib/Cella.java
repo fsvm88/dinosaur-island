@@ -1,8 +1,6 @@
 package dinolib;
 
 import java.util.HashSet;
-import java.util.Set;
-import java.util.SortedSet;
 
 public class Cella extends Mappa {
 	protected Cella() { }

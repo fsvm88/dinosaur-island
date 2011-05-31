@@ -36,7 +36,7 @@ public class Giocatore {
 	 * Validate the password and return a boolean value.
 	 * @param passwordToMatch
 	 */
-	public boolean passwordIsValid(String suppliedPassword) {
+	protected boolean passwordIsValid(String suppliedPassword) {
 		if (password.equals(suppliedPassword)) return true;
 		else return false;
 	}
@@ -60,7 +60,7 @@ public class Giocatore {
 	 * @param idDinosauroCercato
 	 * @return
 	 */
-	public Dinosauro getDinosauro(String idDinosauroCercato) {
+	protected Dinosauro getDinosauro(String idDinosauroCercato) {
 		return specie.getDinosauro(idDinosauroCercato);
 	}
 
@@ -83,7 +83,7 @@ public class Giocatore {
 	/**
 	 * Costruttore pubblico per la classe giocatore. Richiede solo nome utente e password.
 	 */
-	public Giocatore(String nome, String password) {
+	protected Giocatore(String nome, String password) {
 		this.nome = nome;
 		this.password = password;
 	}
@@ -92,7 +92,7 @@ public class Giocatore {
 	 * Aggiunge un nuovo dinosauro alla razza.
 	 * Richiede come parametro un nuovo oggetto di tipo di dinosauro e l'ID del dinosauro.
 	 */
-	public void aggiungiDinosauro(Dinosauro nuovoDinosauro, String nuovoIdDinosauro) {
+	protected void aggiungiDinosauro(Dinosauro nuovoDinosauro, String nuovoIdDinosauro) {
 		specie.aggiungiDinosauro(nuovoDinosauro, nuovoIdDinosauro);
 	}
 	
@@ -103,7 +103,7 @@ public class Giocatore {
 	 * @param nuovoNomeRazza
 	 * @param nuovoDinosauro
 	 */
-	public void creaNuovaRazza(String nuovoNomeRazza, Dinosauro nuovoDinosauro) {
+	protected void creaNuovaRazza(String nuovoNomeRazza, Dinosauro nuovoDinosauro) {
 		specie = new Specie(nuovoNomeRazza, nuovoDinosauro);
 	}
 	
@@ -120,7 +120,7 @@ public class Giocatore {
 	 * @param idDinosauro
 	 * @return
 	 */
-	public boolean existsDinosauro(String idDinosauro) {
+	protected boolean existsDinosauro(String idDinosauro) {
 		if (specie.existsDinosauroWithId(idDinosauro)) return true;
 		else return false;
 	}
@@ -144,14 +144,14 @@ public class Giocatore {
 	/**
 	 * Imposta logged a true, l'utente è loggato.
 	 */
-	public void logged() {
+	protected void logged() {
 		iAmLogged = true;
 	}
 	
 	/**
 	 * Imposta logged a false, l'utente non è loggato.
 	 */
-	public void notLogged() {
+	protected void notLogged() {
 		iAmLogged = false;
 	}
 	
@@ -165,7 +165,7 @@ public class Giocatore {
 	/**
 	 * Imposta inGame a false, l'utente non è in partita.
 	 */
-	public void notInGame() {
+	protected void notInGame() {
 		iAmInGame = false;
 	}
 	
@@ -188,7 +188,7 @@ public class Giocatore {
 	 * Helper per verificare che l'utente abbia una razza di dinosauri.
 	 * @return
 	 */
-	public boolean hasRazza() {
+	protected boolean hasRazza() {
 		if ((getNomeRazza() != null) &&
 				(getNumeroDinosauri() > 0)) return true;
 		else return false;
@@ -198,7 +198,7 @@ public class Giocatore {
 	 * Helper per verificare se la specie ha il numero massimo di dinosauri.
 	 * @return
 	 */
-	public boolean specieHaNumeroMassimo() {
+	protected boolean specieHaNumeroMassimo() {
 		if (getNumeroDinosauri() >= numero_MAX_DINOSAURI) return true;
 		else return false;
 	}

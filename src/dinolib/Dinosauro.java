@@ -21,7 +21,7 @@ public class Dinosauro extends Specie {
 	/**
 	 * Setter su non usabile per la proprietà <tt>usabile</tt>
 	 */
-	public void nonUsabile() {
+	protected void nonUsabile() {
 		isUsabile = false;
 	}
 	
@@ -194,7 +194,7 @@ public class Dinosauro extends Specie {
 	 * @uml.property  name="x"
 	 * @uml.property  name="y"
 	 */
-	public void setXY(int x, int y) {
+	protected void setXY(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
@@ -272,7 +272,7 @@ public class Dinosauro extends Specie {
 	/**
 	 * Fa crescere il dinosauro.
 	 */
-	public void cresci() {
+	protected void cresci() {
 		if (this.getDimensione() < dimensione_MASSIMA) {
 			this.setDimensione((this.getDimensione()+1));
 			this.setEnergiaMax((1000*this.getDimensione()));
@@ -327,7 +327,7 @@ public class Dinosauro extends Specie {
 	 * È booleano e ritorna true se energiaAttuale > energiaCrescita; false altrimenti.
 	 * @return
 	 */
-	public boolean hasEnergyToGrow() {
+	protected boolean hasEnergyToGrow() {
 		if (energiaAttuale > energiaCrescita) return true;
 		else return false;
 	}
@@ -337,7 +337,7 @@ public class Dinosauro extends Specie {
 	 * È booleano e ritorna true se energiaAttuale > energiaCrescita; false altrimenti.
 	 * @return
 	 */
-	public boolean hasEnergyToRepl() {
+	protected boolean hasEnergyToRepl() {
 		if (energiaAttuale > energia_DEPOSIZIONE_UOVO) return true;
 		else return false;
 	}

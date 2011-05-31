@@ -48,7 +48,7 @@ public class ClientWorker extends Server implements Runnable {
 	 * @param socket
 	 * @throws IOException
 	 */
-	public ClientWorker(Socket socket) throws IOException {
+	protected ClientWorker(Socket socket) throws IOException {
 		mySocket = socket;
 		try {
 			incomingData = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
@@ -170,7 +170,7 @@ public class ClientWorker extends Server implements Runnable {
 							writeOkToOutput();
 						}
 						else if (comando.equals("@listaGiocatori")) {
-							bufferDaStampare = socketAdaptr.saListaDeiGiocatori(token);
+							bufferDaStampare = socketAdaptor.saListaDeiGiocatori(token);
 							writeOkToOutput(bufferDaStampare);
 						}
 						else if (comando.equals("@classifica")) {

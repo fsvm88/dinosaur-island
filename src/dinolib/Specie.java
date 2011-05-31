@@ -69,7 +69,7 @@ public class Specie {
 	/**
 	 * Aggiunge un dinosauro alla lista di dinosauri della Specie.
 	 */
-	public void aggiungiDinosauro(Dinosauro dinosauro, String nuovoIdDinosauro){
+	protected void aggiungiDinosauro(Dinosauro dinosauro, String nuovoIdDinosauro){
 		if (nuovoIdDinosauro == null) {
 			dinosauri.put(CommonUtils.getNewToken(), dinosauro);
 		}
@@ -117,7 +117,7 @@ public class Specie {
 	 * Implementa la costruzione della classe Specie.
 	 * Richiede il nuovo nome della razza e l'istanza del nuovo dinosauro.
 	 */
-	public Specie(String nomeRazza, Dinosauro nuovodinosauro) {
+	protected Specie(String nomeRazza, Dinosauro nuovodinosauro) {
 		this.nomeRazza = nomeRazza;
 		aggiungiDinosauro(nuovodinosauro, null);
 	}
@@ -127,7 +127,7 @@ public class Specie {
 	 * @param idDinosauroCercato
 	 * @return
 	 */
-	public Dinosauro getDinosauro(String idDinosauroCercato) {
+	protected Dinosauro getDinosauro(String idDinosauroCercato) {
 		return dinosauri.get(idDinosauroCercato);
 	}
 	
@@ -150,7 +150,7 @@ public class Specie {
 	 * @param idDaCercare
 	 * @return
 	 */
-	public boolean existsDinosauroWithId(String idDaCercare) {
+	protected boolean existsDinosauroWithId(String idDaCercare) {
 		if (dinosauri.containsKey(idDaCercare)) return true;
 		else return false;
 	}
