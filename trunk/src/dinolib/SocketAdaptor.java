@@ -60,15 +60,15 @@ public class SocketAdaptor {
 	private String getCellaDellaMappaPerBuffer(int x, int y) {
 		Cella tempCella = myLogica.getCella(x, y);
 		Character tipoCella = tempCella.getTipoCella(x, y).toLowerCase().charAt(0);
-		if ((tipoCella.equals("t")) ||
-				(tipoCella.equals("a"))) {
+		if ((tipoCella.charValue() == 't' ) ||
+				(tipoCella.charValue() == 'a' )) {
 			return "[" + tipoCella.charValue() + "]";
 		}
-		else if ((tipoCella.equals("v")) ||
-				tipoCella.equals("c")) {
+		else if ((tipoCella.charValue() == 'v' ) ||
+				(tipoCella.charValue() == 'c')) {
 			return "[" + tipoCella.charValue() + "," + tempCella.getValoreAttuale() + "]";
 		}
-		else if ((tipoCella.equals("d"))) {
+		else if (tipoCella.charValue() == 'd' ) {
 			return "[" + tipoCella.charValue() + "," + tempCella.getIdDelDinosauro() + "]";
 		}
 		return null;
@@ -140,6 +140,7 @@ public class SocketAdaptor {
 				buffer = buffer + getRigaDellaMappa(i, 0, latoDellaMappa) + ";"; // TODO implementare il buio della mappa!! Chiedere esercitatore!
 				i++;
 			}
+			return buffer;
 		}
 		return null;
 	}
