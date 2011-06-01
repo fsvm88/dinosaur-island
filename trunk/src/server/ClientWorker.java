@@ -314,6 +314,9 @@ class ClientWorker extends Server implements Runnable {
 				} catch (IOException e1) {
 					terminateThreadOnIOException("Unable to communicate with the client, stopping thread");
 				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				terminateThreadOnIOException("Synchronization problems with threads, stopping thread");
 			}
 		}
 	}

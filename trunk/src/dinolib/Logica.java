@@ -7,20 +7,29 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Hashtable;
 import java.util.Iterator;
-
-import dinolib.UserExistsException;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class Logica implements Runnable {
 	/**
-	 * Definisce staticamente e definitivamente il numero massimo di giocatori ammessi in partita.
+	 * Definisce definitivamente il numero massimo di giocatori ammessi in partita.
 	 * @uml.property name="NUMERO_MASSIMO_GIOCATORI_INGAME"
 	 */
 	private final int numero_MASSIMO_GIOCATORI_INGAME = 8;
 	/**
-	 * Definisce staticamente e definitivamente il lato della mappa.
+	 * Definisce definitivamente il lato della mappa.
 	 * @uml.property name="LATO_MAPPA"
 	 */
 	private final int lato_MAPPA = 40;
+	/**
+	 * Definisce definitivamente il tempo da attendere senza la conferma di turno.
+	 * @uml.property name="SLEEP_CONFERMA_TURNO"
+	 */
+	private final int sleep_CONFERMA_TURNO = 30;
+	/**
+	 * Definisce definitivamente il tempo da dedicare ad ogni giocatore quando questo conferma il turno.
+	 * @uml.property name="SLEEP_TEMPO_TURNO"
+	 */
+	private final int sleep_TEMPO_TURNO = 120;
 	/**
 	 * Definisce il riferimento alla mappa.
 	 * @uml.property name="rifMappa"
@@ -43,12 +52,7 @@ public class Logica implements Runnable {
 	 * @uml.property name="Giocatori"
 	 */
 	private String nomeGiocatoreCorrente = null;
-	/**
-	 * Definisce una variabile che assicura che qualcuno sta giocando.
-	 * @uml.property name="qualcunoStaGiocando"
-	 */
-	private boolean qualcunoStaGiocando = false;
-	
+
 	/**
 	 * Costruttore di default per la classe Logica.
 	 */
@@ -73,13 +77,44 @@ public class Logica implements Runnable {
 			System.exit(-1);
 		}
 	}
-	
+
+	/**
+	 * Contiene una variabile che dice se la logica sta funzionando.
+	 * @uml.property name="logicaIsRunning"
+	 */
 	private boolean logicaIsRunning = true;
-	
+
+	/**
+	 * Helper per sapere se la logica continua a funzionare.
+	 * @return
+	 */
 	protected boolean isLogicaRunning() {
 		return logicaIsRunning;
 	}
-	
+
+	/**
+	 * Variabile che dice se il turno del giocatore è stato confermato.
+	 * @uml.property name="turnoConfermato"
+	 */
+	private boolean turnoConfermato = false;
+
+	/**
+	 * Contiene tutti i giocatori correntemente connessi alla partita.
+	 * @uml.property name="playersQueue"
+	 */
+	private ArrayBlockingQueue<String> playersQueue = new ArrayBlockingQueue<String>(numero_MASSIMO_GIOCATORI_INGAME);
+
+	protected void broadcastCambioTurno() {
+
+	}
+
+	/*
+	 * Algoritmo:
+	 * fintanto che (la logica va)
+	 * 		se (la pila dei giocatori in partita contiene giocatori)
+	 * 			assegna al giocatore corrente la testa della pila
+	 * 
+	 */
 	/**
 	 * Questo metodo gestisce effettivamente la logica di turno.
 	 * Creare un thread extra è più semplice che sincronizzare gli accessi da ogni client.
@@ -87,10 +122,42 @@ public class Logica implements Runnable {
 	 */
 	public void run () {
 		while (isLogicaRunning()) {
-			
+			if (playersQueue.size() > 0) {
+				nomeGiocatoreCorrente = playersQueue.poll();
+				long conferma_start = System.currentTimeMillis();
+				while ((System.currentTimeMillis()-conferma_start) < (sleep_CONFERMA_TURNO*1000)) {
+					if (turnoConfermato) {
+						long turno_start = System.currentTimeMillis();
+						while ((System.currentTimeMillis()-turno_start) < (sleep_TEMPO_TURNO*1000)) {
+							if (!turnoConfermato) break;
+							else {
+								try {
+									Thread.sleep(1000);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
+						}
+						broadcastCambioTurno(); // TODO aggiungi aggiornamento di dell'ambiente di gioco (vegetazione, carogne), invecchiamento eventuale dinosauri etc
+					} else {
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+			else {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
-	
+
 	/**
 	 * Se i file di salvataggio esistono li carica, altrimenti assume primo avvio
 	 * @throws ClassNotFoundException 
@@ -132,7 +199,7 @@ public class Logica implements Runnable {
 	private void creaNuovaMappa() {
 		rifMappa = new Mappa(lato_MAPPA);
 	}
-	
+
 	/**
 	 * Crea un utente a partire da username e password.
 	 * @param user
@@ -254,7 +321,7 @@ public class Logica implements Runnable {
 	 */
 	protected boolean isPlayerConnected(String nome) {
 		if (existsUserWithName(nome) &&
-			connectionTable.containsValue(nome)) return true;
+				connectionTable.containsValue(nome)) return true;
 		else return false;
 	}
 	/**
@@ -313,7 +380,7 @@ public class Logica implements Runnable {
 		if (getPlayerByToken(token).hasRazza()) throw new RazzaGiaCreataException();
 		else return false;
 	}
-	
+
 	/**
 	 * Verifica se il numero massimo di utenti è connesso. Se sì lancia una eccezione, altrimenti ritorna false.
 	 * ATTENZIONE! Il valore di ritorno di di default è FALSE! (Contrariamente a tutti gli altri helper).
@@ -321,12 +388,7 @@ public class Logica implements Runnable {
 	 * @throws TroppiGiocatoriException
 	 */
 	public boolean isMaxPlayersInGame() throws TroppiGiocatoriException {
-		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
-		int i = 0;
-		while (itGiocatori.hasNext()) {
-			if (itGiocatori.next().isInGame()) i++;
-		}
-		if (i < numero_MASSIMO_GIOCATORI_INGAME) return false;
+		if (playersQueue.size() < numero_MASSIMO_GIOCATORI_INGAME) return false;
 		else throw new TroppiGiocatoriException();
 	}
 
@@ -335,36 +397,8 @@ public class Logica implements Runnable {
 	 * @return
 	 */
 	public boolean isSomeonePlaying() {
-		if (qualcunoStaGiocando) return true;
+		if (playersQueue.size() > 0) return true;
 		else return false;
-	}
-
-	/**
-	 * Helper per far sapere che qualcuno sta giocando.
-	 */
-	protected void someoneIsPlaying() {
-		qualcunoStaGiocando = true;
-	}
-
-	/**
-	 * Helper per far sapere che nessuno sta giocando.
-	 */
-	protected void nobodyIsPlaying() {
-		qualcunoStaGiocando = false;
-	}
-
-	/**
-	 * Controlla che qualcuno stia giocando e aggiorna lo stato di gioco. Basta un giocatore qualunque in gioco, ecco perchè il ciclo si spezza con un return immediato.
-	 * @return
-	 */
-	private void updatePlayingStatus() {
-		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
-		while (itGiocatori.hasNext()) {
-			if (itGiocatori.next().isInGame()) {
-				someoneIsPlaying();
-				return;
-			}
-		}
 	}
 
 	/**
@@ -375,9 +409,11 @@ public class Logica implements Runnable {
 		Giocatore tempGiocatore = getPlayerByToken(token);
 		rimuoviDinosauriDallaMappa(tempGiocatore);
 		tempGiocatore.notInGame();
-		updatePlayingStatus();
-		if (isSomeonePlaying()) return;
-		else nomeGiocatoreCorrente = null;
+		if (playersQueue.contains(getPlayerName(token))) {
+			playersQueue.remove(getPlayerName(token));
+			return;
+		}
+		else return;
 	}
 
 	/**
@@ -507,6 +543,15 @@ public class Logica implements Runnable {
 	}
 
 	/**
+	 * Ritorna il nome dell'utente associato al token richiesto.
+	 * @param user
+	 * @return
+	 */
+	protected String getPlayerName(String token) {
+		return connectionTable.get(token);
+	}
+
+	/**
 	 * Ritorna il lato della mappa. Helper per gli adattatori.
 	 * @return
 	 */
@@ -523,7 +568,7 @@ public class Logica implements Runnable {
 	protected void createNewRaceForPlayer(String token, String raceName, Dinosauro dinosauro) throws InvalidTokenException {
 		getPlayerByToken(token).creaNuovaRazza(raceName, dinosauro);
 	}
-	
+
 	/**
 	 * Ritorna un iteratore sui nomi dei giocatori.
 	 * @return
@@ -531,7 +576,7 @@ public class Logica implements Runnable {
 	public Iterator<String> getIteratorOnPNames() {
 		return connectionTable.values().iterator();
 	}
-	
+
 	/**
 	 * Ritorna la Cella della Mappa richiesta.
 	 * @param x
@@ -596,5 +641,26 @@ public class Logica implements Runnable {
 		if (haAbbastanzaEnergiaPerCrescere(dinosauro) &&
 				!haDimensioneMassima(dinosauro)) return true;
 		else return false;
+	}
+
+	/**
+	 * Implementa l'accesso alla partita, la parte non adattabile e condivisa da ogni modo di accesso.
+	 * @throws InvalidTokenException 
+	 * @throws RazzaNonCreataException 
+	 * @throws TroppiGiocatoriException 
+	 * @throws NonInPartitaException 
+	 * @throws InterruptedException 
+	 */
+	protected void accediAPartita(String token) throws InvalidTokenException, NonInPartitaException, TroppiGiocatoriException, RazzaNonCreataException, InterruptedException {
+		Giocatore tempGiocatore = getPlayerByToken(token);
+		if (isPlayerInGame(token) &&
+				isMaxPlayersInGame()) {
+			if (tempGiocatore.hasRazza()) {
+				inserisciDinosauriNellaMappa(token);
+				playersQueue.put(getPlayerName(token));
+			}
+			else throw new RazzaNonCreataException();
+		}
+		else return;
 	}
 }
