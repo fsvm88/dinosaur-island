@@ -134,15 +134,16 @@ class ClientWorker extends Server implements Runnable {
 							}
 							else writeNoToOutput();
 						}
-						else writeLineToOutput("@no");
+						else writeNoToOutput();
 						if (comando.equals("@creaUtente")) {
 							socketAdaptor.saCreaUtente(user, pwd);
+							writeOkToOutput(bufferDaStampare);
 						}
 						else if (comando.equals("@login")) {
 							bufferDaStampare = socketAdaptor.saLoginUtente(user, pwd);
+							writeOkToOutput(bufferDaStampare);
 						}
 						else writeNoToOutput();
-						writeOkToOutput(bufferDaStampare);
 					}
 					else if (!isLoginOrCreation(comando)) {
 						String token = getToken(scanner);
@@ -179,7 +180,7 @@ class ClientWorker extends Server implements Runnable {
 								}
 								else if (comando.equals("@classifica")) {
 									bufferDaStampare = socketAdaptor.saClassifica(token);
-									writeLineToOutput("@classifica" + "," + bufferDaStampare);
+									writeLineToOutput(comando + "," + bufferDaStampare);
 								}
 								else if (comando.equals("@logout")) {
 									socketAdaptor.saLogout(token);
@@ -189,11 +190,11 @@ class ClientWorker extends Server implements Runnable {
 								/* comandi di informazione */
 								else if (comando.equals("@mappaGenerale")) {
 									bufferDaStampare = socketAdaptor.saSendMappaGenerale(token);
-									writeLineToOutput("@mappaGenerale" + "," + bufferDaStampare);
+									writeLineToOutput(comando + "," + bufferDaStampare);
 								}
 								else if (comando.equals("@listaDinosauri")) {
 									bufferDaStampare = socketAdaptor.saSendListaDinosauri(token);
-									writeLineToOutput("@listaDinosauri" + "," + bufferDaStampare);
+									writeLineToOutput(comando + "," + bufferDaStampare);
 								}
 								/* comandi di turno */
 								else if (comando.equals("@confermaTurno")) {
@@ -208,11 +209,11 @@ class ClientWorker extends Server implements Runnable {
 									String idDinosauro = scanner.next();
 									if (comando.equals("@vistaLocale")) {
 										bufferDaStampare = socketAdaptor.saVistaLocale(token, idDinosauro);
-										writeLineToOutput("@vistaLocale" + "," + bufferDaStampare);
+										writeLineToOutput(comando + "," + bufferDaStampare);
 									}
 									else if (comando.equals("@statoDinosauro")) {
 										bufferDaStampare = socketAdaptor.saStatoDinosauro(token, idDinosauro);
-										writeLineToOutput("@statoDinosauro" + "," + bufferDaStampare);
+										writeLineToOutput(comando + "," + bufferDaStampare);
 									}
 									else if (comando.equals("@cresciDinosauro")) {
 										socketAdaptor.saCresciDinosauro(token, idDinosauro);
@@ -242,39 +243,78 @@ class ClientWorker extends Server implements Runnable {
 				}
 			}
 			catch (IOException e) {
-
+				terminateThreadOnIOException("Unable to communicate with the client, stopping thread");
 			}
 			catch (UserAuthenticationFailedException e) {
-
+				try {
+					writeNoToOutput("@autenticazioneFallita");
+				} catch (IOException e1) {
+					terminateThreadOnIOException("Unable to communicate with the client, stopping thread");
+				}
 			}
 			catch (GenericDinosauroException e) {
-
+				try {
+					writeNoToOutput(e.getMessage());
+				} catch (IOException e1) {
+					terminateThreadOnIOException("Unable to communicate with the client, stopping thread");
+				}
 			}
 			catch (InvalidIDException e) {
-
+				try {
+					writeNoToOutput("@idNonValido");
+				} catch (IOException e1) {
+					terminateThreadOnIOException("Unable to communicate with the client, stopping thread");
+				}
 			}
 			catch (InvalidTokenException e) {
-
+				try {
+					writeNoToOutput("@tokenNonValido");
+				} catch (IOException e1) {
+					terminateThreadOnIOException("Unable to communicate with the client, stopping thread");
+				}
 			}
 			catch (NomeRazzaOccupatoException e) {
-
+				try {
+					writeNoToOutput("@nomeRazzaOccupato");
+				} catch (IOException e1) {
+					terminateThreadOnIOException("Unable to communicate with the client, stopping thread");
+				}
 			}
 			catch (NonInPartitaException e) {
-
+				try {
+					writeNoToOutput("@nonInPartita");
+				} catch (IOException e1) {
+					terminateThreadOnIOException("Unable to communicate with the client, stopping thread");
+				}
 			}
 			catch (RazzaGiaCreataException e) {
-
+				try {
+					writeNoToOutput("@razzaGiaCreata");
+				} catch (IOException e1) {
+					terminateThreadOnIOException("Unable to communicate with the client, stopping thread");
+				}
 			}
 			catch (RazzaNonCreataException e) {
-				
+				try {
+					writeNoToOutput("@razzaNonCreata");
+				} catch (IOException e1) {
+					terminateThreadOnIOException("Unable to communicate with the client, stopping thread");
+				}
 			}
 			catch (TroppiGiocatoriException e) {
-
+				try {
+					writeNoToOutput("@troppiGiocatori");
+				} catch (IOException e1) {
+					terminateThreadOnIOException("Unable to communicate with the client, stopping thread");
+				}
 			}
 			catch (UserExistsException e) {
-
+				try {
+					writeNoToOutput("@usernameOccupato");
+				} catch (IOException e1) {
+					terminateThreadOnIOException("Unable to communicate with the client, stopping thread");
+				}
 			}
-
 		}
 	}
 
