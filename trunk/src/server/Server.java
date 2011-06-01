@@ -24,7 +24,7 @@ class Server {
 	/**
 	 * Dichiara l'oggetto attraverso cui passano le comunicazioni su socket.
 	 */
-	protected SocketAdaptor socketAdaptor = new SocketAdaptor(servLogica);
+	protected SocketAdaptor socketAdaptor = null;
 	
 	/**
 	 * @param args
@@ -56,8 +56,10 @@ class Server {
 		}
 		while (isServerRunning()) {
 			try {
+				servLogica = new Logica();
 				Thread threadedLogica = new Thread(servLogica);
 				threadedLogica.start();
+				socketAdaptor = new SocketAdaptor(servLogica);
 				System.out.println("Server started successfully, creating threads on need..");
 				ClientWorker clientWorker = new ClientWorker(serverInstSocket.accept());
 				Thread threadedClientWorker = new Thread(clientWorker);

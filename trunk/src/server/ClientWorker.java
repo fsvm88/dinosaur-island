@@ -5,11 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Iterator;
 import java.util.Scanner;
-import java.util.regex.Pattern;
-
-import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.HeaderTokenizer.Token;
 
 import dinolib.*;
 
@@ -103,6 +99,18 @@ class ClientWorker extends Server implements Runnable {
 		}
 		else writeLineToOutput("@ok");
 	}
+	
+	/**
+	 * Invia no al client, se viene aggiunta una stringa come argomento la aggiunge.
+	 * @param toAppend
+	 * @throws IOException 
+	 */
+	private void writeNoToOutput(String...toAppend) throws IOException {
+		if (toAppend != null) {
+			writeLineToOutput("@no" + "," + toAppend[0]);
+		}
+		else writeLineToOutput("@no");
+	}
 
 	/**
 	 * Implementazione del metodo run dall'interfaccia runnable, avvia il thread.
@@ -124,21 +132,20 @@ class ClientWorker extends Server implements Runnable {
 							if (scanner.hasNext()) {
 								pwd = estraiPwd(scanner);
 							}
-							else writeLineToOutput("@no");
+							else writeNoToOutput();
 						}
 						else writeLineToOutput("@no");
 						if (comando.equals("@creaUtente")) {
 							socketAdaptor.saCreaUtente(user, pwd);
-							writeOkToOutput();
 						}
-						if (comando.equals("@login")) {
+						else if (comando.equals("@login")) {
 							bufferDaStampare = socketAdaptor.saLoginUtente(user, pwd);
-							writeOkToOutput(bufferDaStampare);
 						}
+						else writeNoToOutput();
+						writeOkToOutput(bufferDaStampare);
 					}
 					else if (!isLoginOrCreation(comando)) {
-						String token = null;
-						getToken(scanner);
+						String token = getToken(scanner);
 						if (isGoodToken(token)) {
 							if (socketAdaptor.saUserIsLogged(token)) {
 								/* comandi fuori partita*/
@@ -150,9 +157,9 @@ class ClientWorker extends Server implements Runnable {
 										if (scanner.hasNext()) {
 											tipoRazza = estraiTipo(scanner);
 										}
-										else writeLineToOutput("@no");
+										else writeNoToOutput();
 									}
-									else writeLineToOutput("@no");
+									else writeNoToOutput();
 									if (validaRazzaETipo(nomeRazza, tipoRazza)) {
 										socketAdaptor.saCreaRazzaETipo(token, nomeRazza, tipoRazza);
 										writeOkToOutput();
@@ -237,7 +244,7 @@ class ClientWorker extends Server implements Runnable {
 			catch (IOException e) {
 
 			}
-			catch (AuthenticationFailedException e) {
+			catch (UserAuthenticationFailedException e) {
 
 			}
 			catch (GenericDinosauroException e) {

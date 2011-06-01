@@ -45,10 +45,10 @@ public class SocketAdaptor {
 	 * @param user
 	 * @param pwd
 	 * @return 
-	 * @throws AuthenticationFailedException 
+	 * @throws UserAuthenticationFailedException 
 	 * @throws UserExistsException
 	 */
-	public String saLoginUtente(String user, String pwd) throws AuthenticationFailedException {
+	public String saLoginUtente(String user, String pwd) throws UserAuthenticationFailedException {
 		if (myLogica.existsUserWithName(user)) {
 			Giocatore tempGiocatore = myLogica.getPlayerByName(user);
 			if (tempGiocatore.passwordIsValid(pwd)) {
@@ -57,9 +57,9 @@ public class SocketAdaptor {
 				tempGiocatore.logged();
 				return newToken;
 			}
-			else throw new AuthenticationFailedException();
+			else throw new UserAuthenticationFailedException();
 		}
-		throw new AuthenticationFailedException();
+		throw new UserAuthenticationFailedException();
 	}
 
 	/**
@@ -414,10 +414,7 @@ public class SocketAdaptor {
 	 * @throws InvalidTokenException 
 	 */
 	public boolean saUserIsLogged(String token) throws InvalidTokenException {
-		if (myLogica.existsPlayerWithToken(token)) {
-			if (myLogica.getPlayerByToken(token).isLogged()) return true;
-			else return false;
-		}
-		else throw new InvalidTokenException();
+		if (myLogica.getPlayerByToken(token).isLogged()) return true;
+		else return false;
 	}
 }
