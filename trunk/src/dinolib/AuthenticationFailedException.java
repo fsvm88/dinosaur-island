@@ -1,6 +1,6 @@
 package dinolib;
 
-@SuppressWarnings("serial")
+public
 class AuthenticationFailedException extends Exception {
 	public AuthenticationFailedException() { }
 	public AuthenticationFailedException(String message) {

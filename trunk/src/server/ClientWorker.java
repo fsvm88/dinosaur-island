@@ -11,12 +11,7 @@ import java.util.regex.Pattern;
 
 import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.HeaderTokenizer.Token;
 
-import dinolib.Carnivoro;
-import dinolib.Dinosauro;
-import dinolib.Erbivoro;
-import dinolib.Giocatore;
-import dinolib.CommonUtils;
-import dinolib.Logica;
+import dinolib.*;
 
 /** 
  * Implementa l'ascoltatore per i client. Ascolta i comandi e gestisce le giuste risposte.
@@ -58,11 +53,11 @@ class ClientWorker extends Server implements Runnable {
 			terminateThreadOnIOException("Cannot initialize input/output streams!");
 		}
 	}
-	
+
 	private String estraiUser(Scanner scanner) {
 		return scanner.next();
 	}
-	
+
 	private String estraiPwd(Scanner scanner) {
 		return scanner.next();
 	}
@@ -87,7 +82,7 @@ class ClientWorker extends Server implements Runnable {
 	private String estraiRazza(Scanner scanner) {
 		return scanner.next();
 	}
-	
+
 	private String estraiTipo(Scanner scanner) {
 		return scanner.next();
 	}
@@ -114,121 +109,165 @@ class ClientWorker extends Server implements Runnable {
 	 * Fa il parsing dei comandi e chiama le azioni appropriate su logica tramite gli adattatori (a<NomeFunzione>) o direttamente.
 	 */
 	public void run () {
-		Scanner scanner = new Scanner(readLineFromInput());
-		scanner.useDelimiter(",");
-		if (scanner.hasNext()) {
-			String comando = scanner.next();
-			String bufferDaStampare = null;
-			if (isLoginOrCreation(comando)) {
-				String user = null;
-				String pwd = null;
+		while (isServerRunning() && !stopThread) {
+			try {
+				Scanner scanner = new Scanner(readLineFromInput());
+				scanner.useDelimiter(",");
 				if (scanner.hasNext()) {
-					user = estraiUser(scanner);
-					if (scanner.hasNext()) {
-						pwd = estraiPwd(scanner);
-					}
-					else writeLineToOutput("@no");
-				}
-				else writeLineToOutput("@no");
-				if (comando.equals("@creaUtente")) {
-					socketAdaptor.saCreaUtente(user, pwd);
-					writeOkToOutput();
-				}
-				if (comando.equals("@login")) {
-					socketAdaptor.saLoginUtente(user, pwd);
-					writeOkToOutput(socketAdaptor.saGetTokenUtente(user));
-				}
-			}
-			else if (!isLoginOrCreation(comando)) {
-				String token = null;
-				getToken(scanner);
-				if (isGoodToken(token)) {
-					if (socketAdaptor.saUserIsLogged(token)) {
-						/* comandi fuori partita*/
-						if (comando.equals("@creaRazza")) {
-							String nomeRazza = null;
-							String tipoRazza = null;
+					String comando = scanner.next();
+					String bufferDaStampare = null;
+					if (isLoginOrCreation(comando)) {
+						String user = null;
+						String pwd = null;
+						if (scanner.hasNext()) {
+							user = estraiUser(scanner);
 							if (scanner.hasNext()) {
-								nomeRazza = estraiRazza(scanner);
-								if (scanner.hasNext()) {
-									tipoRazza = estraiTipo(scanner);
-								}
-								else writeLineToOutput("@no");
+								pwd = estraiPwd(scanner);
 							}
 							else writeLineToOutput("@no");
-							if (validaRazzaETipo(nomeRazza, tipoRazza)) {
-								socketAdaptor.saCreaRazzaETipo(token, nomeRazza, tipoRazza);
-								writeOkToOutput();
-							}
 						}
-						else if (comando.equals("@accessoPartita")) {
-							socketAdaptor.saAccediAPartita(token);
+						else writeLineToOutput("@no");
+						if (comando.equals("@creaUtente")) {
+							socketAdaptor.saCreaUtente(user, pwd);
 							writeOkToOutput();
 						}
-						else if (comando.equals("@uscitaPartita")) {
-							socketAdaptor.saEsciDallaPartita(token);
-							writeOkToOutput();
-						}
-						else if (comando.equals("@listaGiocatori")) {
-							bufferDaStampare = socketAdaptor.saListaDeiGiocatori(token);
+						if (comando.equals("@login")) {
+							bufferDaStampare = socketAdaptor.saLoginUtente(user, pwd);
 							writeOkToOutput(bufferDaStampare);
 						}
-						else if (comando.equals("@classifica")) {
-							bufferDaStampare = socketAdaptor.saClassifica(token);
-							writeLineToOutput("@classifica" + "," + bufferDaStampare);
-						}
-						else if (comando.equals("@logout")) {
-							socketAdaptor.saLogout(token);
-							writeOkToOutput();
-						}
-						/* comandi in partita */
-						/* comandi di informazione */
-						else if (comando.equals("@mappaGenerale")) {
-							bufferDaStampare = socketAdaptor.saSendMappaGenerale(token);
-							writeLineToOutput("@mappaGenerale" + "," + bufferDaStampare);
-						}
-						else if (comando.equals("@listaDinosauri")) {
-							bufferDaStampare = socketAdaptor.saSendListaDinosauri(token);
-							writeLineToOutput("@listaDinosauri" + "," + bufferDaStampare);
-						}
-						/* comandi di turno */
-						else if (comando.equals("@confermaTurno")) bufferDaStampare = socketAdaptor.saConfermaTurno(token);
-						else if (comando.equals("@passaTurno")) bufferDaStampare = socketAdaptor.saPassaTurno(token);
-						else if (scanner.hasNext()) {
-							String idDinosauro = scanner.next();
-							if (comando.equals("@vistaLocale")) {
-								bufferDaStampare = socketAdaptor.saVistaLocale(token, idDinosauro);
-								writeLineToOutput("@vistaLocale" + "," + bufferDaStampare);
-							}
-							else if (comando.equals("@statoDinosauro")) {
-								bufferDaStampare = socketAdaptor.saStatoDinosauro(token, idDinosauro);
-								writeLineToOutput("@statoDinosauro" + "," + bufferDaStampare);
-							}
-							else if (comando.equals("@cresciDinosauro")) {
-								socketAdaptor.saCresciDinosauro(token, idDinosauro);
-								writeOkToOutput();
-							}
-							else if (comando.equals("@deponiUovo")) {
-								bufferDaStampare = socketAdaptor.saDeponiUovo(token, idDinosauro);
-								writeOkToOutput(bufferDaStampare);
-							}
-							else if (comando.equals("@muoviDinosauro")) {
-								int x = 0;
-								int y = 0;
-								if (scanner.hasNextInt()) {
-									x = scanner.nextInt();
-									if (scanner.hasNextInt()) {
-										y = scanner.nextInt();
-										bufferDaStampare = socketAdaptor.saMuoviDinosauro(token, idDinosauro, x, y);
+					}
+					else if (!isLoginOrCreation(comando)) {
+						String token = null;
+						getToken(scanner);
+						if (isGoodToken(token)) {
+							if (socketAdaptor.saUserIsLogged(token)) {
+								/* comandi fuori partita*/
+								if (comando.equals("@creaRazza")) {
+									String nomeRazza = null;
+									String tipoRazza = null;
+									if (scanner.hasNext()) {
+										nomeRazza = estraiRazza(scanner);
+										if (scanner.hasNext()) {
+											tipoRazza = estraiTipo(scanner);
+										}
+										else writeLineToOutput("@no");
 									}
 									else writeLineToOutput("@no");
+									if (validaRazzaETipo(nomeRazza, tipoRazza)) {
+										socketAdaptor.saCreaRazzaETipo(token, nomeRazza, tipoRazza);
+										writeOkToOutput();
+									}
 								}
-								else writeLineToOutput("@no");
+								else if (comando.equals("@accessoPartita")) {
+									socketAdaptor.saAccediAPartita(token);
+									writeOkToOutput();
+								}
+								else if (comando.equals("@uscitaPartita")) {
+									socketAdaptor.saEsciDallaPartita(token);
+									writeOkToOutput();
+								}
+								else if (comando.equals("@listaGiocatori")) {
+									bufferDaStampare = socketAdaptor.saListaDeiGiocatori(token);
+									writeOkToOutput(bufferDaStampare);
+								}
+								else if (comando.equals("@classifica")) {
+									bufferDaStampare = socketAdaptor.saClassifica(token);
+									writeLineToOutput("@classifica" + "," + bufferDaStampare);
+								}
+								else if (comando.equals("@logout")) {
+									socketAdaptor.saLogout(token);
+									writeOkToOutput();
+								}
+								/* comandi in partita */
+								/* comandi di informazione */
+								else if (comando.equals("@mappaGenerale")) {
+									bufferDaStampare = socketAdaptor.saSendMappaGenerale(token);
+									writeLineToOutput("@mappaGenerale" + "," + bufferDaStampare);
+								}
+								else if (comando.equals("@listaDinosauri")) {
+									bufferDaStampare = socketAdaptor.saSendListaDinosauri(token);
+									writeLineToOutput("@listaDinosauri" + "," + bufferDaStampare);
+								}
+								/* comandi di turno */
+								else if (comando.equals("@confermaTurno")) {
+									socketAdaptor.saConfermaTurno(token);
+									writeOkToOutput();
+								}
+								else if (comando.equals("@passaTurno")) {
+									socketAdaptor.saPassaTurno(token);
+									writeOkToOutput();
+								}
+								else if (scanner.hasNext()) {
+									String idDinosauro = scanner.next();
+									if (comando.equals("@vistaLocale")) {
+										bufferDaStampare = socketAdaptor.saVistaLocale(token, idDinosauro);
+										writeLineToOutput("@vistaLocale" + "," + bufferDaStampare);
+									}
+									else if (comando.equals("@statoDinosauro")) {
+										bufferDaStampare = socketAdaptor.saStatoDinosauro(token, idDinosauro);
+										writeLineToOutput("@statoDinosauro" + "," + bufferDaStampare);
+									}
+									else if (comando.equals("@cresciDinosauro")) {
+										socketAdaptor.saCresciDinosauro(token, idDinosauro);
+										writeOkToOutput();
+									}
+									else if (comando.equals("@deponiUovo")) {
+										bufferDaStampare = socketAdaptor.saDeponiUovo(token, idDinosauro);
+										writeOkToOutput(bufferDaStampare);
+									}
+									else if (comando.equals("@muoviDinosauro")) {
+										int x = 0;
+										int y = 0;
+										if (scanner.hasNextInt()) {
+											x = scanner.nextInt();
+											if (scanner.hasNextInt()) {
+												y = scanner.nextInt();
+												bufferDaStampare = socketAdaptor.saMuoviDinosauro(token, idDinosauro, x, y);
+											}
+											else writeLineToOutput("@no");
+										}
+										else writeLineToOutput("@no");
+									}
+								}
 							}
 						}
 					}
 				}
 			}
+			catch (IOException e) {
+
+			}
+			catch (AuthenticationFailedException e) {
+
+			}
+			catch (GenericDinosauroException e) {
+
+			}
+			catch (InvalidIDException e) {
+
+			}
+			catch (InvalidTokenException e) {
+
+			}
+			catch (NomeRazzaOccupatoException e) {
+
+			}
+			catch (NonInPartitaException e) {
+
+			}
+			catch (RazzaGiaCreataException e) {
+
+			}
+			catch (RazzaNonCreataException e) {
+				
+			}
+			catch (TroppiGiocatoriException e) {
+
+			}
+			catch (UserExistsException e) {
+
+			}
+
 		}
 	}
 

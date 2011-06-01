@@ -20,11 +20,11 @@ class Server {
 	/**
 	 * Dichiara la classe logica che gestisce tutta la logica di gioco indipendentemente dall'interfaccia di comunicazione.
 	 */
-	private Logica logica = new Logica();
+	private Logica servLogica = null;
 	/**
 	 * Dichiara l'oggetto attraverso cui passano le comunicazioni su socket.
 	 */
-	protected SocketAdaptor socketAdaptor = new SocketAdaptor(logica);
+	protected SocketAdaptor socketAdaptor = new SocketAdaptor(servLogica);
 	
 	/**
 	 * @param args
@@ -40,6 +40,8 @@ class Server {
 	public Server () {
 		listenSocket();
 	}
+	
+	private boolean serverIsRunning = true; 
 
 	/**
 	 * Helper per l'inizializzazione e la gestione dei socket per i client tramite threading
@@ -52,9 +54,10 @@ class Server {
 			System.out.println("Could not listen on port " + PORTA_DI_GIOCO);
 			System.exit(-1);
 		}
-		boolean running = true;
-		while (running) {
+		while (isServerRunning()) {
 			try {
+				Thread threadedLogica = new Thread(servLogica);
+				threadedLogica.start();
 				System.out.println("Server started successfully, creating threads on need..");
 				ClientWorker clientWorker = new ClientWorker(serverInstSocket.accept());
 				Thread threadedClientWorker = new Thread(clientWorker);
@@ -65,5 +68,9 @@ class Server {
 				System.exit(-1);
 			}
 		}
+	}
+	
+	protected boolean isServerRunning() {
+		return serverIsRunning;
 	}
 }
