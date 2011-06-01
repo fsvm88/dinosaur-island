@@ -1,7 +1,7 @@
 package dinolib;
 
 
-class Erbivoro extends Dinosauro {
+public class Erbivoro extends Dinosauro {
 	/**
 	 * @uml.property  name="SPOSTAMENTO_MAX" readOnly="true"
 	 */
