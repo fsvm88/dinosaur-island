@@ -375,18 +375,10 @@ public class SocketAdaptor {
 	 * @throws RazzaNonCreataException 
 	 * @throws TroppiGiocatoriException 
 	 * @throws NonInPartitaException 
+	 * @throws InterruptedException 
 	 */
-	public void saAccediAPartita(String token) throws InvalidTokenException, NonInPartitaException, TroppiGiocatoriException, RazzaNonCreataException {
-		Giocatore tempGiocatore = myLogica.getPlayerByToken(token);
-		if (myLogica.isPlayerInGame(token) &&
-				!myLogica.isMaxPlayersInGame()) {
-			if (tempGiocatore.hasRazza()) {
-				if (!myLogica.isSomeonePlaying()) myLogica.someoneIsPlaying();
-				myLogica.inserisciDinosauriNellaMappa(token);
-			}
-			else throw new RazzaNonCreataException();
-		}
-		else return;
+	public void saAccediAPartita(String token) throws InvalidTokenException, NonInPartitaException, TroppiGiocatoriException, RazzaNonCreataException, InterruptedException {
+		myLogica.accediAPartita(token);
 	}
 
 	/**
