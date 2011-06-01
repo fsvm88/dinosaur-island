@@ -178,7 +178,7 @@ public class SocketAdaptor {
 				Giocatore tempGiocatore = itSuiGiocatori.next();
 				Iterator<String> itSuIdDinosauri = tempGiocatore.getItIdDinosauri();
 				while (itSuIdDinosauri.hasNext()) {
-					if (itSuIdDinosauri.next() == idDinosauro) {
+					if (itSuIdDinosauri.next().equals(idDinosauro)) {
 						Dinosauro tempDinosauro = tempGiocatore.getDinosauro(idDinosauro);
 						String buffer = null;
 						buffer = "," + assemblaStatoComuneDinosauro(tempGiocatore, tempDinosauro);
