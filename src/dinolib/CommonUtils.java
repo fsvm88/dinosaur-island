@@ -2,7 +2,7 @@ package dinolib;
 
 import java.util.Random;
 
-class CommonUtils {
+public class CommonUtils {
 	/**
 	 * Helper per la generazione di un nuovo token alfanumerico.
 	 * @return
