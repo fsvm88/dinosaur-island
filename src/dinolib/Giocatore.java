@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import dinolib.Specie;
 
-public class Giocatore {
+class Giocatore {
 	/**
 	 * Contiene il nome del giocatore corrente.
 	 * @uml.property  name="nome"

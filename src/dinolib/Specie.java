@@ -8,7 +8,7 @@ import dinolib.CommonUtils;
 /** 
  * Astrae la collezione dei dinosauri rispetto al giocatore.
  */
-public class Specie {
+class Specie {
 	/**
 	 * Variabile che definisce il nome della specie di Dinosauri.
 	 * @uml.property  name="nomeRazza"

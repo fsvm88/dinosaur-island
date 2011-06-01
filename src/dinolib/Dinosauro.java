@@ -3,7 +3,7 @@ package dinolib;
 import java.util.Random;
 
 
-public class Dinosauro extends Specie {
+class Dinosauro extends Specie {
 	/**
 	 * Contiene un valore che dice se il dinosauro è utilizzabile direttamente o no.
 	 * Serve per deponi uovo (posticipare l'utilizzo di un dinosauro) o per verificare che il dinosauro abbia ancora mosse a disposizione.

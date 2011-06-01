@@ -21,7 +21,7 @@ import dinolib.Logica;
 /** 
  * Implementa l'ascoltatore per i client. Ascolta i comandi e gestisce le giuste risposte.
  */
-public class ClientWorker extends Server implements Runnable {
+class ClientWorker extends Server implements Runnable {
 	/**
 	 * Variabile per fermare il thread.
 	 * @uml.property name="stopThread"
