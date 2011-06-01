@@ -9,7 +9,7 @@ public class SocketAdaptor {
 	 * @uml.property name="myLogica"
 	 */
 	private Logica myLogica = null;
-	
+
 	/**
 	 * Costruttore pubblico, riceve come unico argomento la classe Logica che deve gestire.
 	 * @param newLogica
@@ -17,7 +17,51 @@ public class SocketAdaptor {
 	public SocketAdaptor (Logica newLogica) {
 		myLogica = newLogica;
 	}
-	
+
+	/**
+	 * Crea una nuova razza di dinosauri per l'utente.
+	 * @throws RazzaGiaCreataException 
+	 * @throws NomeRazzaOccupatoException 
+	 * @throws InvalidTokenException 
+	 */
+	public void saCreaRazzaETipo(String token, String nomeRazza, String tipoRazza) throws InvalidTokenException, NomeRazzaOccupatoException, RazzaGiaCreataException {
+		if (myLogica.existsPlayerWithToken(token) && !myLogica.existsRaceWithName(nomeRazza)) {
+			if (!myLogica.existsRaceForPlayer(token)) {
+				Dinosauro tempDinosauro;
+				if (tipoRazza.equals("c")) {
+					tempDinosauro = new Carnivoro(CommonUtils.getNewRandomIntValueOnMyMap(myLogica.getLatoDellaMappa()), CommonUtils.getNewRandomIntValueOnMyMap(myLogica.getLatoDellaMappa()));
+					myLogica.createNewRaceForPlayer(token, nomeRazza, tempDinosauro);
+				}
+				else if (tipoRazza.equals("e")) {
+					tempDinosauro = new Erbivoro(CommonUtils.getNewRandomIntValueOnMyMap(myLogica.getLatoDellaMappa()), CommonUtils.getNewRandomIntValueOnMyMap(myLogica.getLatoDellaMappa()));
+					myLogica.createNewRaceForPlayer(token, nomeRazza, tempDinosauro);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Adattatore per loggare l'utente
+	 * @param user
+	 * @param pwd
+	 * @return 
+	 * @throws AuthenticationFailedException 
+	 * @throws UserExistsException
+	 */
+	public String saLoginUtente(String user, String pwd) throws AuthenticationFailedException {
+		if (myLogica.existsUserWithName(user)) {
+			Giocatore tempGiocatore = myLogica.getPlayerByName(user);
+			if (tempGiocatore.passwordIsValid(pwd)) {
+				String newToken = CommonUtils.getNewToken();
+				myLogica.addPlayerToConnTable(newToken, user);
+				tempGiocatore.logged();
+				return newToken;
+			}
+			else throw new AuthenticationFailedException();
+		}
+		throw new AuthenticationFailedException();
+	}
+
 	/**
 	 * Ritorna la classifica di gioco.
 	 * @return
@@ -36,7 +80,7 @@ public class SocketAdaptor {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Helper per assemblare il punteggio per un singolo giocatore.
 	 * @param newBuffer
@@ -107,9 +151,7 @@ public class SocketAdaptor {
 	 * @throws InvalidIDException
 	 */
 	public String saVistaLocale(String token, String idDinosauro) throws InvalidTokenException, NonInPartitaException, InvalidIDException {
-		if (myLogica.existsPlayerWithToken(token) &&
-				myLogica.isPlayerInGame(token) &&
-				myLogica.playerHasDinosauro(token, idDinosauro)) {
+		if (myLogica.playerHasDinosauro(token, idDinosauro)) {
 			String buffer = null;
 			Dinosauro tempDinosauro = myLogica.getPlayerByToken(token).getDinosauro(idDinosauro);
 			int rangeVista = tempDinosauro.getRangeVista();
@@ -130,8 +172,7 @@ public class SocketAdaptor {
 	}
 
 	public String saSendMappaGenerale(String token) throws InvalidTokenException, NonInPartitaException {
-		if (myLogica.existsPlayerWithToken(token) &&
-				myLogica.isPlayerInGame(token)) {
+		if (myLogica.isPlayerInGame(token)) {
 			String buffer = null;
 			int latoDellaMappa = myLogica.getLatoDellaMappa();
 			buffer = "{" + latoDellaMappa + "," + latoDellaMappa + "}" + ",";
@@ -144,7 +185,7 @@ public class SocketAdaptor {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Assembla lo stato comune del dinosauro
 	 */
@@ -159,10 +200,12 @@ public class SocketAdaptor {
 	/**
 	 * Invia lo stato del dinosauro richiesto all'utente.
 	 * @param scanner
+	 * @throws InvalidIDException 
+	 * @throws InvalidTokenException 
 	 * @throws IOException
 	 */
-	public String saStatoDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException, NonInPartitaException {
-		if (myLogica.existsPlayerWithToken(token) && myLogica.playerHasDinosauro(token, idDinosauro)) {
+	public String saStatoDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException {
+		if (myLogica.playerHasDinosauro(token, idDinosauro)) {
 			Giocatore tempGiocatore = myLogica.getPlayerByToken(token);
 			Dinosauro tempDinosauro = tempGiocatore.getDinosauro(idDinosauro);
 			String buffer = null;
@@ -172,7 +215,7 @@ public class SocketAdaptor {
 			tempDinosauro.getTurnoDiVita();
 			return buffer;
 		}
-		else if (myLogica.existsPlayerWithToken(token) && !myLogica.playerHasDinosauro(token, idDinosauro)) {
+		else if (!myLogica.playerHasDinosauro(token, idDinosauro)) {
 			Iterator<Giocatore> itSuiGiocatori = myLogica.getIteratorOnPlayers();
 			while (itSuiGiocatori.hasNext()) {
 				Giocatore tempGiocatore = itSuiGiocatori.next();
@@ -196,18 +239,21 @@ public class SocketAdaptor {
 	}
 	/**
 	 * Chiama la funzione di crescita del dinosauro.
+	 * @throws NonInPartitaException 
+	 * @throws InvalidIDException 
+	 * @throws InvalidTokenException 
+	 * @throws GenericDinosauroException 
 	 */
-	public void saCresciDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException, GenericDinosauroException, NonInPartitaException, NonIlTuoTurnoException {
-		if (myLogica.existsPlayerWithToken(token) &&
-				myLogica.playerHasDinosauro(token, idDinosauro) &&
+	public void saCresciDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException, NonInPartitaException, GenericDinosauroException {
+		if (myLogica.playerHasDinosauro(token, idDinosauro) &&
 				myLogica.isPlayerInGame(token) &&
 				myLogica.isMioTurno(token)) {
-			if (puoCrescere(myLogica.getPlayerByToken(token).getDinosauro(idDinosauro))) {
+			if (myLogica.puoCrescere(myLogica.getPlayerByToken(token).getDinosauro(idDinosauro))) {
 				myLogica.getPlayerByToken(token).getDinosauro(idDinosauro).cresci();
 			}
 		}
 	}
-	
+
 	/**
 	 * Gestisce il comando che depone l'uovo.
 	 * @param scanner
@@ -217,15 +263,14 @@ public class SocketAdaptor {
 	 * @throws InvalidIDException 
 	 * @throws InvalidTokenException 
 	 */
-	public String saDeponiUovo(String token, String idDinosauro) throws IOException, InvalidTokenException, InvalidIDException, NonInPartitaException, GenericDinosauroException {
-		if (myLogica.existsPlayerWithToken(token) &&
-				myLogica.playerHasDinosauro(token, idDinosauro) &&
+	public String saDeponiUovo(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException, NonInPartitaException, GenericDinosauroException {
+		if (myLogica.playerHasDinosauro(token, idDinosauro) &&
 				myLogica.isPlayerInGame(token) &&
 				myLogica.isMioTurno(token)) { // TODO aggiungere limite mosse
 			Dinosauro curDinosauro = myLogica.getPlayerByToken(token).getDinosauro(idDinosauro);
 			int x = curDinosauro.getX();
 			int y = curDinosauro.getY();
-			if (puoDeporreUnUovo(token, curDinosauro)) {
+			if (myLogica.puoDeporreUnUovo(token, curDinosauro)) {
 				String newIdDinosauro = CommonUtils.getNewToken();
 				if (curDinosauro.getTipoRazza().equals("Carnivoro")) {
 					Dinosauro newDinosauro = new Carnivoro(x, y);
@@ -243,93 +288,35 @@ public class SocketAdaptor {
 		}
 		return null;
 	}
-	
+
 	public String saMuoviDinosauro(String token, String idDinosauro, int toX, int toY) throws InvalidTokenException, NonInPartitaException, InvalidIDException {
-		if (myLogica.existsPlayerWithToken(token) &&
-				myLogica.isPlayerInGame(token) &&
+		if (myLogica.isPlayerInGame(token) &&
 				myLogica.playerHasDinosauro(token, idDinosauro)) {
-			
+
 		}
 		return null;
 	}
 
 	/**
-	 * Verifica se il dinosauro ha abbastanza energia per deporre un uovo, altrimenti lancia eccezione con causa.
-	 * @throws GenericDinosauroException 
-	 */
-	private boolean haAbbastanzaEnergiaPerDeporreUnUovo(Dinosauro dinosauro) throws GenericDinosauroException {
-		if (dinosauro.hasEnergyToRepl()) return true;
-		else throw new GenericDinosauroException("mortePerInedia");
-	}
-
-	/**
-	 * Verifica se la specie ha già 5 dinosauri. Se la specie ha dimensione massima lancia eccezione con causa.
-	 * @throws GenericDinosauroException 
-	 * @throws InvalidTokenException 
-	 */
-	private boolean haNumeroMassimoPerSpecie(String token) throws GenericDinosauroException, InvalidTokenException {
-		if (myLogica.getPlayerByToken(token).specieHaNumeroMassimo()) return true;
-		else throw new GenericDinosauroException("raggiuntoNumeroMaxDinosauri");
-	}
-
-	/**
-	 * Verifica se il dinosauro può deporre un uovo.
-	 * @throws GenericDinosauroException 
-	 * @throws InvalidTokenException 
-	 */
-	private boolean puoDeporreUnUovo(String token, Dinosauro dinosauro) throws GenericDinosauroException, InvalidTokenException {
-		if (haAbbastanzaEnergiaPerDeporreUnUovo(dinosauro) &&
-				!haNumeroMassimoPerSpecie(token)) return true;
-		else return false;
-	}
-
-	/**
-	 * Verifica se il dinosauro ha abbastanza energia per crescere, altrimenti lancia eccezione con causa.
-	 * @throws GenericDinosauroException 
-	 */
-	private boolean haAbbastanzaEnergiaPerCrescere(Dinosauro dinosauro) throws GenericDinosauroException {
-		if (dinosauro.hasEnergyToGrow()) return true;
-		else throw new GenericDinosauroException("mortePerInedia");
-	}
-
-	/**
-	 * Verifica se la specie ha già 5 dinosauri. Se la specie ha dimensione massima lancia eccezione con causa.
-	 * @throws GenericDinosauroException 
-	 * @throws InvalidTokenException 
-	 */
-	private boolean haDimensioneMassima(Dinosauro dinosauro) throws GenericDinosauroException {
-		if (dinosauro.isAtDimensioneMax()) return true;
-		else throw new GenericDinosauroException("raggiuntoNumeroMaxDinosauri");
-	}
-
-	/**
-	 * Verifica se il dinosauro può crescere.
-	 * @throws GenericDinosauroException 
-	 */
-	private boolean puoCrescere(Dinosauro dinosauro) throws GenericDinosauroException {
-		if (haAbbastanzaEnergiaPerCrescere(dinosauro) &&
-				!haDimensioneMassima(dinosauro)) return true;
-		else return false;
-	}
-	
-	/**
 	 * Metodo per gestire il logout dell'utente
+	 * @throws InvalidTokenException 
 	 * @throws NonInPartitaException 
 	 */
 	public void saLogout(String token) throws InvalidTokenException, NonInPartitaException {
-		if (myLogica.existsPlayerWithToken(token)) {
-			myLogica.doLogout(token);
-		}
+		myLogica.doLogout(token);
 	}
 
 	/**
 	 * Spedisce la lista dei dinosauri all'utente.
+	 * @throws RazzaGiaCreataException 
+	 * @throws InvalidTokenException 
+	 * @throws NonInPartitaException 
 	 * @throws IOException
 	 */
-	public String saSendListaDinosauri(String token) throws InvalidTokenException, NonInPartitaException {
-		if (myLogica.existsPlayerWithToken(token) && myLogica.isPlayerInGame(token)) {
+	public String saSendListaDinosauri(String token) throws InvalidTokenException, RazzaGiaCreataException, NonInPartitaException {
+		if (myLogica.isPlayerInGame(token)) {
 			String buffer = null;
-			if (myLogica.getPlayerByToken(token).hasRazza()) {
+			if (myLogica.existsRaceForPlayer(token)) {
 				Iterator<String> itIdDinosauri = myLogica.getPlayerByToken(token).getItIdDinosauri();
 				while (itIdDinosauri.hasNext()) {
 					buffer = assemblaBuffer(buffer, itIdDinosauri.next());
@@ -343,10 +330,11 @@ public class SocketAdaptor {
 	/**
 	 * Adattatore per l'uscita dalla partita.
 	 * @param token
+	 * @throws NonInPartitaException 
 	 * @throws InvalidTokenException
 	 */
-	public void saEsciDallaPartita(String token) throws InvalidTokenException {
-		if (myLogica.existsPlayerWithToken(token)) myLogica.doEsciDallaPartita(token);
+	public void saEsciDallaPartita(String token) throws InvalidTokenException, NonInPartitaException {
+		if (myLogica.isPlayerInGame(token)) myLogica.doEsciDallaPartita(token);
 	}
 
 	/**
@@ -363,6 +351,7 @@ public class SocketAdaptor {
 	}
 	/**
 	 * Adattatore del comando per restituire la lista dei giocatori al client.
+	 * @throws InvalidTokenException 
 	 * @throws IOException 
 	 */
 	public String saListaDeiGiocatori(String token) throws InvalidTokenException {
@@ -382,9 +371,12 @@ public class SocketAdaptor {
 	}
 	/**
 	 * Implementa l'accesso alla partita.
+	 * @throws InvalidTokenException 
+	 * @throws RazzaNonCreataException 
+	 * @throws TroppiGiocatoriException 
 	 * @throws NonInPartitaException 
 	 */
-	public void saAccediAPartita(String token) throws TroppiGiocatoriException, RazzaNonCreataException, InvalidTokenException, NonInPartitaException {
+	public void saAccediAPartita(String token) throws InvalidTokenException, NonInPartitaException, TroppiGiocatoriException, RazzaNonCreataException {
 		Giocatore tempGiocatore = myLogica.getPlayerByToken(token);
 		if (myLogica.isPlayerInGame(token) &&
 				!myLogica.isMaxPlayersInGame()) {
@@ -396,56 +388,7 @@ public class SocketAdaptor {
 		}
 		else return;
 	}
-	
-	/**
-	 * Crea una nuova razza di dinosauri per l'utente.
-	 */
-	public void saCreaRazzaETipo(String token, String nomeRazza, String tipoRazza) throws RaceAlreadyCreatedException, RaceNameExistsException, InvalidTokenException {
-		if (myLogica.existsPlayerWithToken(token) && !myLogica.existsRaceWithName(nomeRazza)) {
-			if (!myLogica.existsRaceForPlayer(token)) {
-				Dinosauro tempDinosauro;
-				if (tipoRazza.equals("c")) {
-					tempDinosauro = new Carnivoro(CommonUtils.getNewRandomIntValueOnMyMap(myLogica.getLatoDellaMappa()), CommonUtils.getNewRandomIntValueOnMyMap(myLogica.getLatoDellaMappa()));
-					myLogica.createNewRaceForPlayer(token, nomeRazza, tempDinosauro);
-				}
-				else if (tipoRazza.equals("e")) {
-					tempDinosauro = new Erbivoro(CommonUtils.getNewRandomIntValueOnMyMap(myLogica.getLatoDellaMappa()), CommonUtils.getNewRandomIntValueOnMyMap(myLogica.getLatoDellaMappa()));
-					myLogica.createNewRaceForPlayer(token, nomeRazza, tempDinosauro);
-				}
-			}
-		}
-	}
-	/**
-	 * Helper per restituire il token dell'utente richiesto.
-	 * @param user
-	 * @return
-	 * @throws InvalidTokenException 
-	 */
-	public String saGetTokenUtente(String user) throws InvalidTokenException {
-		if (myLogica.isPlayerConnected(user)) {
-			return myLogica.getPlayerToken(user);
-		}
-		throw new InvalidTokenException();
-	}
-	
-	/**
-	 * Adattatore per loggare l'utente
-	 * @param user
-	 * @param pwd
-	 * @throws UserExistsException
-	 */
-	public void saLoginUtente(String user, String pwd) throws AuthenticationFailedException, UserExistsException {
-		if (myLogica.existsUserWithName(user)) {
-			Giocatore tempGiocatore = myLogica.getPlayerByName(user);
-			if (tempGiocatore.passwordIsValid(pwd)) {
-				myLogica.addPlayerToConnTable(CommonUtils.getNewToken(), user);
-				tempGiocatore.logged();
-				return;
-			}
-		}
-		throw new AuthenticationFailedException();
-	}
-	
+
 	/**
 	 * Adattatore per creare l'utente
 	 * @param user
@@ -458,12 +401,12 @@ public class SocketAdaptor {
 			return;
 		}
 	}
-	
+
 	public void saConfermaTurno(String token) {
-		
+
 	}
 	public void saPassaTurno(String token) {
-		
+
 	}
 	/**
 	 * Helper per verificare che l'utente sia effettivamente loggato.

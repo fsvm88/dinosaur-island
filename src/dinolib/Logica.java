@@ -10,7 +10,7 @@ import java.util.Iterator;
 
 import dinolib.UserExistsException;
 
-public class Logica {
+public class Logica implements Runnable {
 	/**
 	 * Definisce staticamente e definitivamente il numero massimo di giocatori ammessi in partita.
 	 * @uml.property name="NUMERO_MASSIMO_GIOCATORI_INGAME"
@@ -73,7 +73,24 @@ public class Logica {
 			System.exit(-1);
 		}
 	}
-
+	
+	private boolean logicaIsRunning = true;
+	
+	protected boolean isLogicaRunning() {
+		return logicaIsRunning;
+	}
+	
+	/**
+	 * Questo metodo gestisce effettivamente la logica di turno.
+	 * Creare un thread extra è più semplice che sincronizzare gli accessi da ogni client.
+	 * In questo modo tutta la logica è effettivamente implementata in Logica e creare nuovi modi di accesso ai dati richiede solo l'implementazione di Adattatori.
+	 */
+	public void run () {
+		while (isLogicaRunning()) {
+			
+		}
+	}
+	
 	/**
 	 * Se i file di salvataggio esistono li carica, altrimenti assume primo avvio
 	 * @throws ClassNotFoundException 
@@ -115,6 +132,19 @@ public class Logica {
 	private void creaNuovaMappa() {
 		rifMappa = new Mappa(lato_MAPPA);
 	}
+	
+	/**
+	 * Crea un utente a partire da username e password.
+	 * @param user
+	 * @param pwd
+	 * @throws UserExistsException 
+	 */
+	protected void doCreaUtente(String user, String pwd) throws UserExistsException {
+		if (!existsUserWithName(user)) {
+			listaGiocatori.put(user, new Giocatore(user, pwd));
+		}
+		else throw new UserExistsException();
+	}
 
 	/**
 	 * Rimuove un dinosauro dalla cella.
@@ -127,7 +157,7 @@ public class Logica {
 	 * Gestisce la rimozione di tutti i dinosauri dalla mappa.	
 	 * @throws InvalidTokenException 
 	 */
-	private void rimuoviDinosauriDallaMappa(Giocatore tempGiocatore) throws InvalidTokenException {
+	private void rimuoviDinosauriDallaMappa(Giocatore tempGiocatore) {
 		Iterator<String> itIdDinosauri = tempGiocatore.getItIdDinosauri();
 		while (itIdDinosauri.hasNext()) {
 			String idCorrente = itIdDinosauri.next();
@@ -212,7 +242,7 @@ public class Logica {
 	}
 
 	/**
-	 * Verifica se esiste l'utente, nel caso fa il throw di UserExistsException.
+	 * Verifica se esiste l'utente, helper per SocketAdaptor.
 	 */
 	boolean existsUserWithName(String user) {
 		if (listaGiocatori.containsKey(user)) return true;
@@ -228,14 +258,6 @@ public class Logica {
 		else return false;
 	}
 	/**
-	 * Crea un utente a partire da username e password.
-	 * @param user
-	 * @param pwd
-	 */
-	protected void doCreaUtente(String user, String pwd) {
-		listaGiocatori.put(user, new Giocatore(user, pwd));
-	}
-	/**
 	 * Ritorna il Giocatore richiesto tramite il suo nome.
 	 * @param nomeGiocatoreRichiesto
 	 * @return
@@ -249,9 +271,7 @@ public class Logica {
 	 * @return
 	 */
 	protected Giocatore getPlayerByToken(String token) throws InvalidTokenException {
-		if (existsPlayerWithToken(token)) {
-			return listaGiocatori.get(connectionTable.get(token));
-		}
+		if (existsPlayerWithToken(token)) return listaGiocatori.get(connectionTable.get(token));
 		else return null;
 	}
 
@@ -263,7 +283,7 @@ public class Logica {
 	 */
 	protected boolean existsPlayerWithToken (String token) throws InvalidTokenException {
 		if (connectionTable.containsKey(token)) return true;
-		else return false;
+		else throw new InvalidTokenException();
 	}
 
 	/**
@@ -271,12 +291,13 @@ public class Logica {
 	 * Serve per controllare che il nome richiesto non sia già in uso.
 	 * @param nomeRazza
 	 * @return
+	 * @throws NomeRazzaOccupatoException 
 	 */
-	protected boolean existsRaceWithName (String nomeRazza) {
+	protected boolean existsRaceWithName (String nomeRazza) throws NomeRazzaOccupatoException {
 		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
 		while (itGiocatori.hasNext()) {
 			Giocatore tempGiocatore = itGiocatori.next();
-			if (tempGiocatore.getNomeRazza().equals(nomeRazza)) return true;
+			if (tempGiocatore.getNomeRazza().equals(nomeRazza)) throw new NomeRazzaOccupatoException();
 		}
 		return false;
 	}
@@ -286,9 +307,11 @@ public class Logica {
 	 * @param token
 	 * @return
 	 * @throws InvalidTokenException
+	 * @throws RazzaGiaCreataException 
 	 */
-	boolean existsRaceForPlayer (String token) throws InvalidTokenException {
-		return getPlayerByToken(token).hasRazza();
+	boolean existsRaceForPlayer (String token) throws InvalidTokenException, RazzaGiaCreataException {
+		if (getPlayerByToken(token).hasRazza()) throw new RazzaGiaCreataException();
+		else return false;
 	}
 	
 	/**
@@ -318,20 +341,16 @@ public class Logica {
 
 	/**
 	 * Helper per far sapere che qualcuno sta giocando.
-	 * @return
 	 */
-	protected boolean someoneIsPlaying() {
-		if (qualcunoStaGiocando) return true;
-		else return false;
+	protected void someoneIsPlaying() {
+		qualcunoStaGiocando = true;
 	}
 
 	/**
 	 * Helper per far sapere che nessuno sta giocando.
-	 * @return
 	 */
-	public boolean nobodyIsPlaying() {
-		if (qualcunoStaGiocando) return true;
-		else return false;
+	protected void nobodyIsPlaying() {
+		qualcunoStaGiocando = false;
 	}
 
 	/**
@@ -404,14 +423,13 @@ public class Logica {
 	}/**
 	 * Verifica se l'utente possiede il dinosauro con l'id cercato, altrimenti lancia eccezione.
 	 * @return 
+	 * @throws InvalidIDException 
+	 * @throws InvalidTokenException 
 	 */
-	protected boolean playerHasDinosauro(String token, String idDinosauro) throws InvalidIDException, InvalidTokenException {
+	protected boolean playerHasDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException {
 		if (getPlayerByToken(token).existsDinosauro(idDinosauro)) return true;
 		else throw new InvalidIDException();
 	}
-
-
-
 	/**
 	 * Verifica se l'utente è in partita, altrimenti lancia eccezione.
 	 * @throws InvalidTokenException 
@@ -451,7 +469,7 @@ public class Logica {
 	 * @return
 	 * @throws InvalidTokenException 
 	 */
-	protected boolean isMioTurno (String token) throws InvalidTokenException {
+	protected boolean isMioTurno(String token) throws InvalidTokenException {
 		if (nomeGiocatoreCorrente.equals(getPlayerByToken(token).getNome())) return true;
 		else return false;
 	}
@@ -467,7 +485,7 @@ public class Logica {
 	 * Restituisce un iteratore sugli ID dei giocatori.
 	 * @return
 	 */
-	public Iterator<String> getIteratorOnPIds () {
+	public Iterator<String> getIteratorOnPIds() {
 		return connectionTable.keySet().iterator();
 	}
 
@@ -522,5 +540,61 @@ public class Logica {
 	 */
 	protected Cella getCella(int x, int y) {
 		return rifMappa.getCella(x, y);
+	}
+	/**
+	 * Verifica se il dinosauro ha abbastanza energia per deporre un uovo, altrimenti lancia eccezione con causa.
+	 * @throws GenericDinosauroException 
+	 */
+	private boolean haAbbastanzaEnergiaPerDeporreUnUovo(Dinosauro dinosauro) throws GenericDinosauroException {
+		if (dinosauro.hasEnergyToRepl()) return true;
+		else throw new GenericDinosauroException("mortePerInedia");
+	}
+	/**
+	 * Verifica se la specie ha già 5 dinosauri. Se la specie ha dimensione massima lancia eccezione con causa.
+	 * @throws GenericDinosauroException 
+	 * @throws InvalidTokenException 
+	 */
+	private boolean haNumeroMassimoPerSpecie(String token) throws InvalidTokenException, GenericDinosauroException {
+		if (getPlayerByToken(token).specieHaNumeroMassimo()) return true;
+		else throw new GenericDinosauroException("raggiuntoNumeroMaxDinosauri");
+	}
+
+	/**
+	 * Verifica se il dinosauro può deporre un uovo.
+	 * @throws GenericDinosauroException 
+	 * @throws InvalidTokenException 
+	 */
+	protected boolean puoDeporreUnUovo(String token, Dinosauro dinosauro) throws GenericDinosauroException, InvalidTokenException {
+		if (haAbbastanzaEnergiaPerDeporreUnUovo(dinosauro) &&
+				!haNumeroMassimoPerSpecie(token)) return true;
+		else return false;
+	}
+	/**
+	 * Verifica se il dinosauro ha abbastanza energia per crescere, altrimenti lancia eccezione con causa.
+	 * @throws GenericDinosauroException 
+	 */
+	private boolean haAbbastanzaEnergiaPerCrescere(Dinosauro dinosauro) throws GenericDinosauroException {
+		if (dinosauro.hasEnergyToGrow()) return true;
+		else throw new GenericDinosauroException("mortePerInedia");
+	}
+
+	/**
+	 * Verifica se la specie ha già 5 dinosauri. Se la specie ha dimensione massima lancia eccezione con causa.
+	 * @throws GenericDinosauroException 
+	 * @throws InvalidTokenException 
+	 */
+	private boolean haDimensioneMassima(Dinosauro dinosauro) throws GenericDinosauroException {
+		if (dinosauro.isAtDimensioneMax()) return true;
+		else throw new GenericDinosauroException("raggiuntoNumeroMaxDinosauri");
+	}
+
+	/**
+	 * Verifica se il dinosauro può crescere.
+	 * @throws GenericDinosauroException 
+	 */
+	protected boolean puoCrescere(Dinosauro dinosauro) throws GenericDinosauroException {
+		if (haAbbastanzaEnergiaPerCrescere(dinosauro) &&
+				!haDimensioneMassima(dinosauro)) return true;
+		else return false;
 	}
 }
