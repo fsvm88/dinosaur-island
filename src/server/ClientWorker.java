@@ -232,9 +232,9 @@ class ClientWorker extends Server implements Runnable {
 												y = scanner.nextInt();
 												bufferDaStampare = socketAdaptor.saMuoviDinosauro(token, idDinosauro, x, y);
 											}
-											else writeLineToOutput("@no");
+											else writeNoToOutput();
 										}
-										else writeLineToOutput("@no");
+										else writeNoToOutput();
 									}
 								}
 							}
