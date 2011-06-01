@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Random;
 
 import dinolib.UserExistsException;
 
@@ -49,12 +48,10 @@ public class Logica {
 	 * @uml.property name="qualcunoStaGiocando"
 	 */
 	private boolean qualcunoStaGiocando = false;
+	
 	/**
-	 * Definisce il generatore di numeri casuali.
-	 * @uml.property name="rnd"
+	 * Costruttore di default per la classe Logica.
 	 */
-	Random rnd = new Random();
-
 	public Logica () {
 		try {
 			caricaPartitaDaFile();

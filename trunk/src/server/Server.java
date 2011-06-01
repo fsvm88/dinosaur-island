@@ -6,7 +6,7 @@ import java.net.ServerSocket;
 import dinolib.Logica;
 import dinolib.SocketAdaptor;
 
-public class Server {
+class Server {
 	/**
 	 * Definisce staticamente la porta di gioco.
 	 * @uml.property name="PORTA_DI_GIOCO"
@@ -20,7 +20,7 @@ public class Server {
 	/**
 	 * Dichiara la classe logica che gestisce tutta la logica di gioco indipendentemente dall'interfaccia di comunicazione.
 	 */
-	protected Logica logica = new Logica();
+	private Logica logica = new Logica();
 	/**
 	 * Dichiara l'oggetto attraverso cui passano le comunicazioni su socket.
 	 */
@@ -44,7 +44,7 @@ public class Server {
 	/**
 	 * Helper per l'inizializzazione e la gestione dei socket per i client tramite threading
 	 */
-	public void listenSocket () {
+	private void listenSocket () {
 		try {
 			serverInstSocket = new ServerSocket(PORTA_DI_GIOCO);
 		}

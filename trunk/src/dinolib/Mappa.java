@@ -1,7 +1,7 @@
 package dinolib;
 
 
-public class Mappa {
+class Mappa {
 	/**
 	 * La mappa a celle, contiene tutta la mappa in celle. Attenzione! Il sistema di conteggio è un sistema di coordinate cartesiane! Non una matrice! Verrà usata come piano cartesiano anche se l'accesso verrà effettuato come una matrice. Le colonne tengono la stessa numerazione (l'ascissa non cambia). Le righe invece hanno la seguente numerazione: 0 indica la riga più in basso (il bordo in basso della mappa), 39 indica la riga più in alto (il bordo in alto della mappa).
 	 * @uml.property  name="MappaACelle" multiplicity="(0 -1)" dimension="2"
