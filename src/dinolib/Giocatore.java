@@ -217,4 +217,11 @@ public class Giocatore {
 		if (specie.isEstinta()) return true;
 		else return false;
 	}
+	
+	/**
+	 * Aggiorna il giocatore quando c'è il cambio di turno
+	 */
+	public void aggiornaGiocatoreSuTurno() {
+		specie.aggiornaSpecie();
+	}
 }

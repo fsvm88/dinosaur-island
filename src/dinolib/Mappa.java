@@ -153,4 +153,19 @@ class Mappa {
 			MappaACelle[x][tempY] = vecchiaCella;
 		}
 	}
+	
+	/**
+	 * Aggiorna le celle su cambio del turno.
+	 */
+	private void aggiornaCelle() {
+		
+	}
+	
+	
+	/**
+	 * Aggiorna la mappa su cambio del turno.
+	 */
+	protected void aggiornaSuTurno() {
+		aggiornaCelle();
+	}
 }

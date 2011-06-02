@@ -108,6 +108,28 @@ public class Logica implements Runnable {
 
 	}
 
+	/**
+	 * Aggiorna la mappa ogni volta che si passa da un giocatore all'altro.
+	 */
+	private void updateMappa() {
+		rifMappa.aggiornaSuTurno();
+	}
+
+	private void updateGiocatori() {
+		Iterator<Giocatore> itGioc = getIteratorOnPlayers();
+		while (itGioc.hasNext()) {
+			itGioc.next().aggiornaGiocatoreSuTurno();
+		}
+	}
+
+	/**
+	 * Aggiorna l'ambiente di gioco ogni volta che si passa da un giocatore all'altro.
+	 */
+	private void updatePartita() {
+		updateMappa();
+		updateGiocatori();
+	}
+
 	/*
 	 * Algoritmo:
 	 * fintanto che (la logica va)
@@ -121,42 +143,39 @@ public class Logica implements Runnable {
 	 * In questo modo tutta la logica è effettivamente implementata in Logica e creare nuovi modi di accesso ai dati richiede solo l'implementazione di Adattatori.
 	 */
 	public void run () {
-		while (isLogicaRunning()) {
-			if (playersQueue.size() > 0) {
-				nomeGiocatoreCorrente = playersQueue.poll();
-				long conferma_start = System.currentTimeMillis();
-				while ((System.currentTimeMillis()-conferma_start) < (sleep_CONFERMA_TURNO*1000)) {
-					if (turnoConfermato) {
-						long turno_start = System.currentTimeMillis();
-						while ((System.currentTimeMillis()-turno_start) < (sleep_TEMPO_TURNO*1000)) {
-							if (!turnoConfermato) break;
-							else {
-								try {
+		try {
+			while (isLogicaRunning()) {
+				if (isSomeonePlaying()) {
+					nomeGiocatoreCorrente = playersQueue.poll();
+					long conferma_start = System.currentTimeMillis();
+					while ((System.currentTimeMillis()-conferma_start) < (sleep_CONFERMA_TURNO*1000)) {
+						if (turnoConfermato) {
+							long turno_start = System.currentTimeMillis();
+							while ((System.currentTimeMillis()-turno_start) < (sleep_TEMPO_TURNO*1000)) {
+								if (!turnoConfermato) break;
+								else {
 									Thread.sleep(1000);
-								} catch (InterruptedException e) {
-									e.printStackTrace();
 								}
 							}
+							playersQueue.put(nomeGiocatoreCorrente);
+							updatePartita();
+							broadcastCambioTurno();
 						}
-						broadcastCambioTurno(); // TODO aggiungi aggiornamento di dell'ambiente di gioco (vegetazione, carogne), invecchiamento eventuale dinosauri etc
-					} else {
-						try {
+						else {
 							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
 						}
 					}
 				}
-			}
-			else {
-				try {
+				else {
 					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
 				}
 			}
 		}
+		catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
+
 
 	/**
 	 * Se i file di salvataggio esistono li carica, altrimenti assume primo avvio
@@ -434,13 +453,12 @@ public class Logica implements Runnable {
 
 	private void passaTurno() {
 		// TODO Auto-generated method stub
-
 	}
 
 	private void confermaTurno() {
-		// TODO Auto-generated method stub
-
+		turnoConfermato = true;
 	}
+	
 	/**
 	 * Prova a inserire un dinosauro appena nato. Questo metodo viene usato da deponiUovo.
 	 * @return
