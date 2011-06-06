@@ -3,7 +3,7 @@ package dinolib;
 import java.util.Random;
 
 
-public abstract class Dinosauro extends Specie {
+public abstract class Dinosauro {
 	/**
 	 * Contiene un valore che dice se il dinosauro è utilizzabile direttamente o no.
 	 * Serve per deponi uovo (posticipare l'utilizzo di un dinosauro) o per verificare che il dinosauro abbia ancora mosse a disposizione.
@@ -231,7 +231,6 @@ public abstract class Dinosauro extends Specie {
 	 * Costruttore visibile solo alle sottoclassi da usare come costruttore comune per Carnivoro e Erbivoro.
 	 */
 	protected Dinosauro(int x, int y, int nuovo_spostamento_MAX, int nuovo_moltiplicatore_FORZA) {
-		super();
 		this.x = x;
 		this.y = y;
 		Random generator = new Random();
