@@ -29,7 +29,7 @@ abstract class Cella extends Mappa {
 	 * @uml.property  name="idDelDinosauro"
 	 */
 	public String getIdDelDinosauro() {
-		if (this.toString().equals("Dinosauro")) {
+		if (this.toString().equals("dinosauro")) {
 			return idDelDinosauro;
 		}
 		else return null;
@@ -47,7 +47,7 @@ abstract class Cella extends Mappa {
 	 * @uml.property  name="cellaSuCuiSiTrova"
 	 */
 	public Cella getCellaSuCuiSiTrova() {
-		if (this.toString().equals("Dinosauro")) {
+		if (this.toString().equals("dinosauro")) {
 			return cellaSuCuiSiTrova;
 		}
 		else return null;
