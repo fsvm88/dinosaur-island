@@ -92,12 +92,12 @@ public abstract class Dinosauro extends Specie {
 	}
 
 	/**
-	 * Setter of the property <tt>energiaMax</tt>
+	 * Updater of the property <tt>energiaMax</tt>
 	 * @param energiaMax  The energiaMax to set.
 	 * @uml.property  name="energiaMax"
 	 */
-	private void setEnergiaMax(int energiaMax) {
-		this.energiaMax = energiaMax;
+	private void updateEnergiaMax() {
+		this.energiaMax = 1000*this.dimensione;
 	}
 
 	/**
@@ -210,16 +210,15 @@ public abstract class Dinosauro extends Specie {
 	 * @uml.property  name="forza"
 	 */
 	public int getForza() {
-		setForza();
+		updateForza();
 		return forza;
 	}
 
 	/**
-	 * Setter of the property <tt>forza</tt>
-	 * @param forza  The forza to set.
+	 * Updater of the property <tt>forza</tt>
 	 * @uml.property  name="forza"
 	 */
-	public void setForza() {
+	private void updateForza() {
 		this.forza = (moltiplicatore_FORZA*this.getDimensione()*this.getEnergiaAttuale());
 	}
 
@@ -275,8 +274,8 @@ public abstract class Dinosauro extends Specie {
 	protected void cresci() {
 		if (this.getDimensione() < dimensione_MASSIMA) {
 			this.setDimensione((this.getDimensione()+1));
-			this.setEnergiaMax((1000*this.getDimensione()));
-			this.setForza();
+			this.updateEnergiaMax();
+			this.updateForza();
 			this.aggiornaEnergiaCrescita();
 		}
 	}
@@ -295,7 +294,7 @@ public abstract class Dinosauro extends Specie {
 	 * Override del metodo toString per questa classe in particolare.
 	 */
 	public String toString () {
-		return this.getClass().getName();
+		return this.getClass().getSimpleName();
 	}
 
 	/**
@@ -343,11 +342,11 @@ public abstract class Dinosauro extends Specie {
 	}
 
 	/**
-	 * Restituisce come String il nome della classe per avere il nome della razza di dinosauri.
+	 * Restituisce come String il nome della classe per avere il tipo della razza di dinosauri.
 	 * @return
 	 */
 	public String getTipoRazza() {
-		return this.getClass().getName();
+		return this.getClass().getSimpleName();
 	}
 	
 	/**
