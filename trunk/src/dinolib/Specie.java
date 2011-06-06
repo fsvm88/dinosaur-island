@@ -119,12 +119,7 @@ class Specie {
 	public int getNumeroDinosauri(){
 		return dinosauri.size();
 	}
-
-	/**
-	 * Stub di un costruttore vuoto per garantire coerenza con la sottoclasse.
-	 */
-	protected Specie() { };
-
+	
 	/**
 	 * Implementa la costruzione della classe Specie.
 	 * Richiede il nuovo nome della razza e l'istanza del nuovo dinosauro.
