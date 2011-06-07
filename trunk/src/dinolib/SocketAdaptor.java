@@ -89,9 +89,9 @@ public class SocketAdaptor {
 	 */
 	private String assemblaPunteggio(String newBuffer, Giocatore giocatore) {
 		newBuffer = assemblaBuffer(newBuffer, giocatore.getNome());
-		newBuffer = assemblaBuffer(newBuffer, giocatore.getNomeRazza());
+		newBuffer = assemblaBuffer(newBuffer, giocatore.getRazza().getNome());
 		newBuffer = newBuffer + "," + giocatore.getPunteggio();
-		if (giocatore.isSpecieEstinta()) newBuffer = assemblaBuffer(newBuffer, "s");
+		if (giocatore.isRazzaEstinta()) newBuffer = assemblaBuffer(newBuffer, "s");
 		else newBuffer = assemblaBuffer(newBuffer, "n");
 		return newBuffer;
 	}
@@ -153,7 +153,7 @@ public class SocketAdaptor {
 	public String saVistaLocale(String token, String idDinosauro) throws InvalidTokenException, NonInPartitaException, InvalidIDException {
 		if (myLogica.playerHasDinosauro(token, idDinosauro)) {
 			String buffer = null;
-			Dinosauro tempDinosauro = myLogica.getPlayerByToken(token).getDinosauro(idDinosauro);
+			Dinosauro tempDinosauro = myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
 			int rangeVista = tempDinosauro.getRangeVista();
 			int leftCornerX = myLogica.doSubtraction(tempDinosauro.getX(), rangeVista);
 			int bottomCornerY = myLogica.doSubtraction(tempDinosauro.getY(), rangeVista);
@@ -191,8 +191,8 @@ public class SocketAdaptor {
 	 */
 	private String assemblaStatoComuneDinosauro(Giocatore tempGiocatore, Dinosauro tempDinosauro) {
 		return tempGiocatore.getNome() + "," +
-		tempGiocatore.getNomeRazza() + "," +
-		tempGiocatore.getTipoRazza().toLowerCase().charAt(0) + "," +
+		tempGiocatore.getRazza().getNome() + "," +
+		tempGiocatore.getRazza().getTipoRazza().toLowerCase().charAt(0) + "," +
 		"{" + "," + tempDinosauro.getX() + "," + CommonUtils.translateYforClient(tempDinosauro.getY(), myLogica.getLatoDellaMappa()) + "," + "}" + "," +
 		tempDinosauro.getDimensione();
 	}
@@ -207,7 +207,7 @@ public class SocketAdaptor {
 	public String saStatoDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException {
 		if (myLogica.playerHasDinosauro(token, idDinosauro)) {
 			Giocatore tempGiocatore = myLogica.getPlayerByToken(token);
-			Dinosauro tempDinosauro = tempGiocatore.getDinosauro(idDinosauro);
+			Dinosauro tempDinosauro = tempGiocatore.getRazza().getDinosauroById(idDinosauro);
 			String buffer = null;
 			buffer = "," + assemblaStatoComuneDinosauro(tempGiocatore, tempDinosauro);
 			buffer = buffer + "," +
@@ -217,12 +217,14 @@ public class SocketAdaptor {
 		}
 		else if (!myLogica.playerHasDinosauro(token, idDinosauro)) {
 			Iterator<Giocatore> itSuiGiocatori = myLogica.getIteratorOnPlayers();
+			Giocatore tempGiocatore;
+			Dinosauro tempDinosauro;
 			while (itSuiGiocatori.hasNext()) {
-				Giocatore tempGiocatore = itSuiGiocatori.next();
-				Iterator<String> itSuIdDinosauri = tempGiocatore.getItIdDinosauri();
-				while (itSuIdDinosauri.hasNext()) {
-					if (itSuIdDinosauri.next().equals(idDinosauro)) {
-						Dinosauro tempDinosauro = tempGiocatore.getDinosauro(idDinosauro);
+				tempGiocatore = itSuiGiocatori.next();
+				Iterator<Dinosauro> itDinosauri = tempGiocatore.getRazza().iterator();
+				while (itDinosauri.hasNext()) {
+					if (itDinosauri.next().getIdDinosauro().equals(idDinosauro)) {
+						tempDinosauro = tempGiocatore.getRazza().getDinosauroById(idDinosauro);
 						String buffer = null;
 						buffer = "," + assemblaStatoComuneDinosauro(tempGiocatore, tempDinosauro);
 						buffer = buffer + "," +
@@ -230,7 +232,6 @@ public class SocketAdaptor {
 						tempDinosauro.getTurnoDiVita();
 						return buffer;
 					}
-
 				}
 			}
 		}
@@ -248,8 +249,8 @@ public class SocketAdaptor {
 		if (myLogica.playerHasDinosauro(token, idDinosauro) &&
 				myLogica.isPlayerInGame(token) &&
 				myLogica.isMioTurno(token)) {
-			if (myLogica.puoCrescere(myLogica.getPlayerByToken(token).getDinosauro(idDinosauro))) {
-				myLogica.getPlayerByToken(token).getDinosauro(idDinosauro).cresci();
+			if (myLogica.puoCrescere(myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro))) {
+				myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).cresci();
 			}
 		}
 	}
@@ -267,7 +268,7 @@ public class SocketAdaptor {
 		if (myLogica.playerHasDinosauro(token, idDinosauro) &&
 				myLogica.isPlayerInGame(token) &&
 				myLogica.isMioTurno(token)) { // TODO aggiungere limite mosse
-			Dinosauro curDinosauro = myLogica.getPlayerByToken(token).getDinosauro(idDinosauro);
+			Dinosauro curDinosauro = myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
 			int x = curDinosauro.getX();
 			int y = curDinosauro.getY();
 			if (myLogica.puoDeporreUnUovo(token, curDinosauro)) {
@@ -275,13 +276,13 @@ public class SocketAdaptor {
 				if (curDinosauro.getTipoRazza().equals("Carnivoro")) {
 					Dinosauro newDinosauro = new Carnivoro(x, y);
 					newDinosauro.nonUsabile();
-					myLogica.trySpawnOfAnEgg(token, x, y, newDinosauro, newIdDinosauro);
+					myLogica.trySpawnOfAnEgg(token, x, y, newDinosauro);
 					return newIdDinosauro;
 				}
 				else if (curDinosauro.getTipoRazza().equals("Erbivoro")) {
 					Dinosauro newDinosauro = new Erbivoro(x, y);
 					newDinosauro.nonUsabile();
-					myLogica.trySpawnOfAnEgg(token, x, y, newDinosauro, newIdDinosauro);
+					myLogica.trySpawnOfAnEgg(token, x, y, newDinosauro);
 					return newIdDinosauro;
 				}
 			}
@@ -317,9 +318,9 @@ public class SocketAdaptor {
 		if (myLogica.isPlayerInGame(token)) {
 			String buffer = null;
 			if (myLogica.existsRaceForPlayer(token)) {
-				Iterator<String> itIdDinosauri = myLogica.getPlayerByToken(token).getItIdDinosauri();
-				while (itIdDinosauri.hasNext()) {
-					buffer = assemblaBuffer(buffer, itIdDinosauri.next());
+				Iterator<Dinosauro> itDinosauri = myLogica.getPlayerByToken(token).getRazza().iterator();
+				while (itDinosauri.hasNext()) {
+					buffer = assemblaBuffer(buffer, itDinosauri.next().getIdDinosauro());
 				}
 				return buffer;
 			}

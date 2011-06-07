@@ -3,15 +3,12 @@ package dinolib;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Hashtable;
 import java.util.Set;
-
-import dinolib.CommonUtils;
 
 /** 
  * Astrae la collezione dei dinosauri rispetto al giocatore.
  */
-class Razza implements Set {
+class Razza implements Set<Dinosauro> {
 	/* Tutte le variabili statiche/definitive e non modificabili */
 	/**
 	 * Definisce definitivamente i turni di vita massimi per una specie.
@@ -61,14 +58,24 @@ class Razza implements Set {
 	protected Razza(String nomeRazza, Dinosauro nuovodinosauro) {
 		this.nome = nomeRazza;
 		this.tipoRazza = nuovodinosauro.getTipoRazza();
-		aggiungiDinosauro(nuovodinosauro, null);
+		this.add(nuovodinosauro);
 	}
 	
 	/* Tutti i getter */
 	public String getNome() { return nome; }
 	public int getPunteggio() { return punteggio; }
-	protected Dinosauro getDinosauro(String idDinosauroCercato) { return dinosauri.get(idDinosauroCercato); }
 	public String getTipoRazza() { return tipoRazza; }
+	protected Dinosauro getDinosauroById(String idDinosauroCercato) {
+		if (existsDinosauroWithId(idDinosauroCercato)) {
+			Iterator<Dinosauro> itDinosauri = this.iterator();
+			Dinosauro tempDinosauro;
+			while (itDinosauri.hasNext()) {
+				tempDinosauro = itDinosauri.next();
+				if (tempDinosauro.getIdDinosauro().equals(idDinosauroCercato)) return tempDinosauro;
+			}
+		}
+		return null;
+	}
 	
 	/**
 	 * Estingui la razza.
@@ -125,7 +132,7 @@ class Razza implements Set {
 	 * Helper per invecchiare i dinosauri nella specie.
 	 */
 	private void invecchiaDinosauri() {
-		Iterator<Dinosauro> itDinosauri = getItDinosauri();
+		Iterator<Dinosauro> itDinosauri = this.iterator();
 		while (itDinosauri.hasNext()) {
 			itDinosauri.next().invecchia();
 		}
@@ -139,7 +146,7 @@ class Razza implements Set {
 		invecchiaDinosauri();
 	}
 
-	/* Tutti i metodi importati dall'interfaccia */
+	/* Tutti i metodi importati dall'interfaccia, questi sono quelli supportati */
 	@Override
 	public int size() {
 		if (!dinosauri.isEmpty()) {
@@ -161,65 +168,42 @@ class Razza implements Set {
 	}
 
 	@Override
-	public Iterator iterator() {
+	public Iterator<Dinosauro> iterator() {
 		return dinosauri.iterator();
 	}
 
 	@Override
-	public Object[] toArray() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public void clear() { dinosauri = new HashSet<Dinosauro>(); }
 
 	@Override
-	public Object[] toArray(Object[] a) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean add(Object e) {
+	public boolean add(Dinosauro e) {
 		Iterator<Dinosauro> itDinosauro = this.iterator();
 		while (itDinosauro.hasNext()) {
-			if (((Dinosauro) e).equals(itDinosauro.next())) return false;
+			if (e.getIdDinosauro().equals(itDinosauro.next().getIdDinosauro())) return false;
 		}
-		dinosauri.add((Dinosauro) e);
+		dinosauri.add(e);
 		return true;
 	}
 
 	@Override
 	public boolean remove(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		if (o != null) {
+			dinosauri.remove((Dinosauro) o);
+			return true;
+		}
+		else return false;
 	}
 
 	@Override
-	public boolean containsAll(Collection c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
+	public boolean addAll(Collection<? extends Dinosauro> c) { throw new UnsupportedOperationException(); }
 	@Override
-	public boolean addAll(Collection c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
+	public boolean containsAll(Collection<?> c) { throw new UnsupportedOperationException(); }
 	@Override
-	public boolean retainAll(Collection c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
+	public boolean removeAll(Collection<?> c) { throw new UnsupportedOperationException(); }
 	@Override
-	public boolean removeAll(Collection c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
+	public boolean retainAll(Collection<?> c) { throw new UnsupportedOperationException(); }
 	@Override
-	public void clear() {
-		// TODO Auto-generated method stub
-		
-	}
+	public Object[] toArray() { throw new UnsupportedOperationException(); }
+	@Override
+	public <T> T[] toArray(T[] a) { throw new UnsupportedOperationException(); }
 }
