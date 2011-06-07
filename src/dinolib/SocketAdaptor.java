@@ -91,7 +91,7 @@ public class SocketAdaptor {
 		newBuffer = assemblaBuffer(newBuffer, giocatore.getNome());
 		newBuffer = assemblaBuffer(newBuffer, giocatore.getRazza().getNome());
 		newBuffer = newBuffer + "," + giocatore.getPunteggio();
-		if (giocatore.isRazzaEstinta()) newBuffer = assemblaBuffer(newBuffer, "s");
+		if (giocatore.getRazza().isEstinta()) newBuffer = assemblaBuffer(newBuffer, "s");
 		else newBuffer = assemblaBuffer(newBuffer, "n");
 		return newBuffer;
 	}
@@ -246,12 +246,18 @@ public class SocketAdaptor {
 	 * @throws GenericDinosauroException 
 	 */
 	public void saCresciDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException, NonInPartitaException, GenericDinosauroException {
-		if (myLogica.playerHasDinosauro(token, idDinosauro) &&
-				myLogica.isPlayerInGame(token) &&
-				myLogica.isMioTurno(token)) {
-			if (myLogica.puoCrescere(myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro))) {
-				myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).cresci();
+		try {
+			if (myLogica.playerHasDinosauro(token, idDinosauro) &&
+					myLogica.isPlayerInGame(token) &&
+					myLogica.isMioTurno(token)) {
+				if (myLogica.puoCrescere(myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro))) {
+					myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).cresci();
+				}
 			}
+		}
+		catch (GenericDinosauroException e) {
+			myLogica.getPlayerByToken(token).getRazza().removeById(idDinosauro);
+			throw new GenericDinosauroException("mortePerInedia");
 		}
 	}
 

@@ -16,13 +16,6 @@ public class Giocatore {
 	 * @uml.property  name="password"
 	 */
 	private String password = null;
-	
-	/**
-	 * Getter of the property <tt>nome</tt>
-	 * @return  Returns the nome.
-	 * @uml.property  name="nome"
-	 */
-	public String getNome() { return nome; }
 	/**
 	 * Fa riferimento a un oggetto Specie, viene inizializzato a zero fino a che non viene costruita la specie tramite l'implementazione in server.
 	 * @uml.property  name="specieDiDinosauri"
@@ -53,6 +46,7 @@ public class Giocatore {
 	public boolean isLogged() { return iAmLogged; }
 	public int getPunteggio() { return razzaDelGiocatore.getPunteggio(); }
 	public Razza getRazza() { return razzaDelGiocatore; }
+	public String getNome() { return nome; }
 	
 	/* Tutti i setter */
 	protected void logged() { iAmLogged = true; }
@@ -87,13 +81,6 @@ public class Giocatore {
 	 */
 	protected boolean hasRazza() {
 		if (getRazza() != null) return true;
-		else return false;
-	}
-	/**
-	 * Helper per sapere se la specie è estinta.
-	 */
-	public boolean isRazzaEstinta() {
-		if (razzaDelGiocatore.isEstinta()) return true;
 		else return false;
 	}
 }

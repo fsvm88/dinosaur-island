@@ -655,7 +655,7 @@ public class Logica implements Runnable {
 	 * Verifica se il dinosauro può crescere.
 	 * @throws GenericDinosauroException 
 	 */
-	protected boolean puoCrescere(Dinosauro dinosauro) throws GenericDinosauroException {
+	protected boolean puoCrescere(Dinosauro dinosauro) throws GenericDinosauroException { // TODO reimplementare, devo uccidere il dinosauro dentro razza, non da socketAdaptor.
 		if (haAbbastanzaEnergiaPerCrescere(dinosauro) &&
 				!haDimensioneMassima(dinosauro)) return true;
 		else return false;
