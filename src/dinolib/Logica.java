@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class Logica implements Runnable {
+	/* Tutte le variabili statiche/definitive e non modificabili */
 	/**
 	 * Definisce definitivamente il numero massimo di giocatori ammessi in partita.
 	 * @uml.property name="NUMERO_MASSIMO_GIOCATORI_INGAME"
@@ -30,6 +31,8 @@ public class Logica implements Runnable {
 	 * @uml.property name="SLEEP_TEMPO_TURNO"
 	 */
 	private final int sleep_TEMPO_TURNO = 120;
+	
+	/* Tutte le variabili istanziabili */
 	/**
 	 * Definisce il riferimento alla mappa.
 	 * @uml.property name="rifMappa"
@@ -52,7 +55,23 @@ public class Logica implements Runnable {
 	 * @uml.property name="Giocatori"
 	 */
 	private String nomeGiocatoreCorrente = null;
+	/**
+	 * Contiene una variabile che dice se la logica sta funzionando.
+	 * @uml.property name="logicaIsRunning"
+	 */
+	private boolean logicaIsRunning = true;
+	/**
+	 * Variabile che dice se il turno del giocatore è stato confermato.
+	 * @uml.property name="turnoConfermato"
+	 */
+	private boolean turnoConfermato = false;
+	/**
+	 * Contiene tutti i giocatori correntemente connessi alla partita.
+	 * @uml.property name="playersQueue"
+	 */
+	private ArrayBlockingQueue<String> playersQueue = new ArrayBlockingQueue<String>(numero_MASSIMO_GIOCATORI_INGAME);
 
+	/* Costruttore e funzioni di primo avvio */
 	/**
 	 * Costruttore di default per la classe Logica.
 	 */
@@ -77,32 +96,176 @@ public class Logica implements Runnable {
 			System.exit(-1);
 		}
 	}
-
 	/**
-	 * Contiene una variabile che dice se la logica sta funzionando.
-	 * @uml.property name="logicaIsRunning"
+	 * Se i file di salvataggio esistono li carica, altrimenti assume primo avvio
+	 * @throws ClassNotFoundException 
+	 * @throws IOException 
 	 */
-	private boolean logicaIsRunning = true;
-
+	private void caricaPartitaDaFile() throws IOException, ClassNotFoundException, FileNotFoundException {
+		/**
+		 * Carica file di mappa, se esiste deve esistere anche il file dei giocatori.
+		 * In caso il primo o l'altro non esistano l'eccezione viene gestita e passata al chiamante, che quindi assume un primo avvios
+		 */
+		caricaFileMappa("mappa.dat");
+		caricaFileGiocatori("giocatori.dat");
+	}
 	/**
-	 * Helper per sapere se la logica continua a funzionare.
-	 * @return
+	 * Implementa il caricamento del file di mappa, se esiste
+	 * Se non esiste lancia FileNotFoundException
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 */
-	protected boolean isLogicaRunning() {
-		return logicaIsRunning;
+	private void caricaFileMappa(String nomefile) throws IOException, ClassNotFoundException, FileNotFoundException {
+		ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(nomefile)));
+		rifMappa = (Mappa) ois.readObject();
+	}
+	/**
+	 * Implementa il caricamento del file giocatori se esiste
+	 * Se non esiste lancia FileNotFoundException
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
+	 */
+	@SuppressWarnings("unchecked")
+	private void caricaFileGiocatori(String nomefile) throws IOException, ClassNotFoundException, FileNotFoundException {
+		ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(nomefile)));
+		listaGiocatori = (Hashtable<String, Giocatore>) ois.readObject();
+	}
+	/**
+	 * Helper per la creazione di una mappa nuova
+	 */
+	private void creaNuovaMappa() {
+		rifMappa = new Mappa(lato_MAPPA);
 	}
 
+	
+	/* Tutti i getter */
+	protected String getPlayerName(String token) { return connectionTable.get(token); }
+	public int getLatoDellaMappa() { return rifMappa.getLatoDellaMappa(); }
+	protected Cella getCella(int x, int y) { return rifMappa.getCella(x, y); }
+	public boolean isSomeonePlaying() { if (playersQueue.size() > 0) return true; else return false; }
+	protected boolean isLogicaRunning() { return logicaIsRunning; }
+	public Iterator<Giocatore> getIteratorOnPlayers() { return listaGiocatori.values().iterator(); }
+	Iterator<Dinosauro> getItDinosauri(Giocatore tempGiocatore) { return tempGiocatore.getRazza().iterator(); }
+	public Iterator<String> getIteratorOnPNames() { return connectionTable.values().iterator(); }
+	protected void addPlayerToConnTable(String newId, String nomeUser) { connectionTable.put(newId, nomeUser); }
+	public Iterator<String> getIteratorOnPIds() { return connectionTable.keySet().iterator(); }
 	/**
-	 * Variabile che dice se il turno del giocatore è stato confermato.
-	 * @uml.property name="turnoConfermato"
+	 * Helper per verificare che sia il turno del giocatore che chiama la funzione. 
+	 * @return
+	 * @throws InvalidTokenException 
 	 */
-	private boolean turnoConfermato = false;
+	protected boolean isMioTurno(String token) throws InvalidTokenException {
+		if (nomeGiocatoreCorrente.equals(getPlayerByToken(token).getNome())) return true;
+		else return false;
+	}
+	/**
+	 * Crea una nuova razza per l'utente specificato tramite token
+	 * @param token
+	 * @param raceName
+	 * @param dinosauro
+	 * @throws InvalidTokenException
+	 */
+	protected void createNewRaceForPlayer(String token, String raceName, Dinosauro dinosauro) throws InvalidTokenException {
+		getPlayerByToken(token).creaNuovaRazza(raceName, dinosauro);
+	}
+	boolean existsUserWithName(String user) {
+		if (listaGiocatori.containsKey(user)) return true;
+		else return false;
+	}
+	/**
+	 * Verifica se l'utente con il nome richiesto è connesso.
+	 * @throws UserExistsException 
+	 */
+	protected boolean isPlayerConnected(String nome) {
+		if (existsUserWithName(nome) &&
+				connectionTable.containsValue(nome)) return true;
+		else return false;
+	}
+	/**
+	 * Verifica se il numero massimo di utenti è connesso. Se sì lancia una eccezione, altrimenti ritorna false.
+	 * ATTENZIONE! Il valore di ritorno di di default è FALSE! (Contrariamente a tutti gli altri helper).
+	 * @return
+	 * @throws TroppiGiocatoriException
+	 */
+	public boolean isMaxPlayersInGame() throws TroppiGiocatoriException {
+		if (playersQueue.size() < numero_MASSIMO_GIOCATORI_INGAME) return false;
+		else throw new TroppiGiocatoriException();
+	}
+	protected Giocatore getPlayerByName(String nomeGiocatoreRichiesto) { return listaGiocatori.get(nomeGiocatoreRichiesto); }
+	protected Giocatore getPlayerByToken(String token) throws InvalidTokenException {
+		if (existsPlayerWithToken(token)) return listaGiocatori.get(connectionTable.get(token));
+		else return null;
+	}
+	/**
+	 * Helper per verificare che effettivamente il token sia registrato.
+	 * @param token
+	 * @return
+	 * @throws InvalidTokenException
+	 */
+	protected boolean existsPlayerWithToken (String token) throws InvalidTokenException {
+		if (connectionTable.containsKey(token)) return true;
+		else throw new InvalidTokenException();
+	}
+	/**
+	 * Helper per verificare che esista una razza con il nome specificato.
+	 * Serve per controllare che il nome richiesto non sia già in uso.
+	 * @param nomeRazza
+	 * @return
+	 * @throws NomeRazzaOccupatoException 
+	 */
+	protected boolean existsRaceWithName (String nomeRazza) throws NomeRazzaOccupatoException {
+		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
+		while (itGiocatori.hasNext()) {
+			Giocatore tempGiocatore = itGiocatori.next();
+			if (tempGiocatore.getRazza().getNome().equals(nomeRazza)) throw new NomeRazzaOccupatoException();
+		}
+		return false;
+	}
+	/**
+	 * Helper per verificare l'esistenza della razza per il giocatore con il dato token.
+	 * @param token
+	 * @return
+	 * @throws InvalidTokenException
+	 * @throws RazzaGiaCreataException 
+	 */
+	boolean existsRaceForPlayer (String token) throws InvalidTokenException, RazzaGiaCreataException {
+		if (getPlayerByToken(token).hasRazza()) throw new RazzaGiaCreataException();
+		else return false;
+	}
+	/**
+	 * Verifica se l'utente possiede il dinosauro con l'id cercato, altrimenti lancia eccezione.
+	 * @return 
+	 * @throws InvalidIDException 
+	 * @throws InvalidTokenException 
+	 */
+	protected boolean playerHasDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException {
+		if (getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) return true;
+		else throw new InvalidIDException();
+	}
+	/**
+	 * Verifica se l'utente è in partita, altrimenti lancia eccezione.
+	 * @throws InvalidTokenException 
+	 * @throws NonInPartitaException 
+	 */
+	protected boolean isPlayerInGame(String token) throws InvalidTokenException, NonInPartitaException {
+		if (getPlayerByToken(token).isInGame()) return true;
+		else throw new NonInPartitaException();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
-	/**
-	 * Contiene tutti i giocatori correntemente connessi alla partita.
-	 * @uml.property name="playersQueue"
-	 */
-	private ArrayBlockingQueue<String> playersQueue = new ArrayBlockingQueue<String>(numero_MASSIMO_GIOCATORI_INGAME);
+
+	
 
 	protected void broadcastCambioTurno() {
 
@@ -176,49 +339,6 @@ public class Logica implements Runnable {
 		}
 	}
 
-
-	/**
-	 * Se i file di salvataggio esistono li carica, altrimenti assume primo avvio
-	 * @throws ClassNotFoundException 
-	 * @throws IOException 
-	 */
-	private void caricaPartitaDaFile() throws IOException, ClassNotFoundException, FileNotFoundException {
-		/**
-		 * Carica file di mappa, se esiste deve esistere anche il file dei giocatori.
-		 * In caso il primo o l'altro non esistano l'eccezione viene gestita e passata al chiamante, che quindi assume un primo avvios
-		 */
-		caricaFileMappa("mappa.dat");
-		caricaFileGiocatori("giocatori.dat");
-	}
-	/**
-	 * Implementa il caricamento del file di mappa, se esiste
-	 * Se non esiste lancia FileNotFoundException
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
-	 */
-	private void caricaFileMappa(String nomefile) throws IOException, ClassNotFoundException, FileNotFoundException {
-		ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(nomefile)));
-		rifMappa = (Mappa) ois.readObject();
-	}
-	/**
-	 * Implementa il caricamento del file giocatori se esiste
-	 * Se non esiste lancia FileNotFoundException
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
-	 */
-	@SuppressWarnings("unchecked")
-	private void caricaFileGiocatori(String nomefile) throws IOException, ClassNotFoundException, FileNotFoundException {
-		ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(nomefile)));
-		listaGiocatori = (Hashtable<String, Giocatore>) ois.readObject();
-	}
-
-	/**
-	 * Helper per la creazione di una mappa nuova
-	 */
-	private void creaNuovaMappa() {
-		rifMappa = new Mappa(lato_MAPPA);
-	}
-
 	/**
 	 * Crea un utente a partire da username e password.
 	 * @param user
@@ -233,13 +353,6 @@ public class Logica implements Runnable {
 	}
 
 	/**
-	 * Rimuove un dinosauro dalla cella.
-	 */
-	private void rimuoviDinosauroDallaCella(int x, int y) {
-		rifMappa.rimuoviIlDinosauroDallaCella(x, y);
-	}
-
-	/**
 	 * Gestisce la rimozione di tutti i dinosauri dalla mappa.	
 	 * @throws InvalidTokenException 
 	 */
@@ -248,7 +361,7 @@ public class Logica implements Runnable {
 		Dinosauro tempDinosauro;
 		while (itDinosauri.hasNext()) {
 			tempDinosauro = itDinosauri.next();
-			rimuoviDinosauroDallaCella(tempDinosauro.getX(), tempDinosauro.getY());
+			rifMappa.rimuoviIlDinosauroDallaCella(tempDinosauro.getX(), tempDinosauro.getY());
 		}
 	}
 
@@ -319,106 +432,14 @@ public class Logica implements Runnable {
 				((j+y)<rifMappa.getLatoDellaMappa()));
 		return false;
 	}
-	/**
-	 * Ritorna un iteratore sui giocatori.
-	 * @return
-	 */
-	public Iterator<Giocatore> getIteratorOnPlayers() {
-		return listaGiocatori.values().iterator();
-	}
 
-	/**
-	 * Verifica se esiste l'utente, helper per SocketAdaptor.
-	 */
-	boolean existsUserWithName(String user) {
-		if (listaGiocatori.containsKey(user)) return true;
-		else return false;
-	}
-	/**
-	 * Verifica se l'utente con il nome richiesto è connesso.
-	 * @throws UserExistsException 
-	 */
-	protected boolean isPlayerConnected(String nome) {
-		if (existsUserWithName(nome) &&
-				connectionTable.containsValue(nome)) return true;
-		else return false;
-	}
-	/**
-	 * Ritorna il Giocatore richiesto tramite il suo nome.
-	 * @param nomeGiocatoreRichiesto
-	 * @return
-	 */
-	protected Giocatore getPlayerByName(String nomeGiocatoreRichiesto) {
-		return listaGiocatori.get(nomeGiocatoreRichiesto);
-	}
-	/**
-	 * Ritorna il giocatore richiesto tramite il token.
-	 * @param token
-	 * @return
-	 */
-	protected Giocatore getPlayerByToken(String token) throws InvalidTokenException {
-		if (existsPlayerWithToken(token)) return listaGiocatori.get(connectionTable.get(token));
-		else return null;
-	}
 
-	/**
-	 * Helper per verificare che effettivamente il token sia registrato.
-	 * @param token
-	 * @return
-	 * @throws InvalidTokenException
-	 */
-	protected boolean existsPlayerWithToken (String token) throws InvalidTokenException {
-		if (connectionTable.containsKey(token)) return true;
-		else throw new InvalidTokenException();
-	}
 
-	/**
-	 * Helper per verificare che esista una razza con il nome specificato.
-	 * Serve per controllare che il nome richiesto non sia già in uso.
-	 * @param nomeRazza
-	 * @return
-	 * @throws NomeRazzaOccupatoException 
-	 */
-	protected boolean existsRaceWithName (String nomeRazza) throws NomeRazzaOccupatoException {
-		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
-		while (itGiocatori.hasNext()) {
-			Giocatore tempGiocatore = itGiocatori.next();
-			if (tempGiocatore.getRazza().getNome().equals(nomeRazza)) throw new NomeRazzaOccupatoException();
-		}
-		return false;
-	}
+	
 
-	/**
-	 * Helper per verificare l'esistenza della razza per il giocatore con il dato token.
-	 * @param token
-	 * @return
-	 * @throws InvalidTokenException
-	 * @throws RazzaGiaCreataException 
-	 */
-	boolean existsRaceForPlayer (String token) throws InvalidTokenException, RazzaGiaCreataException {
-		if (getPlayerByToken(token).hasRazza()) throw new RazzaGiaCreataException();
-		else return false;
-	}
+	
 
-	/**
-	 * Verifica se il numero massimo di utenti è connesso. Se sì lancia una eccezione, altrimenti ritorna false.
-	 * ATTENZIONE! Il valore di ritorno di di default è FALSE! (Contrariamente a tutti gli altri helper).
-	 * @return
-	 * @throws TroppiGiocatoriException
-	 */
-	public boolean isMaxPlayersInGame() throws TroppiGiocatoriException {
-		if (playersQueue.size() < numero_MASSIMO_GIOCATORI_INGAME) return false;
-		else throw new TroppiGiocatoriException();
-	}
-
-	/**
-	 * Helper per sapere se qualcuno sta giocando.
-	 * @return
-	 */
-	public boolean isSomeonePlaying() {
-		if (playersQueue.size() > 0) return true;
-		else return false;
-	}
+	
 
 	/**
 	 * Codice per l'uscita dalla partita. Viene chiamato direttamente o tramite l'adattatore.
@@ -474,24 +495,6 @@ public class Logica implements Runnable {
 			else i++;
 		} while (i<rifMappa.getLatoDellaMappa());
 		return false;
-	}/**
-	 * Verifica se l'utente possiede il dinosauro con l'id cercato, altrimenti lancia eccezione.
-	 * @return 
-	 * @throws InvalidIDException 
-	 * @throws InvalidTokenException 
-	 */
-	protected boolean playerHasDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException {
-		if (getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) return true;
-		else throw new InvalidIDException();
-	}
-	/**
-	 * Verifica se l'utente è in partita, altrimenti lancia eccezione.
-	 * @throws InvalidTokenException 
-	 * @throws NonInPartitaException 
-	 */
-	protected boolean isPlayerInGame(String token) throws InvalidTokenException, NonInPartitaException {
-		if (getPlayerByToken(token).isInGame()) return true;
-		else throw new NonInPartitaException();
 	}
 	/**
 	 * Ritorna la x più a sinistra possibile rispetto a quella specificata.
@@ -518,30 +521,7 @@ public class Logica implements Runnable {
 		else if (addition>=rifMappa.getLatoDellaMappa()) return (rifMappa.getLatoDellaMappa()-1);
 		else return addition;
 	}
-	/**
-	 * Helper per verificare che sia il turno del giocatore che chiama la funzione. 
-	 * @return
-	 * @throws InvalidTokenException 
-	 */
-	protected boolean isMioTurno(String token) throws InvalidTokenException {
-		if (nomeGiocatoreCorrente.equals(getPlayerByToken(token).getNome())) return true;
-		else return false;
-	}
-
-	/**
-	 * Aggiunge alla lista degli utenti connessi un giocatore che si è appena connesso.
-	 */
-	protected void addPlayerToConnTable(String newId, String nomeUser) {
-		connectionTable.put(newId, nomeUser);
-	}
-
-	/**
-	 * Restituisce un iteratore sugli ID dei giocatori.
-	 * @return
-	 */
-	public Iterator<String> getIteratorOnPIds() {
-		return connectionTable.keySet().iterator();
-	}
+	
 
 	/**
 	 * Ritorna il token dell'utente richiesto.
@@ -559,51 +539,7 @@ public class Logica implements Runnable {
 		}
 		return null;
 	}
-
-	/**
-	 * Ritorna il nome dell'utente associato al token richiesto.
-	 * @param user
-	 * @return
-	 */
-	protected String getPlayerName(String token) {
-		return connectionTable.get(token);
-	}
-
-	/**
-	 * Ritorna il lato della mappa. Helper per gli adattatori.
-	 * @return
-	 */
-	public int getLatoDellaMappa() {
-		return rifMappa.getLatoDellaMappa();
-	}
-	/**
-	 * Crea una nuova razza per l'utente specificato tramite token
-	 * @param token
-	 * @param raceName
-	 * @param dinosauro
-	 * @throws InvalidTokenException
-	 */
-	protected void createNewRaceForPlayer(String token, String raceName, Dinosauro dinosauro) throws InvalidTokenException {
-		getPlayerByToken(token).creaNuovaRazza(raceName, dinosauro);
-	}
-
-	/**
-	 * Ritorna un iteratore sui nomi dei giocatori.
-	 * @return
-	 */
-	public Iterator<String> getIteratorOnPNames() {
-		return connectionTable.values().iterator();
-	}
-
-	/**
-	 * Ritorna la Cella della Mappa richiesta.
-	 * @param x
-	 * @param y
-	 * @return
-	 */
-	protected Cella getCella(int x, int y) {
-		return rifMappa.getCella(x, y);
-	}
+	
 	/**
 	 * Verifica se il dinosauro ha abbastanza energia per deporre un uovo, altrimenti lancia eccezione con causa.
 	 * @throws GenericDinosauroException 
@@ -680,9 +616,5 @@ public class Logica implements Runnable {
 			else throw new RazzaNonCreataException();
 		}
 		else return;
-	}
-	
-	Iterator<Dinosauro> getItDinosauri(Giocatore tempGiocatore) {
-		return tempGiocatore.getRazza().iterator();
 	}
 }
