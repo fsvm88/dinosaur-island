@@ -4,5 +4,5 @@ import org.junit.Before;
 
 
 public class SpecieTest {
-	private Specie specie;
+	private Razza specie;
 }
