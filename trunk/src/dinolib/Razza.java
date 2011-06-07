@@ -24,13 +24,13 @@ class Razza implements Set<Dinosauro> {
 	 * Variabile che definisce il tipo della razza di Dinosauri. Viene impostata definitivamente dal costruttore.
 	 * @uml.property  name="tipoRazza"
 	 */
-	private String tipoRazza = null;
+	private String tipo = null;
 	/**
 	 * Contiene il numero massimo di dinosauri per specie. È una costante di gioco.
 	 * @uml.property  name="numero_MAX_DINOSAURI"
 	 */
 	private final int numero_MAX_DINOSAURI = 5;
-	
+
 	/* Tutte le variabili istanziabili */
 	/**
 	 * ConcurrentHashMap con tutti i dinosauri presenti nella specie.
@@ -47,12 +47,7 @@ class Razza implements Set<Dinosauro> {
 	 * uml.property name="turniDiVita"
 	 */
 	private int turniDiVita = 0;
-	/**
-	 * Dice se la razza si è già estinta o meno.
-	 * @uml.property  name="isEstinta"
-	 */
-	private boolean isEstinta = false;
-	
+
 	/* Costruttore */
 	/**
 	 * Implementa la costruzione della classe Specie.
@@ -60,10 +55,10 @@ class Razza implements Set<Dinosauro> {
 	 */
 	protected Razza(String nomeRazza, Dinosauro nuovodinosauro) {
 		this.nome = nomeRazza;
-		this.tipoRazza = nuovodinosauro.getTipoRazza();
+		this.tipo = nuovodinosauro.getTipoRazza();
 		this.add(nuovodinosauro);
 	}
-	
+
 	/* Tutti i getter */
 	/**
 	 * @return
@@ -79,12 +74,7 @@ class Razza implements Set<Dinosauro> {
 	 * @return
 	 * @uml.property  name="tipoRazza"
 	 */
-	public String getTipoRazza() { return tipoRazza; }
-	/**
-	 * @return
-	 * @uml.property  name="isEstinta"
-	 */
-	public boolean isEstinta() { return isEstinta; }
+	public String getTipo() { return tipo; }
 	protected Dinosauro getDinosauroById(String idDinosauroCercato) {
 		if (existsDinosauroWithId(idDinosauroCercato)) {
 			Iterator<Dinosauro> itDinosauri = this.iterator();
@@ -113,7 +103,6 @@ class Razza implements Set<Dinosauro> {
 		return false;
 	}
 	/* Tutti i setter */
-	private void estingui() { isEstinta = true; }
 	/**
 	 * Aggiorna il punteggio della specie.
 	 */
@@ -122,14 +111,6 @@ class Razza implements Set<Dinosauro> {
 		while (itDinosauri.hasNext()) {
 			punteggio = (punteggio + (1+itDinosauri.next().getDimensione())); 
 		}
-	}
-	/**
-	 * Uccide la razza di dinosauri.
-	 * Imposta isEstinta a true e dealloca gli oggetti.
-	 */
-	private void uccidiRazza() {
-		estingui();
-		dinosauri = null;
 	}
 	/**
 	 * Helper per invecchiare i dinosauri nella specie.
@@ -143,10 +124,13 @@ class Razza implements Set<Dinosauro> {
 	/**
 	 * Helper per aggiornare la specie.
 	 */
-	protected void aggiornaSpecie() {
-		invecchiaDinosauri();
-		if (turniDiVita >= TURNI_DI_VITA_MAX) uccidiRazza();
-		aggiornaPunteggio();
+	protected void aggiornaRazza() {
+		if (!isEmpty()) {
+			invecchiaDinosauri();
+			aggiornaPunteggio();
+			turniDiVita += 1;
+			if (turniDiVita >= TURNI_DI_VITA_MAX) dinosauri.clear();
+		}
 	}
 	/**
 	 * Rimuove un dinosauro usando l'id come parametro.
@@ -182,10 +166,15 @@ class Razza implements Set<Dinosauro> {
 		}
 		else throw new GenericDinosauroException("raggiuntaDimensioneMax");
 	}
-	
+	/**
+	 * Helper per far deporre l'uovo al dinosauro richiesto.
+	 * Nel caso muoia d'inedia lo uccide, lo rimuove e lancia un'eccezione.
+	 * @param idDinosauro
+	 * @throws GenericDinosauroException
+	 */
 	protected void deponiUovo(String idDinosauro) throws GenericDinosauroException {
 		Dinosauro tempDinosauro = getDinosauroById(idDinosauro);
-		if (this.size() < numero_MAX_DINOSAURI) {
+		if (!hasNumeroMassimo()) {
 			if (tempDinosauro.hasEnergyToRepl()) {
 				tempDinosauro.deponiUovo();
 			}
@@ -199,10 +188,7 @@ class Razza implements Set<Dinosauro> {
 	/* Tutti i metodi importati dall'interfaccia, questi sono quelli supportati */
 	@Override
 	public int size() {
-		if (!dinosauri.isEmpty()) {
-			return dinosauri.size();
-		}
-		else return 0;
+		return dinosauri.size();
 	}
 
 	@Override
@@ -239,7 +225,7 @@ class Razza implements Set<Dinosauro> {
 	public boolean remove(Object o) {
 		if (o != null) {
 			dinosauri.remove((Dinosauro) o);
-			if (this.isEmpty()) uccidiRazza();
+			if (this.isEmpty()) dinosauri.clear();
 			return true;
 		}
 		else return false;

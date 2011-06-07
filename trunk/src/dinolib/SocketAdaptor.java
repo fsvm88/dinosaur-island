@@ -92,7 +92,7 @@ public class SocketAdaptor {
 		newBuffer = assemblaBuffer(newBuffer, giocatore.getNome());
 		newBuffer = assemblaBuffer(newBuffer, giocatore.getRazza().getNome());
 		newBuffer = newBuffer + "," + giocatore.getPunteggio();
-		if (giocatore.getRazza().isEstinta()) newBuffer = assemblaBuffer(newBuffer, "s");
+		if (giocatore.getRazza().isEmpty()) newBuffer = assemblaBuffer(newBuffer, "s");
 		else newBuffer = assemblaBuffer(newBuffer, "n");
 		return newBuffer;
 	}
@@ -193,7 +193,7 @@ public class SocketAdaptor {
 	private String assemblaStatoComuneDinosauro(Giocatore tempGiocatore, Dinosauro tempDinosauro) {
 		return tempGiocatore.getNome() + "," +
 		tempGiocatore.getRazza().getNome() + "," +
-		tempGiocatore.getRazza().getTipoRazza().toLowerCase().charAt(0) + "," +
+		tempGiocatore.getRazza().getTipo().toLowerCase().charAt(0) + "," +
 		"{" + "," + tempDinosauro.getX() + "," + CommonUtils.translateYforClient(tempDinosauro.getY(), myLogica.getLatoDellaMappa()) + "," + "}" + "," +
 		tempDinosauro.getDimensione();
 	}
