@@ -203,6 +203,13 @@ public abstract class Dinosauro {
 		}
 	}
 	/**
+	 * Fa deporre un uovo al dinosauro (serve solo per la parte di aggiornamento dell'energia del dinosauro, il resto è fatto più in alto nella logica).
+	 */
+	protected void deponiUovo() {
+		this.setEnergiaAttuale(this.getEnergiaAttuale()-energia_DEPOSIZIONE_UOVO);
+	}
+	
+	/**
 	 * Override del metodo toString per questa classe.
 	 */
 	public String toString () {

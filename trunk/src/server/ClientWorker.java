@@ -318,6 +318,14 @@ class ClientWorker extends Server implements Runnable {
 				e.printStackTrace();
 				terminateThreadOnIOException("Synchronization problems with threads, stopping thread");
 			}
+			catch (NonAutenticatoException e) {
+				try {
+					writeNoToOutput();
+				}
+				catch (IOException e1) {
+					terminateThreadOnIOException("Unable to communicate with the client, stopping thread.");
+				}
+			}
 		}
 	}
 

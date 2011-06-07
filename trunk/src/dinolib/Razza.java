@@ -149,7 +149,39 @@ class Razza implements Set<Dinosauro> {
 			}
 		}
 	}
-
+	/**
+	 * Helper per far crescere il dinosauro richiesto.
+	 * Nel caso muoia d'inedia lo uccide, lo rimuove e lancia un'eccezione.
+	 * @param idDinosauro
+	 * @throws GenericDinosauroException 
+	 */
+	protected void cresciDinosauro(String idDinosauro) throws GenericDinosauroException {
+		Dinosauro tempDinosauro = getDinosauroById(idDinosauro);
+		if (!tempDinosauro.isAtDimensioneMax()) {
+			if (tempDinosauro.hasEnergyToGrow()) {
+				tempDinosauro.cresci();
+			}
+			else {
+				this.remove(tempDinosauro);
+				throw new GenericDinosauroException("mortePerInedia");
+			}
+		}
+		else throw new GenericDinosauroException("raggiuntaDimensioneMax");
+	}
+	
+	protected void deponiUovo(String idDinosauro) throws GenericDinosauroException {
+		Dinosauro tempDinosauro = getDinosauroById(idDinosauro);
+		if (this.size() < numero_MAX_DINOSAURI) {
+			if (tempDinosauro.hasEnergyToRepl()) {
+				tempDinosauro.deponiUovo();
+			}
+			else {
+				this.remove(tempDinosauro);
+				throw new GenericDinosauroException("mortePerInedia");
+			}
+		}
+		else throw new GenericDinosauroException("raggiuntoNumeroMaxDinosauri");
+	}
 	/* Tutti i metodi importati dall'interfaccia, questi sono quelli supportati */
 	@Override
 	public int size() {

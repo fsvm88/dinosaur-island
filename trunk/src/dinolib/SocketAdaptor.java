@@ -171,7 +171,7 @@ public class SocketAdaptor {
 		return null;
 	}
 
-	public String saSendMappaGenerale(String token) throws InvalidTokenException, NonInPartitaException {
+	public String saSendMappaGenerale(String token) throws InvalidTokenException, NonInPartitaException, NonAutenticatoException {
 		if (myLogica.isPlayerInGame(token)) {
 			String buffer = null;
 			int latoDellaMappa = myLogica.getLatoDellaMappa();
@@ -244,20 +244,12 @@ public class SocketAdaptor {
 	 * @throws InvalidIDException 
 	 * @throws InvalidTokenException 
 	 * @throws GenericDinosauroException 
+	 * @throws NonAutenticatoException 
 	 */
-	public void saCresciDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException, NonInPartitaException, GenericDinosauroException {
-		try {
-			if (myLogica.playerHasDinosauro(token, idDinosauro) &&
-					myLogica.isPlayerInGame(token) &&
-					myLogica.isMioTurno(token)) {
-				if (myLogica.puoCrescere(myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro))) {
-					myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).cresci();
-				}
-			}
-		}
-		catch (GenericDinosauroException e) {
-			myLogica.getPlayerByToken(token).getRazza().removeById(idDinosauro);
-			throw new GenericDinosauroException("mortePerInedia");
+	public void saCresciDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException, NonInPartitaException, GenericDinosauroException, NonAutenticatoException {
+		if (myLogica.playerHasDinosauro(token, idDinosauro) &&
+				myLogica.isMioTurno(token)) {
+			myLogica.getPlayerByToken(token).getRazza().cresciDinosauro(idDinosauro);
 		}
 	}
 
@@ -269,35 +261,18 @@ public class SocketAdaptor {
 	 * @throws NonInPartitaException 
 	 * @throws InvalidIDException 
 	 * @throws InvalidTokenException 
+	 * @throws NonAutenticatoException 
 	 */
-	public String saDeponiUovo(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException, NonInPartitaException, GenericDinosauroException {
+	public String saDeponiUovo(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException, NonInPartitaException, GenericDinosauroException, NonAutenticatoException {
 		if (myLogica.playerHasDinosauro(token, idDinosauro) &&
-				myLogica.isPlayerInGame(token) &&
 				myLogica.isMioTurno(token)) { // TODO aggiungere limite mosse
-			Dinosauro curDinosauro = myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
-			int x = curDinosauro.getX();
-			int y = curDinosauro.getY();
-			if (myLogica.puoDeporreUnUovo(token, curDinosauro)) {
-				String newIdDinosauro = CommonUtils.getNewToken();
-				if (curDinosauro.getTipoRazza().equals("Carnivoro")) {
-					Dinosauro newDinosauro = new Carnivoro(x, y);
-					newDinosauro.nonUsabile();
-					myLogica.trySpawnOfAnEgg(token, x, y, newDinosauro);
-					return newIdDinosauro;
-				}
-				else if (curDinosauro.getTipoRazza().equals("Erbivoro")) {
-					Dinosauro newDinosauro = new Erbivoro(x, y);
-					newDinosauro.nonUsabile();
-					myLogica.trySpawnOfAnEgg(token, x, y, newDinosauro);
-					return newIdDinosauro;
-				}
-			}
+			return myLogica.deponiUovo(token, idDinosauro);
 		}
 		return null;
 	}
 
-	public String saMuoviDinosauro(String token, String idDinosauro, int toX, int toY) throws InvalidTokenException, NonInPartitaException, InvalidIDException {
-		if (myLogica.isPlayerInGame(token) &&
+	public String saMuoviDinosauro(String token, String idDinosauro, int toX, int toY) throws InvalidTokenException, NonInPartitaException, InvalidIDException, NonAutenticatoException {
+		if (myLogica.isMioTurno(token) &&
 				myLogica.playerHasDinosauro(token, idDinosauro)) {
 
 		}
@@ -308,8 +283,9 @@ public class SocketAdaptor {
 	 * Metodo per gestire il logout dell'utente
 	 * @throws InvalidTokenException 
 	 * @throws NonInPartitaException 
+	 * @throws NonAutenticatoException 
 	 */
-	public void saLogout(String token) throws InvalidTokenException, NonInPartitaException {
+	public void saLogout(String token) throws InvalidTokenException, NonInPartitaException, NonAutenticatoException {
 		myLogica.doLogout(token);
 	}
 
@@ -318,9 +294,10 @@ public class SocketAdaptor {
 	 * @throws RazzaGiaCreataException 
 	 * @throws InvalidTokenException 
 	 * @throws NonInPartitaException 
+	 * @throws NonAutenticatoException 
 	 * @throws IOException
 	 */
-	public String saSendListaDinosauri(String token) throws InvalidTokenException, RazzaGiaCreataException, NonInPartitaException {
+	public String saSendListaDinosauri(String token) throws InvalidTokenException, RazzaGiaCreataException, NonInPartitaException, NonAutenticatoException {
 		if (myLogica.isPlayerInGame(token)) {
 			String buffer = null;
 			if (myLogica.existsRaceForPlayer(token)) {
@@ -339,8 +316,9 @@ public class SocketAdaptor {
 	 * @param token
 	 * @throws NonInPartitaException 
 	 * @throws InvalidTokenException
+	 * @throws NonAutenticatoException 
 	 */
-	public void saEsciDallaPartita(String token) throws InvalidTokenException, NonInPartitaException {
+	public void saEsciDallaPartita(String token) throws InvalidTokenException, NonInPartitaException, NonAutenticatoException {
 		if (myLogica.isPlayerInGame(token)) myLogica.doEsciDallaPartita(token);
 	}
 
@@ -383,8 +361,9 @@ public class SocketAdaptor {
 	 * @throws TroppiGiocatoriException 
 	 * @throws NonInPartitaException 
 	 * @throws InterruptedException 
+	 * @throws NonAutenticatoException 
 	 */
-	public void saAccediAPartita(String token) throws InvalidTokenException, NonInPartitaException, TroppiGiocatoriException, RazzaNonCreataException, InterruptedException {
+	public void saAccediAPartita(String token) throws InvalidTokenException, NonInPartitaException, TroppiGiocatoriException, RazzaNonCreataException, InterruptedException, NonAutenticatoException {
 		myLogica.accediAPartita(token);
 	}
 
@@ -401,8 +380,9 @@ public class SocketAdaptor {
 		}
 	}
 
-	public void saConfermaTurno(String token) {
-
+	public void saConfermaTurno(String token) throws InvalidTokenException, NonInPartitaException, NonAutenticatoException {
+		if (myLogica.isMioTurno(token)) myLogica.confermaTurno();
+		else return;
 	}
 	public void saPassaTurno(String token) {
 
