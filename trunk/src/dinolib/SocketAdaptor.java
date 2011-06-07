@@ -53,10 +53,7 @@ public class SocketAdaptor {
 		if (myLogica.existsUserWithName(user)) {
 			Giocatore tempGiocatore = myLogica.getPlayerByName(user);
 			if (tempGiocatore.passwordIsValid(pwd)) {
-				String newToken = CommonUtils.getNewToken();
-				myLogica.addPlayerToConnTable(newToken, user);
-				tempGiocatore.logged();
-				return newToken;
+				return myLogica.doLoginUtente(tempGiocatore);
 			}
 			else throw new UserAuthenticationFailedException();
 		}
@@ -184,7 +181,7 @@ public class SocketAdaptor {
 			}
 			return buffer;
 		}
-		return null;
+		else throw new NonInPartitaException();
 	}
 
 	/**
@@ -310,7 +307,7 @@ public class SocketAdaptor {
 			}
 			return buffer;
 		}
-		return null;
+		else throw new NonInPartitaException();
 	}
 	/**
 	 * Adattatore per l'uscita dalla partita.
@@ -321,6 +318,7 @@ public class SocketAdaptor {
 	 */
 	public void saEsciDallaPartita(String token) throws InvalidTokenException, NonInPartitaException, NonAutenticatoException {
 		if (myLogica.isPlayerInGame(token)) myLogica.doEsciDallaPartita(token);
+		else throw new NonInPartitaException();
 	}
 
 	/**

@@ -159,9 +159,11 @@ public class Logica implements Runnable {
 	 * @throws NonAutenticatoException 
 	 */
 	protected boolean isMioTurno(String token) throws InvalidTokenException, NonInPartitaException, NonAutenticatoException {
-		if (isPlayerInGame(token) &&
-				nomeGiocatoreCorrente.equals(getPlayerByToken(token).getNome())) return true;
-		else return false;
+		if (isPlayerInGame(token)) {
+			if (nomeGiocatoreCorrente.equals(getPlayerByToken(token).getNome())) return true;
+			else return false;
+		}
+		else throw new NonInPartitaException();
 	}
 	/**
 	 * Crea una nuova razza per l'utente specificato tramite token
@@ -238,10 +240,10 @@ public class Logica implements Runnable {
 	 * @throws NonInPartitaException 
 	 * @throws NonAutenticatoException 
 	 */
-	protected boolean isPlayerInGame(String token) throws InvalidTokenException, NonInPartitaException, NonAutenticatoException {
+	protected boolean isPlayerInGame(String token) throws InvalidTokenException, NonAutenticatoException {
 		if (isPlayerLogged(token) && 
 				getPlayerByToken(token).isInGame()) return true;
-		else throw new NonInPartitaException();
+		else return false;
 	}
 	/**
 	 * Verifica se l'utente è autenticato, altrimenti lancia eccezione.
@@ -478,6 +480,7 @@ public class Logica implements Runnable {
 			if (isPlayerInGame(token)) {
 				doEsciDallaPartita(token);
 			}
+			else throw new NonInPartitaException();
 			tempGiocatore.notLogged();
 		}
 	}
@@ -535,8 +538,8 @@ public class Logica implements Runnable {
 	 */
 	protected void accediAPartita(String token) throws InvalidTokenException, NonInPartitaException, TroppiGiocatoriException, RazzaNonCreataException, InterruptedException, NonAutenticatoException {
 		Giocatore tempGiocatore = getPlayerByToken(token);
-		if (isPlayerInGame(token) &&
-				isMaxPlayersInGame()) {
+		if (!isPlayerInGame(token) &&
+				!isMaxPlayersInGame()) {
 			if (tempGiocatore.hasRazza()) {
 				inserisciDinosauriNellaMappa(token);
 				playersQueue.put(getPlayerName(token));
@@ -574,5 +577,15 @@ public class Logica implements Runnable {
 		}
 		return null;
 	}
-
+	/**
+	 * Helper per fare il login dell'utente, di modo da separare la logica di programma da socketAdaptor.
+	 * @param tempGiocatore
+	 * @return
+	 */
+	protected String doLoginUtente(Giocatore tempGiocatore) {
+		String newToken = CommonUtils.getNewToken();
+		addPlayerToConnTable(newToken, tempGiocatore.getNome());
+		tempGiocatore.logged();
+		return newToken;
+	}
 }
