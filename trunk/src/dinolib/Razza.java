@@ -70,6 +70,7 @@ class Razza implements Set<Dinosauro> {
 	public String getNome() { return nome; }
 	public int getPunteggio() { return punteggio; }
 	public String getTipoRazza() { return tipoRazza; }
+	public boolean isEstinta() { return isEstinta; }
 	protected Dinosauro getDinosauroById(String idDinosauroCercato) {
 		if (existsDinosauroWithId(idDinosauroCercato)) {
 			Iterator<Dinosauro> itDinosauri = this.iterator();
@@ -85,22 +86,8 @@ class Razza implements Set<Dinosauro> {
 		if (this.size() >= numero_MAX_DINOSAURI) return true;
 		else return false;
 	}
-	
 	/**
-	 * Estingui la razza.
-	 */
-	private void estingui() {
-		isEstinta = true;
-	}
-	/**
-	 * Helper per verificare se la specie è estinta o meno.
-	 */
-	public boolean isEstinta() {
-		return isEstinta;
-	}
-	
-	/**
-	 * Helper booleano per verificare l'esistenza di un id (cioè l'esistenza di un dinosauro.
+	 * Helper booleano per verificare l'esistenza di un id (cioè l'esistenza di un dinosauro).
 	 * @param idDaCercare
 	 * @return
 	 */
@@ -111,6 +98,8 @@ class Razza implements Set<Dinosauro> {
 		}
 		return false;
 	}
+	/* Tutti i setter */
+	private void estingui() { isEstinta = true; }
 	/**
 	 * Aggiorna il punteggio della specie.
 	 */
@@ -129,15 +118,6 @@ class Razza implements Set<Dinosauro> {
 		dinosauri = null;
 	}
 	/**
-	 * Rimuove il dinosauro con l'ID scelto dalla specie.
-	 */
-	public void rimuoviDinosauro(String idDinosauro) {
-		removeById(idDinosauro);
-		if (dinosauri.size() == 0) {
-			uccidiRazza();
-		}
-	}
-	/**
 	 * Helper per invecchiare i dinosauri nella specie.
 	 */
 	private void invecchiaDinosauri() {
@@ -150,11 +130,14 @@ class Razza implements Set<Dinosauro> {
 	 * Helper per aggiornare la specie.
 	 */
 	protected void aggiornaSpecie() {
+		invecchiaDinosauri();
 		if (turniDiVita >= TURNI_DI_VITA_MAX) uccidiRazza();
 		aggiornaPunteggio();
-		invecchiaDinosauri();
 	}
-	
+	/**
+	 * Rimuove un dinosauro usando l'id come parametro.
+	 * @param idToRemove
+	 */
 	public void removeById(String idToRemove) {
 		Iterator<Dinosauro> itDinosauri = this.iterator();
 		Dinosauro tempDinosauro;
@@ -210,11 +193,13 @@ class Razza implements Set<Dinosauro> {
 	public boolean remove(Object o) {
 		if (o != null) {
 			dinosauri.remove((Dinosauro) o);
+			if (this.isEmpty()) uccidiRazza();
 			return true;
 		}
 		else return false;
 	}
 
+	/* Tutti i metodi importati dall'interfaccia, quelli non supportati */
 	@Override
 	public boolean addAll(Collection<? extends Dinosauro> c) { throw new UnsupportedOperationException(); }
 	@Override
