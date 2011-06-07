@@ -244,10 +244,10 @@ public class Logica implements Runnable {
 	 * @throws InvalidTokenException 
 	 */
 	private void rimuoviDinosauriDallaMappa(Giocatore tempGiocatore) {
-		Iterator<String> itIdDinosauri = tempGiocatore.getItIdDinosauri();
-		while (itIdDinosauri.hasNext()) {
-			String idCorrente = itIdDinosauri.next();
-			Dinosauro tempDinosauro = tempGiocatore.getDinosauro(idCorrente);
+		Iterator<Dinosauro> itDinosauri = getItDinosauri(tempGiocatore);
+		Dinosauro tempDinosauro;
+		while (itDinosauri.hasNext()) {
+			tempDinosauro = itDinosauri.next();
 			rimuoviDinosauroDallaCella(tempDinosauro.getX(), tempDinosauro.getY());
 		}
 	}
@@ -257,16 +257,16 @@ public class Logica implements Runnable {
 	 * @throws InvalidTokenException 
 	 */
 	protected void inserisciDinosauriNellaMappa(String token) throws InvalidTokenException {
-		Iterator<String> itIdDinosauri = getPlayerByToken(token).getItIdDinosauri();
-		while (itIdDinosauri.hasNext()) {
-			String idCorrente = itIdDinosauri.next();
-			Dinosauro tempDinosauro = getPlayerByToken(token).getDinosauro(idCorrente);
+		Iterator<Dinosauro> itDinosauri = getItDinosauri(getPlayerByToken(token));
+		Dinosauro tempDinosauro;
+		while (itDinosauri.hasNext()) {
+			tempDinosauro = itDinosauri.next();
 			int x = tempDinosauro.getX(), y = tempDinosauro.getY();
-			if (tryActualSpawn(x, y, idCorrente)) return;
+			if (tryActualSpawn(x, y, tempDinosauro.getIdDinosauro())) return;
 			else {
 				int i = 1;
 				do {
-					if (tryNearestSpawn(x, y, i, idCorrente, tempDinosauro)) {
+					if (tryNearestSpawn(x, y, i, tempDinosauro)) {
 						return;
 					}
 					else i++;
@@ -298,14 +298,14 @@ public class Logica implements Runnable {
 	 * @param tempDinosauro
 	 * @return
 	 */
-	private boolean tryNearestSpawn(int x, int y, int maxDistance, String idDinosauro, Dinosauro tempDinosauro) {
+	private boolean tryNearestSpawn(int x, int y, int maxDistance, Dinosauro tempDinosauro) {
 		int i = -maxDistance;
 		int j = -maxDistance;
 		do {
 			i = -maxDistance;
 			do {
 
-				if (tryActualSpawn(i+x, j+y, idDinosauro)) {
+				if (tryActualSpawn(i+x, j+y, tempDinosauro.getIdDinosauro())) {
 					tempDinosauro.setXY(i+x, j+CommonUtils.translateYforServer(y, rifMappa.getLatoDellaMappa()));
 					return true;
 				}
@@ -383,7 +383,7 @@ public class Logica implements Runnable {
 		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
 		while (itGiocatori.hasNext()) {
 			Giocatore tempGiocatore = itGiocatori.next();
-			if (tempGiocatore.getNomeRazza().equals(nomeRazza)) throw new NomeRazzaOccupatoException();
+			if (tempGiocatore.getRazza().getNome().equals(nomeRazza)) throw new NomeRazzaOccupatoException();
 		}
 		return false;
 	}
@@ -464,11 +464,11 @@ public class Logica implements Runnable {
 	 * @return
 	 * @throws InvalidTokenException 
 	 */
-	protected boolean trySpawnOfAnEgg(String token, int x, int y, Dinosauro newDinosauro, String newIdDinosauro) throws InvalidTokenException {
+	protected boolean trySpawnOfAnEgg(String token, int x, int y, Dinosauro newDinosauro) throws InvalidTokenException {
 		int i = 1;
 		do {
-			if (tryNearestSpawn(x, y, i, newIdDinosauro, newDinosauro)) {
-				getPlayerByToken(token).aggiungiDinosauro(newDinosauro, newIdDinosauro);
+			if (tryNearestSpawn(x, y, i, newDinosauro)) {
+				getPlayerByToken(token).getRazza().add(newDinosauro);
 				return true;
 			}
 			else i++;
@@ -481,7 +481,7 @@ public class Logica implements Runnable {
 	 * @throws InvalidTokenException 
 	 */
 	protected boolean playerHasDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException {
-		if (getPlayerByToken(token).existsDinosauro(idDinosauro)) return true;
+		if (getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) return true;
 		else throw new InvalidIDException();
 	}
 	/**
@@ -618,7 +618,7 @@ public class Logica implements Runnable {
 	 * @throws InvalidTokenException 
 	 */
 	private boolean haNumeroMassimoPerSpecie(String token) throws InvalidTokenException, GenericDinosauroException {
-		if (getPlayerByToken(token).specieHaNumeroMassimo()) return true;
+		if (getPlayerByToken(token).razzaHaNumeroMassimo()) return true;
 		else throw new GenericDinosauroException("raggiuntoNumeroMaxDinosauri");
 	}
 
@@ -680,5 +680,9 @@ public class Logica implements Runnable {
 			else throw new RazzaNonCreataException();
 		}
 		else return;
+	}
+	
+	Iterator<Dinosauro> getItDinosauri(Giocatore tempGiocatore) {
+		return tempGiocatore.getRazza().iterator();
 	}
 }
