@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-/** 
+/**
  * Astrae la collezione dei dinosauri rispetto al giocatore.
  */
 class Razza implements Set<Dinosauro> {
@@ -16,32 +16,30 @@ class Razza implements Set<Dinosauro> {
 	 */
 	private final int TURNI_DI_VITA_MAX = 120;
 	/**
-	 * Variabile che definisce il nome della specie di Dinosauri.
-	 * Viene impostata definitivamente dal costruttore.
+	 * Variabile che definisce il nome della specie di Dinosauri. Viene impostata definitivamente dal costruttore.
 	 * @uml.property  name="nomeRazza"
 	 */
 	private String nome = null;
 	/**
-	 * Variabile che definisce il tipo della razza di Dinosauri.
-	 * Viene impostata definitivamente dal costruttore.
+	 * Variabile che definisce il tipo della razza di Dinosauri. Viene impostata definitivamente dal costruttore.
 	 * @uml.property  name="tipoRazza"
 	 */
 	private String tipoRazza = null;
 	/**
 	 * Contiene il numero massimo di dinosauri per specie. È una costante di gioco.
-	 * @uml.property name="numero_MAX_DINOSAURI"
+	 * @uml.property  name="numero_MAX_DINOSAURI"
 	 */
 	private final int numero_MAX_DINOSAURI = 5;
 	
 	/* Tutte le variabili istanziabili */
 	/**
 	 * ConcurrentHashMap con tutti i dinosauri presenti nella specie.
-	 * @uml.property name="Dinosauri"
+	 * @uml.property  name="Dinosauri"
 	 */
 	private HashSet<Dinosauro> dinosauri = new HashSet<Dinosauro>();
 	/**
 	 * Contiene il punteggio corrente della specie.
-	 * @uml.property name="punteggio"
+	 * @uml.property  name="punteggio"
 	 */
 	private int punteggio = 0;
 	/**
@@ -51,7 +49,7 @@ class Razza implements Set<Dinosauro> {
 	private int turniDiVita = 0;
 	/**
 	 * Dice se la razza si è già estinta o meno.
-	 * @uml.property name="isEstinta"
+	 * @uml.property  name="isEstinta"
 	 */
 	private boolean isEstinta = false;
 	
@@ -67,9 +65,25 @@ class Razza implements Set<Dinosauro> {
 	}
 	
 	/* Tutti i getter */
+	/**
+	 * @return
+	 * @uml.property  name="nomeRazza"
+	 */
 	public String getNome() { return nome; }
+	/**
+	 * @return
+	 * @uml.property  name="punteggio"
+	 */
 	public int getPunteggio() { return punteggio; }
+	/**
+	 * @return
+	 * @uml.property  name="tipoRazza"
+	 */
 	public String getTipoRazza() { return tipoRazza; }
+	/**
+	 * @return
+	 * @uml.property  name="isEstinta"
+	 */
 	public boolean isEstinta() { return isEstinta; }
 	protected Dinosauro getDinosauroById(String idDinosauroCercato) {
 		if (existsDinosauroWithId(idDinosauroCercato)) {

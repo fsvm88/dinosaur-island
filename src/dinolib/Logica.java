@@ -13,61 +13,60 @@ public class Logica implements Runnable {
 	/* Tutte le variabili statiche/definitive e non modificabili */
 	/**
 	 * Definisce definitivamente il numero massimo di giocatori ammessi in partita.
-	 * @uml.property name="NUMERO_MASSIMO_GIOCATORI_INGAME"
+	 * @uml.property  name="NUMERO_MASSIMO_GIOCATORI_INGAME"
 	 */
 	private final int numero_MASSIMO_GIOCATORI_INGAME = 8;
 	/**
 	 * Definisce definitivamente il lato della mappa.
-	 * @uml.property name="LATO_MAPPA"
+	 * @uml.property  name="LATO_MAPPA"
 	 */
 	private final int lato_MAPPA = 40;
 	/**
 	 * Definisce definitivamente il tempo da attendere senza la conferma di turno.
-	 * @uml.property name="SLEEP_CONFERMA_TURNO"
+	 * @uml.property  name="SLEEP_CONFERMA_TURNO"
 	 */
 	private final int sleep_CONFERMA_TURNO = 30;
 	/**
 	 * Definisce definitivamente il tempo da dedicare ad ogni giocatore quando questo conferma il turno.
-	 * @uml.property name="SLEEP_TEMPO_TURNO"
+	 * @uml.property  name="SLEEP_TEMPO_TURNO"
 	 */
 	private final int sleep_TEMPO_TURNO = 120;
 
 	/* Tutte le variabili istanziabili */
 	/**
 	 * Definisce il riferimento alla mappa.
-	 * @uml.property name="rifMappa"
+	 * @uml.property  name="rifMappa"
+	 * @uml.associationEnd  
 	 */
 	private Mappa rifMappa;
 	/**
 	 * Definisce la lista dei giocatori.
-	 * @uml.property name="Giocatori"
+	 * @uml.property  name="Giocatori"
 	 */
 	private Hashtable<String, Giocatore> listaGiocatori;
 	/**
-	 * Accoppia il token al giocatore.
-	 * Chiavi: token
-	 * Value: nomi giocatori.
-	 * @uml.property name="NomeEToken"
+	 * Accoppia il token al giocatore. Chiavi: token Value: nomi giocatori.
+	 * @uml.property  name="NomeEToken"
 	 */
 	private Hashtable<String, String> connectionTable;
 	/**
 	 * Definisce la stringa che contiene il nome del giocatore che in questo momento ha il turno.
-	 * @uml.property name="Giocatori"
+	 * @uml.property  name="Giocatori"
 	 */
 	private String nomeGiocatoreCorrente = null;
 	/**
 	 * Contiene una variabile che dice se la logica sta funzionando.
-	 * @uml.property name="logicaIsRunning"
+	 * @uml.property  name="logicaIsRunning"
 	 */
 	private boolean logicaIsRunning = true;
 	/**
 	 * Variabile che dice se il turno del giocatore è stato confermato.
-	 * @uml.property name="turnoConfermato"
+	 * @uml.property  name="turnoConfermato"
 	 */
 	private boolean turnoConfermato = false;
 	/**
 	 * Contiene tutti i giocatori correntemente connessi alla partita.
-	 * @uml.property name="playersQueue"
+	 * @uml.property  name="playersQueue"
 	 */
 	private ArrayBlockingQueue<String> playersQueue = new ArrayBlockingQueue<String>(numero_MASSIMO_GIOCATORI_INGAME);
 

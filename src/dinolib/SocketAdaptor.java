@@ -6,7 +6,8 @@ import java.util.Iterator;
 public class SocketAdaptor {
 	/**
 	 * Contiene la classe logica che viene istanziata da server.
-	 * @uml.property name="myLogica"
+	 * @uml.property  name="myLogica"
+	 * @uml.associationEnd  
 	 */
 	private Logica myLogica = null;
 

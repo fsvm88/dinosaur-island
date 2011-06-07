@@ -6,23 +6,30 @@ import java.net.ServerSocket;
 import dinolib.Logica;
 import dinolib.SocketAdaptor;
 
+/**
+ * @author  fabio
+ */
 class Server {
 	/**
 	 * Definisce staticamente la porta di gioco.
-	 * @uml.property name="PORTA_DI_GIOCO"
+	 * @uml.property  name="PORTA_DI_GIOCO"
 	 */
 	private final int PORTA_DI_GIOCO = 32845;
 	/**
 	 * Definisce il riferimento al socket del server.
-	 * @uml.property name="serverInstSocket"
+	 * @uml.property  name="serverInstSocket"
 	 */
 	private ServerSocket serverInstSocket;
 	/**
 	 * Dichiara la classe logica che gestisce tutta la logica di gioco indipendentemente dall'interfaccia di comunicazione.
+	 * @uml.property  name="servLogica"
+	 * @uml.associationEnd  
 	 */
 	private Logica servLogica = null;
 	/**
 	 * Dichiara l'oggetto attraverso cui passano le comunicazioni su socket.
+	 * @uml.property  name="socketAdaptor"
+	 * @uml.associationEnd  
 	 */
 	protected SocketAdaptor socketAdaptor = null;
 	

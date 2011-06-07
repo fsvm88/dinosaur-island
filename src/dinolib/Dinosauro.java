@@ -3,12 +3,14 @@ package dinolib;
 import java.util.Random;
 
 
+/**
+ * @author  fabio
+ */
 public abstract class Dinosauro {
 	/* Tutte le variabili statiche/definitive e non modificabili */
 	/**
-	 * Indica l'energia necessaria per deporre un uovo.
-	 * È dichiarata final static perchè è fissa per ogni dinosauro, indipendente da altri parametri.
-	 * @uml.property name="energiaDeposizioneUovo"
+	 * Indica l'energia necessaria per deporre un uovo. È dichiarata final static perchè è fissa per ogni dinosauro, indipendente da altri parametri.
+	 * @uml.property  name="energiaDeposizioneUovo"
 	 */
 	private static final int energia_DEPOSIZIONE_UOVO = 1500;
 	/**
@@ -16,30 +18,25 @@ public abstract class Dinosauro {
 	 */
 	private static final int dimensione_MASSIMA = 5;
 	/**
-	 * Contiene lo spostamento massimo per turno sdel dinosauro impostato dalle sottoclassi.
-	 * Serve a fattorizzare ancora più codice.
-	 * Viene impostato in modo final dal costruttore.
-	 * @uml.property name="spostamento_MAX"
+	 * Contiene lo spostamento massimo per turno sdel dinosauro impostato dalle sottoclassi. Serve a fattorizzare ancora più codice. Viene impostato in modo final dal costruttore.
+	 * @uml.property  name="spostamento_MAX"
 	 */
 	private int spostamento_MAX = 0;
 	/**
-	 * Contiene il moltiplicatore della forza del dinosauro impostato dalle sottoclassi.
-	 * Serve a fattorizzare ancora più codice.
-	 * Viene impostato in modo final dal costr.
-	 * @uml.property name="moltiplicatore_FORZA"
+	 * Contiene il moltiplicatore della forza del dinosauro impostato dalle sottoclassi. Serve a fattorizzare ancora più codice. Viene impostato in modo final dal costr.
+	 * @uml.property  name="moltiplicatore_FORZA"
 	 */
 	private int moltiplicatore_FORZA = 0;
 	
 	/* Tutte le variabili istanziabili */
 	/**
 	 * Indica l'energia spesa per crescere.
-	 * @uml.property name="energiaCrescita"
+	 * @uml.property  name="energiaCrescita"
 	 */
 	private int energiaCrescita = 0;
 	/**
-	 * Contiene un valore che dice se il dinosauro è utilizzabile direttamente o no.
-	 * Serve per deponi uovo (posticipare l'utilizzo di un dinosauro) o per verificare che il dinosauro abbia ancora mosse a disposizione.
-	 * @uml.property name="usabile"
+	 * Contiene un valore che dice se il dinosauro è utilizzabile direttamente o no. Serve per deponi uovo (posticipare l'utilizzo di un dinosauro) o per verificare che il dinosauro abbia ancora mosse a disposizione.
+	 * @uml.property  name="usabile"
 	 */
 	private boolean isUsabile = false;
 	/**
@@ -84,7 +81,7 @@ public abstract class Dinosauro {
 	private int turnoDiVita = 0;
 	/**
 	 * Indica l'id del dinosauro.
-	 * @uml.property name="idDinosauro"
+	 * @uml.property  name="idDinosauro"
 	 */
 	private String idDinosauro = null;
 	
@@ -109,16 +106,56 @@ public abstract class Dinosauro {
 	}
 	
 	/* Tutti i getter */
+	/**
+	 * @return
+	 * @uml.property  name="energiaAttuale"
+	 */
 	public int getEnergiaAttuale() { return energiaAttuale; }
+	/**
+	 * @return
+	 * @uml.property  name="energiaMax"
+	 */
 	public int getEnergiaMax() { return energiaMax; }
+	/**
+	 * @return
+	 * @uml.property  name="dimensione"
+	 */
 	public int getDimensione() { return dimensione; }
+	/**
+	 * @return
+	 * @uml.property  name="durataVitaMax"
+	 */
 	public int getDurataVitaMax() {	return durataVitaMax; }
+	/**
+	 * @return
+	 * @uml.property  name="forza"
+	 */
 	public int getForza() { updateForza(); return forza; }
+	/**
+	 * @return
+	 * @uml.property  name="x"
+	 */
 	public int getX() { return x; }
+	/**
+	 * @return
+	 * @uml.property  name="y"
+	 */
 	public int getY() { return y; }
+	/**
+	 * @return
+	 * @uml.property  name="turnoDiVita"
+	 */
 	public int getTurnoDiVita() { return turnoDiVita; }
 	public int getSpostamentoMax() { return spostamento_MAX; }
+	/**
+	 * @return
+	 * @uml.property  name="usabile"
+	 */
 	public boolean isUsabile() { return isUsabile; }
+	/**
+	 * @return
+	 * @uml.property  name="idDinosauro"
+	 */
 	public String getIdDinosauro() { return idDinosauro; }
 	/**
 	 * Restituisce come String il nome della classe per avere il tipo della razza di dinosauri.
@@ -150,9 +187,25 @@ public abstract class Dinosauro {
 	/* Tutti i setter */
 	protected void nonUsabile() { isUsabile = false; }
 	public void usabile() { isUsabile = true; }
+	/**
+	 * @param energiaAttuale
+	 * @uml.property  name="energiaAttuale"
+	 */
 	public void setEnergiaAttuale(int energiaAttuale) { this.energiaAttuale = energiaAttuale; }
+	/**
+	 * @param dimensione
+	 * @uml.property  name="dimensione"
+	 */
 	private void setDimensione(int dimensione) { this.dimensione = dimensione; }
+	/**
+	 * @param x
+	 * @uml.property  name="x"
+	 */
 	public void setX(int x) { this.x = x; }
+	/**
+	 * @param y
+	 * @uml.property  name="y"
+	 */
 	public void setY(int y) { this.y = y; }
 	protected void setXY(int x, int y) { this.x = x; this.y = y; }
 	private void updateEnergiaCrescita() { energiaCrescita = energiaMax/2; }
