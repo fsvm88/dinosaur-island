@@ -4,7 +4,14 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+/**
+ * @author  fabio
+ */
 public class CellaTest {
+	/**
+	 * @uml.property  name="cella"
+	 * @uml.associationEnd  
+	 */
 	private Cella cella;
 
 	

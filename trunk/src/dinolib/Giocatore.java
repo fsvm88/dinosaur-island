@@ -2,6 +2,9 @@ package dinolib;
 
 import dinolib.Razza;
 
+/**
+ * @author  fabio
+ */
 public class Giocatore {
 	/* Tutte le variabili statiche/definitive e non modificabili */
 	
@@ -19,16 +22,17 @@ public class Giocatore {
 	/**
 	 * Fa riferimento a un oggetto Specie, viene inizializzato a zero fino a che non viene costruita la specie tramite l'implementazione in server.
 	 * @uml.property  name="specieDiDinosauri"
+	 * @uml.associationEnd  
 	 */
 	private Razza razzaDelGiocatore;
 	/**
 	 * Variabile per gestire il login degli utenti.
-	 * @uml.property name="logged"
+	 * @uml.property  name="logged"
 	 */
 	private boolean iAmLogged = false;
 	/**
 	 * Variabile per gestire il fatto che l'utente è in partita.
-	 * @uml.property name="inGame"
+	 * @uml.property  name="inGame"
 	 */
 	private boolean iAmInGame = false;
 
@@ -46,6 +50,10 @@ public class Giocatore {
 	public boolean isLogged() { return iAmLogged; }
 	public int getPunteggio() { return razzaDelGiocatore.getPunteggio(); }
 	public Razza getRazza() { return razzaDelGiocatore; }
+	/**
+	 * @return
+	 * @uml.property  name="nome"
+	 */
 	public String getNome() { return nome; }
 	
 	/* Tutti i setter */

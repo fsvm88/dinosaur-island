@@ -15,22 +15,22 @@ import dinolib.*;
 class ClientWorker extends Server implements Runnable {
 	/**
 	 * Variabile per fermare il thread.
-	 * @uml.property name="stopThread"
+	 * @uml.property  name="stopThread"
 	 */
 	private boolean stopThread = false;
 	/**
 	 * Istanzia riferimento al socket.
-	 * @uml.property name="mySocket"
+	 * @uml.property  name="mySocket"
 	 */
 	private Socket mySocket = null;
 	/**
 	 * Istanzia riferimento al buffer per la ricezione dei dati.
-	 * @uml.property name="BufferedReader"
+	 * @uml.property  name="BufferedReader"
 	 */
 	private BufferedReader incomingData = null;
 	/**
 	 * Istanzia riferimento al buffer per l'invio dei dati.
-	 * @uml.property name="outgoingData"
+	 * @uml.property  name="outgoingData"
 	 */
 	private PrintWriter outgoingData = null;
 

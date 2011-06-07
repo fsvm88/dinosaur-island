@@ -38,6 +38,7 @@ abstract class Cella extends Mappa {
 	/**
 	 * Contiene un riferimento al valore della cella sottostante il dinosauro (velocizza operazioni di lookup e movimento).
 	 * @uml.property  name="cellaSuCuiSiTrova"
+	 * @uml.associationEnd  
 	 */
 	private Cella cellaSuCuiSiTrova;
 
