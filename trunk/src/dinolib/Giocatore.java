@@ -2,7 +2,7 @@ package dinolib;
 
 import java.util.Iterator;
 
-import dinolib.Specie;
+import dinolib.Razza;
 
 public class Giocatore {
 	/**
@@ -45,14 +45,14 @@ public class Giocatore {
 	 * Fa riferimento a un oggetto Specie, viene inizializzato a zero fino a che non viene costruita la specie tramite l'implementazione in server.
 	 * @uml.property  name="specieDiDinosauri"
 	 */
-	private Specie specie;
+	private Razza specie;
 
 	/**
 	 * Restituisce il numero di dinosauri presenti nella specie.
 	 * @return
 	 */
 	public int getNumeroDinosauri() {
-		return specie.getNumeroDinosauri();
+		return specie.size();
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class Giocatore {
 	 * @return
 	 */
 	public String getNomeRazza() {
-		return specie.getNomeRazza();
+		return specie.getNome();
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class Giocatore {
 	 * @param nuovoDinosauro
 	 */
 	protected void creaNuovaRazza(String nuovoNomeRazza, Dinosauro nuovoDinosauro) {
-		specie = new Specie(nuovoNomeRazza, nuovoDinosauro);
+		specie = new Razza(nuovoNomeRazza, nuovoDinosauro);
 	}
 	
 	/**
