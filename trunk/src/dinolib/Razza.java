@@ -27,6 +27,11 @@ class Razza implements Set<Dinosauro> {
 	 * @uml.property  name="tipoRazza"
 	 */
 	private String tipoRazza = null;
+	/**
+	 * Contiene il numero massimo di dinosauri per specie. È una costante di gioco.
+	 * @uml.property name="numero_MAX_DINOSAURI"
+	 */
+	private final int numero_MAX_DINOSAURI = 5;
 	
 	/* Tutte le variabili istanziabili */
 	/**
@@ -76,6 +81,10 @@ class Razza implements Set<Dinosauro> {
 		}
 		return null;
 	}
+	protected boolean hasNumeroMassimo() {
+		if (this.size() >= numero_MAX_DINOSAURI) return true;
+		else return false;
+	}
 	
 	/**
 	 * Estingui la razza.
@@ -123,7 +132,7 @@ class Razza implements Set<Dinosauro> {
 	 * Rimuove il dinosauro con l'ID scelto dalla specie.
 	 */
 	public void rimuoviDinosauro(String idDinosauro) {
-		dinosauri.remove(idDinosauro);
+		removeById(idDinosauro);
 		if (dinosauri.size() == 0) {
 			uccidiRazza();
 		}
@@ -144,6 +153,18 @@ class Razza implements Set<Dinosauro> {
 		if (turniDiVita >= TURNI_DI_VITA_MAX) uccidiRazza();
 		aggiornaPunteggio();
 		invecchiaDinosauri();
+	}
+	
+	public void removeById(String idToRemove) {
+		Iterator<Dinosauro> itDinosauri = this.iterator();
+		Dinosauro tempDinosauro;
+		while(itDinosauri.hasNext()) {
+			tempDinosauro = itDinosauri.next();
+			if (tempDinosauro.getIdDinosauro().equals(idToRemove)) {
+				dinosauri.remove(tempDinosauro);
+				return;
+			}
+		}
 	}
 
 	/* Tutti i metodi importati dall'interfaccia, questi sono quelli supportati */

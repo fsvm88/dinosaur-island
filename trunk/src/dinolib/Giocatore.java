@@ -4,11 +4,6 @@ import dinolib.Razza;
 
 public class Giocatore {
 	/* Tutte le variabili statiche/definitive e non modificabili */
-	/**
-	 * Contiene il numero massimo di dinosauri per specie. È una costante di gioco.
-	 * @uml.property name="numero_MAX_DINOSAURI"
-	 */
-	private final int numero_MAX_DINOSAURI = 5;
 	
 	/* Tutte le variabili istanziabili */
 	/**
@@ -92,14 +87,6 @@ public class Giocatore {
 	 */
 	protected boolean hasRazza() {
 		if (getRazza() != null) return true;
-		else return false;
-	}
-	/**
-	 * Helper per verificare se la specie ha il numero massimo di dinosauri.
-	 * @return
-	 */
-	protected boolean razzaHaNumeroMassimo() {
-		if (getRazza().size() >= numero_MAX_DINOSAURI) return true;
 		else return false;
 	}
 	/**

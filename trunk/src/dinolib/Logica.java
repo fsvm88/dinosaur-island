@@ -618,8 +618,8 @@ public class Logica implements Runnable {
 	 * @throws InvalidTokenException 
 	 */
 	private boolean haNumeroMassimoPerSpecie(String token) throws InvalidTokenException, GenericDinosauroException {
-		if (getPlayerByToken(token).razzaHaNumeroMassimo()) return true;
-		else throw new GenericDinosauroException("raggiuntoNumeroMaxDinosauri");
+		if (getPlayerByToken(token).getRazza().hasNumeroMassimo()) throw new GenericDinosauroException("raggiuntoNumeroMaxDinosauri");
+		else return false;
 	}
 
 	/**
