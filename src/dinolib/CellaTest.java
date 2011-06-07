@@ -14,7 +14,6 @@ public class CellaTest {
 	 */
 	private Cella cella;
 
-	
 	private void testCommon() {
 		assertNull(cella.getIdDelDinosauro());
 		assertNull(cella.getCellaSuCuiSiTrova());

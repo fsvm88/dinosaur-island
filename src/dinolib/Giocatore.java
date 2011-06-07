@@ -61,7 +61,7 @@ public class Giocatore {
 	protected void notLogged() { iAmLogged = false; }
 	public void inGame() { iAmInGame = true; }
 	protected void notInGame() { iAmInGame = false; }
-	public void aggiornaGiocatoreSuTurno() { razzaDelGiocatore.aggiornaSpecie(); }
+	public void aggiornaGiocatoreSuTurno() { razzaDelGiocatore.aggiornaRazza(); }
 	
 	/* Funzioni miscellanee */
 	/**
