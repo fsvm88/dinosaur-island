@@ -8,47 +8,71 @@ import org.junit.Test;
 public class LogicaTest {
 	private Logica myLogica = null;
 	
-	@Before
-	public void setUp() throws Exception {
-		myLogica = new Logica();
+	private void addSomeUsers() throws UserExistsException {
 		myLogica.doCreaUtente("abc", "pwd");
 		myLogica.doCreaUtente("abd", "pwd2");
 		myLogica.doCreaUtente("abe", "pwd3");
 	}
+	private void mySetUp() throws Exception {
+		setUp();
+		addSomeUsers();
+	}
 	
+	@Before
+	public void setUp() throws Exception {
+		myLogica = new Logica();
+	}
 	
-	
-	@Test
-	public void testLogica() throws Exception {
+	private void testLogica() throws Exception {
 		setUp();
 		assertNotNull(myLogica);
 	}
 	
-	@Test
-	public void testExistsUserWithName() {
+	private void testGetLatoDellaMappa() {
+		assertNotNull(myLogica.getLatoDellaMappa());
+		assertEquals(40, myLogica.getLatoDellaMappa());
+	}
+	
+	private void testExistsUserWithName() {
 		assertTrue(myLogica.existsUserWithName("abc"));
 		assertTrue(myLogica.existsUserWithName("abd"));
 		assertTrue(myLogica.existsUserWithName("abe"));
 	}
-
-	@Test
+	public void testGetCella() {
+		Cella tempCella = myLogica.getCella(0, 0);
+		assertNotNull(tempCella);
+	}
+	private void testGetPlayerByName() {
+		assertNotNull(myLogica.getPlayerByName("abc"));
+		assertNotNull(myLogica.getPlayerByName("abd"));
+		assertNotNull(myLogica.getPlayerByName("abe"));
+		Giocatore gioc1 = myLogica.getPlayerByName("abc");
+		Giocatore gioc2 = myLogica.getPlayerByName("abd");
+		Giocatore gioc3 = myLogica.getPlayerByName("abc");
+		assertSame(gioc1, gioc3);
+		assertNotSame(gioc1, gioc2);
+	}
 	public void testGetPlayerName() {
 		Giocatore tempPlayer = myLogica.getPlayerByName("abd");
 		assertNotNull(tempPlayer);
 		assertEquals("abd", tempPlayer.getNome());
 	}
-
+	
 	@Test
-	public void testGetLatoDellaMappa() {
-		assertNotNull(myLogica.getLatoDellaMappa());
-		assertEquals(40, myLogica.getLatoDellaMappa());
+	public void testAllLogica() throws Exception {
+		testLogica();
+		testDoCreaUtente();
+		testExistsUserWithName();
+		testGetLatoDellaMappa();
+		testGetCella();
+		testGetPlayerByName();
+		testGetPlayerName();
+		mySetUp();
 	}
+	
+	
 
-	@Test
-	public void testGetCella() {
-		Cella tempCella = myLogica.getCella(0, 0);
-		assertNotNull(tempCella);
-	}
+	
 
 	@Test
 	public void doLoginUtente() {
@@ -115,10 +139,6 @@ public class LogicaTest {
 		fail("Not yet implemented");
 	}
 
-	@Test
-	public void testGetPlayerByName() {
-		fail("Not yet implemented");
-	}
 
 	@Test
 	public void testGetPlayerByToken() {
@@ -167,11 +187,6 @@ public class LogicaTest {
 
 	@Test
 	public void testConfermaTurno() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testDoCreaUtente() {
 		fail("Not yet implemented");
 	}
 
