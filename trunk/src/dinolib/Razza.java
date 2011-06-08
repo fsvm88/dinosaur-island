@@ -213,12 +213,15 @@ class Razza implements Set<Dinosauro> {
 
 	@Override
 	public boolean add(Dinosauro e) {
-		Iterator<Dinosauro> itDinosauro = this.iterator();
-		while (itDinosauro.hasNext()) {
-			if (e.getIdDinosauro().equals(itDinosauro.next().getIdDinosauro())) return false;
+		if (e != null) {
+			Iterator<Dinosauro> itDinosauro = this.iterator();
+			while (itDinosauro.hasNext()) {
+				if (e.getIdDinosauro().equals(itDinosauro.next().getIdDinosauro())) return false;
+			}
+			dinosauri.add(e);
+			return true;
 		}
-		dinosauri.add(e);
-		return true;
+		else return false;
 	}
 
 	@Override
