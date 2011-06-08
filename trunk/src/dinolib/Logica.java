@@ -133,7 +133,6 @@ public class Logica implements Runnable {
 		rifMappa = new Mappa(lato_MAPPA);
 	}
 
-
 	/* Tutti i getter */
 	private HashMap<String, Giocatore> getListaGiocatori() { return listaGiocatori; }
 	protected String getPlayerName(String token) { return getListaGiocatori().get(token).getNome(); }
@@ -207,8 +206,6 @@ public class Logica implements Runnable {
 		if (playersQueue.size() < numero_MASSIMO_GIOCATORI_INGAME) return false;
 		else throw new TroppiGiocatoriException();
 	}
-	
-	
 	/**
 	 * Helper per verificare l'esistenza della razza per il giocatore con il dato token.
 	 * @param token
@@ -371,7 +368,7 @@ public class Logica implements Runnable {
 		while (itGiocatori.hasNext()) {
 			if (itGiocatori.next().getNome().equals(user)) throw new UserExistsException();
 		}
-		getListaGiocatori().put(null, new Giocatore(user, pwd));
+		getListaGiocatori().put(CommonUtils.getNewToken(), new Giocatore(user, pwd));
 	}
 	/**
 	 * Gestisce la rimozione di tutti i dinosauri dalla mappa.	
@@ -478,7 +475,6 @@ public class Logica implements Runnable {
 			if (isPlayerInGame(token)) {
 				doEsciDallaPartita(token);
 			}
-			else throw new NonInPartitaException();
 			tempGiocatore.notLogged();
 		}
 	}
@@ -581,9 +577,9 @@ public class Logica implements Runnable {
 	 * @return
 	 */
 	protected String doLoginUtente(Giocatore tempGiocatore) {
-		String newToken = CommonUtils.getNewToken();
-		getListaGiocatori().put(newToken, tempGiocatore);
+		getListaGiocatori().remove(tempGiocatore);
 		tempGiocatore.logged();
-		return newToken;
+		getListaGiocatori().put(CommonUtils.getNewToken(), tempGiocatore);
+		return getPlayerToken(tempGiocatore.getNome());
 	}
 }

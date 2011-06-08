@@ -272,7 +272,7 @@ public class SocketAdaptor {
 	public String saMuoviDinosauro(String token, String idDinosauro, int toX, int toY) throws InvalidTokenException, NonInPartitaException, InvalidIDException, NonAutenticatoException {
 		if (myLogica.isMioTurno(token) &&
 				myLogica.playerHasDinosauro(token, idDinosauro)) {
-
+			
 		}
 		return null;
 	}
