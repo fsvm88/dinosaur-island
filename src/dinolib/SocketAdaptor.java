@@ -50,8 +50,8 @@ public class SocketAdaptor {
 	 * @throws UserExistsException
 	 */
 	public String saLoginUtente(String user, String pwd) throws UserAuthenticationFailedException {
-		if (myLogica.getPlayersCollection().contains(user)) {
-			Giocatore tempGiocatore = myLogica.getPlayersCollection().getPlayerByName(user);
+		if (myLogica.existsPlayerWithName(user)) {
+			Giocatore tempGiocatore = myLogica.getPlayerByName(user);
 			if (tempGiocatore.passwordIsValid(pwd)) {
 				return myLogica.doLoginUtente(tempGiocatore);
 			}
@@ -70,7 +70,7 @@ public class SocketAdaptor {
 		if (myLogica.existsPlayerWithToken(token) &&
 				saUserIsLogged(token)) {
 			String buffer = null;
-			Iterator<Giocatore> itGiocatori = myLogica.getPlayersCollection().iterator();
+			Iterator<Giocatore> itGiocatori = myLogica.getIteratorOnPlayers();
 			while (itGiocatori.hasNext()) {
 				buffer = assemblaPunteggio(buffer, itGiocatori.next());
 			}
@@ -214,7 +214,7 @@ public class SocketAdaptor {
 			return buffer;
 		}
 		else if (!myLogica.playerHasDinosauro(token, idDinosauro)) {
-			Iterator<Giocatore> itSuiGiocatori = myLogica.getPlayersCollection().iterator();
+			Iterator<Giocatore> itSuiGiocatori = myLogica.getIteratorOnPlayers();
 			Giocatore tempGiocatore;
 			Dinosauro tempDinosauro;
 			while (itSuiGiocatori.hasNext()) {
@@ -340,12 +340,12 @@ public class SocketAdaptor {
 	 */
 	public String saListaDeiGiocatori(String token) throws InvalidTokenException {
 		if (myLogica.existsPlayerWithToken(token)) {
-			Iterator<String> itNomiGiocatori = myLogica.getIteratorOnPNames();
+			Iterator<Giocatore> itGiocatori = myLogica.getIteratorOnPlayers();
 			String buffer = null;
-			while (itNomiGiocatori.hasNext()) {
-				String curNomeGiocatore = itNomiGiocatori.next();
-				if (myLogica.getPlayersCollection().getPlayerByName(curNomeGiocatore).isLogged() &&
-						myLogica.getPlayersCollection().getPlayerByName(curNomeGiocatore).isInGame()) {
+			while (itGiocatori.hasNext()) {
+				String curNomeGiocatore = itGiocatori.next().getNome();
+				if (myLogica.getPlayerByName(curNomeGiocatore).isLogged() &&
+						myLogica.getPlayerByName(curNomeGiocatore).isInGame()) {
 					buffer = assemblaBuffer(buffer, curNomeGiocatore);
 				}
 			}
@@ -373,7 +373,7 @@ public class SocketAdaptor {
 	 * @throws UserExistsException
 	 */
 	public void saCreaUtente(String user, String pwd) throws UserExistsException {
-		if (!myLogica.getPlayersCollection().contains(user)) {
+		if (!myLogica.existsPlayerWithName(user)) {
 			myLogica.doCreaUtente(user, pwd);
 			return;
 		}
