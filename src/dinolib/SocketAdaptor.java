@@ -50,8 +50,8 @@ public class SocketAdaptor {
 	 * @throws UserExistsException
 	 */
 	public String saLoginUtente(String user, String pwd) throws UserAuthenticationFailedException {
-		if (myLogica.existsUserWithName(user)) {
-			Giocatore tempGiocatore = myLogica.getPlayerByName(user);
+		if (myLogica.getPlayersCollection().contains(user)) {
+			Giocatore tempGiocatore = myLogica.getPlayersCollection().getPlayerByName(user);
 			if (tempGiocatore.passwordIsValid(pwd)) {
 				return myLogica.doLoginUtente(tempGiocatore);
 			}
@@ -70,7 +70,7 @@ public class SocketAdaptor {
 		if (myLogica.existsPlayerWithToken(token) &&
 				saUserIsLogged(token)) {
 			String buffer = null;
-			Iterator<Giocatore> itGiocatori = myLogica.getIteratorOnPlayers();
+			Iterator<Giocatore> itGiocatori = myLogica.getPlayersCollection().iterator();
 			while (itGiocatori.hasNext()) {
 				buffer = assemblaPunteggio(buffer, itGiocatori.next());
 			}
@@ -214,7 +214,7 @@ public class SocketAdaptor {
 			return buffer;
 		}
 		else if (!myLogica.playerHasDinosauro(token, idDinosauro)) {
-			Iterator<Giocatore> itSuiGiocatori = myLogica.getIteratorOnPlayers();
+			Iterator<Giocatore> itSuiGiocatori = myLogica.getPlayersCollection().iterator();
 			Giocatore tempGiocatore;
 			Dinosauro tempDinosauro;
 			while (itSuiGiocatori.hasNext()) {
@@ -344,8 +344,8 @@ public class SocketAdaptor {
 			String buffer = null;
 			while (itNomiGiocatori.hasNext()) {
 				String curNomeGiocatore = itNomiGiocatori.next();
-				if (myLogica.getPlayerByName(curNomeGiocatore).isLogged() &&
-						myLogica.getPlayerByName(curNomeGiocatore).isInGame()) {
+				if (myLogica.getPlayersCollection().getPlayerByName(curNomeGiocatore).isLogged() &&
+						myLogica.getPlayersCollection().getPlayerByName(curNomeGiocatore).isInGame()) {
 					buffer = assemblaBuffer(buffer, curNomeGiocatore);
 				}
 			}
@@ -373,7 +373,7 @@ public class SocketAdaptor {
 	 * @throws UserExistsException
 	 */
 	public void saCreaUtente(String user, String pwd) throws UserExistsException {
-		if (!myLogica.existsUserWithName(user)) {
+		if (!myLogica.getPlayersCollection().contains(user)) {
 			myLogica.doCreaUtente(user, pwd);
 			return;
 		}
