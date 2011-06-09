@@ -1,4 +1,4 @@
-package dinolib;
+package dinolib.Mappa;
 
 class CellaConDinosauro extends Cella {
 	/**

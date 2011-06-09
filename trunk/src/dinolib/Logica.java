@@ -10,6 +10,19 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import dinolib.Exceptions.GenericDinosauroException;
+import dinolib.Exceptions.InvalidTokenException;
+import dinolib.Exceptions.NomeRazzaOccupatoException;
+import dinolib.Exceptions.NonAutenticatoException;
+import dinolib.Exceptions.NonInPartitaException;
+import dinolib.Exceptions.RazzaNonCreataException;
+import dinolib.Exceptions.TroppiGiocatoriException;
+import dinolib.Razza.Carnivoro;
+import dinolib.Razza.Dinosauro;
+import dinolib.Razza.Erbivoro;
+import dinolib.mappa.Cella;
+import dinolib.mappa.Mappa;
+
 public class Logica implements Runnable {
 	/* Tutte le variabili statiche/definitive e non modificabili */
 	/**
@@ -41,11 +54,20 @@ public class Logica implements Runnable {
 	 */
 	private Mappa rifMappa;
 	/**
-	 * Contiene la lista dei giocatori.
-	 * Uso l'hashmap perchè posso avere chiavi nulle, in questo modo posso rimuovere i token e tenere la lista dei giocatori, ma tutto in un'unica struttura.
-	 * @uml.property name="listaGiocatori"
+	 * Istanzia il riferimento alla lista dei giocatori.
+	 * @uml.property name="playerManager"
 	 */
-	private ArrayList<Giocatore> listaGiocatori = null;
+	private PlayerManager pMan = null;
+	/**
+	 * Istanzia il riferimento alla lista dei giocatori connessi e dei loro token.
+	 * @uml.property name="connectionManager"
+	 */
+	private ConnectionManager cMan = null;
+	/**
+	 * Contiene tutti i giocatori correntemente connessi alla partita.
+	 * @uml.property  name="playersQueue"
+	 */
+	private RRScheduler rrsched = null;
 	/**
 	 * Definisce la stringa che contiene il nome del giocatore che in questo momento ha il turno.
 	 * @uml.property  name="Giocatori"
@@ -61,12 +83,8 @@ public class Logica implements Runnable {
 	 * @uml.property  name="turnoConfermato"
 	 */
 	private boolean turnoConfermato = false;
-	/**
-	 * Contiene tutti i giocatori correntemente connessi alla partita.
-	 * @uml.property  name="playersQueue"
-	 */
-	private ArrayBlockingQueue<String> playersQueue = new ArrayBlockingQueue<String>(numero_MASSIMO_GIOCATORI_INGAME);
-
+	
+	
 	/* Costruttore e funzioni di primo avvio */
 	/**
 	 * Costruttore di default per la classe Logica.
@@ -78,7 +96,7 @@ public class Logica implements Runnable {
 		catch (FileNotFoundException e) {
 			System.out.println("No save files found, creating a new map..");
 			creaNuovaMappa();
-			listaGiocatori = new ArrayList<Giocatore>();
+			pMan = new PlayerManager();
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -90,6 +108,8 @@ public class Logica implements Runnable {
 			System.out.println("ClassNotFoundException while trying to read save files. Exiting..");
 			System.exit(-1);
 		}
+		cMan = new ConnectionManager();
+		rrsched = new RRScheduler(numero_MASSIMO_GIOCATORI_INGAME);
 	}
 	/**
 	 * Se i file di salvataggio esistono li carica, altrimenti assume primo avvio
@@ -125,7 +145,7 @@ public class Logica implements Runnable {
 	 */
 	private void caricaFileGiocatori(String nomefile) throws IOException, ClassNotFoundException, FileNotFoundException {
 		ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(nomefile)));
-		listaGiocatori = (ArrayList<>Giocatore>) ois.readObject();
+		pMan = (PlayerManager) ois.readObject();
 	}
 	/**
 	 * Helper per la creazione di una mappa nuova
@@ -133,46 +153,19 @@ public class Logica implements Runnable {
 	private void creaNuovaMappa() {
 		rifMappa = new Mappa(lato_MAPPA);
 	}
-
+	
 	/* Tutti i getter */
-	private ArrayList<Giocatore> getListaGiocatori() { return listaGiocatori; }
-	protected String getPlayerName(String token) { return getListaGiocatori().get(token).getNome(); }
 	public int getLatoDellaMappa() { return rifMappa.getLatoDellaMappa(); }
 	protected Cella getCella(int x, int y) { return rifMappa.getCella(x, y); }
-	public boolean isSomeonePlaying() { if (playersQueue.size() > 0) return true; else return false; }
+	protected PlayerManager getPMan() { return pMan; }
+	protected ConnectionManager getCMan() { return cMan; }
+	protected RRScheduler getRRSched() { return rrsched; }p
 	protected boolean isLogicaRunning() { return logicaIsRunning; }
-	public Iterator<String> getIteratorOnPIds() { return getListaGiocatori().keySet().iterator(); }
-	Iterator<Giocatore> getIteratorOnPlayers() { return getListaGiocatori().iterator(); }
 	protected Giocatore getPlayerByToken(String token) throws InvalidTokenException {
-		if (existsPlayerWithToken(token)) return getListaGiocatori().get(token);
+		if (getCMan().existsToken(token) && getPMan().exists(getCMan().getName(token))) return getPMan().getPlayer(getCMan().getName(token));
 		else return null;
 	}
-	protected boolean existsPlayerWithName(String user) {
-		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
-		while (itGiocatori.hasNext()) {
-			if (itGiocatori.next().getNome().equals(user)) return true;
-		}
-		return false;
-	}
-	protected Giocatore getPlayerByName(String user) {
-		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
-		Giocatore tempGiocatore = null;
-		while (itGiocatori.hasNext()) {
-			tempGiocatore = itGiocatori.next();
-			if (tempGiocatore.getNome().equals(user)) break;
-		}
-		return tempGiocatore;
-	}
-	/**
-	 * Helper per verificare che effettivamente il token sia registrato.
-	 * @param token
-	 * @return
-	 * @throws InvalidTokenException
-	 */
-	protected boolean existsPlayerWithToken (String token) throws InvalidTokenException {
-		if (getListaGiocatori().containsKey(token)) return true;
-		else throw new InvalidTokenException();
-	}
+	
 	/**
 	 * Helper per verificare che sia il turno del giocatore che chiama la funzione. 
 	 * @return
@@ -186,47 +179,6 @@ public class Logica implements Runnable {
 			else return false;
 		}
 		else throw new NonInPartitaException();
-	}
-	/**
-	 * Crea una nuova razza per l'utente specificato tramite token
-	 * @param token
-	 * @param raceName
-	 * @param dinosauro
-	 * @throws InvalidTokenException
-	 */
-	protected void createNewRaceForPlayer(String token, String raceName, Dinosauro dinosauro) throws InvalidTokenException {
-		getPlayerByToken(token).creaNuovaRazza(raceName, dinosauro);
-	}
-	/**
-	 * Verifica se il numero massimo di utenti è connesso. Se sì lancia una eccezione, altrimenti ritorna false.
-	 * ATTENZIONE! Il valore di ritorno di di default è FALSE! (Contrariamente a tutti gli altri helper).
-	 * @return
-	 * @throws TroppiGiocatoriException
-	 */
-	public boolean isMaxPlayersInGame() throws TroppiGiocatoriException {
-		if (playersQueue.size() < numero_MASSIMO_GIOCATORI_INGAME) return false;
-		else throw new TroppiGiocatoriException();
-	}
-	/**
-	 * Helper per verificare l'esistenza della razza per il giocatore con il dato token.
-	 * @param token
-	 * @return
-	 * @throws InvalidTokenException
-	 * @throws RazzaGiaCreataException 
-	 */
-	boolean existsRaceForPlayer (String token) throws InvalidTokenException, RazzaGiaCreataException {
-		if (getPlayerByToken(token).hasRazza()) throw new RazzaGiaCreataException();
-		else return false;
-	}
-	/**
-	 * Verifica se l'utente possiede il dinosauro con l'id cercato, altrimenti lancia eccezione.
-	 * @return 
-	 * @throws InvalidIDException 
-	 * @throws InvalidTokenException 
-	 */
-	protected boolean playerHasDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException {
-		if (getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) return true;
-		else throw new InvalidIDException();
 	}
 	/**
 	 * Verifica se l'utente è in partita, altrimenti lancia eccezione.
@@ -266,23 +218,6 @@ public class Logica implements Runnable {
 		}
 		return false;
 	}
-	
-	/**
-	 * Ritorna il token dell'utente richiesto.
-	 * @param user
-	 * @return
-	 */
-	protected String getPlayerToken(String user) {
-		Iterator<String> itToken = getIteratorOnPIds();
-		String tempToken = null;
-		while (itToken.hasNext()) {
-			tempToken = itToken.next();
-			if (getListaGiocatori().get(tempToken).getNome().equals(user)) {
-				return tempToken;
-			}
-		}
-		return null;
-	}
 
 	protected void broadcastCambioTurno() {
 
@@ -294,18 +229,12 @@ public class Logica implements Runnable {
 	private void updateMappa() {
 		rifMappa.aggiornaSuTurno();
 	}
-	private void updateGiocatori() {
-		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
-		while (itGiocatori.hasNext()) {
-			itGiocatori.next().aggiornaGiocatoreSuTurno();
-		}
-	}
 	/**
 	 * Aggiorna l'ambiente di gioco ogni volta che si passa da un giocatore all'altro.
 	 */
 	private void updatePartita() {
 		updateMappa();
-		updateGiocatori();
+		getPMan().updateGiocatori();
 	}
 	/*
 	 * Algoritmo:
@@ -322,8 +251,8 @@ public class Logica implements Runnable {
 	public void run () {
 		try {
 			while (isLogicaRunning()) {
-				if (isSomeonePlaying()) {
-					nomeGiocatoreCorrente = playersQueue.poll();
+				if (getRRSched().hasTasks()) {
+					nomeGiocatoreCorrente = getRRSched().getCurrentTask();
 					long conferma_start = System.currentTimeMillis();
 					while ((System.currentTimeMillis()-conferma_start) < (sleep_CONFERMA_TURNO*1000)) {
 						if (turnoConfermato) {
@@ -334,7 +263,7 @@ public class Logica implements Runnable {
 									Thread.sleep(1000);
 								}
 							}
-							playersQueue.put(nomeGiocatoreCorrente);
+							getRRSched().newTask(token);
 							updatePartita();
 							broadcastCambioTurno();
 						}
@@ -357,20 +286,6 @@ public class Logica implements Runnable {
 	void confermaTurno() {
 		turnoConfermato = true;
 	}
-
-	/**
-	 * Crea un utente a partire da username e password.
-	 * @param user
-	 * @param pwd
-	 * @throws UserExistsException 
-	 */
-	protected void doCreaUtente(String user, String pwd) throws UserExistsException {
-		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
-		while (itGiocatori.hasNext()) {
-			if (itGiocatori.next().getNome().equals(user)) throw new UserExistsException();
-		}
-		getListaGiocatori().put(CommonUtils.getNewToken(), new Giocatore(user, pwd));
-	}
 	/**
 	 * Gestisce la rimozione di tutti i dinosauri dalla mappa.	
 	 * @throws InvalidTokenException 
@@ -388,7 +303,7 @@ public class Logica implements Runnable {
 	 * @throws InvalidTokenException 
 	 */
 	protected void inserisciDinosauriNellaMappa(String token) throws InvalidTokenException {
-		Iterator<Dinosauro> itDinosauri = getListaGiocatori().get(token).getRazza().iterator();
+		Iterator<Dinosauro> itDinosauri = getPlayerByToken(token).getRazza().iterator();
 		Dinosauro tempDinosauro;
 		while (itDinosauri.hasNext()) {
 			tempDinosauro = itDinosauri.next();
@@ -457,7 +372,7 @@ public class Logica implements Runnable {
 		Giocatore tempGiocatore = getPlayerByToken(token);
 		rimuoviDinosauriDallaMappa(tempGiocatore);
 		tempGiocatore.notInGame();
-		if (playersQueue.contains(getPlayerName(token))) {
+		if (playersQueue.contains(getCMan().getPlayerName(token))) {
 			playersQueue.remove(getPlayerName(token));
 			return;
 		}

@@ -1,14 +1,16 @@
-package dinolib;
+package dinolib.Razza;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import dinolib.Exceptions.GenericDinosauroException;
+
 /**
  * Astrae la collezione dei dinosauri rispetto al giocatore.
  */
-class Razza implements Set<Dinosauro> {
+public class Razza implements Set<Dinosauro> {
 	/* Tutte le variabili statiche/definitive e non modificabili */
 	/**
 	 * Definisce definitivamente i turni di vita massimi per una specie.
@@ -53,7 +55,7 @@ class Razza implements Set<Dinosauro> {
 	 * Implementa la costruzione della classe Specie.
 	 * Richiede il nuovo nome della razza e l'istanza del nuovo dinosauro.
 	 */
-	protected Razza(String nomeRazza, Dinosauro nuovodinosauro) {
+	public Razza(String nomeRazza, Dinosauro nuovodinosauro) {
 		this.nome = nomeRazza;
 		this.tipo = nuovodinosauro.getTipoRazza();
 		this.add(nuovodinosauro);
@@ -124,7 +126,7 @@ class Razza implements Set<Dinosauro> {
 	/**
 	 * Helper per aggiornare la specie.
 	 */
-	protected void aggiornaRazza() {
+	public void aggiornaRazza() {
 		if (!isEmpty()) {
 			invecchiaDinosauri();
 			aggiornaPunteggio();

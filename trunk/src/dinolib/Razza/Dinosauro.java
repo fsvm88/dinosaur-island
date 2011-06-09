@@ -1,6 +1,8 @@
-package dinolib;
+package dinolib.Razza;
 
 import java.util.Random;
+
+import dinolib.CommonUtils;
 
 
 /**

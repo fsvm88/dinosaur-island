@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 import dinolib.Logica;
-import dinolib.SocketAdaptor;
 
 /**
  * @author  fabio
@@ -25,14 +24,7 @@ class Server {
 	 * @uml.property  name="servLogica"
 	 * @uml.associationEnd  
 	 */
-	private Logica servLogica = null;
-	/**
-	 * Dichiara l'oggetto attraverso cui passano le comunicazioni su socket.
-	 * @uml.property  name="socketAdaptor"
-	 * @uml.associationEnd  
-	 */
-	protected SocketAdaptor socketAdaptor = null;
-	
+	protected Logica servLogica = null;	
 	/**
 	 * @param args
 	 */
@@ -66,7 +58,6 @@ class Server {
 				servLogica = new Logica();
 				Thread threadedLogica = new Thread(servLogica);
 				threadedLogica.start();
-				socketAdaptor = new SocketAdaptor(servLogica);
 				System.out.println("Server started successfully, creating threads on need..");
 				ClientWorker clientWorker = new ClientWorker(serverInstSocket.accept());
 				Thread threadedClientWorker = new Thread(clientWorker);

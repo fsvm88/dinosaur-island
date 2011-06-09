@@ -7,7 +7,7 @@ public class CommonUtils {
 	 * Helper per la generazione di un nuovo token alfanumerico.
 	 * @return
 	 */
-	protected static String getNewToken() {
+	public static String getNewToken() {
 		return Long.toString(Double.doubleToLongBits(Math.random()));
 	}
 	
@@ -15,7 +15,7 @@ public class CommonUtils {
 	 * Ritorna un valore casuale 0<rnd.nextInt()<LATO_DELLA_MAPPA
 	 * @return
 	 */
-	protected static int getNewRandomIntValueOnMyMap(int latoDellaMappa) {
+	public static int getNewRandomIntValueOnMyMap(int latoDellaMappa) {
 		Random rnd = new Random();
 		return rnd.nextInt(latoDellaMappa);
 	}
@@ -29,7 +29,7 @@ public class CommonUtils {
 	 * @param modulus
 	 * @return
 	 */
-	protected static int translateYforServer (int yToTranslate, int modulus) {
+	public static int translateYforServer (int yToTranslate, int modulus) {
 		return modulus - yToTranslate;
 	}
 	
@@ -42,7 +42,7 @@ public class CommonUtils {
 	 * @param modulus
 	 * @return
 	 */
-	protected static int translateYforClient(int yToTranslate, int modulus) {
+	public static int translateYforClient(int yToTranslate, int modulus) {
 		return modulus + yToTranslate;
 	}
 }
