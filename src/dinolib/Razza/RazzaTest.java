@@ -1,4 +1,4 @@
-package dinolib;
+package dinolib.Razza;
 
 import static org.junit.Assert.*;
 
@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import org.junit.Before;
 import org.junit.Test;
+
 /**
  * @author  fabio
  */

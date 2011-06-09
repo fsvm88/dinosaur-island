@@ -7,6 +7,9 @@ import java.util.Hashtable;
 import org.junit.Before;
 import org.junit.Test;
 
+import dinolib.Exceptions.UserExistsException;
+import dinolib.Mappa.Cella;
+
 public class LogicaTest {
 	private Logica myLogica = null;
 	private Hashtable<String, Giocatore> testGiocatori = null;

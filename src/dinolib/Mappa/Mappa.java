@@ -1,4 +1,6 @@
-package dinolib;
+package dinolib.Mappa;
+
+import dinolib.CommonUtils;
 
 
 /**

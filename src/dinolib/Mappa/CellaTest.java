@@ -1,8 +1,9 @@
-package dinolib;
+package dinolib.Mappa;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+
 
 /**
  * @author  fabio

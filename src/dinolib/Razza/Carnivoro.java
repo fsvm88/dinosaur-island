@@ -1,4 +1,4 @@
-package dinolib;
+package dinolib.Razza;
 
 public class Carnivoro extends Dinosauro {
 	/**

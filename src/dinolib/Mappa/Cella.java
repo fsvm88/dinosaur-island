@@ -1,4 +1,4 @@
-package dinolib;
+package dinolib.Mappa;
 
 import java.util.HashSet;
 

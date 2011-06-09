@@ -1,6 +1,6 @@
 package dinolib;
 
-import dinolib.Razza;
+import dinolib.Razza.*;
 
 /**
  * @author  fabio

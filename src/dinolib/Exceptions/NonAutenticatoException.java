@@ -1,4 +1,4 @@
-package dinolib;
+package dinolib.Exceptions;
 
 public
 class NonAutenticatoException extends Exception {

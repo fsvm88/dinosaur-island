@@ -1,4 +1,4 @@
-package dinolib;
+package dinolib.Mappa;
 
 
 public class Vegetazione extends Cella {
