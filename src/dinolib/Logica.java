@@ -5,7 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -44,7 +45,7 @@ public class Logica implements Runnable {
 	 * Uso l'hashmap perchè posso avere chiavi nulle, in questo modo posso rimuovere i token e tenere la lista dei giocatori, ma tutto in un'unica struttura.
 	 * @uml.property name="listaGiocatori"
 	 */
-	private HashMap<String, Giocatore> listaGiocatori = null;
+	private ArrayList<Giocatore> listaGiocatori = null;
 	/**
 	 * Definisce la stringa che contiene il nome del giocatore che in questo momento ha il turno.
 	 * @uml.property  name="Giocatori"
@@ -77,7 +78,7 @@ public class Logica implements Runnable {
 		catch (FileNotFoundException e) {
 			System.out.println("No save files found, creating a new map..");
 			creaNuovaMappa();
-			listaGiocatori = new HashMap<String, Giocatore>();
+			listaGiocatori = new ArrayList<Giocatore>();
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -124,7 +125,7 @@ public class Logica implements Runnable {
 	 */
 	private void caricaFileGiocatori(String nomefile) throws IOException, ClassNotFoundException, FileNotFoundException {
 		ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(nomefile)));
-		listaGiocatori = (HashMap<String, Giocatore>) ois.readObject();
+		listaGiocatori = (ArrayList<>Giocatore>) ois.readObject();
 	}
 	/**
 	 * Helper per la creazione di una mappa nuova
@@ -134,14 +135,14 @@ public class Logica implements Runnable {
 	}
 
 	/* Tutti i getter */
-	private HashMap<String, Giocatore> getListaGiocatori() { return listaGiocatori; }
+	private ArrayList<Giocatore> getListaGiocatori() { return listaGiocatori; }
 	protected String getPlayerName(String token) { return getListaGiocatori().get(token).getNome(); }
 	public int getLatoDellaMappa() { return rifMappa.getLatoDellaMappa(); }
 	protected Cella getCella(int x, int y) { return rifMappa.getCella(x, y); }
 	public boolean isSomeonePlaying() { if (playersQueue.size() > 0) return true; else return false; }
 	protected boolean isLogicaRunning() { return logicaIsRunning; }
 	public Iterator<String> getIteratorOnPIds() { return getListaGiocatori().keySet().iterator(); }
-	Iterator<Giocatore> getIteratorOnPlayers() { return getListaGiocatori().values().iterator(); }
+	Iterator<Giocatore> getIteratorOnPlayers() { return getListaGiocatori().iterator(); }
 	protected Giocatore getPlayerByToken(String token) throws InvalidTokenException {
 		if (existsPlayerWithToken(token)) return getListaGiocatori().get(token);
 		else return null;
