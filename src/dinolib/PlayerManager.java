@@ -73,7 +73,7 @@ public class PlayerManager {
 	protected void updateGiocatori() {
 		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
 		while (itGiocatori.hasNext()) {
-			itGiocatori.next().aggiornaGiocatoreSuTurno();
+			itGiocatori.next().aggiorna();
 		}
 	}
 }

@@ -356,36 +356,6 @@ public class Logica implements Runnable {
 				((j+y)<getMappa().getLatoDellaMappa()));
 		return false;
 	}
-	/**
-	 * Codice per l'uscita dalla partita. Viene chiamato direttamente o tramite l'adattatore.
-	 * @throws InvalidTokenException 
-	 */
-	protected void doEsciDallaPartita(String token) throws InvalidTokenException {
-		Giocatore tempGiocatore = getPlayerByToken(token);
-		rimuoviDinosauriDallaMappa(tempGiocatore);
-		tempGiocatore.notInGame();
-		if (playersQueue.contains(getCMan().getPlayerName(token))) {
-			playersQueue.remove(getPlayerName(token));
-			return;
-		}
-		else return;
-	}
-	/**
-	 * Fa il logout dell'utente col token richiesto.
-	 * @param token
-	 * @throws InvalidTokenException
-	 * @throws NonInPartitaException
-	 * @throws NonAutenticatoException 
-	 */
-	protected void doLogout(String token) throws InvalidTokenException, NonInPartitaException, NonAutenticatoException {
-		Giocatore tempGiocatore = getPlayerByToken(token);
-		if (tempGiocatore.isLogged()) {
-			if (isPlayerInGame(token)) {
-				doEsciDallaPartita(token);
-			}
-			tempGiocatore.notLogged();
-		}
-	}
 	private void passaTurno() {
 		// TODO Auto-generated method stub
 	}
@@ -429,27 +399,6 @@ public class Logica implements Runnable {
 		else if (addition>=getMappa().getLatoDellaMappa()) return (getMappa().getLatoDellaMappa()-1);
 		else return addition;
 	}
-	/**
-	 * Implementa l'accesso alla partita, la parte non adattabile e condivisa da ogni modo di accesso.
-	 * @throws InvalidTokenException 
-	 * @throws RazzaNonCreataException 
-	 * @throws TroppiGiocatoriException 
-	 * @throws NonInPartitaException 
-	 * @throws InterruptedException 
-	 * @throws NonAutenticatoException 
-	 */
-	protected void accediAPartita(String token) throws InvalidTokenException, NonInPartitaException, TroppiGiocatoriException, RazzaNonCreataException, InterruptedException, NonAutenticatoException {
-		Giocatore tempGiocatore = getPlayerByToken(token);
-		if (!isPlayerInGame(token) &&
-				!isMaxPlayersInGame()) {
-			if (tempGiocatore.hasRazza()) {
-				inserisciDinosauriNellaMappa(token);
-				playersQueue.put(getPlayerName(token));
-			}
-			else throw new RazzaNonCreataException();
-		}
-		else return;
-	}
 
 	/**
 	 * Fa deporre l'uovo al dinosauro.
@@ -478,17 +427,6 @@ public class Logica implements Runnable {
 			return newDinosauro.getIdDinosauro();
 		}
 		return null;
-	}
-	/**
-	 * Helper per fare il login dell'utente, di modo da separare la logica di programma da socketAdaptor.
-	 * @param tempGiocatore
-	 * @return
-	 */
-	protected String doLoginUtente(Giocatore tempGiocatore) {
-		getListaGiocatori().remove(tempGiocatore);
-		tempGiocatore.logged();
-		getListaGiocatori().put(CommonUtils.getNewToken(), tempGiocatore);
-		return getPlayerToken(tempGiocatore.getNome());
 	}
 
 	/**
@@ -587,6 +525,17 @@ public class Logica implements Runnable {
 	protected boolean doUscitaPartita(String token) throws InvalidTokenException, NonAutenticatoException {
 		if (isPlayerInGame(token)) {
 			getRRSched().killTask(token);
+			return true;
+		}
+		else return false;
+	}
+	
+	protected boolean doLogout(String token) throws InvalidTokenException, NonAutenticatoException {
+		if (isPlayerLogged(token)) {
+			if (isPlayerInGame(token)) {
+				getRRSched().killTask(token);
+			}
+			getCMan().scollega(token);
 			return true;
 		}
 		else return false;

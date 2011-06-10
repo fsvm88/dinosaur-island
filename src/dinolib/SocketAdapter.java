@@ -62,6 +62,21 @@ public class SocketAdapter implements Adapter {
 		}
 		return newBuffer;
 	}
+	
+	/**
+	 * Assembla tutta la mappa generale in un unico buffer tramite l'iteratore sulla mappa.
+	 * @param mioBuffer
+	 * @return
+	 */
+	private String assemblaMappaGenerale(String mioBuffer) {
+		Iterator<Cella> itCelle = myLogica.getMappa().iterator();
+		int i = 0;
+		Cella tempCella = null;
+		while (itCelle.hasNext()) {
+			tempCella = itCelle.next();
+			
+		}
+	}
 
 	/**
 	 * Fa la sottrazione per le coordinate, che rimangano in range.
@@ -242,11 +257,23 @@ public class SocketAdapter implements Adapter {
 
 	@Override
 	public Object logoutUtente(String token) {
-		myLogica.doLogout(token);
+		try {
+			if (myLogica.doLogout(token)) return "@ok";
+			else return "@no";
+		} catch (InvalidTokenException e) {
+			return returnInvalidToken();
+		} catch (NonAutenticatoException e) {
+			return returnInvalidToken();
+		}
 	}
 
 	@Override
 	public Object mappaGenerale(String token) {
+		if (myLogica.isPlayerInGame(token) {
+			String buffer = null;
+			
+		}
+		
 		if (myLogica.isPlayerInGame(token)) {
 			String buffer = null;
 			int latoDellaMappa = myLogica.getLatoDellaMappa();
