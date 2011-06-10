@@ -9,7 +9,7 @@ public class PlayerManager {
 	 * @uml.property name="listaGiocatori"
 	 */
 	private ArrayList<Giocatore> listaGiocatori = null;
-	
+
 	/**
 	 * Costruttore, inizializza l'ArrayList.
 	 */
@@ -42,9 +42,11 @@ public class PlayerManager {
 	 * @return
 	 */
 	protected boolean exists(String nomeGiocatore) {
-		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
-		while (itGiocatori.hasNext()) {
-			if (itGiocatori.next().getNome().equals(nomeGiocatore)) return true;
+		if (!listaGiocatori.isEmpty()) {
+			Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
+			while (itGiocatori.hasNext()) {
+				if (itGiocatori.next().getNome().equals(nomeGiocatore)) return true;
+			}
 		}
 		return false;
 	}
@@ -55,13 +57,13 @@ public class PlayerManager {
 	 */
 	protected Giocatore getPlayer(String nomeGiocatore) {
 		if (exists(nomeGiocatore)) {
-		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
-		Giocatore tempGiocatore = null;
-		while (itGiocatori.hasNext()) {
-			tempGiocatore = itGiocatori.next();
-			if (tempGiocatore.getNome().equals(nomeGiocatore)) break;
-		}
-		return tempGiocatore;
+			Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
+			Giocatore tempGiocatore = null;
+			while (itGiocatori.hasNext()) {
+				tempGiocatore = itGiocatori.next();
+				if (tempGiocatore.getNome().equals(nomeGiocatore)) break;
+			}
+			return tempGiocatore;
 		}
 		else return null;
 	}

@@ -15,7 +15,7 @@ interface Adapter {
 	Object statoDinosauro(String token, String idDinosauro);
 	Object muoviDinosauro(String token, String idDinosauro, int x, int y);
 	Object cresciDinosauro(String token, String idDinosauro);
-	Object deposizioneUovo(String token, String idDinosauro);
+	Object deponiUovo(String token, String idDinosauro);
 	Object confermaTurno(String token);
 	Object passaTurno(String token);
 }

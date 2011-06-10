@@ -3,6 +3,10 @@ package dinolib;
 import java.io.IOException;
 import java.util.Iterator;
 
+import dinolib.Exceptions.*;
+import dinolib.Mappa.Cella;
+import dinolib.Razza.Dinosauro;
+
 public class SocketAdapter implements Adapter {
 	/**
 	 * Contiene la classe logica che viene istanziata da server.
@@ -19,6 +23,18 @@ public class SocketAdapter implements Adapter {
 		myLogica = newLogica;
 	}
 
+	private String returnInvalidToken() {
+		return "@no,@tokenNonValido";
+	}
+
+	private String assemblaTuplaDelPunteggio(String myBuffer, String curNomeRazza, int myPunteggio, String isEstinta) {
+		return myBuffer +
+		"," + "{" + "," +
+		curNomeRazza + "," + 
+		myPunteggio + "," +
+		isEstinta + "}";
+	}
+
 	/**
 	 * Helper per assemblare il punteggio per un singolo giocatore.
 	 * @param newBuffer
@@ -27,12 +43,26 @@ public class SocketAdapter implements Adapter {
 	 */
 	private String assemblaPunteggio(String newBuffer, Giocatore giocatore) {
 		newBuffer = assemblaBuffer(newBuffer, giocatore.getNome());
-		newBuffer = assemblaBuffer(newBuffer, giocatore.getRazza().getNome());
-		newBuffer = newBuffer + "," + giocatore.getPunteggio();
-		if (giocatore.getRazza().isEmpty()) newBuffer = assemblaBuffer(newBuffer, "s");
-		else newBuffer = assemblaBuffer(newBuffer, "n");
+		String curPlayingRazza = null;
+		if (giocatore.hasRazza()) {
+			curPlayingRazza = giocatore.getRazza().getNome();
+		}
+		Iterator<String> itRazze = giocatore.getPunteggio().getIteratorOnRaces();
+		String curRazza = null;
+		while (itRazze.hasNext()) {
+			curRazza = itRazze.next();
+			if (curPlayingRazza != null) {
+				if ((curRazza.equals(curPlayingRazza)))
+					newBuffer = assemblaTuplaDelPunteggio(newBuffer, curRazza, giocatore.getPunteggio().getPunteggioDaNome(curRazza), "s");
+				else
+					newBuffer = assemblaTuplaDelPunteggio(newBuffer, curRazza, giocatore.getPunteggio().getPunteggioDaNome(curRazza), "n");
+			}
+			else
+				newBuffer = assemblaTuplaDelPunteggio(newBuffer, curRazza, giocatore.getPunteggio().getPunteggioDaNome(curRazza), "n");
+		}
 		return newBuffer;
 	}
+
 	/**
 	 * Fa la sottrazione per le coordinate, che rimangano in range.
 	 * @param x
@@ -40,7 +70,7 @@ public class SocketAdapter implements Adapter {
 	 * @return
 	 */
 	private String getCellaDellaMappaPerBuffer(int x, int y) {
-		Cella tempCella = myLogica.getCella(x, y);
+		Cella tempCella = myLogica.getMappa().getCella(x, y);
 		Character tipoCella = tempCella.getTipoCella(x, y).toLowerCase().charAt(0);
 		if ((tipoCella.charValue() == 't' ) ||
 				(tipoCella.charValue() == 'a' )) {
@@ -85,99 +115,129 @@ public class SocketAdapter implements Adapter {
 		return tempGiocatore.getNome() + "," +
 		tempGiocatore.getRazza().getNome() + "," +
 		tempGiocatore.getRazza().getTipo().toLowerCase().charAt(0) + "," +
-		"{" + "," + tempDinosauro.getX() + "," + CommonUtils.translateYforClient(tempDinosauro.getY(), myLogica.getLatoDellaMappa()) + "," + "}" + "," +
+		"{" + "," + tempDinosauro.getX() + "," + CommonUtils.translateYforClient(tempDinosauro.getY(), myLogica.getMappa().getLatoDellaMappa()) + "," + "}" + "," +
 		tempDinosauro.getDimensione();
 	}
 	/**
 	 * Helper per le funzioni che restituiscono liste
-	 * @param buffer
+	 * @param localBuffer
 	 * @param toAppend
 	 */
-	private String assemblaBuffer(String buffer, String toAppend) {
-		if (buffer != null) 
-			buffer = buffer + "," + toAppend;
+	private String assemblaBuffer(String localBuffer, String toAppend) {
+		if (localBuffer != null)
+			localBuffer = localBuffer + "," + toAppend;
 		else 
-			buffer = toAppend;
-		return buffer;
+			localBuffer = toAppend;
+		return localBuffer;
 	}
 
 	@Override
 	public Object creaUtente(String nomeUtente, String passwordUtente) {
-		if (!myLogica.existsPlayerWithName(user)) {
-			myLogica.doCreaUtente(user, pwd);
-			return;
+		try {
+			if (myLogica.doCreaUtente(nomeUtente, passwordUtente)) return "@ok";
+			else return "@no";
+		}
+		catch (UserExistsException e) {
+			return "@no,@usernameOccupato";
 		}
 	}
 
 	@Override
 	public Object loginUtente(String nomeUtente, String passwordUtente) {
-		if (myLogica.existsPlayerWithName(user)) {
-			Giocatore tempGiocatore = myLogica.getPlayerByName(user);
-			if (tempGiocatore.passwordIsValid(pwd)) {
-				return myLogica.doLoginUtente(tempGiocatore);
+		try {
+			if (myLogica.doLogin(nomeUtente, passwordUtente)) {
+				return "@ok," + myLogica.getCMan().getToken(nomeUtente);
 			}
-			else throw new UserAuthenticationFailedException();
+			else return "@no";
 		}
-		throw new UserAuthenticationFailedException();
+		catch (UserAuthenticationFailedException e) {
+			return "@no,@autenticazioneFallita";
+		}
 	}
 
 	@Override
 	public Object creaRazza(String token, String nomeRazza, String tipo) {
-		if (myLogica.existsPlayerWithToken(token) && !myLogica.existsRaceWithName(nomeRazza)) {
-			if (!myLogica.existsRaceForPlayer(token)) {
-				Dinosauro tempDinosauro;
-				if (tipoRazza.equals("c")) {
-					tempDinosauro = new Carnivoro(CommonUtils.getNewRandomIntValueOnMyMap(myLogica.getLatoDellaMappa()), CommonUtils.getNewRandomIntValueOnMyMap(myLogica.getLatoDellaMappa()));
-					myLogica.createNewRaceForPlayer(token, nomeRazza, tempDinosauro);
-				}
-				else if (tipoRazza.equals("e")) {
-					tempDinosauro = new Erbivoro(CommonUtils.getNewRandomIntValueOnMyMap(myLogica.getLatoDellaMappa()), CommonUtils.getNewRandomIntValueOnMyMap(myLogica.getLatoDellaMappa()));
-					myLogica.createNewRaceForPlayer(token, nomeRazza, tempDinosauro);
-				}
+		try {
+			if (myLogica.isPlayerLogged(token)) {
+				if (myLogica.doCreaRazza(token, nomeRazza, tipo)) return "@ok";
+				else return "@no,@razzaGiaCreata";
 			}
+			else return returnInvalidToken();
+		}
+		catch (NomeRazzaOccupatoException e) {
+			return "@no,@nomeRazzaOccupato";
+		}
+		catch (InvalidTokenException e) {
+			return returnInvalidToken();
+		} catch (NonAutenticatoException e) {
+			return returnInvalidToken();
 		}
 	}
 
 	@Override
 	public Object accessoPartita(String token) {
-		myLogica.accediAPartita(token);
+		try {
+			if (myLogica.doAccessoPartita(token)) return "@ok";
+			else return "@no";
+		} catch (NonAutenticatoException e) {
+			return returnInvalidToken();
+		} catch (InvalidTokenException e) {
+			return returnInvalidToken();
+		} catch (InterruptedException e) {
+			return "@no";
+		} catch (TroppiGiocatoriException e) {
+			return "@no,@troppiGiocatori";
+		} catch (RazzaNonCreataException e) {
+			return "@no,@razzaNonCreata";
+		}
 	}
 
 	@Override
 	public Object uscitaPartita(String token) {
-		if (myLogica.isPlayerInGame(token)) myLogica.doEsciDallaPartita(token);
-		else throw new NonInPartitaException();
+		try {
+			if (myLogica.doUscitaPartita(token)) return "@ok";
+			else return "@no";
+		} catch (InvalidTokenException e) {
+			return returnInvalidToken();
+		} catch (NonAutenticatoException e) {
+			return returnInvalidToken();
+		}
 	}
 
 	@Override
 	public Object listaGiocatori(String token) {
-		if (myLogica.existsPlayerWithToken(token)) {
-			Iterator<Giocatore> itGiocatori = myLogica.getIteratorOnPlayers();
-			String buffer = null;
-			while (itGiocatori.hasNext()) {
-				String curNomeGiocatore = itGiocatori.next().getNome();
-				if (myLogica.getPlayerByName(curNomeGiocatore).isLogged() &&
-						myLogica.getPlayerByName(curNomeGiocatore).isInGame()) {
-					buffer = assemblaBuffer(buffer, curNomeGiocatore);
+		try {
+			if (myLogica.getRRSched().hasQueuedTasks()) {
+				Iterator<String> itTasks = myLogica.getRRSched().getIteratorOnTasks();
+				String buffer = "@listaGiocatori";
+				while (itTasks.hasNext()) {
+					buffer = assemblaBuffer(buffer, myLogica.getCMan().getName(token));
 				}
+				return buffer;
 			}
-			return buffer;
+			else return "@listaGiocatori";
+		} catch (InvalidTokenException e) {
+			return returnInvalidToken();
 		}
-		return null;
 	}
 
 	@Override
 	public Object classifica(String token) {
-		if (myLogica.existsPlayerWithToken(token) &&
-				saUserIsLogged(token)) {
-			String buffer = null;
-			Iterator<Giocatore> itGiocatori = myLogica.getIteratorOnPlayers();
-			while (itGiocatori.hasNext()) {
-				buffer = assemblaPunteggio(buffer, itGiocatori.next());
+		try {
+			if (myLogica.isPlayerLogged(token)) {
+				String buffer = "@classifica";
+				Iterator<Giocatore> itGiocatori = myLogica.getPMan().getIteratorOnPlayers();
+				while (itGiocatori.hasNext()) {
+					buffer = assemblaPunteggio(buffer, itGiocatori.next());
+				}
+				return buffer;
 			}
-			return buffer;
+			else return returnInvalidToken();
+		} catch (NonAutenticatoException e) {
+			return returnInvalidToken();
+		} catch (InvalidTokenException e) {
+			return returnInvalidToken();
 		}
-		return null;
 	}
 
 	@Override
@@ -204,17 +264,17 @@ public class SocketAdapter implements Adapter {
 	@Override
 	public Object listaDinosauri(String token) {
 		if (myLogica.isPlayerInGame(token)) {
-            String buffer = null;
-            if (myLogica.existsRaceForPlayer(token)) {
-                    Iterator<Dinosauro> itDinosauri = myLogica.getPlayerByToken(token).getRazza().iterator();
-                    while (itDinosauri.hasNext()) {
-                            buffer = assemblaBuffer(buffer, itDinosauri.next().getIdDinosauro());
-                    }
-                    return buffer;
-            }
-            return buffer;
-    }
-    else throw new NonInPartitaException();
+			String buffer = null;
+			if (myLogica.existsRaceForPlayer(token)) {
+				Iterator<Dinosauro> itDinosauri = myLogica.getPlayerByToken(token).getRazza().iterator();
+				while (itDinosauri.hasNext()) {
+					buffer = assemblaBuffer(buffer, itDinosauri.next().getIdDinosauro());
+				}
+				return buffer;
+			}
+			return buffer;
+		}
+		else throw new NonInPartitaException();
 	}
 
 	@Override
@@ -279,7 +339,7 @@ public class SocketAdapter implements Adapter {
 	public Object muoviDinosauro(String token, String idDinosauro, int x, int y) {
 		if (myLogica.isMioTurno(token) &&
 				myLogica.playerHasDinosauro(token, idDinosauro)) {
-			
+
 		}
 		return null;
 	}

@@ -10,18 +10,12 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import dinolib.Exceptions.GenericDinosauroException;
-import dinolib.Exceptions.InvalidTokenException;
-import dinolib.Exceptions.NomeRazzaOccupatoException;
-import dinolib.Exceptions.NonAutenticatoException;
-import dinolib.Exceptions.NonInPartitaException;
-import dinolib.Exceptions.RazzaNonCreataException;
-import dinolib.Exceptions.TroppiGiocatoriException;
+import dinolib.Exceptions.*;
 import dinolib.Razza.Carnivoro;
 import dinolib.Razza.Dinosauro;
 import dinolib.Razza.Erbivoro;
-import dinolib.mappa.Cella;
-import dinolib.mappa.Mappa;
+import dinolib.Mappa.Cella;
+import dinolib.Mappa.Mappa;
 
 public class Logica implements Runnable {
 	/* Tutte le variabili statiche/definitive e non modificabili */
@@ -72,7 +66,7 @@ public class Logica implements Runnable {
 	 * Definisce la stringa che contiene il nome del giocatore che in questo momento ha il turno.
 	 * @uml.property  name="Giocatori"
 	 */
-	private String nomeGiocatoreCorrente = null;
+	private String giocatoreCorrente = null;
 	/**
 	 * Contiene una variabile che dice se la logica sta funzionando.
 	 * @uml.property  name="logicaIsRunning"
@@ -83,8 +77,8 @@ public class Logica implements Runnable {
 	 * @uml.property  name="turnoConfermato"
 	 */
 	private boolean turnoConfermato = false;
-	
-	
+
+
 	/* Costruttore e funzioni di primo avvio */
 	/**
 	 * Costruttore di default per la classe Logica.
@@ -153,19 +147,18 @@ public class Logica implements Runnable {
 	private void creaNuovaMappa() {
 		rifMappa = new Mappa(lato_MAPPA);
 	}
-	
+
 	/* Tutti i getter */
-	public int getLatoDellaMappa() { return rifMappa.getLatoDellaMappa(); }
-	protected Cella getCella(int x, int y) { return rifMappa.getCella(x, y); }
+	protected Mappa getMappa() { return rifMappa; }
 	protected PlayerManager getPMan() { return pMan; }
 	protected ConnectionManager getCMan() { return cMan; }
-	protected RRScheduler getRRSched() { return rrsched; }p
+	protected RRScheduler getRRSched() { return rrsched; }
 	protected boolean isLogicaRunning() { return logicaIsRunning; }
 	protected Giocatore getPlayerByToken(String token) throws InvalidTokenException {
 		if (getCMan().existsToken(token) && getPMan().exists(getCMan().getName(token))) return getPMan().getPlayer(getCMan().getName(token));
 		else return null;
 	}
-	
+
 	/**
 	 * Helper per verificare che sia il turno del giocatore che chiama la funzione. 
 	 * @return
@@ -175,7 +168,7 @@ public class Logica implements Runnable {
 	 */
 	protected boolean isMioTurno(String token) throws InvalidTokenException, NonInPartitaException, NonAutenticatoException {
 		if (isPlayerInGame(token)) {
-			if (nomeGiocatoreCorrente.equals(getPlayerByToken(token).getNome())) return true;
+			if (giocatoreCorrente.equals(token)) return true;
 			else return false;
 		}
 		else throw new NonInPartitaException();
@@ -187,8 +180,7 @@ public class Logica implements Runnable {
 	 * @throws NonAutenticatoException 
 	 */
 	protected boolean isPlayerInGame(String token) throws InvalidTokenException, NonAutenticatoException {
-		if (isPlayerLogged(token) && 
-				getPlayerByToken(token).isInGame()) return true;
+		if (getRRSched().hasTask(token)) return true;
 		else return false;
 	}
 	/**
@@ -199,7 +191,7 @@ public class Logica implements Runnable {
 	 * @throws InvalidTokenException
 	 */
 	protected boolean isPlayerLogged(String token) throws NonAutenticatoException, InvalidTokenException {
-		if (getPlayerByToken(token).isLogged()) return true;
+		if (getCMan().existsToken(token)) return true;
 		else throw new NonAutenticatoException();
 	}
 
@@ -211,7 +203,7 @@ public class Logica implements Runnable {
 	 * @throws NomeRazzaOccupatoException 
 	 */
 	protected boolean existsRaceWithName (String nomeRazza) throws NomeRazzaOccupatoException {
-		Iterator<Giocatore> itGiocatori = getIteratorOnPlayers();
+		Iterator<Giocatore> itGiocatori = getPMan().getIteratorOnPlayers();
 		while (itGiocatori.hasNext()) {
 			Giocatore tempGiocatore = itGiocatori.next();
 			if (tempGiocatore.getRazza().getNome().equals(nomeRazza)) throw new NomeRazzaOccupatoException();
@@ -227,7 +219,7 @@ public class Logica implements Runnable {
 	 * Aggiorna la mappa ogni volta che si passa da un giocatore all'altro.
 	 */
 	private void updateMappa() {
-		rifMappa.aggiornaSuTurno();
+		getMappa().aggiornaSuTurno();
 	}
 	/**
 	 * Aggiorna l'ambiente di gioco ogni volta che si passa da un giocatore all'altro.
@@ -251,8 +243,8 @@ public class Logica implements Runnable {
 	public void run () {
 		try {
 			while (isLogicaRunning()) {
-				if (getRRSched().hasTasks()) {
-					nomeGiocatoreCorrente = getRRSched().getCurrentTask();
+				if (getRRSched().hasQueuedTasks()) {
+					giocatoreCorrente = getRRSched().getCurrentTask();
 					long conferma_start = System.currentTimeMillis();
 					while ((System.currentTimeMillis()-conferma_start) < (sleep_CONFERMA_TURNO*1000)) {
 						if (turnoConfermato) {
@@ -263,7 +255,7 @@ public class Logica implements Runnable {
 									Thread.sleep(1000);
 								}
 							}
-							getRRSched().newTask(token);
+							getRRSched().newTask(giocatoreCorrente);
 							updatePartita();
 							broadcastCambioTurno();
 						}
@@ -295,7 +287,7 @@ public class Logica implements Runnable {
 		Dinosauro tempDinosauro;
 		while (itDinosauri.hasNext()) {
 			tempDinosauro = itDinosauri.next();
-			rifMappa.rimuoviIlDinosauroDallaCella(tempDinosauro.getX(), tempDinosauro.getY());
+			getMappa().rimuoviIlDinosauroDallaCella(tempDinosauro.getX(), tempDinosauro.getY());
 		}
 	}
 	/**
@@ -316,7 +308,7 @@ public class Logica implements Runnable {
 						return;
 					}
 					else i++;
-				} while (i < rifMappa.getLatoDellaMappa());
+				} while (i < getMappa().getLatoDellaMappa());
 			}
 		}
 	}
@@ -328,8 +320,8 @@ public class Logica implements Runnable {
 	 * @return
 	 */
 	private boolean tryActualSpawn(int x, int y, String idDinosauro) {
-		if (rifMappa.isLibera(x, y)) {
-			rifMappa.spawnDinosauro(x, y, idDinosauro, rifMappa.getCella(x, y));
+		if (getMappa().isLibera(x, y)) {
+			getMappa().spawnDinosauro(x, y, idDinosauro, getMappa().getCella(x, y));
 			return true;
 		}
 		return false;
@@ -351,17 +343,17 @@ public class Logica implements Runnable {
 			do {
 
 				if (tryActualSpawn(i+x, j+y, tempDinosauro.getIdDinosauro())) {
-					tempDinosauro.setXY(i+x, j+CommonUtils.translateYforServer(y, rifMappa.getLatoDellaMappa()));
+					tempDinosauro.setXY(i+x, j+CommonUtils.translateYforServer(y, getMappa().getLatoDellaMappa()));
 					return true;
 				}
 				i++;
 			} while ((i<(maxDistance+1)) &&
 					(0<=(i+x)) &&
-					((i+x)<rifMappa.getLatoDellaMappa()));
+					((i+x)<getMappa().getLatoDellaMappa()));
 			j++;
 		} while ((j<(maxDistance+1)) &&
 				(0<=(j+y)) &&
-				((j+y)<rifMappa.getLatoDellaMappa()));
+				((j+y)<getMappa().getLatoDellaMappa()));
 		return false;
 	}
 	/**
@@ -410,7 +402,7 @@ public class Logica implements Runnable {
 				return true;
 			}
 			else i++;
-		} while (i<rifMappa.getLatoDellaMappa());
+		} while (i<getMappa().getLatoDellaMappa());
 		return false;
 	}
 	/**
@@ -422,7 +414,7 @@ public class Logica implements Runnable {
 	protected int doSubtraction(int coord, int rangeVista) {
 		int subtraction = (coord - rangeVista);
 		if (subtraction<0) return 0;
-		else if (subtraction>=rifMappa.getLatoDellaMappa()) return (rifMappa.getLatoDellaMappa()-1);
+		else if (subtraction>=getMappa().getLatoDellaMappa()) return (getMappa().getLatoDellaMappa()-1);
 		else return subtraction;
 	}
 	/**
@@ -434,7 +426,7 @@ public class Logica implements Runnable {
 	protected int doAddition(int coord, int rangeVista) {
 		int addition = (coord + rangeVista);
 		if (addition<0) return 0;
-		else if (addition>=rifMappa.getLatoDellaMappa()) return (rifMappa.getLatoDellaMappa()-1);
+		else if (addition>=getMappa().getLatoDellaMappa()) return (getMappa().getLatoDellaMappa()-1);
 		else return addition;
 	}
 	/**
@@ -497,5 +489,106 @@ public class Logica implements Runnable {
 		tempGiocatore.logged();
 		getListaGiocatori().put(CommonUtils.getNewToken(), tempGiocatore);
 		return getPlayerToken(tempGiocatore.getNome());
+	}
+
+	/**
+	 * Implementa la creazione dell'utente, se esiste già lancia eccezione.
+	 * Viene chiamato dagli adattatori.
+	 * @param user
+	 * @param pwd
+	 * @return
+	 * @throws UserExistsException 
+	 */
+	protected boolean doCreaUtente(String nomeGiocatore, String pwd) throws UserExistsException {
+		if (!getPMan().exists(nomeGiocatore)) {
+			return getPMan().aggiungi(new Giocatore(nomeGiocatore, pwd));
+		}
+		else throw new UserExistsException();
+	}
+
+	/**
+	 * Implementa il login dell'utente, se esiste permette il login.
+	 * Se la password non è valida lancia u'eccezione.
+	 * @param nomeGiocatore
+	 * @param suppliedPassword
+	 * @return
+	 * @throws UserAuthenticationFailedException
+	 */
+	protected boolean doLogin(String nomeGiocatore, String suppliedPassword) throws UserAuthenticationFailedException {
+		if (getPMan().exists(nomeGiocatore)) {
+			Giocatore tempGiocatore = getPMan().getPlayer(nomeGiocatore);
+			if (tempGiocatore.passwordIsValid(suppliedPassword)) {
+				getCMan().collega(nomeGiocatore, CommonUtils.getNewToken());
+				return true;
+			}
+			else throw new UserAuthenticationFailedException();
+		}
+		else return false;
+	}
+
+	/**
+	 * Implementa la creazione della razza per l'utente.
+	 * Se esiste già ritorna false, altrimenti la crea e ritorna true.
+	 * @param token
+	 * @param nomeRazza
+	 * @param tipoRazza
+	 * @return
+	 * @throws NomeRazzaOccupatoException
+	 * @throws InvalidTokenException
+	 */
+	protected boolean doCreaRazza(String token, String nomeRazza, String tipoRazza) throws NomeRazzaOccupatoException, InvalidTokenException {
+		Iterator<Giocatore> itGiocatori = getPMan().getIteratorOnPlayers();
+		Giocatore tempGiocatore = null;
+		while (itGiocatori.hasNext()) {
+			tempGiocatore = itGiocatori.next();
+			if (tempGiocatore.hasRazza()) {
+				if (tempGiocatore.getRazza().getNome().equals(nomeRazza)) throw new NomeRazzaOccupatoException();
+			}
+		}
+		if (!getPlayerByToken(token).hasRazza()) {
+			getPlayerByToken(token).creaNuovaRazza(nomeRazza, tipoRazza);
+			return true;
+		}
+		else return false;
+	}
+
+	/**
+	 * Permette l'accesso alla partita.
+	 * Ritorna true se ha successo, false altrimenti.
+	 * @param token
+	 * @return
+	 * @throws NonAutenticatoException
+	 * @throws InvalidTokenException
+	 * @throws InterruptedException
+	 * @throws TroppiGiocatoriException
+	 * @throws RazzaNonCreataException
+	 */
+	protected boolean doAccessoPartita(String token) throws NonAutenticatoException, InvalidTokenException, InterruptedException, TroppiGiocatoriException, RazzaNonCreataException {
+		if (isPlayerLogged(token)) {
+			if (getPlayerByToken(token).hasRazza()) {
+				if (!getRRSched().maxPlayers()) {
+					getRRSched().newTask(token);
+					return true;
+				}
+				else throw new TroppiGiocatoriException();
+			}
+			else throw new RazzaNonCreataException();
+		}
+		return false;
+	}
+	/**
+	 * Permette l'uscita dalla partita.
+	 * Ritorna true se l'utente può uscire, altrimenti false.
+	 * @param token
+	 * @return
+	 * @throws InvalidTokenException
+	 * @throws NonAutenticatoException
+	 */
+	protected boolean doUscitaPartita(String token) throws InvalidTokenException, NonAutenticatoException {
+		if (isPlayerInGame(token)) {
+			getRRSched().killTask(token);
+			return true;
+		}
+		else return false;
 	}
 }
