@@ -23,11 +23,6 @@ public class Razza implements Set<Dinosauro> {
 	 */
 	private String nome = null;
 	/**
-	 * Variabile che definisce il tipo della razza di Dinosauri. Viene impostata definitivamente dal costruttore.
-	 * @uml.property  name="tipoRazza"
-	 */
-	private String tipo = null;
-	/**
 	 * Contiene il numero massimo di dinosauri per specie. È una costante di gioco.
 	 * @uml.property  name="numero_MAX_DINOSAURI"
 	 */
@@ -49,16 +44,21 @@ public class Razza implements Set<Dinosauro> {
 	 * uml.property name="turniDiVita"
 	 */
 	private int turniDiVita = 0;
+	/**
+	 * Contiene il tipo della r+azza.
+	 * Impostata definitivamente solo dal costruttore.
+	 * @uml.property name="tipoRazza"
+	 */
+	private String tipoRazza = null;
 
 	/* Costruttore */
 	/**
 	 * Implementa la costruzione della classe Specie.
 	 * Richiede il nuovo nome della razza e l'istanza del nuovo dinosauro.
 	 */
-	public Razza(String nomeRazza, Dinosauro nuovodinosauro) {
+	public Razza(String nomeRazza, String tipoRazza) {
 		this.nome = nomeRazza;
-		this.tipo = nuovodinosauro.getTipoRazza();
-		this.add(nuovodinosauro);
+		this.tipoRazza = tipoRazza;
 	}
 
 	/* Tutti i getter */
@@ -76,7 +76,7 @@ public class Razza implements Set<Dinosauro> {
 	 * @return
 	 * @uml.property  name="tipoRazza"
 	 */
-	public String getTipo() { return tipo; }
+	public String getTipo() { return tipoRazza; }
 	protected Dinosauro getDinosauroById(String idDinosauroCercato) {
 		if (existsDinosauroWithId(idDinosauroCercato)) {
 			Iterator<Dinosauro> itDinosauri = this.iterator();

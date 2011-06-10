@@ -1,5 +1,6 @@
 package dinolib;
 
+import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -68,8 +69,24 @@ public class RRScheduler {
 	 * Dice se qualcuno sta giocando (la lista non è vuota).
 	 * @return
 	 */
-	protected boolean hasTasks() {
+	protected boolean hasQueuedTasks() {
 		if (playersQueue.size() == 0) return false;
 		else return true;
+	}
+	/**
+	 * Dice se la lista contiene un giocatore in particolare.
+	 * @param token
+	 * @return
+	 */
+	protected boolean hasTask(String token) {
+		if (playersQueue.contains(token)) return true;
+		else return false;
+	}
+	/**
+	 * Ritorna un iteratore sulla lista di giocatori nella coda.
+	 * @return
+	 */
+	protected Iterator<String> getIteratorOnTasks() {
+		return playersQueue.iterator();
 	}
 }

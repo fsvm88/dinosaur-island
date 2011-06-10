@@ -2,7 +2,7 @@ package dinolib.Mappa;
 
 import java.util.HashSet;
 
-abstract class Cella extends Mappa {
+public abstract class Cella extends Mappa {
 	protected Cella() { }
 
 	protected Cella(String idDelDinosauro, Cella cellaSuCuiSiTrova) {

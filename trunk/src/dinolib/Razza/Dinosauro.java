@@ -209,7 +209,7 @@ public abstract class Dinosauro {
 	 * @uml.property  name="y"
 	 */
 	public void setY(int y) { this.y = y; }
-	protected void setXY(int x, int y) { this.x = x; this.y = y; }
+	public void setXY(int x, int y) { this.x = x; this.y = y; }
 	private void updateEnergiaCrescita() { energiaCrescita = energiaMax/2; }
 	private void updateForza() { this.forza = (moltiplicatore_FORZA*this.getDimensione()*this.getEnergiaAttuale()); }
 	private void updateEnergiaMax() { this.energiaMax = 1000*this.dimensione; }

@@ -6,7 +6,7 @@ import dinolib.CommonUtils;
 /**
  * @author  fabio
  */
-class Mappa {
+public class Mappa {
 	/**
 	 * La mappa a celle, contiene tutta la mappa in celle. Attenzione! Il sistema di conteggio è un sistema di coordinate cartesiane! Non una matrice! Verrà usata come piano cartesiano anche se l'accesso verrà effettuato come una matrice. Le colonne tengono la stessa numerazione (l'ascissa non cambia). Le righe invece hanno la seguente numerazione: 0 indica la riga più in basso (il bordo in basso della mappa), 39 indica la riga più in alto (il bordo in alto della mappa).
 	 * @uml.property  name="MappaACelle"
@@ -41,7 +41,7 @@ class Mappa {
 	/**
 	 * Costruttore per la mappa. Richiede il lato della nuova mappa come argomento.
 	 */
-	protected Mappa(int lato) {
+	public Mappa(int lato) {
 		latoDellaMappa = lato;
 		calcolaNumeroCelleDaPercentuali();
 		popolaMappa();
@@ -106,7 +106,7 @@ class Mappa {
 	 * @param y
 	 * @return
 	 */
-	protected boolean isLibera(int x, int y) {
+	public boolean isLibera(int x, int y) {
 		if (MappaACelle[x][CommonUtils.translateYforServer(y, getLatoDellaMappa())].toString().equals("Terra")) return true;
 		else return false;
 	}
@@ -118,7 +118,7 @@ class Mappa {
 	 * @param y
 	 * @return
 	 */
-	protected String getTipoCella(int x, int y) {
+	public String getTipoCella(int x, int y) {
 		return MappaACelle[x][CommonUtils.translateYforServer(y, getLatoDellaMappa())].toString();
 	}
 	
@@ -137,21 +137,21 @@ class Mappa {
 	 * Inserisce un dinosauro sulla mappa.
 	 * Passa il tipo corrente della cella così che venga tenuta valida.
 	 */
-	protected void spawnDinosauro(int x, int y, String idDinosauroOccupante, Cella cellaSuCuiSiTrova) {
+	public void spawnDinosauro(int x, int y, String idDinosauroOccupante, Cella cellaSuCuiSiTrova) {
 		MappaACelle[x][CommonUtils.translateYforServer(y, getLatoDellaMappa())] = new CellaConDinosauro(idDinosauroOccupante, cellaSuCuiSiTrova);
 	}
 
 	/**
 	 * Restituisce la cella richiesta.
 	 */
-	protected Cella getCella(int x, int y) {
+	public Cella getCella(int x, int y) {
 		return MappaACelle[x][CommonUtils.translateYforServer(y, getLatoDellaMappa())];
 	}
 	
 	/**
 	 * Rimuove il dinosauro dalla cella corrente e reimposta la cella al suo vecchio valore.
 	 */
-	protected void rimuoviIlDinosauroDallaCella(int x, int y) {
+	public void rimuoviIlDinosauroDallaCella(int x, int y) {
 		int tempY = CommonUtils.translateYforServer(y, getLatoDellaMappa());
 		if ( (MappaACelle[x][tempY].getIdDelDinosauro() != null) &&
 				(MappaACelle[x][tempY].getCellaSuCuiSiTrova() != null) ) {
@@ -171,7 +171,7 @@ class Mappa {
 	/**
 	 * Aggiorna la mappa su cambio del turno.
 	 */
-	protected void aggiornaSuTurno() {
+	public void aggiornaSuTurno() {
 		aggiornaCelle();
 	}
 }

@@ -1,13 +1,12 @@
 package dinolib;
 
 import dinolib.Razza.*;
-
 /**
  * @author  fabio
  */
 public class Giocatore {
 	/* Tutte le variabili statiche/definitive e non modificabili */
-	
+
 	/* Tutte le variabili istanziabili */
 	/**
 	 * Contiene il nome del giocatore corrente.
@@ -24,17 +23,11 @@ public class Giocatore {
 	 * @uml.property  name="specieDiDinosauri"
 	 * @uml.associationEnd  
 	 */
-	private Razza razzaDelGiocatore;
+	private Razza razzaDelGiocatore = null;
 	/**
-	 * Variabile per gestire il login degli utenti.
-	 * @uml.property  name="logged"
+	 * Istanzia il riferimento al punteggio del giocatore.
 	 */
-	private boolean iAmLogged = false;
-	/**
-	 * Variabile per gestire il fatto che l'utente è in partita.
-	 * @uml.property  name="inGame"
-	 */
-	private boolean iAmInGame = false;
+	private Punteggio punteggio = null;
 
 	/* Costruttore */
 	/**
@@ -43,26 +36,29 @@ public class Giocatore {
 	protected Giocatore(String nome, String password) {
 		this.nome = nome;
 		this.password = password;
+		this.punteggio = new Punteggio();
 	}
-	
+
 	/* Tutti i getter */
-	public boolean isInGame() { return iAmInGame; }
-	public boolean isLogged() { return iAmLogged; }
-	public int getPunteggio() { return razzaDelGiocatore.getPunteggio(); }
+	public Punteggio getPunteggio() { return punteggio; }
 	public Razza getRazza() { return razzaDelGiocatore; }
 	/**
 	 * @return
 	 * @uml.property  name="nome"
 	 */
 	public String getNome() { return nome; }
-	
+
 	/* Tutti i setter */
-	protected void logged() { iAmLogged = true; }
-	protected void notLogged() { iAmLogged = false; }
-	public void inGame() { iAmInGame = true; }
-	protected void notInGame() { iAmInGame = false; }
-	public void aggiornaGiocatoreSuTurno() { razzaDelGiocatore.aggiornaRazza(); }
-	
+	/**
+	 * Invoca l'aggiornamento su tutte le variabili aggiornabili del giocatore.
+	 */
+	protected void aggiorna() {
+		if (hasRazza()) {
+			getRazza().aggiornaRazza();
+		}
+		getPunteggio().updatePunteggio(getRazza().getNome(), getRazza().getPunteggio());
+	}
+
 	/* Funzioni miscellanee */
 	/**
 	 * Validate the password and return a boolean value.
@@ -72,7 +68,7 @@ public class Giocatore {
 		if (password.equals(suppliedPassword)) return true;
 		else return false;
 	}
-	
+
 	/**
 	 * Crea la razza di dinosauri e assegna un tipo specie.
 	 * Richiede il nuovo nome della razza come parametro.
@@ -80,8 +76,8 @@ public class Giocatore {
 	 * @param nuovoNomeRazza
 	 * @param nuovoDinosauro
 	 */
-	protected void creaNuovaRazza(String nuovoNomeRazza, Dinosauro nuovoDinosauro) {
-		razzaDelGiocatore = new Razza(nuovoNomeRazza, nuovoDinosauro);
+	protected void creaNuovaRazza(String nuovoNomeRazza, String nuovoTipoRazza) {
+		razzaDelGiocatore = new Razza(nuovoNomeRazza, nuovoTipoRazza);
 	}
 	/**
 	 * Helper per verificare che l'utente abbia una razza di dinosauri.
