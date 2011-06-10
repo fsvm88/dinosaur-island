@@ -1,19 +1,22 @@
 package dinolib.Mappa;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import dinolib.CommonUtils;
 
 
 /**
  * @author  fabio
  */
-public class Mappa {
+public class Mappa implements Iterable<Cella> {
 	/**
 	 * La mappa a celle, contiene tutta la mappa in celle. Attenzione! Il sistema di conteggio è un sistema di coordinate cartesiane! Non una matrice! Verrà usata come piano cartesiano anche se l'accesso verrà effettuato come una matrice. Le colonne tengono la stessa numerazione (l'ascissa non cambia). Le righe invece hanno la seguente numerazione: 0 indica la riga più in basso (il bordo in basso della mappa), 39 indica la riga più in alto (il bordo in alto della mappa).
 	 * @uml.property  name="MappaACelle"
 	 * @uml.associationEnd  multiplicity="(0 -1)"
 	 */
 	private Cella[][] MappaACelle;
-	
+
 	/**
 	 * Costruttore protetto per soddisfare la sottoclasse Cella
 	 */
@@ -99,7 +102,7 @@ public class Mappa {
 		if (MappaACelle[x][CommonUtils.translateYforServer(y, getLatoDellaMappa())].toString().equals("CellaConDinosauro")) return true;
 		else return false;
 	}
-	
+
 	/**
 	 * Interroga la cella per vedere se è libera (aka terra semplice).
 	 * @param x
@@ -110,7 +113,7 @@ public class Mappa {
 		if (MappaACelle[x][CommonUtils.translateYforServer(y, getLatoDellaMappa())].toString().equals("Terra")) return true;
 		else return false;
 	}
-	
+
 	/**
 	 * Interroga la cella per sapere di che tipo è. 
 	 * Helper molto generico per qualunque tipo di cella.
@@ -121,7 +124,7 @@ public class Mappa {
 	public String getTipoCella(int x, int y) {
 		return MappaACelle[x][CommonUtils.translateYforServer(y, getLatoDellaMappa())].toString();
 	}
-	
+
 	/**
 	 * Interroga la cella per sapere se è di tipo acqua.
 	 * @param x
@@ -132,7 +135,7 @@ public class Mappa {
 		if (MappaACelle[x][CommonUtils.translateYforServer(y, getLatoDellaMappa())].toString().equals("Acqua")) return true;
 		else return false;
 	}
-	
+
 	/**
 	 * Inserisce un dinosauro sulla mappa.
 	 * Passa il tipo corrente della cella così che venga tenuta valida.
@@ -147,7 +150,7 @@ public class Mappa {
 	public Cella getCella(int x, int y) {
 		return MappaACelle[x][CommonUtils.translateYforServer(y, getLatoDellaMappa())];
 	}
-	
+
 	/**
 	 * Rimuove il dinosauro dalla cella corrente e reimposta la cella al suo vecchio valore.
 	 */
@@ -159,19 +162,62 @@ public class Mappa {
 			MappaACelle[x][tempY] = vecchiaCella;
 		}
 	}
-	
+
 	/**
 	 * Aggiorna le celle su cambio del turno.
 	 */
 	private void aggiornaCelle() {
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Aggiorna la mappa su cambio del turno.
 	 */
 	public void aggiornaSuTurno() {
 		aggiornaCelle();
+	}
+
+	@Override
+	public Iterator<Cella> iterator() {
+		return new MapIterator();
+	}
+
+	private class MapIterator implements Iterator<Cella> {
+		private int rowCount;
+		private int columnCount;
+		private int latoDellaMappaIterator;
+
+		MapIterator() {
+			latoDellaMappaIterator = getLatoDellaMappa();
+			rowCount = (latoDellaMappaIterator-1);
+			columnCount = 0;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return (0 <= rowCount);
+		}
+
+		@Override
+		public Cella next() {
+			Cella tempCella = null;
+			if (0 <= rowCount) {
+				if (columnCount < latoDellaMappaIterator) {
+					tempCella = getCella(columnCount, rowCount);
+				}
+				else {
+					columnCount = 0;
+					rowCount--;
+					tempCella = getCella(columnCount, rowCount);
+				}
+				columnCount++;
+				return tempCella;
+			}
+			else throw new NoSuchElementException();
+		}
+
+		@Override
+		public void remove() { throw new UnsupportedOperationException(); }
 	}
 }
