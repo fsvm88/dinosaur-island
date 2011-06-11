@@ -14,4 +14,10 @@ class CellaConDinosauro extends Cella {
 	public String toString() {
 		return "dinosauro";
 	}
+	
+	/**
+	 * Override dei due metodi della classe Cella utili per questa classe.
+	 */
+	public String getIdDelDinosauro() { return super.idDelDinosauro; }
+	public Cella getCellaSuCuiSiTrova() { return super.cellaSuCuiSiTrova; }
 }

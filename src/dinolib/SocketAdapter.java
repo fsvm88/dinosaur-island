@@ -73,17 +73,17 @@ public class SocketAdapter implements Adapter {
 		int i = 0;
 		Cella tempCella = null;
 		while (itCelle.hasNext()) {
-			tempCella = itCelle.next();
-			
+			do {
+				tempCella = itCelle.next();
+				mioBuffer = mioBuffer + "[" + tempCella.toString().toLowerCase().charAt(0) + "]";
+				i++;
+			} while (i < myLogica.getMappa().getLatoDellaMappa());
+			mioBuffer = mioBuffer + ";";
+			i = 0;
 		}
+		return mioBuffer;
 	}
-
-	/**
-	 * Fa la sottrazione per le coordinate, che rimangano in range.
-	 * @param x
-	 * @param y
-	 * @return
-	 */
+	
 	private String getCellaDellaMappaPerBuffer(int x, int y) {
 		Cella tempCella = myLogica.getMappa().getCella(x, y);
 		Character tipoCella = tempCella.getTipoCella(x, y).toLowerCase().charAt(0);
@@ -269,23 +269,18 @@ public class SocketAdapter implements Adapter {
 
 	@Override
 	public Object mappaGenerale(String token) {
-		if (myLogica.isPlayerInGame(token) {
-			String buffer = null;
-			
-		}
-		
-		if (myLogica.isPlayerInGame(token)) {
-			String buffer = null;
-			int latoDellaMappa = myLogica.getLatoDellaMappa();
-			buffer = "{" + latoDellaMappa + "," + latoDellaMappa + "}" + ",";
-			int i = 0;
-			while (i<latoDellaMappa) {
-				buffer = buffer + getRigaDellaMappa(i, 0, latoDellaMappa) + ";"; // TODO implementare il buio della mappa!! Chiedere esercitatore!
-				i++;
+		try {
+			if (myLogica.isPlayerInGame(token)) {
+				String buffer = "@mappaGenerale" + ",{" + myLogica.getMappa().getLatoDellaMappa() + "," + myLogica.getMappa().getLatoDellaMappa() + "},";
+				buffer = assemblaMappaGenerale(buffer);
+				return buffer;
 			}
-			return buffer;
+			else return "@no,@nonInPartita"; 
+		} catch (InvalidTokenException e) {
+			return returnInvalidToken();
+		} catch (NonAutenticatoException e) {
+			return returnInvalidToken();
 		}
-		else throw new NonInPartitaException();
 	}
 
 	@Override

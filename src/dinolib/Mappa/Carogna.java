@@ -22,4 +22,9 @@ public class Carogna extends Cella {
 			super.valoreAttuale = diffTemp;
 		}
 	}
+	/**
+	 * Override del metodo della classe cella.
+	 */
+	@Override
+	public int getValoreAttuale() { return super.valoreAttuale; }
 }
