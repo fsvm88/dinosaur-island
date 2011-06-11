@@ -189,9 +189,9 @@ public class Mappa implements Iterable<Cella> {
 		private int latoDellaMappaIterator;
 
 		MapIterator() {
-			latoDellaMappaIterator = getLatoDellaMappa();
-			rowCount = (latoDellaMappaIterator-1);
-			columnCount = 0;
+			this.latoDellaMappaIterator = getLatoDellaMappa();
+			this.rowCount = (this.latoDellaMappaIterator-1);
+			this.columnCount = 0;
 		}
 
 		@Override
@@ -219,5 +219,77 @@ public class Mappa implements Iterable<Cella> {
 
 		@Override
 		public void remove() { throw new UnsupportedOperationException(); }
+	}
+	
+	public Iterator<Cella> subIterator(int fromX, int fromY, int rangeX, int rangeY) {
+		return new subMapIterator(fromX, CommonUtils.translateYforClient(fromY, getLatoDellaMappa()), rangeX, rangeY);
+	}
+	
+	private class subMapIterator implements Iterator<Cella> {
+		private int startRow;
+		private int startColumn;
+		private int rowRange;
+		private int columnRange;
+		private int rowCount;
+		private int columnCount;
+		private int latoDellaMappaIterator;
+		
+		subMapIterator(int startX, int startY, int rangeX, int rangeY) {
+			this.latoDellaMappaIterator = getLatoDellaMappa();
+			if (!(0 <= startX) ||
+					!(0 <= startY) ||
+					!(startX < latoDellaMappaIterator) ||
+					!(startY < latoDellaMappaIterator) ||
+					!(0 <= rangeX) ||
+					!(0 <= rangeY)) throw new IndexOutOfBoundsException();
+			this.startRow = startY;
+			this.startColumn = startX;
+			this.rowRange = rangeY;
+			this.columnRange = rangeX;
+			this.latoDellaMappaIterator = getLatoDellaMappa();
+			rowCount = startRow;
+			columnCount = 0;
+			if (0 <= startX) throw new IndexOutOfBoundsException();
+		}
+
+		private boolean rowIsInRange() {
+			return (((startRow-rowRange) <= rowCount) &&
+					(0 <= rowCount) &&
+					(rowCount < latoDellaMappaIterator));
+		}
+		
+		private boolean columnIsInRange() {
+			return ((columnCount <= (startColumn+columnRange)) &&
+					(0 <= columnCount) &&
+					(columnCount < latoDellaMappaIterator));
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return rowIsInRange();
+		}
+
+		@Override
+		public Cella next() {
+			Cella tempCella = null;
+			if (rowIsInRange()) {
+				if (columnIsInRange()) {
+					tempCella = getCella(columnCount, rowCount);
+				}
+				else {
+					columnCount = startColumn;
+					rowCount--;
+					tempCella = getCella(columnCount, rowCount);
+				}
+				columnCount++;
+				return tempCella;
+			}
+			else throw new NoSuchElementException();
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
 	}
 }

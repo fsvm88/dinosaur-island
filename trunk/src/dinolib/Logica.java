@@ -275,7 +275,7 @@ public class Logica implements Runnable {
 	}
 
 	/* Helper esterni */
-	void confermaTurno() {
+	void doConfermaTurno() {
 		turnoConfermato = true;
 	}
 	/**
@@ -356,7 +356,7 @@ public class Logica implements Runnable {
 				((j+y)<getMappa().getLatoDellaMappa()));
 		return false;
 	}
-	private void passaTurno() {
+	void doPassaTurno() {
 		// TODO Auto-generated method stub
 	}
 	/**
@@ -409,12 +409,12 @@ public class Logica implements Runnable {
 	 * @throws GenericDinosauroException
 	 * @throws InvalidTokenException
 	 */
-	protected String deponiUovo(String token, String idDinosauro) throws GenericDinosauroException, InvalidTokenException {
+	protected String doDeponiUovo(String token, String idDinosauro) throws GenericDinosauroException, InvalidTokenException {
 		getPlayerByToken(token).getRazza().deponiUovo(idDinosauro);
 		Dinosauro tempDinosauro = getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
 		int x = tempDinosauro.getX();
 		int y = tempDinosauro.getY();
-		if (tempDinosauro.getTipoRazza().equals("Carnivoro")) {
+		if (getPlayerByToken(token).getRazza().getTipo().equals("Carnivoro")) {
 			Dinosauro newDinosauro = new Carnivoro(x, y);
 			newDinosauro.nonUsabile();
 			trySpawnOfAnEgg(token, x, y, newDinosauro);

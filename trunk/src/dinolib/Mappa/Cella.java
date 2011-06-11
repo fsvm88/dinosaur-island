@@ -90,8 +90,8 @@ public abstract class Cella extends Mappa {
 	 * @param userName
 	 * @return
 	 */
-	public boolean isUserPassed(String userName) {
-		if (visitedFrom.contains(userName)) return true;
+	public boolean isUserPassed(String nomeGiocatore) {
+		if (visitedFrom.contains(nomeGiocatore)) return true;
 		else return false;
 	}
 	
