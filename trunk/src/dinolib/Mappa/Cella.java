@@ -14,45 +14,35 @@ public abstract class Cella extends Mappa {
 	 * Override del metodo di default toString. Dato che viene ereditato dalle sottoclassi lo definisco solo qui.
 	 */
 	public String toString() {
-		return this.getClass().getSimpleName().toLowerCase();
+		return this.getClass().getSimpleName();
 	}
 	
 	/**
 	 * Contiene l'id del dinosauro che occupa la cella.
 	 * @uml.property  name="idDelDinosauro"
 	 */
-	private String idDelDinosauro;
+	protected String idDelDinosauro;
 
 	/**
 	 * Getter of the property <tt>idDelDinosauro</tt>
 	 * @return  Returns the idDelDinosauro.
 	 * @uml.property  name="idDelDinosauro"
 	 */
-	public String getIdDelDinosauro() {
-		if (this.toString().equals("dinosauro")) {
-			return idDelDinosauro;
-		}
-		else return null;
-	}
+	public String getIdDelDinosauro() { return null; }
 
 	/**
 	 * Contiene un riferimento al valore della cella sottostante il dinosauro (velocizza operazioni di lookup e movimento).
 	 * @uml.property  name="cellaSuCuiSiTrova"
 	 * @uml.associationEnd  
 	 */
-	private Cella cellaSuCuiSiTrova;
+	protected Cella cellaSuCuiSiTrova;
 
 	/**
 	 * Getter of the property <tt>cellaSuCuiSiTrova</tt>
 	 * @return  Returns the cellaSuCuiSiTrova.
 	 * @uml.property  name="cellaSuCuiSiTrova"
 	 */
-	public Cella getCellaSuCuiSiTrova() {
-		if (this.toString().equals("dinosauro")) {
-			return cellaSuCuiSiTrova;
-		}
-		else return null;
-	}
+	public Cella getCellaSuCuiSiTrova() { return null; }
 	/**
 	 * Contiene il valore iniziale dell'energia massima ricavabile dalla carogna.
 	 * @uml.property  name="valoreIniziale"
@@ -68,9 +58,7 @@ public abstract class Cella extends Mappa {
 	 * @return  Returns the valoreAttuale.
 	 * @uml.property  name="valoreAttuale"
 	 */
-	public int getValoreAttuale() {
-		return valoreAttuale;
-	}
+	public int getValoreAttuale() { return 0; }
 	
 	/**
 	 * Aggiorna il valore della cella quando questa viene mangiata.
@@ -90,7 +78,7 @@ public abstract class Cella extends Mappa {
 	 * Nel caso sia una cella senza vegetazione o carogna non fa nulla.
 	 * Nel caso la cella invece sia vegetazione o carogna viene chiamato il metodo delle sottoclassi.
 	 */
-	public void aggiornaCellaSulTurno() {}
+	public void aggiornaCellaSulTurno() { return; }
 	
 	/**
 	 * Contiene la lista dei nomi dei giocatori che hanno visitato la cella.

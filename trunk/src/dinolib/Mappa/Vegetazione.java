@@ -22,4 +22,10 @@ public class Vegetazione extends Cella {
 			else super.valoreAttuale = super.valoreIniziale;
 		}
 	}
+	
+	/**
+	 * Override del metodo della classe cella.
+	 */
+	@Override
+	public int getValoreAttuale() { return super.valoreAttuale; }
 }
