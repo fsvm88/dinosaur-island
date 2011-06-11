@@ -77,7 +77,7 @@ public class Razza implements Set<Dinosauro> {
 	 * @uml.property  name="tipoRazza"
 	 */
 	public String getTipo() { return tipoRazza; }
-	protected Dinosauro getDinosauroById(String idDinosauroCercato) {
+	public Dinosauro getDinosauroById(String idDinosauroCercato) {
 		if (existsDinosauroWithId(idDinosauroCercato)) {
 			Iterator<Dinosauro> itDinosauri = this.iterator();
 			Dinosauro tempDinosauro;
@@ -97,7 +97,7 @@ public class Razza implements Set<Dinosauro> {
 	 * @param idDaCercare
 	 * @return
 	 */
-	protected boolean existsDinosauroWithId(String idDaCercare) {
+	public boolean existsDinosauroWithId(String idDaCercare) {
 		Iterator<Dinosauro> itDinosauri = this.iterator();
 		while (itDinosauri.hasNext()) {
 			if (itDinosauri.next().getIdDinosauro().equals(idDaCercare)) return true;
@@ -155,7 +155,7 @@ public class Razza implements Set<Dinosauro> {
 	 * @param idDinosauro
 	 * @throws GenericDinosauroException 
 	 */
-	protected void cresciDinosauro(String idDinosauro) throws GenericDinosauroException {
+	public void cresciDinosauro(String idDinosauro) throws GenericDinosauroException {
 		Dinosauro tempDinosauro = getDinosauroById(idDinosauro);
 		if (!tempDinosauro.isAtDimensioneMax()) {
 			if (tempDinosauro.hasEnergyToGrow()) {
@@ -174,7 +174,7 @@ public class Razza implements Set<Dinosauro> {
 	 * @param idDinosauro
 	 * @throws GenericDinosauroException
 	 */
-	protected void deponiUovo(String idDinosauro) throws GenericDinosauroException {
+	public void deponiUovo(String idDinosauro) throws GenericDinosauroException {
 		Dinosauro tempDinosauro = getDinosauroById(idDinosauro);
 		if (!hasNumeroMassimo()) {
 			if (tempDinosauro.hasEnergyToRepl()) {

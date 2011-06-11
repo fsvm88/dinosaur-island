@@ -2,6 +2,7 @@ package dinolib;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import dinolib.Exceptions.*;
 import dinolib.Mappa.Cella;
@@ -62,20 +63,49 @@ public class SocketAdapter implements Adapter {
 		}
 		return newBuffer;
 	}
-	
+
+	/**
+	 * Aggiunge al buffer una singola cella della mappa.
+	 * Non include informazioni addizionali se questa è vegetazione o carogna.
+	 * @param tmpBuf
+	 * @param myChar
+	 * @return
+	 */
+	private String aggiungiCellaSingolaSenzaInfoAddizionali(String tmpBuf, Character myChar) {
+		return tmpBuf + "[" + myChar.charValue() + "]";
+	}
+
 	/**
 	 * Assembla tutta la mappa generale in un unico buffer tramite l'iteratore sulla mappa.
 	 * @param mioBuffer
 	 * @return
 	 */
-	private String assemblaMappaGenerale(String mioBuffer) {
+	private String assemblaMappaGenerale(String mioBuffer, String token) throws InvalidTokenException {
 		Iterator<Cella> itCelle = myLogica.getMappa().iterator();
 		int i = 0;
 		Cella tempCella = null;
+		Character tipoCella = null;
 		while (itCelle.hasNext()) {
 			do {
 				tempCella = itCelle.next();
-				mioBuffer = mioBuffer + "[" + tempCella.toString().toLowerCase().charAt(0) + "]";
+				tipoCella = null;
+				if (tempCella.isUserPassed(myLogica.getCMan().getName(token))) {
+					tipoCella = tempCella.toString().toLowerCase().charAt(0);
+					if (tipoCella.equals('d')) {
+						tipoCella = tempCella.getCellaSuCuiSiTrova().toString().toLowerCase().charAt(0);
+					}
+					if ((tipoCella.equals('t')) ||
+							(tipoCella.equals('a')) ||
+							(tipoCella.equals('v'))) {
+						mioBuffer = aggiungiCellaSingolaSenzaInfoAddizionali(mioBuffer, tempCella.toString().toLowerCase().charAt(0));
+					}
+					else if (tipoCella.equals('c')) {
+						mioBuffer = aggiungiCellaSingolaSenzaInfoAddizionali(mioBuffer, 't');
+					}
+				}
+				else {
+					mioBuffer = aggiungiCellaSingolaSenzaInfoAddizionali(mioBuffer, 'b');
+				}
 				i++;
 			} while (i < myLogica.getMappa().getLatoDellaMappa());
 			mioBuffer = mioBuffer + ";";
@@ -83,46 +113,35 @@ public class SocketAdapter implements Adapter {
 		}
 		return mioBuffer;
 	}
-	
-	private String getCellaDellaMappaPerBuffer(int x, int y) {
-		Cella tempCella = myLogica.getMappa().getCella(x, y);
-		Character tipoCella = tempCella.getTipoCella(x, y).toLowerCase().charAt(0);
-		if ((tipoCella.charValue() == 't' ) ||
-				(tipoCella.charValue() == 'a' )) {
-			return "[" + tipoCella.charValue() + "]";
-		}
-		else if ((tipoCella.charValue() == 'v' ) ||
-				(tipoCella.charValue() == 'c')) {
-			return "[" + tipoCella.charValue() + "," + tempCella.getValoreAttuale() + "]";
-		}
-		else if (tipoCella.charValue() == 'd' ) {
-			return "[" + tipoCella.charValue() + "," + tempCella.getIdDelDinosauro() + "]";
-		}
-		return null;
+
+	/**
+	 * Aggiunge al buffer una singola cella della mappa.
+	 * Aggiunge anche informazioni addizionali se si tratta di carogna, vegetazione o dinosauro.
+	 * @param tmpBuf
+	 * @param myChar
+	 * @param myInfo
+	 * @return
+	 */
+	private String aggiungiCellaSingolaConInfoAddizionali(String tmpBuf, Character myChar, Object myInfo) {
+		return tmpBuf + "[" + myChar.charValue() + "," + myInfo.toString() + "]";
 	}
 
 	/**
-	 * Restituisce una riga intera della mappa formattata.
-	 * @param yRiga
-	 * @param fromX
-	 * @param toX
+	 * Aggiunge al buffer una cella, viene chiamata solo da vista locale.
+	 * @param buffer
+	 * @param miaCella
 	 * @return
 	 */
-	private String getRigaDellaMappa(int yRiga, int fromX, int toX) {
-		String tmpBuf = null;
-		int i = fromX;
-		if (fromX == toX) {
-			return getCellaDellaMappaPerBuffer(fromX, yRiga);
-		}
-		else {
-			while ((i<toX)) {
-				tmpBuf = getCellaDellaMappaPerBuffer(i, yRiga) + " ";
-				i++;
-			}
-			tmpBuf = getCellaDellaMappaPerBuffer(toX, yRiga);
-			return tmpBuf;
-		}
+	private String assemblaBufferCellaSingolaPerVistaLocale(String buffer, Cella miaCella) {
+		Character tipoCella = miaCella.toString().toLowerCase().charAt(0);
+		if (tipoCella.equals('t') ||
+				tipoCella.equals('a')) return aggiungiCellaSingolaSenzaInfoAddizionali(buffer, tipoCella);
+		else if (tipoCella.equals('v') ||
+				tipoCella.equals('c')) return aggiungiCellaSingolaConInfoAddizionali(buffer, tipoCella, miaCella.getValoreAttuale());
+		else if (tipoCella.equals('d')) return aggiungiCellaSingolaConInfoAddizionali(buffer, tipoCella, miaCella.getIdDelDinosauro());
+		return null;
 	}
+
 	/**
 	 * Assembla lo stato comune del dinosauro
 	 */
@@ -272,7 +291,7 @@ public class SocketAdapter implements Adapter {
 		try {
 			if (myLogica.isPlayerInGame(token)) {
 				String buffer = "@mappaGenerale" + ",{" + myLogica.getMappa().getLatoDellaMappa() + "," + myLogica.getMappa().getLatoDellaMappa() + "},";
-				buffer = assemblaMappaGenerale(buffer);
+				buffer = assemblaMappaGenerale(buffer, token);
 				return buffer;
 			}
 			else return "@no,@nonInPartita"; 
@@ -285,40 +304,66 @@ public class SocketAdapter implements Adapter {
 
 	@Override
 	public Object listaDinosauri(String token) {
-		if (myLogica.isPlayerInGame(token)) {
-			String buffer = null;
-			if (myLogica.existsRaceForPlayer(token)) {
-				Iterator<Dinosauro> itDinosauri = myLogica.getPlayerByToken(token).getRazza().iterator();
-				while (itDinosauri.hasNext()) {
-					buffer = assemblaBuffer(buffer, itDinosauri.next().getIdDinosauro());
+		try {
+			if (myLogica.isPlayerInGame(token)) {
+				String buffer = "@listaDinosauri";
+				if (myLogica.getPlayerByToken(token).hasRazza()) {
+					Iterator<Dinosauro> itDinosauri = myLogica.getPlayerByToken(token).getRazza().iterator();
+					while (itDinosauri.hasNext()) {
+						buffer = assemblaBuffer(buffer, itDinosauri.next().getIdDinosauro());
+					}
 				}
 				return buffer;
 			}
-			return buffer;
+			else return "@no,@nonInPartita";
+		} catch (InvalidTokenException e) {
+			return returnInvalidToken();
+		} catch (NonAutenticatoException e) {
+			return returnInvalidToken();
 		}
-		else throw new NonInPartitaException();
 	}
 
 	@Override
 	public Object vistaLocale(String token, String idDinosauro) {
-		if (myLogica.playerHasDinosauro(token, idDinosauro)) {
-			String buffer = null;
-			Dinosauro tempDinosauro = myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
-			int rangeVista = tempDinosauro.getRangeVista();
-			int leftCornerX = myLogica.doSubtraction(tempDinosauro.getX(), rangeVista);
-			int bottomCornerY = myLogica.doSubtraction(tempDinosauro.getY(), rangeVista);
-			int rightCornerX = myLogica.doAddition(tempDinosauro.getX(), rangeVista);
-			int topCornerY = myLogica.doAddition(tempDinosauro.getY(), rangeVista);
-			buffer = "{" + leftCornerX + "," + CommonUtils.translateYforClient(bottomCornerY, myLogica.getLatoDellaMappa()) + "}";
-			buffer = buffer + "," + "{" + (topCornerY-bottomCornerY) + "," + (rightCornerX-leftCornerX) + "}" + ",";
-			int j = bottomCornerY;
-			do {
-				buffer = getRigaDellaMappa(j, leftCornerX, rightCornerX) + ";";
-				j++;
-			} while (j<topCornerY);
-			return buffer;
+		try {
+			if (myLogica.isPlayerInGame(token)) {
+				if (myLogica.getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
+					String buffer = "@vistaLocale";
+					Dinosauro tempDinosauro = myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
+					int rangeVista = tempDinosauro.getRangeVista();
+					int leftCornerX = myLogica.doSubtraction(tempDinosauro.getX(), rangeVista);
+					int bottomCornerY = myLogica.doSubtraction(tempDinosauro.getY(), rangeVista);
+					int rightCornerX = myLogica.doAddition(tempDinosauro.getX(), rangeVista);
+					int topCornerY = myLogica.doAddition(tempDinosauro.getY(), rangeVista);
+					buffer = buffer + ",{" + leftCornerX + "," + bottomCornerY + "},{"
+					+ (topCornerY-bottomCornerY) + "," + (rightCornerX-leftCornerX) + "},";
+					Iterator<Cella> subItCelle = myLogica.getMappa().subIterator(leftCornerX, bottomCornerY, (topCornerY-bottomCornerY), (rightCornerX-leftCornerX));
+					Cella tmpCella = null;
+					int row = bottomCornerY;
+					int col = leftCornerX;
+					do {
+						do {
+							if (subItCelle.hasNext()) {
+								tmpCella = subItCelle.next();
+								buffer = assemblaBufferCellaSingolaPerVistaLocale(buffer, tmpCella);
+								col++;
+							}
+							else throw new NoSuchElementException();
+						} while (col <= rightCornerX);
+						buffer = buffer + ";";
+						row++;
+						col = leftCornerX;
+					} while (row <= topCornerY);
+					return buffer;
+				}
+				else return "@no,@idNonValido";
+			}
+			else return "@no,@nonInPartita";
+		} catch (InvalidTokenException e) {
+			return returnInvalidToken();
+		} catch (NonAutenticatoException e) {
+			return returnInvalidToken();
 		}
-		return null;
 	}
 
 	@Override
@@ -368,30 +413,83 @@ public class SocketAdapter implements Adapter {
 
 	@Override
 	public Object cresciDinosauro(String token, String idDinosauro) {
-		if (myLogica.playerHasDinosauro(token, idDinosauro) &&
-				myLogica.isMioTurno(token)) {
-			myLogica.getPlayerByToken(token).getRazza().cresciDinosauro(idDinosauro);
+		try {
+			if (myLogica.isMioTurno(token)) {
+				if ( myLogica.getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
+					myLogica.getPlayerByToken(token).getRazza().cresciDinosauro(idDinosauro);
+					return "@ok";
+				}
+				return "@no,@idNonValido";
+			}
+			else return "@no,@nonIlTuoTurno";
+		} catch (InvalidTokenException e) {
+			return returnInvalidToken();
+		} catch (NonInPartitaException e) {
+			return "@no,@nonInPartita";
+		} catch (NonAutenticatoException e) {
+			return returnInvalidToken();
+		} catch (GenericDinosauroException e) {
+			if (e.getMessage().equals("mortePerInedia")) return "@no,@mortePerInedia";
+			if (e.getMessage().equals("raggiuntaDimensioneMax")) return "@no,@raggiuntaDimensioneMax";
 		}
+		return "@no";
 	}
 
 	@Override
 	public Object deponiUovo(String token, String idDinosauro) {
-		if (myLogica.playerHasDinosauro(token, idDinosauro) &&
-				myLogica.isMioTurno(token)) { // TODO aggiungere limite mosse
-			return myLogica.deponiUovo(token, idDinosauro);
+		try {
+			if (myLogica.isMioTurno(token)) {
+				if ( myLogica.getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
+					String ret = myLogica.doDeponiUovo(token, idDinosauro);
+					if (ret != null) { return "@ok," + ret; }
+				}
+				return "@no,@idNonValido";
+			}
+			else return "@no,@nonIlTuoTurno";
+		} catch (InvalidTokenException e) {
+			return returnInvalidToken();
+		} catch (NonInPartitaException e) {
+			return "@no,@nonInPartita";
+		} catch (NonAutenticatoException e) {
+			return returnInvalidToken();
+		} catch (GenericDinosauroException e) {
+			if (e.getMessage().equals("mortePerInedia")) return "@no,@mortePerInedia";
+			if (e.getMessage().equals("raggiuntaDimensioneMax")) return "@no,@raggiuntaDimensioneMax";
 		}
-		return null;
+		return "@no";
 	}
 
 	@Override
 	public Object confermaTurno(String token) {
-		if (myLogica.isMioTurno(token)) myLogica.confermaTurno();
-		else return;
+		try {
+			if (myLogica.isMioTurno(token)) {
+				myLogica.doConfermaTurno();
+				return "@ok";
+			}
+			return "@no";
+		} catch (InvalidTokenException e) {
+			return returnInvalidToken();
+		} catch (NonInPartitaException e) {
+			return "@no,@nonInPartita";
+		} catch (NonAutenticatoException e) {
+			return returnInvalidToken();
+		}
 	}
 
 	@Override
 	public Object passaTurno(String token) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			if (myLogica.isMioTurno(token)) {
+				myLogica.doPassaTurno();
+				return "@ok";
+			}
+			return "@no";
+		} catch (InvalidTokenException e) {
+			return returnInvalidToken();
+		} catch (NonInPartitaException e) {
+			return "@no,@nonInPartita";
+		} catch (NonAutenticatoException e) {
+			return returnInvalidToken();
+		}
 	}
 }

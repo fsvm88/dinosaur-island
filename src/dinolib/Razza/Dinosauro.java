@@ -187,7 +187,7 @@ public abstract class Dinosauro {
 	}
 	
 	/* Tutti i setter */
-	protected void nonUsabile() { isUsabile = false; }
+	public void nonUsabile() { isUsabile = false; }
 	public void usabile() { isUsabile = true; }
 	/**
 	 * @param energiaAttuale
