@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import dinolib.Exceptions.GenericDinosauroException;
+import dinolib.Mappa.Coord;
 
 /**
  * Astrae la collezione dei dinosauri rispetto al giocatore.
@@ -187,6 +188,27 @@ public class Razza implements Set<Dinosauro> {
 		}
 		else throw new GenericDinosauroException("raggiuntoNumeroMaxDinosauri");
 	}
+	/**
+	 * Helper per far muovere il dinosauro.
+	 * Nel caso muoia d'inedia lo uccide, lo rimuove e lancia un'eccezione.
+	 * @param idDinosauro
+	 * @param newCoord
+	 * @throws GenericDinosauroException 
+	 */
+	public void muoviDinosauro(String idDinosauro, Coord newCoord) throws GenericDinosauroException {
+		Dinosauro tempDinosauro = getDinosauroById(idDinosauro);
+		if(!(tempDinosauro.getEnergiaAttuale()<tempDinosauro.getEnergiaMovimento())) {
+			tempDinosauro.setCoord(newCoord);
+			tempDinosauro.setEnergiaAttuale(tempDinosauro.getEnergiaAttuale()-tempDinosauro.getEnergiaMovimento());
+			return;
+		}
+		else {
+			tempDinosauro.nonUsabile();
+			this.removeById(idDinosauro);
+			throw new GenericDinosauroException("mortePerInedia");
+		}
+	}
+	
 	/* Tutti i metodi importati dall'interfaccia, questi sono quelli supportati */
 	@Override
 	public int size() {

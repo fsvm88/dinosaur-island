@@ -1,6 +1,5 @@
 package dinolib;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -338,7 +337,7 @@ public class SocketAdapter implements Adapter {
 					int topCornerY = myLogica.doAddition(tempDinosauro.getCoord().getY(), rangeVista);
 					buffer = buffer + ",{" + leftCornerX + "," + bottomCornerY + "},{"
 					+ (topCornerY-bottomCornerY) + "," + (rightCornerX-leftCornerX) + "},";
-					Iterator<Cella> subItCelle = myLogica.getMappa().subIterator(leftCornerX, bottomCornerY, (topCornerY-bottomCornerY), (rightCornerX-leftCornerX));
+					Iterator<Cella> subItCelle = myLogica.getMappa().subIterator(new Coord(leftCornerX, bottomCornerY), (topCornerY-bottomCornerY), (rightCornerX-leftCornerX));
 					Cella tmpCella = null;
 					int row = bottomCornerY;
 					int col = leftCornerX;
@@ -398,8 +397,11 @@ public class SocketAdapter implements Adapter {
 		try {
 			if (myLogica.isMioTurno(token)) {
 				if (myLogica.getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
-					String buffer = "@muoviDinosauro,";
 					String ret = myLogica.doMuoviDinosauro(token, idDinosauro, newCoord);
+					if (ret.equals("v")) return "@combattimento,v";
+					else if (ret.equals("p")) return "@combattimento,p";
+					else if (ret.equals("@ok")) return "@ok";
+					else return "@no";
 				}
 				else return "@no,@idNonValido";
 			}
