@@ -3,8 +3,6 @@ package dinolib.Razza;
 import java.util.Random;
 
 import dinolib.CommonUtils;
-
-
 /**
  * @author  fabio
  */

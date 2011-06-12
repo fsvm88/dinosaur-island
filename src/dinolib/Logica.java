@@ -202,13 +202,44 @@ public class Logica implements Runnable {
 	 * @return
 	 * @throws NomeRazzaOccupatoException 
 	 */
-	protected boolean existsRaceWithName (String nomeRazza) throws NomeRazzaOccupatoException {
+	protected boolean existsRaceWithName(String nomeRazza) throws NomeRazzaOccupatoException {
 		Iterator<Giocatore> itGiocatori = getPMan().getIteratorOnPlayers();
 		while (itGiocatori.hasNext()) {
 			Giocatore tempGiocatore = itGiocatori.next();
 			if (tempGiocatore.getRazza().getNome().equals(nomeRazza)) throw new NomeRazzaOccupatoException();
 		}
 		return false;
+	}
+
+	/**
+	 * Controlla se esiste un dinosauro tra tutti quelli dei giocatori che hanno una razza.
+	 * @param idDinosauro
+	 * @return
+	 */
+	protected boolean existsDinosauroWithId(String idDinosauro) {
+		Iterator<Giocatore> itGiocatori = getPMan().getIteratorOnPlayers();
+		Giocatore tempGiocatore = null;
+		while (itGiocatori.hasNext()) {
+			tempGiocatore = itGiocatori.next();
+			if (tempGiocatore.hasRazza())
+				if (itGiocatori.next().getRazza().existsDinosauroWithId(idDinosauro)) return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Restituisce il giocatore che possiede il dato dinosauro.
+	 * @param idDinosauro
+	 * @return
+	 */
+	protected Giocatore getPlayerByIdDinosauro(String idDinosauro) {
+		Iterator<Giocatore> itSuiGiocatori = getPMan().getIteratorOnPlayers();
+		Giocatore tempGiocatore = null;
+		while (itSuiGiocatori.hasNext()) {
+			tempGiocatore = itSuiGiocatori.next();
+			if (tempGiocatore.getRazza().existsDinosauroWithId(idDinosauro)) break;
+		}
+		return tempGiocatore;
 	}
 
 	protected void broadcastCambioTurno() {
@@ -320,7 +351,8 @@ public class Logica implements Runnable {
 	 * @return
 	 */
 	private boolean tryActualSpawn(int x, int y, String idDinosauro) {
-		if (getMappa().isLibera(x, y)) {
+		if ( !isCellaAcqua(x, y) &&
+				!isCellaDinosauro(x, y)) {
 			getMappa().spawnDinosauro(x, y, idDinosauro, getMappa().getCella(x, y));
 			return true;
 		}
@@ -529,7 +561,14 @@ public class Logica implements Runnable {
 		}
 		else return false;
 	}
-	
+	/**
+	 * Permette il logout dal server.
+	 * Ritorna true se l'utente può uscire, altrimenti false.
+	 * @param token
+	 * @return
+	 * @throws InvalidTokenException
+	 * @throws NonAutenticatoException
+	 */
 	protected boolean doLogout(String token) throws InvalidTokenException, NonAutenticatoException {
 		if (isPlayerLogged(token)) {
 			if (isPlayerInGame(token)) {
@@ -539,5 +578,148 @@ public class Logica implements Runnable {
 			return true;
 		}
 		else return false;
+	}
+
+	private boolean isCamminoLibero(int oldX, int oldY, int newX, int newY) {
+		if ((Math.abs(newX-oldX)) > 1) {
+			if ((Math.abs(newY-oldY)) > 1) {
+				if (isCamminoLibero)
+			}
+			else {
+
+			}
+		}
+		else {
+
+		}
+		else {
+			if (!isCellaAcqua(newX, newY)) return true;
+			else return false;
+		}
+	}
+
+	private boolean isCellaRaggiungibile(int oldX, int oldY, int newX, int newY, int spostamentoMax) {
+		if (((Math.abs(newX-oldX))<=spostamentoMax) &&
+				((Math.abs(newY-oldY))<=spostamentoMax)) {
+			if (isCamminoLibero(oldX, oldY, newX, newY)) {
+				if (newX > oldX) {
+					if (newY < oldY) {
+
+					}
+					else {
+
+					}
+				}
+				else {
+					if (newY < oldY) {
+
+					}
+					else {
+
+					}
+
+				}
+
+			}
+			return false;
+		}
+		else return false;
+	}
+
+	/**
+	 * Permette ad un dinosauro di mangiare qualcosa su una cella.
+	 * @param tempDinosauro
+	 */
+	private void mangiaCella(Dinosauro tempDinosauro) {
+		Cella tempCella = getMappa().getCella(tempDinosauro.getX(), tempDinosauro.getY()).getCellaSuCuiSiTrova();
+		int valoreAttualeCella = tempCella.getValoreAttuale();
+		int valoreAttualeDinosauro = tempDinosauro.getEnergiaAttuale();
+		if ((valoreAttualeCella+valoreAttualeDinosauro) < tempDinosauro.getEnergiaMax()) {
+			tempDinosauro.setEnergiaAttuale(valoreAttualeCella+valoreAttualeDinosauro);
+			tempCella.mangia(valoreAttualeCella);
+		}
+		else {
+			tempDinosauro.setEnergiaAttuale(tempDinosauro.getEnergiaMax());
+			tempCella.mangia(tempDinosauro.getEnergiaMax()-valoreAttualeDinosauro);
+		}
+	}
+
+	/**
+	 * Verifica se entrambi i dinosauri (quello corrente e quello sulla cella scelta) sono entrambi erbivori.
+	 * @param tmpDinosauro
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	private boolean isEntrambiDinosauriErbivori(Dinosauro tmpDinosauro, int x, int y) {
+		if (tmpDinosauro.getTipoRazza().toLowerCase().equals("erbivoro") &&
+				getPlayerByIdDinosauro(getMappa().getCella(x, y).getIdDelDinosauro()).getRazza().getDinosauroById(getMappa().getCella(x, y).getIdDelDinosauro()).getTipoRazza().toLowerCase().equals("erbivoro"))
+			return true;
+		else return false;
+	}
+
+	/**
+	 * Svolge il combattimento tra due dinosauri.
+	 * Restituisce un booleano, true se vince l'attaccante, false se vince l'attaccato.
+	 * @param dinosauroSfidante
+	 * @return
+	 */
+	private boolean combattimentoTraDinosauri(Dinosauro dinosauroSfidante) {
+		int x = dinosauroSfidante.getX();
+		int y = dinosauroSfidante.getY();
+		String idDinosauroSfidante = getMappa().getCella(x, y).getIdDelDinosauro();
+		String idDinosauroAttaccato = getMappa().getCella(x, y).getIdDelDinosauro();
+		Dinosauro dinosauroAttaccato = getPlayerByIdDinosauro(idDinosauroAttaccato).getRazza().getDinosauroById(idDinosauroAttaccato);
+		int forzaSfidante = dinosauroSfidante.getForza();
+		int forzaAttaccato = dinosauroAttaccato.getForza();
+		if (forzaSfidante >= forzaAttaccato) {
+			dinosauroAttaccato.nonUsabile();
+			getPlayerByIdDinosauro(idDinosauroAttaccato).getRazza().removeById(idDinosauroAttaccato);
+			return true;
+		}
+		else if (forzaSfidante < forzaAttaccato) {
+			dinosauroSfidante.nonUsabile();
+			getPlayerByIdDinosauro(idDinosauroSfidante).getRazza().removeById(idDinosauroSfidante);
+			return false;
+		}
+		return false;
+	}
+
+	protected boolean isCellaAcqua(int x, int y) { if (getMappa().getCella(x, y).toString().toLowerCase().equals("acqua")) return true; else return false; }
+	protected boolean isCellaDinosauro(int x, int y) { if (getMappa().getCella(x, y).toString().toLowerCase().equals("dinosauro")) return true; else return false; }
+	/**
+	 * Permette il movimento del dinosauro da una cella ad un'altra.
+	 * Gestisce le varie condizioni di errore e chiama le funzioni appropriate in caso di combattimento.
+	 * @param token
+	 * @param idDinosauro
+	 * @param newX
+	 * @param newY
+	 * @return
+	 * @throws InvalidTokenException 
+	 */
+	protected String doMuoviDinosauro(String token, String idDinosauro, int newX, int newY) throws InvalidTokenException {
+		Dinosauro tempDinosauro = getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
+		if (!(isCellaRaggiungibile(tempDinosauro.getX(), tempDinosauro.getY(), newX, newY, tempDinosauro.getSpostamentoMax())) &&
+				!isCellaAcqua(newX, newY) &&
+				!isEntrambiDinosauriErbivori(tempDinosauro, newX, newY)) {
+			Character tipoCella = getMappa().getCella(newX, newY).toString().toLowerCase().charAt(0);
+			tempDinosauro.setXY(newX, newY);
+			if (tipoCella.equals('v') &&
+					tempDinosauro.getTipoRazza().toLowerCase().equals("erbivoro")) {
+				mangiaCella(tempDinosauro);
+			}
+			if (tipoCella.equals('c') &&
+					tempDinosauro.getTipoRazza().toLowerCase().equals("carnivoro")) {
+				mangiaCella(tempDinosauro);
+			}
+			if (tipoCella.equals('d')) {
+				if (combattimentoTraDinosauri(tempDinosauro)) {
+					return "v";
+				}
+				else return "p";
+			}
+		}
+		else return "destinazioneNonValida";
+		return null;
 	}
 }
