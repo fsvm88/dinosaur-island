@@ -143,17 +143,17 @@ public class SocketAdapter implements Adapter {
 	}
 
 	/**
-	 * Assembla lo stato comune del dinosauro
+	 * Assembla lo stato del dinosauro comune a entrambi gli if/else di statoDinosauro.
 	 */
-	private String assemblaStatoComuneDinosauro(Giocatore tempGiocatore, Dinosauro tempDinosauro) {
+	private String assemblaStatoComuneDinosauro(Giocatore tempGiocatore, String idDinosauro) {
 		return tempGiocatore.getNome() + "," +
 		tempGiocatore.getRazza().getNome() + "," +
-		tempGiocatore.getRazza().getTipo().toLowerCase().charAt(0) + "," +
-		"{" + "," + tempDinosauro.getX() + "," + CommonUtils.translateYforClient(tempDinosauro.getY(), myLogica.getMappa().getLatoDellaMappa()) + "," + "}" + "," +
-		tempDinosauro.getDimensione();
+		tempGiocatore.getRazza().getTipo().toLowerCase().charAt(0) + ",{," +
+		tempGiocatore.getRazza().getDinosauroById(idDinosauro).getX() + "," + tempGiocatore.getRazza().getDinosauroById(idDinosauro).getY() + ",}," +
+		tempGiocatore.getRazza().getDinosauroById(idDinosauro).getDimensione();
 	}
 	/**
-	 * Helper per le funzioni che restituiscono liste
+	 * Helper per alcune delle funzioni che restituiscono liste.
 	 * @param localBuffer
 	 * @param toAppend
 	 */
@@ -368,47 +368,48 @@ public class SocketAdapter implements Adapter {
 
 	@Override
 	public Object statoDinosauro(String token, String idDinosauro) {
-		if (myLogica.playerHasDinosauro(token, idDinosauro)) {
-			Giocatore tempGiocatore = myLogica.getPlayerByToken(token);
-			Dinosauro tempDinosauro = tempGiocatore.getRazza().getDinosauroById(idDinosauro);
-			String buffer = null;
-			buffer = "," + assemblaStatoComuneDinosauro(tempGiocatore, tempDinosauro);
-			buffer = buffer + "," +
-			tempDinosauro.getEnergiaAttuale() + "," +
-			tempDinosauro.getTurnoDiVita();
-			return buffer;
-		}
-		else if (!myLogica.playerHasDinosauro(token, idDinosauro)) {
-			Iterator<Giocatore> itSuiGiocatori = myLogica.getIteratorOnPlayers();
-			Giocatore tempGiocatore;
-			Dinosauro tempDinosauro;
-			while (itSuiGiocatori.hasNext()) {
-				tempGiocatore = itSuiGiocatori.next();
-				Iterator<Dinosauro> itDinosauri = tempGiocatore.getRazza().iterator();
-				while (itDinosauri.hasNext()) {
-					if (itDinosauri.next().getIdDinosauro().equals(idDinosauro)) {
-						tempDinosauro = tempGiocatore.getRazza().getDinosauroById(idDinosauro);
-						String buffer = null;
-						buffer = "," + assemblaStatoComuneDinosauro(tempGiocatore, tempDinosauro);
-						buffer = buffer + "," +
-						tempDinosauro.getEnergiaAttuale() + "," +
-						tempDinosauro.getTurnoDiVita();
-						return buffer;
+		try {
+			if (myLogica.isPlayerInGame(token)) {
+				if (myLogica.existsDinosauroWithId(idDinosauro)) {
+					String buffer = "@statoDinosauro,";
+					if (myLogica.getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
+						buffer = assemblaStatoComuneDinosauro(myLogica.getPlayerByToken(token), idDinosauro) +
+						myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getEnergiaAttuale() +
+						myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getTurnoDiVita();
 					}
+					else if (!myLogica.getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
+						buffer = assemblaStatoComuneDinosauro(myLogica.getPlayerByIdDinosauro(idDinosauro), idDinosauro);
+					}
+					return buffer;
 				}
+				else return "@no,@idNonValido";
 			}
+			else return "@no,@nonInPartita";
+		} catch (InvalidTokenException e) {
+			return returnInvalidToken();
+		} catch (NonAutenticatoException e) {
+			return returnInvalidToken();
 		}
-		else throw new InvalidIDException();
-		return null;
 	}
 
 	@Override
 	public Object muoviDinosauro(String token, String idDinosauro, int x, int y) {
-		if (myLogica.isMioTurno(token) &&
-				myLogica.playerHasDinosauro(token, idDinosauro)) {
-
+		try {
+			if (myLogica.isMioTurno(token)) {
+				if (myLogica.getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
+					String buffer = "@muoviDinosauro,";
+					String ret = myLogica.doMuoviDinosauro(token, idDinosauro, x, y);
+				}
+				else return "@no,@idNonValido";
+			}
+			else return "@no,@nonIlTuoTurno";
+		} catch (InvalidTokenException e) {
+			return returnInvalidToken();
+		} catch (NonInPartitaException e) {
+			return "@no,@nonInPartita";
+		} catch (NonAutenticatoException e) {
+			return returnInvalidToken();
 		}
-		return null;
 	}
 
 	@Override
