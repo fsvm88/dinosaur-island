@@ -1,5 +1,7 @@
 package dinolib.Razza;
 
+import dinolib.Mappa.Coord;
+
 
 public class Erbivoro extends Dinosauro {
 	/**
@@ -14,7 +16,7 @@ public class Erbivoro extends Dinosauro {
 	/**
 	 * Implementa il costruttore pubblico per la sottoclasse Erbivoro.
 	 */
-	public Erbivoro(int x, int y){
-		super(x, y, spostamento_MAX, moltiplicatore_FORZA);
+	public Erbivoro(Coord myCoords){
+		super(myCoords, spostamento_MAX, moltiplicatore_FORZA);
 	}
 }

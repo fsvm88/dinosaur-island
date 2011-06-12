@@ -83,8 +83,8 @@ public abstract class Dinosauro {
 	/**
 	 * Costruttore visibile solo alle sottoclassi da usare come costruttore comune per Carnivoro e Erbivoro.
 	 */
-	protected Dinosauro(int x, int y, int nuovo_spostamento_MAX, int nuovo_moltiplicatore_FORZA) {
-		this.setXY(x, y);
+	protected Dinosauro(Coord nCoord, int nuovo_spostamento_MAX, int nuovo_moltiplicatore_FORZA) {
+		this.setCoord(nCoord);
 		this.turnoDiVita = 1;
 		this.durataVitaMax = 24 + (CommonUtils.getNewRandomIntValueOnMyMap(13));
 		this.setEnergiaAttuale(750);
@@ -174,6 +174,7 @@ public abstract class Dinosauro {
 	/* Tutti i setter */
 	public void nonUsabile() { isUsabile = false; }
 	public void usabile() { isUsabile = true; }
+	public void setCoord(Coord myCoords) { this.coord = myCoords; }
 	/**
 	 * @param energiaAttuale
 	 * @uml.property  name="energiaAttuale"
@@ -184,7 +185,6 @@ public abstract class Dinosauro {
 	 * @uml.property  name="dimensione"
 	 */
 	private void setDimensione(int dimensione) { this.dimensione = dimensione; }
-	public void setXY(int x, int y) { coord = new Coord(x, y); }
 	private void updateEnergiaCrescita() { energiaCrescita = energiaMax/2; }
 	private void updateForza() { this.forza = (moltiplicatore_FORZA*this.getDimensione()*this.getEnergiaAttuale()); }
 	private void updateEnergiaMax() { this.energiaMax = 1000*this.dimensione; }

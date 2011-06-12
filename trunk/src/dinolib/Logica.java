@@ -331,12 +331,11 @@ public class Logica implements Runnable {
 		Dinosauro tempDinosauro;
 		while (itDinosauri.hasNext()) {
 			tempDinosauro = itDinosauri.next();
-			int x = tempDinosauro.getCoord().getX(), y = tempDinosauro.getCoord().getY();
-			if (tryActualSpawn(x, y, tempDinosauro.getIdDinosauro())) return;
+			if (tryActualSpawn(tempDinosauro.getCoord(), tempDinosauro.getIdDinosauro())) return;
 			else {
 				int i = 1;
 				do {
-					if (tryNearestSpawn(x, y, i, tempDinosauro)) {
+					if (tryNearestSpawn(tempDinosauro.getCoord(), i, tempDinosauro)) {
 						return;
 					}
 					else i++;
@@ -351,14 +350,23 @@ public class Logica implements Runnable {
 	 * @param y
 	 * @return
 	 */
-	private boolean tryActualSpawn(int x, int y, String idDinosauro) {
-		if ( !isCellaAcqua(x, y) &&
-				!isCellaDinosauro(x, y)) {
-			getMappa().spawnDinosauro(x, y, idDinosauro, getMappa().getCella(x, y));
+	private boolean tryActualSpawn(Coord newCoord, String idDinosauro) {
+		if ( !isCellaAcqua(newCoord) &&
+				!isCellaDinosauro(newCoord)) {
+			getMappa().spawnDinosauro(newCoord, idDinosauro, getMappa().getCella(newCoord));
 			return true;
 		}
 		return false;
 	}
+	
+	private boolean isValidCoord(Coord coordTest) {
+		if ((0 <= coordTest.getX()) &&
+				(0 <= coordTest.getY()) &&
+				(coordTest.getX() < getMappa().getLatoDellaMappa()) &&
+				(coordTest.getY() < getMappa().getLatoDellaMappa())) return true;
+		else return false;
+	}
+	
 	/**
 	 * Prova a inserire il dinosauro nella Cella più vicina.
 	 * Viene chiamata quando la cella salvata in memoria è già occupata.
@@ -368,25 +376,24 @@ public class Logica implements Runnable {
 	 * @param tempDinosauro
 	 * @return
 	 */
-	private boolean tryNearestSpawn(int x, int y, int maxDistance, Dinosauro tempDinosauro) {
+	private boolean tryNearestSpawn(Coord startCoord, int maxDistance, Dinosauro tempDinosauro) {
 		int i = -maxDistance;
 		int j = -maxDistance;
+		Coord curCoord = null;
 		do {
 			i = -maxDistance;
 			do {
-
-				if (tryActualSpawn(i+x, j+y, tempDinosauro.getIdDinosauro())) {
-					tempDinosauro.setXY(i+x, j+CommonUtils.translateYforServer(y, getMappa().getLatoDellaMappa()));
+				curCoord = new Coord(i+startCoord.getX(), j+startCoord.getY());
+				if (tryActualSpawn(curCoord, tempDinosauro.getIdDinosauro())) {
+					tempDinosauro.setCoord(curCoord);
 					return true;
 				}
 				i++;
 			} while ((i<(maxDistance+1)) &&
-					(0<=(i+x)) &&
-					((i+x)<getMappa().getLatoDellaMappa()));
+					isValidCoord(curCoord));
 			j++;
 		} while ((j<(maxDistance+1)) &&
-				(0<=(j+y)) &&
-				((j+y)<getMappa().getLatoDellaMappa()));
+				isValidCoord(curCoord));
 		return false;
 	}
 	void doPassaTurno() {
@@ -397,10 +404,10 @@ public class Logica implements Runnable {
 	 * @return
 	 * @throws InvalidTokenException 
 	 */
-	protected boolean trySpawnOfAnEgg(String token, int x, int y, Dinosauro newDinosauro) throws InvalidTokenException {
+	protected boolean trySpawnOfAnEgg(String token, Coord newCoords, Dinosauro newDinosauro) throws InvalidTokenException {
 		int i = 1;
 		do {
-			if (tryNearestSpawn(x, y, i, newDinosauro)) {
+			if (tryNearestSpawn(newCoords, i, newDinosauro)) {
 				getPlayerByToken(token).getRazza().add(newDinosauro);
 				return true;
 			}
@@ -445,18 +452,17 @@ public class Logica implements Runnable {
 	protected String doDeponiUovo(String token, String idDinosauro) throws GenericDinosauroException, InvalidTokenException {
 		getPlayerByToken(token).getRazza().deponiUovo(idDinosauro);
 		Dinosauro tempDinosauro = getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
-		int x = tempDinosauro.getCoord().getX();
-		int y = tempDinosauro.getCoord().getY();
+		Coord newCoords = tempDinosauro.getCoord();
 		if (getPlayerByToken(token).getRazza().getTipo().equals("Carnivoro")) {
-			Dinosauro newDinosauro = new Carnivoro(x, y);
+			Dinosauro newDinosauro = new Carnivoro(newCoords);
 			newDinosauro.nonUsabile();
-			trySpawnOfAnEgg(token, x, y, newDinosauro);
+			trySpawnOfAnEgg(token, newCoords, newDinosauro);
 			return newDinosauro.getIdDinosauro();
 		}
 		else if (tempDinosauro.getTipoRazza().equals("Erbivoro")) {
-			Dinosauro newDinosauro = new Erbivoro(x, y);
+			Dinosauro newDinosauro = new Erbivoro(newCoords);
 			newDinosauro.nonUsabile();
-			trySpawnOfAnEgg(token, x, y, newDinosauro);
+			trySpawnOfAnEgg(token, newCoords, newDinosauro);
 			return newDinosauro.getIdDinosauro();
 		}
 		return null;
@@ -594,7 +600,7 @@ public class Logica implements Runnable {
 	 * @param tempDinosauro
 	 */
 	private void mangiaCella(Dinosauro tempDinosauro) {
-		Cella tempCella = getMappa().getCella(tempDinosauro.getCoord().getX(), tempDinosauro.getCoord().getY()).getCellaSuCuiSiTrova();
+		Cella tempCella = getMappa().getCella(tempDinosauro.getCoord()).getCellaSuCuiSiTrova();
 		int valoreAttualeCella = tempCella.getValoreAttuale();
 		int valoreAttualeDinosauro = tempDinosauro.getEnergiaAttuale();
 		if ((valoreAttualeCella+valoreAttualeDinosauro) < tempDinosauro.getEnergiaMax()) {
@@ -616,7 +622,7 @@ public class Logica implements Runnable {
 	 */
 	private boolean isEntrambiDinosauriErbivori(Dinosauro tmpDinosauro, Coord newCoord) {
 		if (tmpDinosauro.getTipoRazza().toLowerCase().equals("erbivoro") &&
-				getPlayerByIdDinosauro(getMappa().getCella(newCoord.getX(), newCoord.getY()).getIdDelDinosauro()).getRazza().getDinosauroById(getMappa().getCella(newCoord.getX(), newCoord.getY()).getIdDelDinosauro()).getTipoRazza().toLowerCase().equals("erbivoro"))
+				getPlayerByIdDinosauro(getMappa().getCella(newCoord).getIdDelDinosauro()).getRazza().getDinosauroById(getMappa().getCella(newCoord).getIdDelDinosauro()).getTipoRazza().toLowerCase().equals("erbivoro"))
 			return true;
 		else return false;
 	}
@@ -629,8 +635,8 @@ public class Logica implements Runnable {
 	 */
 	private boolean combattimentoTraDinosauri(Dinosauro dinosauroSfidante) {
 		Coord coordSfidante = dinosauroSfidante.getCoord();
-		String idDinosauroSfidante = getMappa().getCella(coordSfidante.getX(), coordSfidante.getY()).getIdDelDinosauro();
-		String idDinosauroAttaccato = getMappa().getCella(coordSfidante.getX(), coordSfidante.getY()).getIdDelDinosauro();
+		String idDinosauroSfidante = getMappa().getCella(coordSfidante).getIdDelDinosauro();
+		String idDinosauroAttaccato = getMappa().getCella(coordSfidante).getIdDelDinosauro();
 		Dinosauro dinosauroAttaccato = getPlayerByIdDinosauro(idDinosauroAttaccato).getRazza().getDinosauroById(idDinosauroAttaccato);
 		int forzaSfidante = dinosauroSfidante.getForza();
 		int forzaAttaccato = dinosauroAttaccato.getForza();
@@ -647,8 +653,8 @@ public class Logica implements Runnable {
 		return false;
 	}
 
-	protected boolean isCellaAcqua(Coord myCoord) { if (getMappa().getCella(myCoord.getX(), myCoord.getY()).toString().toLowerCase().equals("acqua")) return true; else return false; }
-	protected boolean isCellaDinosauro(Coord myCoord) { if (getMappa().getCella(myCoord.getX(), myCoord.getY()).toString().toLowerCase().equals("dinosauro")) return true; else return false; }
+	protected boolean isCellaAcqua(Coord myCoord) { if (getMappa().getCella(myCoord).toString().toLowerCase().equals("acqua")) return true; else return false; }
+	protected boolean isCellaDinosauro(Coord myCoord) { if (getMappa().getCella(myCoord).toString().toLowerCase().equals("dinosauro")) return true; else return false; }
 	/**
 	 * Permette il movimento del dinosauro da una cella ad un'altra.
 	 * Gestisce le varie condizioni di errore e chiama le funzioni appropriate in caso di combattimento.
@@ -664,8 +670,8 @@ public class Logica implements Runnable {
 		if (!(isCellaRaggiungibile(tempDinosauro.getCoord(), newCoord, tempDinosauro.getSpostamentoMax())) &&
 				!isCellaAcqua(newCoord) &&
 				!isEntrambiDinosauriErbivori(tempDinosauro, newCoord)) {
-			Character tipoCella = getMappa().getCella(newCoord.getX(), newCoord.getY()).toString().toLowerCase().charAt(0);
-			tempDinosauro.setXY(newCoord.getX(), newCoord.getY());
+			Character tipoCella = getMappa().getCella(newCoord).toString().toLowerCase().charAt(0);
+			tempDinosauro.setCoord(newCoord);
 			if (tipoCella.equals('v') &&
 					tempDinosauro.getTipoRazza().toLowerCase().equals("erbivoro")) {
 				mangiaCella(tempDinosauro);

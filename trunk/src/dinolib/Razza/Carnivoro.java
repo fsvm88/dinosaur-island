@@ -1,5 +1,7 @@
 package dinolib.Razza;
 
+import dinolib.Mappa.Coord;
+
 public class Carnivoro extends Dinosauro {
 	/**
 	 * @uml.property  name="SPOSTAMENTO_MAX" readOnly="true"
@@ -13,7 +15,7 @@ public class Carnivoro extends Dinosauro {
 	/**
 	 * Implementa il costruttore pubblico per il tipo di dinosauro Carnivoro.
 	 */
-	public Carnivoro(int x, int y){
-		super(x, y, spostamento_MAX, moltiplicatore_FORZA);
+	public Carnivoro(Coord myCoord){
+		super(myCoord, spostamento_MAX, moltiplicatore_FORZA);
 	}
 }
