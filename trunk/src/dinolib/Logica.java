@@ -5,10 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.concurrent.ArrayBlockingQueue;
 
 import dinolib.Exceptions.*;
 import dinolib.Razza.Carnivoro;
@@ -358,7 +355,7 @@ public class Logica implements Runnable {
 		}
 		return false;
 	}
-	
+
 	private boolean isValidCoord(Coord coordTest) {
 		if ((0 <= coordTest.getX()) &&
 				(0 <= coordTest.getY()) &&
@@ -366,7 +363,7 @@ public class Logica implements Runnable {
 				(coordTest.getY() < getMappa().getLatoDellaMappa())) return true;
 		else return false;
 	}
-	
+
 	/**
 	 * Prova a inserire il dinosauro nella Cella più vicina.
 	 * Viene chiamata quando la cella salvata in memoria è già occupata.
@@ -592,7 +589,7 @@ public class Logica implements Runnable {
 	}
 
 	private boolean isCellaRaggiungibile(Coord oldCoord, Coord newCoord, int spostamentoMax) {
-		
+
 	}
 
 	/**
@@ -655,6 +652,7 @@ public class Logica implements Runnable {
 
 	protected boolean isCellaAcqua(Coord myCoord) { if (getMappa().getCella(myCoord).toString().toLowerCase().equals("acqua")) return true; else return false; }
 	protected boolean isCellaDinosauro(Coord myCoord) { if (getMappa().getCella(myCoord).toString().toLowerCase().equals("dinosauro")) return true; else return false; }
+
 	/**
 	 * Permette il movimento del dinosauro da una cella ad un'altra.
 	 * Gestisce le varie condizioni di errore e chiama le funzioni appropriate in caso di combattimento.
@@ -667,27 +665,34 @@ public class Logica implements Runnable {
 	 */
 	protected String doMuoviDinosauro(String token, String idDinosauro, Coord newCoord) throws InvalidTokenException {
 		Dinosauro tempDinosauro = getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
-		if (!(isCellaRaggiungibile(tempDinosauro.getCoord(), newCoord, tempDinosauro.getSpostamentoMax())) &&
+		if (isCellaRaggiungibile(tempDinosauro.getCoord(), newCoord, tempDinosauro.getSpostamentoMax()) &&
 				!isCellaAcqua(newCoord) &&
 				!isEntrambiDinosauriErbivori(tempDinosauro, newCoord)) {
 			Character tipoCella = getMappa().getCella(newCoord).toString().toLowerCase().charAt(0);
 			tempDinosauro.setCoord(newCoord);
-			if (tipoCella.equals('v') &&
-					tempDinosauro.getTipoRazza().toLowerCase().equals("erbivoro")) {
-				mangiaCella(tempDinosauro);
-			}
-			if (tipoCella.equals('c') &&
-					tempDinosauro.getTipoRazza().toLowerCase().equals("carnivoro")) {
-				mangiaCella(tempDinosauro);
-			}
-			if (tipoCella.equals('d')) {
-				if (combattimentoTraDinosauri(tempDinosauro)) {
-					return "v";
+			try {
+				if (tipoCella.equals('v') &&
+						tempDinosauro.getTipoRazza().toLowerCase().equals("erbivoro")) {
+					mangiaCella(tempDinosauro);
+					getPlayerByToken(token).getRazza().muoviDinosauro(idDinosauro, newCoord);
 				}
-				else return "p";
+				if (tipoCella.equals('c') &&
+						tempDinosauro.getTipoRazza().toLowerCase().equals("carnivoro")) {
+					mangiaCella(tempDinosauro);
+					getPlayerByToken(token).getRazza().muoviDinosauro(idDinosauro, newCoord);
+				}
+				if (tipoCella.equals('d')) {
+					getPlayerByToken(token).getRazza().muoviDinosauro(idDinosauro, newCoord);
+					if (combattimentoTraDinosauri(tempDinosauro)) {
+						return "v";
+					}
+					else return "p";
+				}
+				return "@ok";
+			} catch (GenericDinosauroException e) {
+				return "@no," + e.getMessage();
 			}
 		}
 		else return "destinazioneNonValida";
-		return null;
 	}
 }

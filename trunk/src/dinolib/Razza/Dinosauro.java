@@ -170,6 +170,13 @@ public abstract class Dinosauro {
 			return 4;
 		}
 	}
+	/**
+	 * Restituisce l'energia necessaria per il movimento del dinosauro.
+	 * @return
+	 */
+	public int getEnergiaMovimento() {
+		return (int) (10*Math.pow(2, this.getDimensione()));
+	}
 	
 	/* Tutti i setter */
 	public void nonUsabile() { isUsabile = false; }
