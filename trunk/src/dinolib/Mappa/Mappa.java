@@ -29,11 +29,6 @@ public class Mappa implements Iterable<Cella> {
 	 */
 	private final int fixed_WATER_PERCENT = 20;
 	/**
-	 * Percentuale della mappa che deve essere composta di terra. Viene ricavata dalla percentuale d'acqua.
-	 * @uml.property  name="FIXED_EARTH_PERCENT" readOnly="true"
-	 */
-	private final int fixed_EARTH_PERCENT = (100 - this.fixed_WATER_PERCENT);
-	/**
 	 * Percentuale della mappa che deve essere composta di vegetazione
 	 * @uml.property name="FIXED_FLORA_PERCENT" readOnly="true"
 	 */
@@ -84,12 +79,6 @@ public class Mappa implements Iterable<Cella> {
 	private int conteggioAcquaStatico = 0;
 
 	/**
-	 * Contatore per le celle di terra, indica quante celle di terra ci devono essere sulla mappa.
-	 * @uml.property  name="conteggioTerraStatico"
-	 */
-	private int conteggioTerraStatico = 0;
-
-	/**
 	 * Restituisce il lato della mappa.
 	 * @uml.property  name="latoDellaMappa"
 	 */
@@ -109,7 +98,6 @@ public class Mappa implements Iterable<Cella> {
 	 */
 	private void calcolaNumeroCelleDaPercentuali () {
 		conteggioAcquaStatico = ( ( calcolaTotaleCelle() / 100 ) * fixed_WATER_PERCENT );
-		conteggioTerraStatico = calcolaTotaleCelle() - conteggioAcquaStatico;
 		conteggioVegetazioneStatico = ((calcolaTotaleCelle() / 100) * fixed_FLORA_PERCENT );
 	}
 
@@ -120,7 +108,7 @@ public class Mappa implements Iterable<Cella> {
 	 * @return
 	 */
 	private boolean isCellaTerra(Coord nCoord) {
-		return this.getCella(nCoord.getX(), nCoord.getY()).toString().toLowerCase().equals("terra");
+		return this.getCella(nCoord).toString().toLowerCase().equals("terra");
 	}
 	
 	/**
@@ -275,15 +263,15 @@ public class Mappa implements Iterable<Cella> {
 	 * Inserisce un dinosauro sulla mappa.
 	 * Passa il tipo corrente della cella così che venga tenuta valida.
 	 */
-	public void spawnDinosauro(int x, int y, String idDinosauroOccupante, Cella cellaSuCuiSiTrova) {
-		MappaACelle[x][CommonUtils.translateYforServer(y, getLatoDellaMappa())] = new CellaConDinosauro(idDinosauroOccupante, cellaSuCuiSiTrova);
+	public void spawnDinosauro(Coord myCoord, String idDinosauroOccupante, Cella cellaSuCuiSiTrova) {
+		MappaACelle[myCoord.getX()][CommonUtils.translateYforServer(myCoord.getY(), getLatoDellaMappa())] = new CellaConDinosauro(idDinosauroOccupante, cellaSuCuiSiTrova);
 	}
 
 	/**
 	 * Restituisce la cella richiesta.
 	 */
-	public Cella getCella(int x, int y) {
-		return MappaACelle[x][CommonUtils.translateYforServer(y, getLatoDellaMappa())];
+	public Cella getCella(Coord myCoord) {
+		return MappaACelle[myCoord.getX()][CommonUtils.translateYforServer(myCoord.getY(), getLatoDellaMappa())];
 	}
 
 	/**
@@ -326,32 +314,31 @@ public class Mappa implements Iterable<Cella> {
 	private class MapIterator implements Iterator<Cella> {
 		private int rowCount;
 		private int columnCount;
+		private Coord curCoord = null;
 		private int latoDellaMappaIterator;
 
 		MapIterator() {
 			this.latoDellaMappaIterator = getLatoDellaMappa();
-			this.rowCount = (this.latoDellaMappaIterator-1);
-			this.columnCount = 0;
+			curCoord = new Coord((this.latoDellaMappaIterator-1), 0);
 		}
 
 		@Override
 		public boolean hasNext() {
-			return (0 <= rowCount);
+			return (0 <= curCoord.getY());
 		}
 
 		@Override
 		public Cella next() {
 			Cella tempCella = null;
-			if (0 <= rowCount) {
-				if (columnCount < latoDellaMappaIterator) {
-					tempCella = getCella(columnCount, rowCount);
+			if (0 <= curCoord.getY()) {
+				if (curCoord.getX() < latoDellaMappaIterator) {
+					tempCella = getCella(curCoord);
 				}
 				else {
-					columnCount = 0;
-					rowCount--;
-					tempCella = getCella(columnCount, rowCount);
+					curCoord = new Coord(0, ((curCoord.getY())-1));
+					tempCella = getCella(curCoord);
 				}
-				columnCount++;
+				curCoord = new Coord((curCoord.getX()+1), curCoord.getY());
 				return tempCella;
 			}
 			else throw new NoSuchElementException();
@@ -370,8 +357,8 @@ public class Mappa implements Iterable<Cella> {
 	 * @param rangeY
 	 * @return
 	 */
-	public Iterator<Cella> subIterator(int fromX, int fromY, int rangeX, int rangeY) {
-		return new subMapIterator(fromX, CommonUtils.translateYforClient(fromY, getLatoDellaMappa()), rangeX, rangeY);
+	public Iterator<Cella> subIterator(Coord myCoords, int rangeX, int rangeY) {
+		return new subMapIterator(new Coord(myCoords.getX(), CommonUtils.translateYforClient(myCoords.getY(), getLatoDellaMappa())), rangeX, rangeY);
 	}
 
 	private class subMapIterator implements Iterator<Cella> {
@@ -379,38 +366,35 @@ public class Mappa implements Iterable<Cella> {
 		private int startColumn;
 		private int rowRange;
 		private int columnRange;
-		private int rowCount;
-		private int columnCount;
+		private Coord curCoord = null;
 		private int latoDellaMappaIterator;
 
-		subMapIterator(int startX, int startY, int rangeX, int rangeY) {
+		subMapIterator(Coord startCoord, int rangeX, int rangeY) {
 			this.latoDellaMappaIterator = getLatoDellaMappa();
-			if (!(0 <= startX) ||
-					!(0 <= startY) ||
-					!(startX < latoDellaMappaIterator) ||
-					!(startY < latoDellaMappaIterator) ||
+			if (!(0 <= startCoord.getX()) ||
+					!(0 <= startCoord.getY()) ||
+					!(startCoord.getX() < latoDellaMappaIterator) ||
+					!(startCoord.getY() < latoDellaMappaIterator) ||
 					!(0 <= rangeX) ||
 					!(0 <= rangeY)) throw new IndexOutOfBoundsException();
-			this.startRow = startY;
-			this.startColumn = startX;
+			this.startRow = startCoord.getY();
+			this.startColumn = startCoord.getX();
 			this.rowRange = rangeY;
 			this.columnRange = rangeX;
 			this.latoDellaMappaIterator = getLatoDellaMappa();
-			rowCount = startRow;
-			columnCount = 0;
-			if (0 <= startX) throw new IndexOutOfBoundsException();
+			curCoord = new Coord(startColumn, startRow);
 		}
 
 		private boolean rowIsInRange() {
-			return (((startRow-rowRange) <= rowCount) &&
-					(0 <= rowCount) &&
-					(rowCount < latoDellaMappaIterator));
+			return (((startRow-rowRange) <= curCoord.getY()) &&
+					(0 <= curCoord.getY()) &&
+					(curCoord.getY() < latoDellaMappaIterator));
 		}
 
 		private boolean columnIsInRange() {
-			return ((columnCount <= (startColumn+columnRange)) &&
-					(0 <= columnCount) &&
-					(columnCount < latoDellaMappaIterator));
+			return (((curCoord.getX()) <= (startColumn+columnRange)) &&
+					(0 <= curCoord.getX()) &&
+					(curCoord.getX() < latoDellaMappaIterator));
 		}
 
 		@Override
@@ -423,14 +407,13 @@ public class Mappa implements Iterable<Cella> {
 			Cella tempCella = null;
 			if (rowIsInRange()) {
 				if (columnIsInRange()) {
-					tempCella = getCella(columnCount, rowCount);
+					tempCella = getCella(curCoord);
 				}
 				else {
-					columnCount = startColumn;
-					rowCount--;
-					tempCella = getCella(columnCount, rowCount);
+					curCoord = new Coord(startColumn, (curCoord.getY()-1));
+					tempCella = getCella(curCoord);
 				}
-				columnCount++;
+				curCoord = new Coord((curCoord.getX()+1), curCoord.getY());
 				return tempCella;
 			}
 			else throw new NoSuchElementException();
