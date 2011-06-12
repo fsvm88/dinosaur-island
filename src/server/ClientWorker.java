@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.Scanner;
 
 import dinolib.*;
+import dinolib.Mappa.Coord;
 
 /** 
  * Implementa l'ascoltatore per i client. Ascolta i comandi e gestisce le giuste risposte.
@@ -206,7 +207,7 @@ class ClientWorker extends Server implements Runnable {
 										x = scanner.nextInt();
 										if (scanner.hasNextInt()) {
 											y = scanner.nextInt();
-											writeLineToOutput((String) socketAdapter.muoviDinosauro(token, idDinosauro, x, y));
+											writeLineToOutput((String) socketAdapter.muoviDinosauro(token, idDinosauro, new Coord(x, y)));
 										}
 										else writeNoToOutput();
 									}
