@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 
 import dinolib.Exceptions.*;
 import dinolib.Mappa.Cella;
+import dinolib.Mappa.Coord;
 import dinolib.Razza.Dinosauro;
 
 public class SocketAdapter implements Adapter {
@@ -149,7 +150,7 @@ public class SocketAdapter implements Adapter {
 		return tempGiocatore.getNome() + "," +
 		tempGiocatore.getRazza().getNome() + "," +
 		tempGiocatore.getRazza().getTipo().toLowerCase().charAt(0) + ",{," +
-		tempGiocatore.getRazza().getDinosauroById(idDinosauro).getX() + "," + tempGiocatore.getRazza().getDinosauroById(idDinosauro).getY() + ",}," +
+		tempGiocatore.getRazza().getDinosauroById(idDinosauro).getCoord().getX() + "," + tempGiocatore.getRazza().getDinosauroById(idDinosauro).getCoord().getY() + ",}," +
 		tempGiocatore.getRazza().getDinosauroById(idDinosauro).getDimensione();
 	}
 	/**
@@ -331,10 +332,10 @@ public class SocketAdapter implements Adapter {
 					String buffer = "@vistaLocale";
 					Dinosauro tempDinosauro = myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
 					int rangeVista = tempDinosauro.getRangeVista();
-					int leftCornerX = myLogica.doSubtraction(tempDinosauro.getX(), rangeVista);
-					int bottomCornerY = myLogica.doSubtraction(tempDinosauro.getY(), rangeVista);
-					int rightCornerX = myLogica.doAddition(tempDinosauro.getX(), rangeVista);
-					int topCornerY = myLogica.doAddition(tempDinosauro.getY(), rangeVista);
+					int leftCornerX = myLogica.doSubtraction(tempDinosauro.getCoord().getX(), rangeVista);
+					int bottomCornerY = myLogica.doSubtraction(tempDinosauro.getCoord().getY(), rangeVista);
+					int rightCornerX = myLogica.doAddition(tempDinosauro.getCoord().getX(), rangeVista);
+					int topCornerY = myLogica.doAddition(tempDinosauro.getCoord().getY(), rangeVista);
 					buffer = buffer + ",{" + leftCornerX + "," + bottomCornerY + "},{"
 					+ (topCornerY-bottomCornerY) + "," + (rightCornerX-leftCornerX) + "},";
 					Iterator<Cella> subItCelle = myLogica.getMappa().subIterator(leftCornerX, bottomCornerY, (topCornerY-bottomCornerY), (rightCornerX-leftCornerX));
@@ -393,12 +394,12 @@ public class SocketAdapter implements Adapter {
 	}
 
 	@Override
-	public Object muoviDinosauro(String token, String idDinosauro, int x, int y) {
+	public Object muoviDinosauro(String token, String idDinosauro, Coord newCoord) {
 		try {
 			if (myLogica.isMioTurno(token)) {
 				if (myLogica.getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
 					String buffer = "@muoviDinosauro,";
-					String ret = myLogica.doMuoviDinosauro(token, idDinosauro, x, y);
+					String ret = myLogica.doMuoviDinosauro(token, idDinosauro, newCoord);
 				}
 				else return "@no,@idNonValido";
 			}

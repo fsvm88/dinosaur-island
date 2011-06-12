@@ -1,5 +1,6 @@
 package dinolib.Mappa;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -54,7 +55,7 @@ public class Mappa implements Iterable<Cella> {
 	 * @uml.property name="MAX_GRUPPO_ACQUA" readOnly="true"
 	 */
 	private final int max_GRUPPO_ACQUA = 15;
-	
+
 
 	/**
 	 * Dichiara la variabile che verrà usata per gestire il lato della mappa in tutta la classe.
@@ -76,7 +77,7 @@ public class Mappa implements Iterable<Cella> {
 	 * @uml.property name="conteggioVegetazioneStatico" 
 	 */
 	private int conteggioVegetazioneStatico = 0;
-	
+
 	/**
 	 * Contatore per le celle di acqua, indica quante celle di acqua ci devono essere sulla mappa.
 	 * @uml.property  name="conteggioAcquaStatico"
@@ -112,40 +113,63 @@ public class Mappa implements Iterable<Cella> {
 		conteggioTerraStatico = calcolaTotaleCelle() - conteggioAcquaStatico;
 		conteggioVegetazioneStatico = ((calcolaTotaleCelle() / 100) * fixed_FLORA_PERCENT );
 	}
-	
+
 	/**
 	 * Controlla se la cella richiesta è una terra. Utile per semplificare popolaMappa().
 	 * @param x
 	 * @param y
 	 * @return
 	 */
-	private boolean isCellaTerra(int x, int y) {
-		return this.getCella(x, y).toString().toLowerCase().equals("terra");
+	private boolean isCellaTerra(Coord nCoord) {
+		return this.getCella(nCoord.getX(), nCoord.getY()).toString().toLowerCase().equals("terra");
 	}
 
-	private ArrayList<Coord> getListOfNearbyEarthCells(int x, int y, int countCells) {
-		ArrayList
-	}
-	
-	private void allocaAcqua(int numeroCelleNelGruppo) {
-		int x = (1+CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa()-2));
-		int y = (1+CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa()-2));
-		int curCount = 0;
-		if (isCellaTerra(x, y)) {
-			while (curCount<numeroCelleNelGruppo) {
-				if (isCellaTerra(x+1, y)) {
-					MappaACelle[x+1][y] = new Acqua();
-					curCount++;
-				}
-				else if (isCellaTerra(x-1, y)) {
-					MappaACelle[x-1][y] = new Acqua();
-					curCount++;
-				}
-				else if (isCellaTerra(x, y+1))
+	private void addNearbyEarthCells(Coord startCoord, ArrayList<Coord> myArray, int countCells, int maxDistance) {
+		Coord tempCoord = null;
+		int rndX = 0;
+		int rndY = 0;
+		int j = 1;
+		while (myArray.size()<countCells) {
+			rndX = (-maxDistance+CommonUtils.getNewRandomIntValueOnMyMap(1+(2*maxDistance)));
+			rndY = (-maxDistance+CommonUtils.getNewRandomIntValueOnMyMap(1+(2*maxDistance)));
+			tempCoord = new Coord(startCoord.getX()+rndX, startCoord.getY()+rndY);
+			if (!myArray.contains(tempCoord) &&
+					isCellaTerra(tempCoord)) {
+				myArray.add(tempCoord);
 			}
 		}
 	}
-	
+
+	private void getListOfNearbyEarthCells(ArrayList<Coord> myArray, Coord nCoord, int countCells) {
+		if (countCells<8) {
+			addNearbyEarthCells(nCoord, myArray, countCells, 1);
+		}
+		else {
+			int j = 1;
+			while (myArray.size()<countCells) {
+				addNearbyEarthCells(nCoord, myArray, countCells, j);
+				j++;
+			}
+		}
+	}
+
+	private void allocaAcqua(int numeroCelleNelGruppo) {
+		Coord newCoord = new Coord((1+CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa()-2)),
+				(1+CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa()-2)));
+		int curCount = 0;
+		ArrayList<Coord> myCells = new ArrayList<Coord>();
+		if (isCellaTerra(newCoord)) {
+			myCells.add(newCoord);
+			getListOfNearbyEarthCells(myCells, newCoord, numeroCelleNelGruppo);
+			Iterator<Coord> itOnCoords = myCells.iterator();
+			while (itOnCoords.hasNext()) {
+				MappaACelle[newCoord.getX()][newCoord.getY()] = new Acqua();
+				newCoord = itOnCoords.next();
+				curCount++;
+			}
+		}
+	}
+
 	/**
 	 * Implementa la creazione di una nuova mappa.
 	 */
@@ -195,7 +219,7 @@ public class Mappa implements Iterable<Cella> {
 			sistemaErroreDiConnessione(trovaPrimoErroreDiConnessione());
 		}
 		/* Ho sistemato tutti gli errori di connessione, ora le terre sono semplicemente connesse.
-		* Ora controllo che il conteggio di acque e terre sia giusto */
+		 * Ora controllo che il conteggio di acque e terre sia giusto */
 		while (!conteggioTerraEAcquaGiusto()) {
 			sistemaErroreDiConteggio();
 		}
@@ -203,13 +227,11 @@ public class Mappa implements Iterable<Cella> {
 		 * In più le terre sono semplicemente connesse e le acque sono in gruppi in numero giusto.
 		 * Ora penso alla vegetazione. */
 		int curVeg = 0;
-		int x = 0;
-		int y = 0;
 		while (curVeg<conteggioVegetazioneStatico) {
-			x = CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa());
-			y = CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa());
-			if (isCellaTerra(x, y)) {
-				MappaACelle[x][y] = new Vegetazione((150+CommonUtils.getNewRandomIntValueOnMyMap(201)));
+			Coord vegCoord = new Coord((CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa())),
+					CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa()));
+			if (isCellaTerra(vegCoord)) {
+				MappaACelle[vegCoord.getX()][vegCoord.getY()] = new Vegetazione((150+CommonUtils.getNewRandomIntValueOnMyMap(201)));
 				curVeg++;
 			}
 			else continue;
@@ -217,10 +239,10 @@ public class Mappa implements Iterable<Cella> {
 		/* Ho completato l'inserimento della vegetazione, ora penso alle carogne. */
 		int curCarogne = 0;
 		while (curCarogne<fixed_SOD_COUNT) {
-			x = CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa());
-			y = CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa());
-			if (isCellaTerra(x, y)) {
-				MappaACelle[x][y] = new Carogna((350+CommonUtils.getNewRandomIntValueOnMyMap(301)));
+			Coord carCoord = new Coord((CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa())),
+					CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa()));
+			if (isCellaTerra(carCoord)) {
+				MappaACelle[carCoord.getX()][carCoord.getY()] = new Carogna((350+CommonUtils.getNewRandomIntValueOnMyMap(301)));
 				curCarogne++;
 			}
 			else continue;
@@ -230,7 +252,7 @@ public class Mappa implements Iterable<Cella> {
 		 * Attenzione! Devo aggiornare il numero di carogne ogni volta!!!
 		 */
 	}
-	
+
 	/**
 	 * Inserisce un dinosauro sulla mappa.
 	 * Passa il tipo corrente della cella così che venga tenuta valida.
@@ -249,12 +271,12 @@ public class Mappa implements Iterable<Cella> {
 	/**
 	 * Rimuove il dinosauro dalla cella corrente e reimposta la cella al suo vecchio valore.
 	 */
-	public void rimuoviIlDinosauroDallaCella(int x, int y) {
-		int tempY = CommonUtils.translateYforServer(y, getLatoDellaMappa());
-		if ( (MappaACelle[x][tempY].getIdDelDinosauro() != null) &&
-				(MappaACelle[x][tempY].getCellaSuCuiSiTrova() != null) ) {
-			Cella vecchiaCella = MappaACelle[x][tempY].getCellaSuCuiSiTrova();
-			MappaACelle[x][tempY] = vecchiaCella;
+	public void rimuoviIlDinosauroDallaCella(Coord coordToRemove) {
+		int tempY = CommonUtils.translateYforServer(coordToRemove.getY(), getLatoDellaMappa());
+		if ( (MappaACelle[coordToRemove.getX()][tempY].getIdDelDinosauro() != null) &&
+				(MappaACelle[coordToRemove.getX()][tempY].getCellaSuCuiSiTrova() != null) ) {
+			Cella vecchiaCella = MappaACelle[coordToRemove.getX()][tempY].getCellaSuCuiSiTrova();
+			MappaACelle[coordToRemove.getX()][tempY] = vecchiaCella;
 		}
 	}
 
@@ -320,7 +342,7 @@ public class Mappa implements Iterable<Cella> {
 		@Override
 		public void remove() { throw new UnsupportedOperationException(); }
 	}
-	
+
 	/**
 	 * Restituisce un iteratore sulle celle per una porzione richiesta di Mappa.
 	 * È uguale a MapIterator nella logica di funzionamento.
@@ -333,7 +355,7 @@ public class Mappa implements Iterable<Cella> {
 	public Iterator<Cella> subIterator(int fromX, int fromY, int rangeX, int rangeY) {
 		return new subMapIterator(fromX, CommonUtils.translateYforClient(fromY, getLatoDellaMappa()), rangeX, rangeY);
 	}
-	
+
 	private class subMapIterator implements Iterator<Cella> {
 		private int startRow;
 		private int startColumn;
@@ -342,7 +364,7 @@ public class Mappa implements Iterable<Cella> {
 		private int rowCount;
 		private int columnCount;
 		private int latoDellaMappaIterator;
-		
+
 		subMapIterator(int startX, int startY, int rangeX, int rangeY) {
 			this.latoDellaMappaIterator = getLatoDellaMappa();
 			if (!(0 <= startX) ||
@@ -366,13 +388,13 @@ public class Mappa implements Iterable<Cella> {
 					(0 <= rowCount) &&
 					(rowCount < latoDellaMappaIterator));
 		}
-		
+
 		private boolean columnIsInRange() {
 			return ((columnCount <= (startColumn+columnRange)) &&
 					(0 <= columnCount) &&
 					(columnCount < latoDellaMappaIterator));
 		}
-		
+
 		@Override
 		public boolean hasNext() {
 			return rowIsInRange();
