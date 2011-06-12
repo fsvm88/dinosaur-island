@@ -1,8 +1,7 @@
 package dinolib.Razza;
 
-import java.util.Random;
-
 import dinolib.CommonUtils;
+import dinolib.Mappa.Coord;
 /**
  * @author  fabio
  */
@@ -60,15 +59,10 @@ public abstract class Dinosauro {
 	 */
 	private int durataVitaMax = 0;
 	/**
-	 * Indica la posizione del dinosauro sull'ascissa.
-	 * @uml.property  name="x"
+	 * Istanzia riferimento alle coordinate del dinosauro.
+	 * @uml.property name="coord"
 	 */
-	private int x = 0;
-	/**
-	 * Indica la posizione del dinosauro sull'ordinata.
-	 * @uml.property  name="y"
-	 */
-	private int y = 0;
+	private Coord coord = null;
 	/**
 	 * Indica la forza del dinosauro.
 	 * @uml.property  name="forza"
@@ -90,14 +84,12 @@ public abstract class Dinosauro {
 	 * Costruttore visibile solo alle sottoclassi da usare come costruttore comune per Carnivoro e Erbivoro.
 	 */
 	protected Dinosauro(int x, int y, int nuovo_spostamento_MAX, int nuovo_moltiplicatore_FORZA) {
-		this.x = x;
-		this.y = y;
-		Random generator = new Random();
+		this.setXY(x, y);
 		this.turnoDiVita = 1;
-		this.durataVitaMax = 24 + (generator.nextInt(13));
-		this.energiaAttuale = 750;
+		this.durataVitaMax = 24 + (CommonUtils.getNewRandomIntValueOnMyMap(13));
+		this.setEnergiaAttuale(750);
 		this.dimensione = 1;
-		this.energiaMax = 1000*dimensione;
+		this.updateEnergiaMax();
 		this.spostamento_MAX = nuovo_spostamento_MAX;
 		this.moltiplicatore_FORZA = nuovo_moltiplicatore_FORZA;
 		this.updateEnergiaCrescita();
@@ -133,14 +125,9 @@ public abstract class Dinosauro {
 	public int getForza() { updateForza(); return forza; }
 	/**
 	 * @return
-	 * @uml.property  name="x"
+	 * @uml.property name="coord"
 	 */
-	public int getX() { return x; }
-	/**
-	 * @return
-	 * @uml.property  name="y"
-	 */
-	public int getY() { return y; }
+	public Coord getCoord() { return coord; }
 	/**
 	 * @return
 	 * @uml.property  name="turnoDiVita"
@@ -197,17 +184,7 @@ public abstract class Dinosauro {
 	 * @uml.property  name="dimensione"
 	 */
 	private void setDimensione(int dimensione) { this.dimensione = dimensione; }
-	/**
-	 * @param x
-	 * @uml.property  name="x"
-	 */
-	public void setX(int x) { this.x = x; }
-	/**
-	 * @param y
-	 * @uml.property  name="y"
-	 */
-	public void setY(int y) { this.y = y; }
-	public void setXY(int x, int y) { this.x = x; this.y = y; }
+	public void setXY(int x, int y) { coord = new Coord(x, y); }
 	private void updateEnergiaCrescita() { energiaCrescita = energiaMax/2; }
 	private void updateForza() { this.forza = (moltiplicatore_FORZA*this.getDimensione()*this.getEnergiaAttuale()); }
 	private void updateEnergiaMax() { this.energiaMax = 1000*this.dimensione; }
