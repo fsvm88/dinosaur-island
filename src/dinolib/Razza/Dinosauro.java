@@ -78,6 +78,14 @@ public abstract class Dinosauro {
 	 * @uml.property  name="idDinosauro"
 	 */
 	private String idDinosauro = null;
+	/**
+	 * Indica se il dinosauro ha già eseguito un'azione statica o meno (crescita o deposizione uovo)
+	 */
+	private boolean azioneStaticaCompiuta = false;
+	/**
+	 * Indica se il dinosauro si è già mosso.
+	 */
+	private boolean movimentoCompiuto = false;
 	
 	/* Costruttore */
 	/**
@@ -98,6 +106,8 @@ public abstract class Dinosauro {
 	}
 	
 	/* Tutti i getter */
+	public boolean hasAzioneStatica() { return !azioneStaticaCompiuta; }
+	public boolean hasMovimento() { return !movimentoCompiuto; }
 	/**
 	 * @return
 	 * @uml.property  name="energiaAttuale"
@@ -179,6 +189,7 @@ public abstract class Dinosauro {
 	}
 	
 	/* Tutti i setter */
+	public void haMosso() { movimentoCompiuto = true; }
 	public void nonUsabile() { isUsabile = false; }
 	public void usabile() { isUsabile = true; }
 	public void setCoord(Coord myCoords) { this.coord = myCoords; }
@@ -198,7 +209,11 @@ public abstract class Dinosauro {
 	/**
 	 * Aumenta di uno il turno di vita del dinosauro. (Invecchia il dinosauro).
 	 */
-	public void invecchia() { this.turnoDiVita += 1; }
+	public void invecchia() {
+		this.turnoDiVita += 1;
+		this.azioneStaticaCompiuta = false;
+		this.movimentoCompiuto = false;
+	}
 	
 	/* Funzioni miscellanee */
 	/**
@@ -237,6 +252,7 @@ public abstract class Dinosauro {
 			this.updateEnergiaMax();
 			this.updateForza();
 			this.updateEnergiaCrescita();
+			this.azioneStaticaCompiuta = true;
 		}
 	}
 	/**
@@ -244,6 +260,7 @@ public abstract class Dinosauro {
 	 */
 	protected void deponiUovo() {
 		this.setEnergiaAttuale(this.getEnergiaAttuale()-energia_DEPOSIZIONE_UOVO);
+		this.azioneStaticaCompiuta = true;
 	}
 	
 	/**

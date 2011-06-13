@@ -412,7 +412,11 @@ public class SocketAdapter implements Adapter {
 			return "@no,@nonInPartita";
 		} catch (NonAutenticatoException e) {
 			return returnInvalidToken();
+		} catch (GenericDinosauroException e) {
+			if (e.getMessage().equals("mortePerInedia")) return "@no,@mortePerInedia";
+			if (e.getMessage().equals("raggiuntoLimiteMosseDinosauro")) return "@no,@raggiuntoLimiteMosseDinosauro";
 		}
+		return null;
 	}
 
 	@Override
@@ -435,6 +439,7 @@ public class SocketAdapter implements Adapter {
 		} catch (GenericDinosauroException e) {
 			if (e.getMessage().equals("mortePerInedia")) return "@no,@mortePerInedia";
 			if (e.getMessage().equals("raggiuntaDimensioneMax")) return "@no,@raggiuntaDimensioneMax";
+			if (e.getMessage().equals("raggiuntoLimiteMosseDinosauro")) return "@no,@raggiuntoLimiteMosseDinosauro";
 		}
 		return "@no";
 	}
@@ -459,6 +464,7 @@ public class SocketAdapter implements Adapter {
 		} catch (GenericDinosauroException e) {
 			if (e.getMessage().equals("mortePerInedia")) return "@no,@mortePerInedia";
 			if (e.getMessage().equals("raggiuntaDimensioneMax")) return "@no,@raggiuntaDimensioneMax";
+			if (e.getMessage().equals("raggiuntoLimiteMosseDinosauro")) return "@no,@raggiuntoLimiteMosseDinosauro";
 		}
 		return "@no";
 	}
