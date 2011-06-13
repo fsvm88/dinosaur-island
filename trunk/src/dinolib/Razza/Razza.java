@@ -200,6 +200,7 @@ public class Razza implements Set<Dinosauro> {
 		if(!(tempDinosauro.getEnergiaAttuale()<tempDinosauro.getEnergiaMovimento())) {
 			tempDinosauro.setCoord(newCoord);
 			tempDinosauro.setEnergiaAttuale(tempDinosauro.getEnergiaAttuale()-tempDinosauro.getEnergiaMovimento());
+			tempDinosauro.haMosso();
 			return;
 		}
 		else {
