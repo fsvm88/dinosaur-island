@@ -91,7 +91,7 @@ public abstract class Dinosauro {
 	/**
 	 * Costruttore visibile solo alle sottoclassi da usare come costruttore comune per Carnivoro e Erbivoro.
 	 */
-	protected Dinosauro(Coord nCoord, int nuovo_spostamento_MAX, int nuovo_moltiplicatore_FORZA) {
+	protected Dinosauro(Coord nCoord, int nuovo_spostamento_MAX, int nuovo_moltiplicatore_FORZA) { // Testato
 		this.setCoord(nCoord);
 		this.turnoDiVita = 1;
 		this.durataVitaMax = 24 + (CommonUtils.getNewRandomIntValueOnMyMap(13));
@@ -112,7 +112,7 @@ public abstract class Dinosauro {
 	 * @return
 	 * @uml.property  name="energiaAttuale"
 	 */
-	public int getEnergiaAttuale() { return energiaAttuale; }
+	public int getEnergiaAttuale() { return energiaAttuale; } // Testato
 	/**
 	 * @return
 	 * @uml.property  name="energiaMax"
@@ -122,7 +122,7 @@ public abstract class Dinosauro {
 	 * @return
 	 * @uml.property  name="dimensione"
 	 */
-	public int getDimensione() { return dimensione; }
+	public int getDimensione() { return dimensione; } // Testato
 	/**
 	 * @return
 	 * @uml.property  name="durataVitaMax"
@@ -137,18 +137,18 @@ public abstract class Dinosauro {
 	 * @return
 	 * @uml.property name="coord"
 	 */
-	public Coord getCoord() { return coord; }
+	public Coord getCoord() { return coord; } // Testato
 	/**
 	 * @return
 	 * @uml.property  name="turnoDiVita"
 	 */
-	public int getTurnoDiVita() { return turnoDiVita; }
+	public int getTurnoDiVita() { return turnoDiVita; } // Testato
 	public int getSpostamentoMax() { return spostamento_MAX; }
 	/**
 	 * @return
 	 * @uml.property  name="usabile"
 	 */
-	public boolean isUsabile() { return isUsabile; }
+	public boolean isUsabile() { return isUsabile; } // Testato
 	/**
 	 * @return
 	 * @uml.property  name="idDinosauro"
@@ -158,16 +158,14 @@ public abstract class Dinosauro {
 	 * Restituisce come String il nome della classe per avere il tipo della razza di dinosauri.
 	 * @return
 	 */
-	public String getTipoRazza() {
-		return toString();
-	}
+	public String getTipoRazza() { return toString(); } // Testato
 	/**
 	 * Restituisce un valore che indica quante caselle il dinosauro vede attorno a sè (range di visuale).
 	 * Dipende dalla dimensione del dinosauro.
 	 * I valori sono hard-coded.
 	 * @return
 	 */
-	public int getRangeVista() {
+	public int getRangeVista() { // Testato
 		switch (getDimensione()) {
 		case 1:
 			return 2;
@@ -190,14 +188,14 @@ public abstract class Dinosauro {
 	
 	/* Tutti i setter */
 	public void haMosso() { movimentoCompiuto = true; }
-	public void nonUsabile() { isUsabile = false; }
-	public void usabile() { isUsabile = true; }
-	public void setCoord(Coord myCoords) { this.coord = myCoords; }
+	public void nonUsabile() { isUsabile = false; } // Testato
+	public void usabile() { isUsabile = true; } // Testato
+	public void setCoord(Coord myCoords) { this.coord = myCoords; } // Testato
 	/**
 	 * @param energiaAttuale
 	 * @uml.property  name="energiaAttuale"
 	 */
-	public void setEnergiaAttuale(int energiaAttuale) { this.energiaAttuale = energiaAttuale; }
+	public void setEnergiaAttuale(int energiaAttuale) { this.energiaAttuale = energiaAttuale; } // Testato
 	/**
 	 * @param dimensione
 	 * @uml.property  name="dimensione"
@@ -208,8 +206,9 @@ public abstract class Dinosauro {
 	private void updateEnergiaMax() { this.energiaMax = 1000*this.dimensione; }
 	/**
 	 * Aumenta di uno il turno di vita del dinosauro. (Invecchia il dinosauro).
+	 * Rimuove i marker per movimento e azione statica compiuti.
 	 */
-	public void invecchia() {
+	public void invecchia() { // Testato
 		this.turnoDiVita += 1;
 		this.azioneStaticaCompiuta = false;
 		this.movimentoCompiuto = false;
@@ -221,7 +220,7 @@ public abstract class Dinosauro {
 	 * Risponde true se dimensione = dimensione_MAX, false altrimenti.
 	 * @return
 	 */
-	public boolean isAtDimensioneMax() {
+	public boolean isAtDimensioneMax() { // Testato
 		if (this.getDimensione() >= 5) return true;
 		else return false;
 	}
@@ -230,7 +229,7 @@ public abstract class Dinosauro {
 	 * È booleano e ritorna true se energiaAttuale > energiaCrescita; false altrimenti.
 	 * @return
 	 */
-	protected boolean hasEnergyToGrow() {
+	protected boolean hasEnergyToGrow() { // Testato
 		if (energiaAttuale > energiaCrescita) return true;
 		else return false;
 	}
@@ -239,14 +238,14 @@ public abstract class Dinosauro {
 	 * È booleano e ritorna true se energiaAttuale > energiaCrescita; false altrimenti.
 	 * @return
 	 */
-	protected boolean hasEnergyToRepl() {
+	protected boolean hasEnergyToRepl() { // Testato
 		if (energiaAttuale > energia_DEPOSIZIONE_UOVO) return true;
 		else return false;
 	}
 	/**
 	 * Fa crescere il dinosauro.
 	 */
-	protected void cresci() {
+	protected void cresci() { // Testato
 		if (this.getDimensione() < dimensione_MASSIMA) {
 			this.setDimensione((this.getDimensione()+1));
 			this.updateEnergiaMax();
@@ -266,7 +265,5 @@ public abstract class Dinosauro {
 	/**
 	 * Override del metodo toString per questa classe.
 	 */
-	public String toString () {
-		return this.getClass().getSimpleName();
-	}
+	public String toString () { return this.getClass().getSimpleName(); } // Testato
 }

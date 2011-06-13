@@ -148,7 +148,7 @@ public class SocketAdapter implements Adapter {
 	private String assemblaStatoComuneDinosauro(Giocatore tempGiocatore, String idDinosauro) {
 		return tempGiocatore.getNome() + "," +
 		tempGiocatore.getRazza().getNome() + "," +
-		tempGiocatore.getRazza().getTipo().toLowerCase().charAt(0) + ",{," +
+		tempGiocatore.getRazza().getTipo().charValue() + ",{," +
 		tempGiocatore.getRazza().getDinosauroById(idDinosauro).getCoord().getX() + "," + tempGiocatore.getRazza().getDinosauroById(idDinosauro).getCoord().getY() + ",}," +
 		tempGiocatore.getRazza().getDinosauroById(idDinosauro).getDimensione();
 	}
@@ -190,7 +190,7 @@ public class SocketAdapter implements Adapter {
 	}
 
 	@Override
-	public Object creaRazza(String token, String nomeRazza, String tipo) {
+	public Object creaRazza(String token, String nomeRazza, Character tipo) {
 		try {
 			if (myLogica.isPlayerLogged(token)) {
 				if (myLogica.doCreaRazza(token, nomeRazza, tipo)) return "@ok";

@@ -76,7 +76,7 @@ public class Giocatore {
 	 * @param nuovoNomeRazza
 	 * @param nuovoDinosauro
 	 */
-	protected void creaNuovaRazza(String nuovoNomeRazza, String nuovoTipoRazza) {
+	protected void creaNuovaRazza(String nuovoNomeRazza, Character nuovoTipoRazza) {
 		razzaDelGiocatore = new Razza(nuovoNomeRazza, nuovoTipoRazza);
 	}
 	/**

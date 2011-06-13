@@ -8,15 +8,15 @@ public class Coord {
 	private int x = 0;
 	private int y = 0;
 	
-	public Coord(int x, int y) {
+	public Coord(int x, int y) { // Testato
 		this.x = x;
 		this.y = y;
 	}
 	
-	public int getX() { return x; }
-	public int getY() { return y; }
+	public int getX() { return x; } // Testato
+	public int getY() { return y; } // Testato
 	
-	public boolean equals(Coord coordToConf) {
+	public boolean equals(Coord coordToConf) { // Testato
 		return ((this.x == coordToConf.getX()) &&
 				(this.y == coordToConf.getY())); 
 	}

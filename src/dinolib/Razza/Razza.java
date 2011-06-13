@@ -50,14 +50,14 @@ public class Razza implements Set<Dinosauro> {
 	 * Impostata definitivamente solo dal costruttore.
 	 * @uml.property name="tipoRazza"
 	 */
-	private String tipoRazza = null;
+	private Character tipoRazza = null;
 
 	/* Costruttore */
 	/**
 	 * Implementa la costruzione della classe Specie.
 	 * Richiede il nuovo nome della razza e l'istanza del nuovo dinosauro.
 	 */
-	public Razza(String nomeRazza, String tipoRazza) {
+	public Razza(String nomeRazza, Character tipoRazza) { // Testato
 		this.nome = nomeRazza;
 		this.tipoRazza = tipoRazza;
 	}
@@ -72,13 +72,13 @@ public class Razza implements Set<Dinosauro> {
 	 * @return
 	 * @uml.property  name="punteggio"
 	 */
-	public int getPunteggio() { return punteggio; }
+	public int getPunteggio() { return punteggio; } // Testato
 	/**
 	 * @return
 	 * @uml.property  name="tipoRazza"
 	 */
-	public String getTipo() { return tipoRazza; }
-	public Dinosauro getDinosauroById(String idDinosauroCercato) {
+	public Character getTipo() { return tipoRazza; } // Testato
+	public Dinosauro getDinosauroById(String idDinosauroCercato) { // Testato
 		if (existsDinosauroWithId(idDinosauroCercato)) {
 			Iterator<Dinosauro> itDinosauri = this.iterator();
 			Dinosauro tempDinosauro;
@@ -89,7 +89,7 @@ public class Razza implements Set<Dinosauro> {
 		}
 		return null;
 	}
-	protected boolean hasNumeroMassimo() {
+	protected boolean hasNumeroMassimo() { // Testato
 		if (this.size() >= numero_MAX_DINOSAURI) return true;
 		else return false;
 	}
@@ -98,7 +98,7 @@ public class Razza implements Set<Dinosauro> {
 	 * @param idDaCercare
 	 * @return
 	 */
-	public boolean existsDinosauroWithId(String idDaCercare) {
+	public boolean existsDinosauroWithId(String idDaCercare) { // Testato
 		Iterator<Dinosauro> itDinosauri = this.iterator();
 		while (itDinosauri.hasNext()) {
 			if (itDinosauri.next().getIdDinosauro().equals(idDaCercare)) return true;
@@ -127,7 +127,7 @@ public class Razza implements Set<Dinosauro> {
 	/**
 	 * Helper per aggiornare la specie.
 	 */
-	public void aggiornaRazza() {
+	public void aggiornaRazza() { // Testato
 		if (!isEmpty()) {
 			invecchiaDinosauri();
 			aggiornaPunteggio();
@@ -139,16 +139,17 @@ public class Razza implements Set<Dinosauro> {
 	 * Rimuove un dinosauro usando l'id come parametro.
 	 * @param idToRemove
 	 */
-	public void removeById(String idToRemove) {
+	public void removeById(String idToRemove) { // Testato
 		Iterator<Dinosauro> itDinosauri = this.iterator();
-		Dinosauro tempDinosauro;
+		Dinosauro tempDinosauro = null;
 		while(itDinosauri.hasNext()) {
 			tempDinosauro = itDinosauri.next();
 			if (tempDinosauro.getIdDinosauro().equals(idToRemove)) {
-				dinosauri.remove(tempDinosauro);
-				return;
+				break;
 			}
 		}
+		dinosauri.remove(tempDinosauro);
+		return;
 	}
 	/**
 	 * Helper per far crescere il dinosauro richiesto.
@@ -156,7 +157,7 @@ public class Razza implements Set<Dinosauro> {
 	 * @param idDinosauro
 	 * @throws GenericDinosauroException 
 	 */
-	public void cresciDinosauro(String idDinosauro) throws GenericDinosauroException {
+	public void cresciDinosauro(String idDinosauro) throws GenericDinosauroException { // Testato
 		Dinosauro tempDinosauro = getDinosauroById(idDinosauro);
 		if (!tempDinosauro.isAtDimensioneMax()) {
 			if (tempDinosauro.hasEnergyToGrow()) {
@@ -175,7 +176,7 @@ public class Razza implements Set<Dinosauro> {
 	 * @param idDinosauro
 	 * @throws GenericDinosauroException
 	 */
-	public void deponiUovo(String idDinosauro) throws GenericDinosauroException {
+	public void deponiUovo(String idDinosauro) throws GenericDinosauroException { // Testato
 		Dinosauro tempDinosauro = getDinosauroById(idDinosauro);
 		if (!hasNumeroMassimo()) {
 			if (tempDinosauro.hasEnergyToRepl()) {
@@ -195,7 +196,7 @@ public class Razza implements Set<Dinosauro> {
 	 * @param newCoord
 	 * @throws GenericDinosauroException 
 	 */
-	public void muoviDinosauro(String idDinosauro, Coord newCoord) throws GenericDinosauroException {
+	public void muoviDinosauro(String idDinosauro, Coord newCoord) throws GenericDinosauroException { // Testato
 		Dinosauro tempDinosauro = getDinosauroById(idDinosauro);
 		if(!(tempDinosauro.getEnergiaAttuale()<tempDinosauro.getEnergiaMovimento())) {
 			tempDinosauro.setCoord(newCoord);
@@ -212,32 +213,32 @@ public class Razza implements Set<Dinosauro> {
 	
 	/* Tutti i metodi importati dall'interfaccia, questi sono quelli supportati */
 	@Override
-	public int size() {
+	public int size() { // Testato
 		return dinosauri.size();
 	}
 
 	@Override
-	public boolean isEmpty() {
+	public boolean isEmpty() { // Testato
 		if (dinosauri.isEmpty()) return true;
 		else return false;
 	}
 
 	@Override
-	public boolean contains(Object o) {
+	public boolean contains(Object o) { // Testato
 		if (dinosauri.contains(o)) return true;
 		else return false;
 	}
 
 	@Override
-	public Iterator<Dinosauro> iterator() {
+	public Iterator<Dinosauro> iterator() { // Testato
 		return dinosauri.iterator();
 	}
 
 	@Override
-	public void clear() { dinosauri = new HashSet<Dinosauro>(); }
+	public void clear() { dinosauri = new HashSet<Dinosauro>(); } // Testato
 
 	@Override
-	public boolean add(Dinosauro e) {
+	public boolean add(Dinosauro e) { // Testato
 		if (e != null) {
 			Iterator<Dinosauro> itDinosauro = this.iterator();
 			while (itDinosauro.hasNext()) {
@@ -250,7 +251,7 @@ public class Razza implements Set<Dinosauro> {
 	}
 
 	@Override
-	public boolean remove(Object o) {
+	public boolean remove(Object o) {  // Testato
 		if (o != null) {
 			dinosauri.remove((Dinosauro) o);
 			if (this.isEmpty()) dinosauri.clear();

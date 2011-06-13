@@ -86,11 +86,12 @@ class ClientWorker extends Server implements Runnable {
 		return scanner.next();
 	}
 
-	private String estraiTipo(Scanner scanner) {
-		return scanner.next();
+	private Character estraiTipo(Scanner scanner) {
+		String myString = scanner.next();
+		return myString.charAt(0);
 	}
 
-	private boolean validaRazzaETipo(String nomeRazza, String tipo) {
+	private boolean validaRazzaETipo(String nomeRazza, Character tipo) {
 		if ((nomeRazza != null) && (tipo != null) ) return true;
 		else return false;
 	}
@@ -143,7 +144,7 @@ class ClientWorker extends Server implements Runnable {
 							/* comandi fuori partita*/
 							if (comando.equals("@creaRazza")) {
 								String nomeRazza = null;
-								String tipoRazza = null;
+								Character tipoRazza = null;
 								if (scanner.hasNext()) {
 									nomeRazza = estraiRazza(scanner);
 									if (scanner.hasNext()) {

@@ -5,7 +5,7 @@ import dinolib.Mappa.Coord;
 interface Adapter {
 	Object creaUtente(String nomeUtente, String passwordUtente);
 	Object loginUtente(String nomeUtente, String passwordUtente);
-	Object creaRazza(String token, String nomeRazza, String tipo);
+	Object creaRazza(String token, String nomeRazza, Character tipo);
 	Object accessoPartita(String token);
 	Object uscitaPartita(String token);
 	Object listaGiocatori(String token);
