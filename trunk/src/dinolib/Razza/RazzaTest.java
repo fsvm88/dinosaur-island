@@ -7,6 +7,7 @@ import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Test;
 
+import dinolib.Exceptions.GenericDinosauroException;
 import dinolib.Mappa.Coord;
 
 /**
@@ -19,11 +20,11 @@ public class RazzaTest {
 	 */
 	private Razza myRazza;
 	private final Coord defaultCoord = new Coord(0,0);
-	private final String defaultType = "erbivoro";
+	private final Character defaultType = 'e';
 
 	@Before
 	public void setUp() {
-		myRazza = new Razza("testRazza", defaultType);
+		myRazza = new Razza("testRazza", defaultType.charValue());
 	}
 
 	private void testAdd() {
@@ -37,15 +38,14 @@ public class RazzaTest {
 	}
 
 	private void testRemove() {
-		assertEquals(0, myRazza.size());
+		assertEquals(3, myRazza.size());
 		Iterator<Dinosauro> itDinosauro = myRazza.iterator();
 		if (itDinosauro.hasNext()) {
 			Dinosauro tempDinosauro = itDinosauro.next();
 			assertNotNull(tempDinosauro);
 		}
 		itDinosauro.remove();
-		assertEquals(0, myRazza.size());
-		setUp();
+		assertEquals(2, myRazza.size());
 	}
 
 	private void testIterator() {
@@ -60,13 +60,14 @@ public class RazzaTest {
 	}
 
 	private void testIsEmpty() {
+		assertEquals(2, myRazza.size());
 		assertFalse(myRazza.isEmpty());
 		myRazza.clear();
 		assertTrue(myRazza.isEmpty());
 	}
 
 	private void testClear() {
-		assertEquals(1, myRazza.size());
+		assertEquals(3, myRazza.size());
 		myRazza.clear();
 		assertEquals(0, myRazza.size());
 		setUp();
@@ -101,9 +102,11 @@ public class RazzaTest {
 		Iterator<Dinosauro> itDinosauri = myRazza.iterator();
 		Dinosauro tempDinosauro = null;
 		int counter = 0;
-		while (counter < 2 && itDinosauri.hasNext()) {
-			tempDinosauro = itDinosauri.next();
-			counter++;
+		while (counter<2) {
+			while (itDinosauri.hasNext()) {
+				tempDinosauro = itDinosauri.next();
+				counter++;
+			}
 		}
 		myRazza.removeById(tempDinosauro.getIdDinosauro());
 		assertEquals((startCount-1), myRazza.size());
@@ -113,30 +116,39 @@ public class RazzaTest {
 
 	private void testGetTipo() {
 		assertNotNull(myRazza.getTipo());
-		assertEquals("Erbivoro", myRazza.getTipo());
+		assertEquals('e', myRazza.getTipo().charValue());
 		setUp();
 	}
 
 	private void testEstinzione() {
 		assertFalse(myRazza.isEmpty());
-		Iterator<Dinosauro> itDinosauro = myRazza.iterator();
-		if (itDinosauro.hasNext()) {
-			Dinosauro tempDinosauro = itDinosauro.next();
-			myRazza.remove(tempDinosauro);
-			assertEquals(0, myRazza.size());
+		Dinosauro tempDinosauro = null;
+		while (!myRazza.isEmpty()) {
+			Iterator<Dinosauro> itDinosauro = myRazza.iterator();
+			while (itDinosauro.hasNext()) {
+				tempDinosauro = itDinosauro.next();
+			}
+			if (tempDinosauro != null) {
+				myRazza.remove(tempDinosauro);
+			}
+			else break;
 		}
+		assertEquals(0, myRazza.size());
 		assertTrue(myRazza.isEmpty());
 		setUp();
 	}
 
 	private void testGetDinosauroById() {
+		assertEquals(3, myRazza.size());
 		int startCount = myRazza.size();
 		Iterator<Dinosauro> itDinosauri = myRazza.iterator();
 		Dinosauro tempDinosauro = null;
 		int counter = 0;
-		while (counter < 2 && itDinosauri.hasNext()) {
-			tempDinosauro = itDinosauri.next();
-			counter++;
+		while (counter<2) {
+			while (itDinosauri.hasNext()) {
+				tempDinosauro = itDinosauri.next();
+				counter++;
+			}
 		}
 		assertNotNull(myRazza.getDinosauroById(tempDinosauro.getIdDinosauro()));
 		myRazza.removeById(tempDinosauro.getIdDinosauro());
@@ -146,14 +158,17 @@ public class RazzaTest {
 		assertEquals(startCount, myRazza.size());
 		assertNotNull(myRazza.getDinosauroById(tempDinosauro.getIdDinosauro()));
 	}
-	
+
 	private void testHasNumeroMassimo() {
+		assertFalse(myRazza.hasNumeroMassimo());
+		myRazza.add(new Erbivoro(defaultCoord));
+		assertEquals(4, myRazza.size());
 		assertFalse(myRazza.hasNumeroMassimo());
 		myRazza.add(new Erbivoro(defaultCoord));
 		assertEquals(5, myRazza.size());
 		assertTrue(myRazza.hasNumeroMassimo());
 	}
-	
+
 	private void testExistsDinosauroWithId() {
 		int startCount = myRazza.size();
 		Iterator<Dinosauro> itDinosauri = myRazza.iterator();
@@ -171,7 +186,7 @@ public class RazzaTest {
 		assertEquals(startCount, myRazza.size());
 		assertTrue(myRazza.existsDinosauroWithId(tempDinosauro.getIdDinosauro()));
 	}
-	
+
 	private void testAggiornaPunteggio() {
 		int initPunteggio = myRazza.getPunteggio();
 		Iterator<Dinosauro> itDino = myRazza.iterator();
@@ -182,15 +197,85 @@ public class RazzaTest {
 		myRazza.aggiornaRazza();
 		assertFalse(initPunteggio == myRazza.getPunteggio());
 	}
-	
+
+	private void ageDinosauro(Dinosauro tempDinosauro) {
+		while (!tempDinosauro.isAtDimensioneMax()) {
+			tempDinosauro.setEnergiaAttuale(tempDinosauro.getEnergiaMax());
+			tempDinosauro.cresci();
+		}
+	}
+
+	private void testCresciDinosauro() {
+		Iterator<Dinosauro> itDino = myRazza.iterator();
+		Dinosauro tempDinosauro = itDino.next();
+		ageDinosauro(tempDinosauro);
+		try {
+			myRazza.cresciDinosauro(tempDinosauro.getIdDinosauro());
+		} catch (GenericDinosauroException e) {
+			assertEquals("raggiuntaDimensioneMax", e.getMessage());
+		}
+		tempDinosauro = itDino.next();
+		tempDinosauro.setEnergiaAttuale(1);
+		try {
+			myRazza.cresciDinosauro(tempDinosauro.getIdDinosauro());
+		} catch (GenericDinosauroException e) {
+			assertEquals("mortePerInedia", e.getMessage());
+		}
+	}
+
+	private void testDeponiUovo() {
+		Iterator<Dinosauro> itDino = myRazza.iterator();
+		Dinosauro tempDinosauro = itDino.next();
+		tempDinosauro = itDino.next();
+		tempDinosauro.setEnergiaAttuale(1);
+		try {
+			myRazza.deponiUovo(tempDinosauro.getIdDinosauro());
+		} catch (GenericDinosauroException e) {
+			assertEquals("mortePerInedia", e.getMessage());
+		}
+		assertFalse(myRazza.hasNumeroMassimo());
+		while (!myRazza.hasNumeroMassimo()) {
+			myRazza.add(new Erbivoro(new Coord(0, 0)));
+		}
+		assertTrue(myRazza.hasNumeroMassimo());
+		Iterator<Dinosauro> itDino2 = myRazza.iterator();
+		Dinosauro tempDinosauro2 = itDino2.next();
+		try {
+			myRazza.deponiUovo(tempDinosauro2.getIdDinosauro());
+		} catch (GenericDinosauroException e) {
+			assertEquals("raggiuntoNumeroMaxDinosauri", e.getMessage());
+		}
+	}
+
+	private void testMuoviDinosauro() {
+		Iterator<Dinosauro> itDino = myRazza.iterator();
+		Dinosauro tempDinosauro = itDino.next();
+		try {
+			myRazza.muoviDinosauro(tempDinosauro.getIdDinosauro(), new Coord(1, 1));
+		} catch (GenericDinosauroException e) {}
+		try {
+			tempDinosauro.setEnergiaAttuale(1);
+			myRazza.muoviDinosauro(tempDinosauro.getIdDinosauro(), new Coord(1, 1));
+		} catch (GenericDinosauroException e) {
+			assertEquals("mortePerInedia", e.getMessage());
+		}
+
+	}
+
 	@Test
 	public void testMiscellanea() {
+		setUp();
 		testGetTipo();
+		testAdd();
 		testGetDinosauroById();
 		testEstinzione();
+		testAdd();
 		testRemoveById();
 		testHasNumeroMassimo();
 		testExistsDinosauroWithId();
 		testAggiornaPunteggio();
+		testCresciDinosauro();
+		testDeponiUovo();
+		testMuoviDinosauro();
 	}
 }

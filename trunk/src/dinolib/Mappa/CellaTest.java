@@ -27,13 +27,13 @@ public class CellaTest {
 	
 	private void testAcqua() {
 		cella = new Acqua();
-		assertEquals("acqua", cella.toString());
+		assertEquals("Acqua", cella.toString());
 		testCommonVuote();
 	}
 	
 	private void testTerra() {
 		cella = new Terra();
-		assertEquals("terra", cella.toString());
+		assertEquals("Terra", cella.toString());
 		testCommonVuote();
 	}
 	/**
@@ -57,7 +57,7 @@ public class CellaTest {
 	
 	private void testVegetazione() {
 		cella = new Vegetazione(400);
-		assertEquals("vegetazione", cella.toString());
+		assertEquals("Vegetazione", cella.toString());
 		testCommon();
 		int initValue = cella.getValoreAttuale();
 		cella.mangia(100);
@@ -71,7 +71,7 @@ public class CellaTest {
 	
 	private void testCarogna() {
 		cella = new Carogna(400);
-		assertEquals("carogna", cella.toString());
+		assertEquals("Carogna", cella.toString());
 		testCommon();
 		int initValue = cella.getValoreAttuale();
 		cella.aggiornaCellaSulTurno();

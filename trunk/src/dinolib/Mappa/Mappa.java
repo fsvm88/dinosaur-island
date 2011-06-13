@@ -189,6 +189,7 @@ public class Mappa implements Iterable<Cella> {
 	 * Implementa la creazione di una nuova mappa.
 	 */
 	private void popolaMappa() {
+		MappaACelle = new Cella[getLatoDellaMappa()][getLatoDellaMappa()];
 		/* Conteggio celle acqua attualmente piazzate */
 		int curAcqua = 0;
 		/* righe */
@@ -300,6 +301,10 @@ public class Mappa implements Iterable<Cella> {
 	public void aggiornaSuTurno() {
 		aggiornaCelle();
 	}
+	
+	private Cella getCellaForIterator(Coord myCoords) {
+		return MappaACelle[myCoords.getX()][myCoords.getY()];
+	}
 
 	/**
 	 * Restituisce un iteratore sulle celle della mappa.
@@ -312,14 +317,12 @@ public class Mappa implements Iterable<Cella> {
 	}
 
 	private class MapIterator implements Iterator<Cella> {
-		private int rowCount;
-		private int columnCount;
 		private Coord curCoord = null;
 		private int latoDellaMappaIterator;
 
 		MapIterator() {
 			this.latoDellaMappaIterator = getLatoDellaMappa();
-			curCoord = new Coord((this.latoDellaMappaIterator-1), 0);
+			curCoord = new Coord(0, (this.latoDellaMappaIterator-1));
 		}
 
 		@Override
@@ -330,13 +333,13 @@ public class Mappa implements Iterable<Cella> {
 		@Override
 		public Cella next() {
 			Cella tempCella = null;
-			if (0 <= curCoord.getY()) {
+			if (hasNext()) {
 				if (curCoord.getX() < latoDellaMappaIterator) {
-					tempCella = getCella(curCoord);
+					tempCella = getCellaForIterator(curCoord);
 				}
 				else {
 					curCoord = new Coord(0, ((curCoord.getY())-1));
-					tempCella = getCella(curCoord);
+					tempCella = getCellaForIterator(curCoord);
 				}
 				curCoord = new Coord((curCoord.getX()+1), curCoord.getY());
 				return tempCella;
@@ -405,13 +408,13 @@ public class Mappa implements Iterable<Cella> {
 		@Override
 		public Cella next() {
 			Cella tempCella = null;
-			if (rowIsInRange()) {
+			if (hasNext()) {
 				if (columnIsInRange()) {
-					tempCella = getCella(curCoord);
+					tempCella = getCellaForIterator(curCoord);
 				}
 				else {
 					curCoord = new Coord(startColumn, (curCoord.getY()-1));
-					tempCella = getCella(curCoord);
+					tempCella = getCellaForIterator(curCoord);
 				}
 				curCoord = new Coord((curCoord.getX()+1), curCoord.getY());
 				return tempCella;

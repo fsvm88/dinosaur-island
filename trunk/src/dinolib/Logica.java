@@ -511,7 +511,7 @@ public class Logica implements Runnable {
 	 * @throws NomeRazzaOccupatoException
 	 * @throws InvalidTokenException
 	 */
-	protected boolean doCreaRazza(String token, String nomeRazza, String tipoRazza) throws NomeRazzaOccupatoException, InvalidTokenException {
+	protected boolean doCreaRazza(String token, String nomeRazza, Character tipoRazza) throws NomeRazzaOccupatoException, InvalidTokenException {
 		Iterator<Giocatore> itGiocatori = getPMan().getIteratorOnPlayers();
 		Giocatore tempGiocatore = null;
 		while (itGiocatori.hasNext()) {
