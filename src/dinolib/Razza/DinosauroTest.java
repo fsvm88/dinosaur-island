@@ -6,6 +6,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import dinolib.Mappa.Coord;
+
 
 /**
  * @author  fabio
@@ -16,10 +18,11 @@ public class DinosauroTest {
 	 * @uml.associationEnd  
 	 */
 	private Dinosauro dinosauro;
+	private final Coord defaultCoord = new Coord(0, 0);
 	
 	@Before
 	public void setUp() {
-		dinosauro = new Erbivoro(0, 0);
+		dinosauro = new Erbivoro(defaultCoord);
 	}
 	
 	private void ageDinosauro() {
@@ -72,18 +75,13 @@ public class DinosauroTest {
 	}
 	
 	@Test
-	public void testSetXY() {
-		int x = 20;
-		int y = 14;
-		dinosauro.setXY(x, y);
-		assertEquals(x, dinosauro.getX());
-		assertEquals(y, dinosauro.getY());
-		x = 27;
-		dinosauro.setX(x);
-		assertEquals(x, dinosauro.getX());
-		y = 19;
-		dinosauro.setY(y);
-		assertEquals(y, dinosauro.getY());
+	public void testSetCoord() {
+		Coord tc1 = new Coord(20, 14);
+		dinosauro.setCoord(tc1);
+		assertEquals(tc1, dinosauro.getCoord());
+		Coord tc2 = new Coord(27, 19);
+		dinosauro.setCoord(tc2);
+		assertEquals(tc2, dinosauro.getCoord());
 		setUp();
 	}
 	
