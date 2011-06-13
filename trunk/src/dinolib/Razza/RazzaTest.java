@@ -7,6 +7,8 @@ import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Test;
 
+import dinolib.Mappa.Coord;
+
 /**
  * @author  fabio
  */
@@ -16,86 +18,86 @@ public class RazzaTest {
 	 * @uml.associationEnd  
 	 */
 	private Razza myRazza;
-	
+	private final Coord defaultCoord = new Coord(0,0);
+	private final String defaultType = "erbivoro";
+
 	@Before
 	public void setUp() {
-		myRazza = new Razza("testRazza", new Erbivoro(0,0));
+		myRazza = new Razza("testRazza", defaultType);
 	}
-	
+
 	private void testAdd() {
+		assertEquals(0, myRazza.size());
+		myRazza.add(new Erbivoro(defaultCoord));
 		assertEquals(1, myRazza.size());
-		myRazza.add(new Erbivoro(0,0));
+		myRazza.add(new Erbivoro(defaultCoord));
 		assertEquals(2, myRazza.size());
-		setUp();
+		myRazza.add(new Erbivoro(defaultCoord));
+		assertEquals(3, myRazza.size());
 	}
-	
+
 	private void testRemove() {
-		assertEquals(1, myRazza.size());
+		assertEquals(0, myRazza.size());
 		Iterator<Dinosauro> itDinosauro = myRazza.iterator();
 		if (itDinosauro.hasNext()) {
 			Dinosauro tempDinosauro = itDinosauro.next();
-			myRazza.remove(tempDinosauro);
-			assertEquals(0, myRazza.size());
+			assertNotNull(tempDinosauro);
 		}
+		itDinosauro.remove();
+		assertEquals(0, myRazza.size());
 		setUp();
 	}
-	
+
 	private void testIterator() {
 		Iterator<Dinosauro> itDinosauri = myRazza.iterator();
 		assertNotNull(itDinosauri);
 		assertNotNull(itDinosauri.hasNext());
 		assertNotNull(itDinosauri.next());
-		setUp();
 	}
-	
+
 	private void testSize() {
-		assertEquals(1, myRazza.size());
-		setUp();
+		assertEquals(0, myRazza.size());
 	}
-	
+
 	private void testIsEmpty() {
 		assertFalse(myRazza.isEmpty());
 		myRazza.clear();
 		assertTrue(myRazza.isEmpty());
-		setUp();
 	}
-	
+
 	private void testClear() {
 		assertEquals(1, myRazza.size());
 		myRazza.clear();
 		assertEquals(0, myRazza.size());
 		setUp();
 	}
-	
+
 	private void testContains() {
 		Iterator<Dinosauro> itDinosauri = myRazza.iterator();
 		if (itDinosauri.hasNext()) {
 			Dinosauro tempDinosauro = itDinosauri.next();
 			assertTrue(myRazza.contains(tempDinosauro));
-			myRazza.remove(tempDinosauro);
+			itDinosauri.remove();
 			assertFalse(myRazza.contains(tempDinosauro));
 		}
-		setUp();
 	}
-	
+
 	@Test
 	public void testInterface() {
 		testSize();
+		testAdd();
 		testClear();
 		testAdd();
 		testIterator();
-	/*	testAddNoDuplicatesAllowed(); */ // TODO trovare un modo per testare la non-duplicazione degli elementi da parte di Add.
 		testRemove();
 		testIsEmpty();
+		testAdd();
 		testContains();
+		testRemoveById();
 	}
-	
-	private void testGetDinosauroById() {
-		assertEquals(1, myRazza.size());
-		myRazza.add(new Erbivoro(0,0));
-		myRazza.add(new Erbivoro(0,0));
-		myRazza.add(new Erbivoro(0,0));
-		assertEquals(4, myRazza.size());
+
+	private void testRemoveById() {
+		int startCount = myRazza.size();
 		Iterator<Dinosauro> itDinosauri = myRazza.iterator();
 		Dinosauro tempDinosauro = null;
 		int counter = 0;
@@ -104,16 +106,17 @@ public class RazzaTest {
 			counter++;
 		}
 		myRazza.removeById(tempDinosauro.getIdDinosauro());
-		assertEquals(3, myRazza.size());
-		setUp();
+		assertEquals((startCount-1), myRazza.size());
+		myRazza.add(tempDinosauro);
+		assertEquals(startCount, myRazza.size());
 	}
-	
+
 	private void testGetTipo() {
 		assertNotNull(myRazza.getTipo());
 		assertEquals("Erbivoro", myRazza.getTipo());
 		setUp();
 	}
-	
+
 	private void testEstinzione() {
 		assertFalse(myRazza.isEmpty());
 		Iterator<Dinosauro> itDinosauro = myRazza.iterator();
@@ -125,15 +128,59 @@ public class RazzaTest {
 		assertTrue(myRazza.isEmpty());
 		setUp();
 	}
-	
-	private void testRemoveById() {
-		Iterator<Dinosauro> itDinosauro = myRazza.iterator();
-		if (itDinosauro.hasNext()) {
-			Dinosauro tempDinosauro = itDinosauro.next();
-			myRazza.removeById(tempDinosauro.getIdDinosauro());
-			assertEquals(0, myRazza.size());
+
+	private void testGetDinosauroById() {
+		int startCount = myRazza.size();
+		Iterator<Dinosauro> itDinosauri = myRazza.iterator();
+		Dinosauro tempDinosauro = null;
+		int counter = 0;
+		while (counter < 2 && itDinosauri.hasNext()) {
+			tempDinosauro = itDinosauri.next();
+			counter++;
 		}
-		setUp();
+		assertNotNull(myRazza.getDinosauroById(tempDinosauro.getIdDinosauro()));
+		myRazza.removeById(tempDinosauro.getIdDinosauro());
+		assertEquals((startCount-1), myRazza.size());
+		assertNull(myRazza.getDinosauroById(tempDinosauro.getIdDinosauro()));
+		myRazza.add(tempDinosauro);
+		assertEquals(startCount, myRazza.size());
+		assertNotNull(myRazza.getDinosauroById(tempDinosauro.getIdDinosauro()));
+	}
+	
+	private void testHasNumeroMassimo() {
+		assertFalse(myRazza.hasNumeroMassimo());
+		myRazza.add(new Erbivoro(defaultCoord));
+		assertEquals(5, myRazza.size());
+		assertTrue(myRazza.hasNumeroMassimo());
+	}
+	
+	private void testExistsDinosauroWithId() {
+		int startCount = myRazza.size();
+		Iterator<Dinosauro> itDinosauri = myRazza.iterator();
+		Dinosauro tempDinosauro = null;
+		int counter = 0;
+		while (counter < 2 && itDinosauri.hasNext()) {
+			tempDinosauro = itDinosauri.next();
+			counter++;
+		}
+		assertTrue(myRazza.existsDinosauroWithId(tempDinosauro.getIdDinosauro()));
+		myRazza.removeById(tempDinosauro.getIdDinosauro());
+		assertEquals((startCount-1), myRazza.size());
+		assertFalse(myRazza.existsDinosauroWithId(tempDinosauro.getIdDinosauro()));
+		myRazza.add(tempDinosauro);
+		assertEquals(startCount, myRazza.size());
+		assertTrue(myRazza.existsDinosauroWithId(tempDinosauro.getIdDinosauro()));
+	}
+	
+	private void testAggiornaPunteggio() {
+		int initPunteggio = myRazza.getPunteggio();
+		Iterator<Dinosauro> itDino = myRazza.iterator();
+		Dinosauro tempDinosauro = itDino.next();
+		tempDinosauro.setEnergiaAttuale(tempDinosauro.getEnergiaMax());
+		tempDinosauro.cresci();
+		tempDinosauro.setEnergiaAttuale(tempDinosauro.getEnergiaMax());
+		myRazza.aggiornaRazza();
+		assertFalse(initPunteggio == myRazza.getPunteggio());
 	}
 	
 	@Test
@@ -142,5 +189,8 @@ public class RazzaTest {
 		testGetDinosauroById();
 		testEstinzione();
 		testRemoveById();
+		testHasNumeroMassimo();
+		testExistsDinosauroWithId();
+		testAggiornaPunteggio();
 	}
 }
