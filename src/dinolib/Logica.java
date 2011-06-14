@@ -611,6 +611,7 @@ public class Logica implements Runnable {
 				coordToReturn = curCoord;
 			}
 		}
+		myArray.remove(coordToReturn);
 		return coordToReturn;
 	}
 
@@ -655,10 +656,6 @@ public class Logica implements Runnable {
 			return hasPath;
 		}
 	}
-
-	/* Ho due celle, devo calcolarne una che sia più vicina a quella di partenza e ripetere il procedimento
-	 * finchè la cella di partenza e quella di destinazione sono adiacenti.
-	 * Se sul percorso non incontro acque, la cella è raggiungibile. */
 
 	/**
 	 * Permette ad un dinosauro di mangiare qualcosa su una cella.
