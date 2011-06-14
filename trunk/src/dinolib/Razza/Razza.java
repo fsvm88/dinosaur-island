@@ -112,7 +112,7 @@ public class Razza implements Set<Dinosauro> {
 	private void aggiornaPunteggio() {
 		Iterator<Dinosauro> itDinosauri = this.iterator();
 		while (itDinosauri.hasNext()) {
-			punteggio = (punteggio + (1+itDinosauri.next().getDimensione())); 
+			punteggio += (1+itDinosauri.next().getDimensione()); 
 		}
 	}
 	/**

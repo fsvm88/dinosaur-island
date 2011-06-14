@@ -33,26 +33,26 @@ public class Giocatore {
 	/**
 	 * Costruttore pubblico per la classe giocatore. Richiede solo nome utente e password.
 	 */
-	protected Giocatore(String nome, String password) {
+	protected Giocatore(String nome, String password) { // Testato
 		this.nome = nome;
 		this.password = password;
 		this.punteggio = new Punteggio();
 	}
 
 	/* Tutti i getter */
-	public Punteggio getPunteggio() { return punteggio; }
-	public Razza getRazza() { return razzaDelGiocatore; }
+	public Punteggio getPunteggio() { return punteggio; } // Testato
+	public Razza getRazza() { return razzaDelGiocatore; } // Testato
 	/**
 	 * @return
 	 * @uml.property  name="nome"
 	 */
-	public String getNome() { return nome; }
+	public String getNome() { return nome; } // Testato
 
 	/* Tutti i setter */
 	/**
 	 * Invoca l'aggiornamento su tutte le variabili aggiornabili del giocatore.
 	 */
-	protected void aggiorna() {
+	protected void aggiorna() { // Testato - fallisce
 		if (hasRazza()) {
 			getRazza().aggiornaRazza();
 		}
@@ -64,7 +64,7 @@ public class Giocatore {
 	 * Validate the password and return a boolean value.
 	 * @param passwordToMatch
 	 */
-	protected boolean passwordIsValid(String suppliedPassword) {
+	protected boolean passwordIsValid(String suppliedPassword) { // Testato
 		if (password.equals(suppliedPassword)) return true;
 		else return false;
 	}
@@ -76,15 +76,16 @@ public class Giocatore {
 	 * @param nuovoNomeRazza
 	 * @param nuovoDinosauro
 	 */
-	protected void creaNuovaRazza(String nuovoNomeRazza, Character nuovoTipoRazza) {
+	protected void creaNuovaRazza(String nuovoNomeRazza, Character nuovoTipoRazza) { // Testato
 		razzaDelGiocatore = new Razza(nuovoNomeRazza, nuovoTipoRazza);
 	}
 	/**
 	 * Helper per verificare che l'utente abbia una razza di dinosauri.
 	 * @return
 	 */
-	protected boolean hasRazza() {
-		if (getRazza() != null) return true;
+	protected boolean hasRazza() { // Testato
+		if ((getRazza() != null) &&
+				!getRazza().isEmpty()) return true;
 		else return false;
 	}
 }
