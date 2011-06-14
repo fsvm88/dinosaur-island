@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import dinolib.*;
 import dinolib.Mappa.Coord;
@@ -58,16 +59,16 @@ class ClientWorker extends Server implements Runnable {
 	}
 
 	private String estraiUser(Scanner scanner) {
-		return scanner.next();
+		return scanner.next(Pattern.compile("[^(user=)]"));
 	}
 
 	private String estraiPwd(Scanner scanner) {
-		return scanner.next();
+		return scanner.next(Pattern.compile("[^(pass=)]"));
 	}
 
 	private String getToken(Scanner scanner) {
 		if (scanner.hasNext()) {
-			return scanner.next();
+			return scanner.next(Pattern.compile("[^(token=)]"))	;
 		}
 		else return null;
 	}
@@ -83,11 +84,11 @@ class ClientWorker extends Server implements Runnable {
 	}
 
 	private String estraiRazza(Scanner scanner) {
-		return scanner.next();
+		return scanner.next(Pattern.compile("[^(nome=)]"));
 	}
 
 	private Character estraiTipo(Scanner scanner) {
-		String myString = scanner.next();
+		String myString = scanner.next("[^(tipo=)]");
 		return myString.charAt(0);
 	}
 
@@ -188,7 +189,7 @@ class ClientWorker extends Server implements Runnable {
 								writeLineToOutput((String) socketAdapter.passaTurno(token));
 							}
 							else if (scanner.hasNext()) {
-								String idDinosauro = scanner.next();
+								String idDinosauro = scanner.next(Pattern.compile("[^(idDino=)]"));
 								if (comando.equals("@vistaLocale")) {
 									writeLineToOutput((String) socketAdapter.vistaLocale(token, idDinosauro));
 								}
