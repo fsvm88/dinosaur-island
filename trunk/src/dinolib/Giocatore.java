@@ -52,7 +52,7 @@ public class Giocatore {
 	/**
 	 * Invoca l'aggiornamento su tutte le variabili aggiornabili del giocatore.
 	 */
-	protected void aggiorna() { // Testato - fallisce
+	protected void aggiorna() { // Testato
 		if (hasRazza()) {
 			getRazza().aggiornaRazza();
 		}

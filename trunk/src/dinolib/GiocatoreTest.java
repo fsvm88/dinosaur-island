@@ -50,9 +50,7 @@ public class GiocatoreTest {
 	}
 	
 	private void testAggiorna() {
-		fail();
 		assertEquals(0, testGiocatore.getPunteggio().getPunteggioDaNome("myRazza").intValue());
-		testGiocatore.getRazza().aggiornaRazza();
 		testGiocatore.aggiorna();
 		assertEquals(2, testGiocatore.getPunteggio().getPunteggioDaNome("myRazza").intValue());
 	}
