@@ -48,7 +48,7 @@ public class SocketAdapter implements Adapter {
 		if (giocatore.hasRazza()) {
 			curPlayingRazza = giocatore.getRazza().getNome();
 		}
-		Iterator<String> itRazze = giocatore.getPunteggio().getIteratorOnRaces();
+		Iterator<String> itRazze = giocatore.getPunteggio().iterator();
 		String curRazza = null;
 		while (itRazze.hasNext()) {
 			curRazza = itRazze.next();
