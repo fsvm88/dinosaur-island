@@ -596,6 +596,23 @@ public class Logica implements Runnable {
 			return costo;
 		}
 	}
+	
+	private Coord getMinimumFromCoordArrayList(ArrayList<Coord> myArray, Coord endCoord) {
+		Iterator<Coord> itCoord = myArray.iterator();
+		Coord curCoord = null;
+		int curCosto = 0;
+		int minCosto = 10000000;
+		Coord coordToReturn = null;
+		while (itCoord.hasNext()) {
+			curCoord = itCoord.next();
+			curCosto = getCostoSpostamento(curCoord, endCoord);
+			if (curCosto < minCosto) {
+				minCosto = curCosto;
+				coordToReturn = curCoord;
+			}
+		}
+		return coordToReturn;
+	}
 
 	private boolean isCellaRaggiungibile(Coord oldCoord, Coord newCoord, int maxHops) {
 		/* Se ho superato il numero massimo di passi */
@@ -614,71 +631,28 @@ public class Logica implements Runnable {
 			/* Scansiona con due indici (righe, colonne) le celle adiacenti a quella di partenza, aggiungi le terre a un'ArrayList */
 			int i = -1;
 			int j = -1;
-			ArrayList<Coord> myArray = new ArrayList<Coord>();
+			ArrayList<Coord> myPaths = new ArrayList<Coord>();
 			Coord tempCoord = null;
 			while (i<2) {
 				while (j<2) {
 					tempCoord = new Coord(oldCoord.getX()+i, oldCoord.getY()+j);
-					if(!isCellaAcqua(tempCoord)) myArray.add(tempCoord);
-				}
-			}
-			/* Trova la cella con costo inferiore a tutti gli altri 
-			 * Se non è l'unica il ciclo viene invocato più volte finchè esaurisco quelle a costo minimo */
-			int curCosto = 0;
-			int minCosto = 10000000;
-			Coord tempCoord3 = null;
-			/* Se l'array non ha celle ritorno false.
-			 * Attenzione! Dovrebbe essere una condizione NON verificabile, se qui l'array non ha celle o qualcosa è andato storto sopra,
-			 * oppure sono su una singola isola di terra, che è comunque non verificabile. */
-			if (myArray.isEmpty()) return false;
-			/* Faccio la prima scansione per trovare il minimo */
-			Iterator<Coord> itArray = myArray.iterator();
-			while (itArray.hasNext()) {
-				tempCoord = itArray.next();
-				curCosto = getCostoSpostamento(tempCoord, newCoord);
-				if (curCosto < minCosto) {
-					minCosto = curCosto;
-					tempCoord3 = tempCoord;
+					if(!isCellaAcqua(tempCoord)) myPaths.add(tempCoord);
 				}
 			}
 			/* Se l'array non ha celle ritorno false.
 			 * Attenzione! Dovrebbe essere una condizione NON verificabile, se qui l'array non ha celle o qualcosa è andato storto sopra,
-			 * oppure sono su una singola isola di terra, che è comunque non verificabile. */
-			if (myArray.isEmpty()) return false;
-			/* Faccio la seconda scansione per vedere se ci sono altri elementi di costo uguale al minimo (percorsi alternativi) */
-			ArrayList<Coord> alternativePaths = new ArrayList<Coord>();
-			itArray = myArray.iterator();
-			while (itArray.hasNext()) {
-				tempCoord = itArray.next();
-				if (!tempCoord.equals(tempCoord3)) {
-					curCosto = getCostoSpostamento(tempCoord, newCoord);
-					if (curCosto == minCosto) alternativePaths.add(tempCoord);
-				}
+			 * oppure sono su una singola isola di terra, che è comunque non verificabile come scenario. */
+			if (myPaths.isEmpty()) return false;
+			Coord curCoord = null;
+			boolean hasPath = false;
+			/* Fintanto che l'array non è vuoto */
+			while (!myPaths.isEmpty()) {
+				curCoord = getMinimumFromCoordArrayList(myPaths, newCoord);
+				if (isCellaRaggiungibile(curCoord, newCoord, (maxHops-1))) hasPath = true;
+				else continue;
+				if (hasPath) return hasPath;
 			}
-			/* Se non ci sono percorsi alternativi */
-			if (alternativePaths.isEmpty()) {
-				/* Se la cella è raggiungibile dal percorso a costo minimo ritorna true */
-				if (isCellaRaggiungibile(tempCoord3, newCoord, (maxHops-1))) return true;
-				/* Se la cella non è raggiungibile dal percorso a costo minimo allora non è raggiungibile, ritorna false */
-				else return false;
-			}
-			/* Se ci sono percorsi alternativi */
-			else {
-				/* Aggiungi tempCoord3 (che contiene la prima cella a costo minimo trovata) all'array dei percorsi possibili */
-				alternativePaths.add(tempCoord3);
-				Iterator<Coord> itAltPaths = alternativePaths.iterator();
-				/* Scansiona con l'iteratore l'array dei possibili percorsi. 
-				 * Creo una variabile ausiliaria per gestire il ritorno da percorsi multipli. */
-				boolean hasPath = false;
-				while (itAltPaths.hasNext()) {
-					/* Se ho almeno un percorso, ritorno true */
-					if (isCellaRaggiungibile(itAltPaths.next(), newCoord, (maxHops-1))) hasPath=true;
-					else hasPath=false;
-					if (hasPath) return true;
-				}
-				/* Se arrivo qui vuol dire che ho scansionato tutto l'array e la cella non è comunque raggiungibile da tutti i percorsi a costo minimo, ritorna false. */
-				return false;
-			}
+			return hasPath;
 		}
 	}
 
