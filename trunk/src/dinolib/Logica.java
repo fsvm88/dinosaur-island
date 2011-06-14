@@ -82,7 +82,7 @@ public class Logica implements Runnable {
 	/**
 	 * Costruttore di default per la classe Logica.
 	 */
-	public Logica () {
+	public Logica () { // Testato
 		try {
 			caricaPartitaDaFile();
 		}
