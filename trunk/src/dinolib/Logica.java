@@ -202,7 +202,7 @@ public class Logica implements Runnable {
 	 * @throws NomeRazzaOccupatoException 
 	 */
 	protected boolean existsRaceWithName(String nomeRazza) throws NomeRazzaOccupatoException {
-		Iterator<Giocatore> itGiocatori = getPMan().getIteratorOnPlayers();
+		Iterator<Giocatore> itGiocatori = getPMan().iterator();
 		while (itGiocatori.hasNext()) {
 			Giocatore tempGiocatore = itGiocatori.next();
 			if (tempGiocatore.getRazza().getNome().equals(nomeRazza)) throw new NomeRazzaOccupatoException();
@@ -216,7 +216,7 @@ public class Logica implements Runnable {
 	 * @return
 	 */
 	protected boolean existsDinosauroWithId(String idDinosauro) {
-		Iterator<Giocatore> itGiocatori = getPMan().getIteratorOnPlayers();
+		Iterator<Giocatore> itGiocatori = getPMan().iterator();
 		Giocatore tempGiocatore = null;
 		while (itGiocatori.hasNext()) {
 			tempGiocatore = itGiocatori.next();
@@ -232,7 +232,7 @@ public class Logica implements Runnable {
 	 * @return
 	 */
 	protected Giocatore getPlayerByIdDinosauro(String idDinosauro) {
-		Iterator<Giocatore> itSuiGiocatori = getPMan().getIteratorOnPlayers();
+		Iterator<Giocatore> itSuiGiocatori = getPMan().iterator();
 		Giocatore tempGiocatore = null;
 		while (itSuiGiocatori.hasNext()) {
 			tempGiocatore = itSuiGiocatori.next();
@@ -470,7 +470,7 @@ public class Logica implements Runnable {
 	 */
 	protected boolean doCreaUtente(String nomeGiocatore, String pwd) throws UserExistsException {
 		if (!getPMan().exists(nomeGiocatore)) {
-			return getPMan().aggiungi(new Giocatore(nomeGiocatore, pwd));
+			return getPMan().add(new Giocatore(nomeGiocatore, pwd));
 		}
 		else throw new UserExistsException();
 	}
@@ -506,7 +506,7 @@ public class Logica implements Runnable {
 	 * @throws InvalidTokenException
 	 */
 	protected boolean doCreaRazza(String token, String nomeRazza, Character tipoRazza) throws NomeRazzaOccupatoException, InvalidTokenException {
-		Iterator<Giocatore> itGiocatori = getPMan().getIteratorOnPlayers();
+		Iterator<Giocatore> itGiocatori = getPMan().iterator();
 		Giocatore tempGiocatore = null;
 		while (itGiocatori.hasNext()) {
 			tempGiocatore = itGiocatori.next();
