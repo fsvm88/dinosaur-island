@@ -48,7 +48,7 @@ public class CellaTest {
 	private void testCellaConDinosauro() {
 		String idDino = "abcd";
 		cella = new CellaConDinosauro(idDino, new Terra());
-		assertEquals("dinosauro", cella.toString());
+		assertEquals("Dinosauro", cella.toString());
 		assertNotNull(cella.getIdDelDinosauro());
 		assertEquals(idDino, cella.getIdDelDinosauro());
 		assertNotNull(cella.getCellaSuCuiSiTrova());
@@ -63,7 +63,7 @@ public class CellaTest {
 		cella.mangia(100);
 		assertEquals(initValue-100, cella.getValoreAttuale());
 		initValue = cella.getValoreAttuale();
-		cella.aggiornaCellaSulTurno();
+		cella.aggiorna();
 		assertTrue((cella.getValoreAttuale() > initValue));
 		cella.mangia(1000);
 		assertEquals(0, cella.getValoreAttuale());
@@ -74,7 +74,7 @@ public class CellaTest {
 		assertEquals("Carogna", cella.toString());
 		testCommon();
 		int initValue = cella.getValoreAttuale();
-		cella.aggiornaCellaSulTurno();
+		cella.aggiorna();
 		assertTrue((cella.getValoreAttuale() < initValue));
 		initValue = cella.getValoreAttuale();
 		cella.mangia(100);

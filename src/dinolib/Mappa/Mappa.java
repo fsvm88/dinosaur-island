@@ -156,11 +156,11 @@ public class Mappa implements Iterable<Cella> {
 		HashSet<Coord> mySet = new HashSet<Coord>();
 		Iterator<Coord> itCoord = null;
 		do {
-			tempCoord = new Coord(1+CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa()-2), 1+CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa()-2));
+			tempCoord = getNewRandomCoord();
 		} while (!isCellaTerra(tempCoord));
 		mySet.add(tempCoord);
 		HashSet<Coord> tempSet = new HashSet<Coord>();
-//		System.out.println("[allocaAcqua] sto per entrare nel ciclo per allocare " + numeroCelle + " acque");
+		//		System.out.println("[allocaAcqua] sto per entrare nel ciclo per allocare " + numeroCelle + " acque");
 		while (mySet.size()<numeroCelle) {
 			//				System.out.println("[allocaAcqua] cerco " + (numeroCelle-mySet.size()) + " celle");
 			tempSet.clear();
@@ -187,7 +187,7 @@ public class Mappa implements Iterable<Cella> {
 			tempCoord = itCoord.next();
 			MappaACelle[tempCoord.getX()][tempCoord.getY()] = new Acqua();
 		}
-//		System.out.println("[allocaAcqua] allocate " + mySet.size() + " celle");
+		//		System.out.println("[allocaAcqua] allocate " + mySet.size() + " celle");
 	}
 
 	private int contaAcque() { // Testato da popolaMappa
@@ -205,11 +205,16 @@ public class Mappa implements Iterable<Cella> {
 		return counter;
 	}
 
+	private Coord getNewRandomCoord() {
+		return new Coord((CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa())),
+				(CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa())));
+	}
+	
 	/**
 	 * Implementa la creazione di una nuova mappa.
 	 */
 	private void popolaMappa() { // Testato - col costruttore
-//		System.out.println("[popolaMappa] start");
+		//		System.out.println("[popolaMappa] start");
 		MappaACelle = new Cella[getLatoDellaMappa()][getLatoDellaMappa()];
 		/* Conteggio celle acqua attualmente piazzate */
 		/* righe */
@@ -229,7 +234,7 @@ public class Mappa implements Iterable<Cella> {
 			MappaACelle[(getLatoDellaMappa()-1)][j] = new Acqua();
 			j++;
 		}
-//		System.out.println("[popolaMappa] allocate le acque sui bordi");
+		//		System.out.println("[popolaMappa] allocate le acque sui bordi");
 		/* Riempio di terre il resto della mappa: righe 0 < i < latoDellaMappa-2, colonne 0 < j < latoDellaMappa-2 */
 		i = 1;
 		while (i<=(getLatoDellaMappa()-2)) {
@@ -240,57 +245,55 @@ public class Mappa implements Iterable<Cella> {
 			}
 			i++;
 		}
-//		System.out.println("[popolaMappa] allocate tutte le terre all'interno della mappa");
+		//		System.out.println("[popolaMappa] allocate tutte le terre all'interno della mappa");
 		System.runFinalization();
 		System.gc();
 		/* Alloco le acque rimanenti.
 		 * Evito un underflow di acque disponibili allocandone fino a raggiungere il massimo per la mappa meno il massimo di un gruppo. */
-//		System.out.println("[popolaMappa] sto per allocare le acque");
+		//		System.out.println("[popolaMappa] sto per allocare le acque");
 		int curAcqua = contaAcque();
 		while (curAcqua<(conteggioAcquaStatico-max_GRUPPO_ACQUA-min_GRUPPO_ACQUA+9)) {
-//			System.out.println("[popolaMappa] chiamo allocaAcqua");
+			//			System.out.println("[popolaMappa] chiamo allocaAcqua");
 			allocaAcqua(min_GRUPPO_ACQUA+CommonUtils.getNewRandomIntValueOnMyMap(max_GRUPPO_ACQUA-min_GRUPPO_ACQUA+1));
 			curAcqua = contaAcque();
 		}
 		/* Alloco le acque rimanenti dal passo precedente. È per evitare un underflow di acque disponibili. */
 		allocaAcqua(conteggioAcquaStatico-curAcqua);
-//		System.out.println("[popolaMappa] allocate le acque rimanenti");
+		//		System.out.println("[popolaMappa] allocate le acque rimanenti");
 		/* A questo punto, grazie all'algoritmo con cui vengono piazzate le celle d'acqua,
 		 * la mappa è semplicemente connessa per quanto riguarda le terre e rispetta
 		 * il conteggio di acque e terre prefissato. */
 		/* Ora penso alla vegetazione. */
-//		System.out.println("[popolaMappa] sto per allocare la vegetazione");
+		//		System.out.println("[popolaMappa] sto per allocare la vegetazione");
 		int curVeg = 0;
 		while (curVeg<conteggioVegetazioneStatico) {
-			Coord vegCoord = new Coord((CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa())),
-					CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa()));
+			Coord vegCoord = getNewRandomCoord();
 			if (isCellaTerra(vegCoord)) {
 				MappaACelle[vegCoord.getX()][vegCoord.getY()] = new Vegetazione((150+CommonUtils.getNewRandomIntValueOnMyMap(201)));
 				curVeg++;
 			}
 			else continue;
 		}
-//		System.out.println("[popolaMappa] allocata la vegetazione");
+		//		System.out.println("[popolaMappa] allocata la vegetazione");
 		/* Ho completato l'inserimento della vegetazione, ora penso alle carogne. */
-//		System.out.println("[popolaMappa] sto per allocare le carogne");
+		//		System.out.println("[popolaMappa] sto per allocare le carogne");
 		int curCarogne = 0;
 		while (curCarogne<fixed_SOD_COUNT) {
-			Coord carCoord = new Coord((CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa())),
-					CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa()));
+			Coord carCoord = getNewRandomCoord();
 			if (isCellaTerra(carCoord)) {
 				MappaACelle[carCoord.getX()][carCoord.getY()] = new Carogna((350+CommonUtils.getNewRandomIntValueOnMyMap(301)));
 				curCarogne++;
 			}
 			else continue;
 		}
-//		System.out.println("[popolaMappa] allocate le carogne");
+		//		System.out.println("[popolaMappa] allocate le carogne");
 		/* Ho completato l'inserimento delle carogne.
 		 * La mappa è completa.
 		 * Attenzione! Devo aggiornare il numero di carogne ogni volta!!!
 		 */
-//		System.out.println("[popolaMappa] termino.");
+		//		System.out.println("[popolaMappa] termino.");
 	}
-	
+
 	/**
 	 * Inserisce un dinosauro sulla mappa.
 	 * Passa il tipo corrente della cella così che venga tenuta valida.
@@ -323,41 +326,17 @@ public class Mappa implements Iterable<Cella> {
 			MappaACelle[coordToRemove.getX()][tempY] = vecchiaCella;
 		}
 	}
-
-	/**
-	 * Aggiorna le celle su cambio del turno.
-	 */
-	private void aggiornaCelle() {
-		int i = 0;
-		int j = 0;
-		while (i<getLatoDellaMappa()) {
-			j=0;
-			while (j<getLatoDellaMappa()) {
-				if (getCellaForIterator(new Coord(i, j)).toString().toLowerCase().equals("carogna") ||
-						getCellaForIterator(new Coord(i, j)).toString().toLowerCase().equals("vegetazione")) {
-					getCellaForIterator(new Coord(i, j)).aggiornaCellaSulTurno();
-				}
-				if (getCellaForIterator(new Coord(i, j)).toString().toLowerCase().equals("dinosauro")) {
-					if (getCellaForIterator(new Coord(i, j)).getCellaSuCuiSiTrova().toString().toLowerCase().equals("carogna") ||
-							getCellaForIterator(new Coord(i, j)).getCellaSuCuiSiTrova().toString().toLowerCase().equals("vegetazione")) {
-						getCellaForIterator(new Coord(i, j)).getCellaSuCuiSiTrova().aggiornaCellaSulTurno();
-					}
-				}
-				j++;
-			}
-			i++;
-		}
-	}
-
-
 	/**
 	 * Aggiorna la mappa su cambio del turno.
 	 */
-	public void aggiornaSuTurno() {
-		aggiornaCelle();
+	public void aggiorna() { // Testato
+		Iterator<Cella> itCelle = this.iterator();
+		while (itCelle.hasNext()) {
+			itCelle.next().aggiorna();
+		}
 	}
 
-	private Cella getCellaForIterator(Coord myCoords) {
+	private Cella getCellaForIterator(Coord myCoords) { // Testato
 		return MappaACelle[myCoords.getX()][myCoords.getY()];
 	}
 
@@ -367,11 +346,11 @@ public class Mappa implements Iterable<Cella> {
 	 * Quindi scorre dal basso verso l'alto, restituendo le celle in ordine come le vuole la logica client (non avrebbe avuto senso esporle in modo diverso).
 	 */
 	@Override
-	public Iterator<Cella> iterator() {
+	public Iterator<Cella> iterator() { // Testato
 		return new MapIterator();
 	}
 
-	private class MapIterator implements Iterator<Cella> {
+	private class MapIterator implements Iterator<Cella> { // Testato
 		private Coord curCoord = null;
 		private int latoDellaMappaIterator;
 
@@ -382,7 +361,7 @@ public class Mappa implements Iterable<Cella> {
 
 		@Override
 		public boolean hasNext() {
-			return (0 <= curCoord.getY());
+			return !((curCoord.getY() == 0) && (curCoord.getX() == getLatoDellaMappa()-1));
 		}
 
 		@Override
@@ -415,11 +394,11 @@ public class Mappa implements Iterable<Cella> {
 	 * @param rangeY
 	 * @return
 	 */
-	public Iterator<Cella> subIterator(Coord myCoords, int rangeX, int rangeY) {
+	public Iterator<Cella> subIterator(Coord myCoords, int rangeX, int rangeY) { // Testato
 		return new subMapIterator(new Coord(myCoords.getX(), CommonUtils.translateYforServer(myCoords.getY(), getLatoDellaMappa())), rangeX, rangeY);
 	}
 
-	private class subMapIterator implements Iterator<Cella> {
+	private class subMapIterator implements Iterator<Cella> { // Testato
 		private int startRow;
 		private int startColumn;
 		private int rowRange;
@@ -443,12 +422,6 @@ public class Mappa implements Iterable<Cella> {
 			curCoord = new Coord(startColumn, startRow);
 		}
 
-		private boolean rowIsInRange() {
-			return (((startRow-rowRange) <= curCoord.getY()) &&
-					(0 <= curCoord.getY()) &&
-					(curCoord.getY() < latoDellaMappaIterator));
-		}
-
 		private boolean columnIsInRange() {
 			return (((curCoord.getX()) <= (startColumn+columnRange)) &&
 					(0 <= curCoord.getX()) &&
@@ -457,7 +430,9 @@ public class Mappa implements Iterable<Cella> {
 
 		@Override
 		public boolean hasNext() {
-			return rowIsInRange();
+			if ( ((startColumn+columnRange) == curCoord.getX()) &&
+					((startRow-rowRange) == curCoord.getY()) ) return false;
+			else return true;
 		}
 
 		@Override

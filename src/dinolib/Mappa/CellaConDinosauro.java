@@ -12,7 +12,7 @@ class CellaConDinosauro extends Cella {
 	 * Non posso usare il nome "Dinosauro" per la classe, quindi devo ridefinire toString di modo da semplificare la logica di alto livello.
 	 */
 	public String toString() {
-		return "dinosauro";
+		return "Dinosauro";
 	}
 	
 	/**
