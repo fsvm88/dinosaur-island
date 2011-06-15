@@ -70,7 +70,7 @@ public class Logica implements Runnable {
 	 * Contiene una variabile che dice se la logica sta funzionando.
 	 * @uml.property  name="logicaIsRunning"
 	 */
-	private boolean logicaIsRunning = true;
+	private boolean logicaIsRunning = false;
 	/**
 	 * Variabile che dice se il turno del giocatore è stato confermato.
 	 * @uml.property  name="turnoConfermato"
@@ -103,6 +103,7 @@ public class Logica implements Runnable {
 		}
 		cMan = new ConnectionManager();
 		rrsched = new RRScheduler(numero_MASSIMO_GIOCATORI_INGAME);
+		logicaIsRunning = true;
 	}
 	/**
 	 * Se i file di salvataggio esistono li carica, altrimenti assume primo avvio
@@ -148,14 +149,14 @@ public class Logica implements Runnable {
 	}
 
 	/* Tutti i getter */
-	protected Mappa getMappa() { return rifMappa; }
-	protected PlayerManager getPMan() { return pMan; }
-	protected ConnectionManager getCMan() { return cMan; }
-	protected RRScheduler getRRSched() { return rrsched; }
-	protected boolean isLogicaRunning() { return logicaIsRunning; }
-	protected Giocatore getPlayerByToken(String token) throws InvalidTokenException {
+	protected Mappa getMappa() { return rifMappa; } // Testato
+	protected PlayerManager getPMan() { return pMan; } // Testato
+	protected ConnectionManager getCMan() { return cMan; } // Testato
+	protected RRScheduler getRRSched() { return rrsched; } // Testato
+	protected boolean isLogicaRunning() { return logicaIsRunning; } // Testato
+	protected Giocatore getPlayerByToken(String token) throws InvalidTokenException { // Testato
 		if (getCMan().existsToken(token) && getPMan().exists(getCMan().getName(token))) return getPMan().getPlayer(getCMan().getName(token));
-		else return null;
+		else throw new InvalidTokenException();
 	}
 
 	/**
@@ -165,7 +166,7 @@ public class Logica implements Runnable {
 	 * @throws NonInPartitaException 
 	 * @throws NonAutenticatoException 
 	 */
-	protected boolean isMioTurno(String token) throws InvalidTokenException, NonInPartitaException, NonAutenticatoException {
+	protected boolean isMioTurno(String token) throws InvalidTokenException, NonInPartitaException {
 		if (isPlayerInGame(token)) {
 			if (giocatoreCorrente.equals(token)) return true;
 			else return false;
@@ -178,7 +179,7 @@ public class Logica implements Runnable {
 	 * @throws NonInPartitaException 
 	 * @throws NonAutenticatoException 
 	 */
-	protected boolean isPlayerInGame(String token) throws InvalidTokenException, NonAutenticatoException {
+	protected boolean isPlayerInGame(String token) throws InvalidTokenException {
 		if (getRRSched().hasTask(token)) return true;
 		else return false;
 	}
@@ -189,25 +190,9 @@ public class Logica implements Runnable {
 	 * @throws NonAutenticatoException
 	 * @throws InvalidTokenException
 	 */
-	protected boolean isPlayerLogged(String token) throws NonAutenticatoException, InvalidTokenException {
+	protected boolean isPlayerLogged(String token) throws InvalidTokenException { // Testato
 		if (getCMan().existsToken(token)) return true;
-		else throw new NonAutenticatoException();
-	}
-
-	/**
-	 * Helper per verificare che esista una razza con il nome specificato.
-	 * Serve per controllare che il nome richiesto non sia già in uso.
-	 * @param nomeRazza
-	 * @return
-	 * @throws NomeRazzaOccupatoException 
-	 */
-	protected boolean existsRaceWithName(String nomeRazza) throws NomeRazzaOccupatoException {
-		Iterator<Giocatore> itGiocatori = getPMan().iterator();
-		while (itGiocatori.hasNext()) {
-			Giocatore tempGiocatore = itGiocatori.next();
-			if (tempGiocatore.getRazza().getNome().equals(nomeRazza)) throw new NomeRazzaOccupatoException();
-		}
-		return false;
+		else throw new InvalidTokenException();
 	}
 
 	/**
@@ -317,7 +302,7 @@ public class Logica implements Runnable {
 	 * Quando l'utente esegue il login aggiunge i dinosauri alla mappa.
 	 * @throws InvalidTokenException 
 	 */
-	protected void inserisciDinosauriNellaMappa(String token) throws InvalidTokenException {
+	private void inserisciDinosauriNellaMappa(String token) throws InvalidTokenException {
 		Iterator<Dinosauro> itDinosauri = getPlayerByToken(token).getRazza().iterator();
 		Dinosauro tempDinosauro;
 		while (itDinosauri.hasNext()) {
@@ -326,7 +311,7 @@ public class Logica implements Runnable {
 			else {
 				int i = 1;
 				do {
-					if (tryNearestSpawn(tempDinosauro.getCoord(), i, tempDinosauro)) {
+					if (tryNearestSpawn(i, tempDinosauro)) {
 						return;
 					}
 					else i++;
@@ -367,14 +352,14 @@ public class Logica implements Runnable {
 	 * @param tempDinosauro
 	 * @return
 	 */
-	private boolean tryNearestSpawn(Coord startCoord, int maxDistance, Dinosauro tempDinosauro) {
+	private boolean tryNearestSpawn(int maxDistance, Dinosauro tempDinosauro) {
 		int i = -maxDistance;
 		int j = -maxDistance;
 		Coord curCoord = null;
 		do {
 			i = -maxDistance;
 			do {
-				curCoord = new Coord(i+startCoord.getX(), j+startCoord.getY());
+				curCoord = new Coord(i+tempDinosauro.getCoord().getX(), j+tempDinosauro.getCoord().getY());
 				if (tryActualSpawn(curCoord, tempDinosauro.getIdDinosauro())) {
 					tempDinosauro.setCoord(curCoord);
 					return true;
@@ -395,40 +380,17 @@ public class Logica implements Runnable {
 	 * @return
 	 * @throws InvalidTokenException 
 	 */
-	protected boolean trySpawnOfAnEgg(String token, Coord newCoords, Dinosauro newDinosauro) throws InvalidTokenException {
+	private boolean trySpawnOfAnEgg(String token, Coord newCoords, Dinosauro newDinosauro) throws InvalidTokenException {
 		int i = 1;
 		do {
-			if (tryNearestSpawn(newCoords, i, newDinosauro)) {
+			newDinosauro.setCoord(newCoords);
+			if (tryNearestSpawn(i, newDinosauro)) {
 				getPlayerByToken(token).getRazza().add(newDinosauro);
 				return true;
 			}
 			else i++;
 		} while (i<getMappa().getLatoDellaMappa());
 		return false;
-	}
-	/**
-	 * Ritorna la x più a sinistra possibile rispetto a quella specificata.
-	 * @param x
-	 * @param rangeVista
-	 * @return
-	 */
-	protected int doSubtraction(int coord, int rangeVista) {
-		int subtraction = (coord - rangeVista);
-		if (subtraction<0) return 0;
-		else if (subtraction>=getMappa().getLatoDellaMappa()) return (getMappa().getLatoDellaMappa()-1);
-		else return subtraction;
-	}
-	/**
-	 * Fa l'addizione per le coordinate, che rimangano in range.
-	 * @param coord
-	 * @param rangeVista
-	 * @return
-	 */
-	protected int doAddition(int coord, int rangeVista) {
-		int addition = (coord + rangeVista);
-		if (addition<0) return 0;
-		else if (addition>=getMappa().getLatoDellaMappa()) return (getMappa().getLatoDellaMappa()-1);
-		else return addition;
 	}
 
 	/**
@@ -468,7 +430,7 @@ public class Logica implements Runnable {
 	 * @return
 	 * @throws UserExistsException 
 	 */
-	protected boolean doCreaUtente(String nomeGiocatore, String pwd) throws UserExistsException {
+	protected boolean doCreaUtente(String nomeGiocatore, String pwd) throws UserExistsException { // Testato
 		if (!getPMan().exists(nomeGiocatore)) {
 			return getPMan().add(new Giocatore(nomeGiocatore, pwd));
 		}
@@ -483,7 +445,7 @@ public class Logica implements Runnable {
 	 * @return
 	 * @throws UserAuthenticationFailedException
 	 */
-	protected boolean doLogin(String nomeGiocatore, String suppliedPassword) throws UserAuthenticationFailedException {
+	protected boolean doLogin(String nomeGiocatore, String suppliedPassword) throws UserAuthenticationFailedException { // Testato
 		if (getPMan().exists(nomeGiocatore)) {
 			Giocatore tempGiocatore = getPMan().getPlayer(nomeGiocatore);
 			if (tempGiocatore.passwordIsValid(suppliedPassword)) {
@@ -505,22 +467,36 @@ public class Logica implements Runnable {
 	 * @throws NomeRazzaOccupatoException
 	 * @throws InvalidTokenException
 	 */
-	protected boolean doCreaRazza(String token, String nomeRazza, Character tipoRazza) throws NomeRazzaOccupatoException, InvalidTokenException {
-		Iterator<Giocatore> itGiocatori = getPMan().iterator();
-		Giocatore tempGiocatore = null;
-		while (itGiocatori.hasNext()) {
-			tempGiocatore = itGiocatori.next();
-			if (tempGiocatore.hasRazza()) {
-				if (tempGiocatore.getRazza().getNome().equals(nomeRazza)) throw new NomeRazzaOccupatoException();
+	protected boolean doCreaRazza(String token, String nomeRazza, Character tipoRazza) throws NomeRazzaOccupatoException, InvalidTokenException { // Testato
+		if (isPlayerLogged(token)) {
+			Iterator<Giocatore> itGiocatori = getPMan().iterator();
+			Giocatore tempGiocatore = null;
+			while (itGiocatori.hasNext()) {
+				tempGiocatore = itGiocatori.next();
+				if (tempGiocatore.hasRazza()) {
+					if (tempGiocatore.getRazza().getNome().equals(nomeRazza)) throw new NomeRazzaOccupatoException();
+				}
 			}
-		}
-		if (!getPlayerByToken(token).hasRazza()) {
-			getPlayerByToken(token).creaNuovaRazza(nomeRazza, tipoRazza);
-			return true;
+			if (!getPlayerByToken(token).hasRazza()) {
+				getPlayerByToken(token).creaNuovaRazza(nomeRazza, tipoRazza);
+				return true;
+			}
+			else return false;
 		}
 		else return false;
 	}
 
+	private boolean creaPrimoDinosauro(String token) throws InvalidTokenException {
+		Giocatore tempGiocatore = getPlayerByToken(token);
+		if (tempGiocatore.getRazza().getTipo().equals('c')) {
+			if(tempGiocatore.getRazza().add(new Carnivoro(CommonUtils.getNewRandomCoord(getMappa().getLatoDellaMappa())))) return true;
+		}
+		else if (tempGiocatore.getRazza().getTipo().equals('e')) {
+			if(tempGiocatore.getRazza().add(new Erbivoro(CommonUtils.getNewRandomCoord(getMappa().getLatoDellaMappa())))) return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * Permette l'accesso alla partita.
 	 * Ritorna true se ha successo, false altrimenti.
@@ -532,18 +508,22 @@ public class Logica implements Runnable {
 	 * @throws TroppiGiocatoriException
 	 * @throws RazzaNonCreataException
 	 */
-	protected boolean doAccessoPartita(String token) throws NonAutenticatoException, InvalidTokenException, InterruptedException, TroppiGiocatoriException, RazzaNonCreataException {
+	protected boolean doAccessoPartita(String token) throws InvalidTokenException, InterruptedException, TroppiGiocatoriException, RazzaNonCreataException {
 		if (isPlayerLogged(token)) {
 			if (getPlayerByToken(token).hasRazza()) {
 				if (!getRRSched().maxPlayers()) {
 					getRRSched().newTask(token);
+					if (getPlayerByToken(token).getRazza().isEmpty()) {
+						if (!creaPrimoDinosauro(token)) return false;
+					}
+					inserisciDinosauriNellaMappa(token);
 					return true;
 				}
 				else throw new TroppiGiocatoriException();
 			}
 			else throw new RazzaNonCreataException();
 		}
-		return false;
+		else return false;
 	}
 	/**
 	 * Permette l'uscita dalla partita.
@@ -553,7 +533,7 @@ public class Logica implements Runnable {
 	 * @throws InvalidTokenException
 	 * @throws NonAutenticatoException
 	 */
-	protected boolean doUscitaPartita(String token) throws InvalidTokenException, NonAutenticatoException {
+	protected boolean doUscitaPartita(String token) throws InvalidTokenException {
 		if (isPlayerInGame(token)) {
 			getRRSched().killTask(token);
 			rimuoviDinosauriDallaMappa(getPlayerByToken(token));
@@ -569,7 +549,7 @@ public class Logica implements Runnable {
 	 * @throws InvalidTokenException
 	 * @throws NonAutenticatoException
 	 */
-	protected boolean doLogout(String token) throws InvalidTokenException, NonAutenticatoException {
+	protected boolean doLogout(String token) throws InvalidTokenException {
 		if (isPlayerLogged(token)) {
 			if (isPlayerInGame(token)) {
 				getRRSched().killTask(token);
@@ -589,7 +569,7 @@ public class Logica implements Runnable {
 			return costo;
 		}
 	}
-	
+
 	private Coord getMinimumFromCoordArrayList(ArrayList<Coord> myArray, Coord endCoord) {
 		Iterator<Coord> itCoord = myArray.iterator();
 		Coord curCoord = null;
@@ -708,8 +688,8 @@ public class Logica implements Runnable {
 		return false;
 	}
 
-	protected boolean isCellaAcqua(Coord myCoord) { if (getMappa().getCella(myCoord).toString().toLowerCase().equals("acqua")) return true; else return false; }
-	protected boolean isCellaDinosauro(Coord myCoord) { if (getMappa().getCella(myCoord).toString().toLowerCase().equals("dinosauro")) return true; else return false; }
+	private boolean isCellaAcqua(Coord myCoord) { if (getMappa().getCella(myCoord).toString().toLowerCase().equals("acqua")) return true; else return false; }
+	private boolean isCellaDinosauro(Coord myCoord) { if (getMappa().getCella(myCoord).toString().toLowerCase().equals("dinosauro")) return true; else return false; }
 
 	/**
 	 * Permette il movimento del dinosauro da una cella ad un'altra.
