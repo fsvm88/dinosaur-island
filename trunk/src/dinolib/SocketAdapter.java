@@ -203,8 +203,6 @@ public class SocketAdapter implements Adapter {
 		}
 		catch (InvalidTokenException e) {
 			return returnInvalidToken();
-		} catch (NonAutenticatoException e) {
-			return returnInvalidToken();
 		}
 	}
 
@@ -213,15 +211,17 @@ public class SocketAdapter implements Adapter {
 		try {
 			if (myLogica.doAccessoPartita(token)) return "@ok";
 			else return "@no";
-		} catch (NonAutenticatoException e) {
+		}
+		catch (InvalidTokenException e) {
 			return returnInvalidToken();
-		} catch (InvalidTokenException e) {
-			return returnInvalidToken();
-		} catch (InterruptedException e) {
+		}
+		catch (InterruptedException e) {
 			return "@no";
-		} catch (TroppiGiocatoriException e) {
+		}
+		catch (TroppiGiocatoriException e) {
 			return "@no,@troppiGiocatori";
-		} catch (RazzaNonCreataException e) {
+		}
+		catch (RazzaNonCreataException e) {
 			return "@no,@razzaNonCreata";
 		}
 	}
@@ -231,9 +231,8 @@ public class SocketAdapter implements Adapter {
 		try {
 			if (myLogica.doUscitaPartita(token)) return "@ok";
 			else return "@no";
-		} catch (InvalidTokenException e) {
-			return returnInvalidToken();
-		} catch (NonAutenticatoException e) {
+		}
+		catch (InvalidTokenException e) {
 			return returnInvalidToken();
 		}
 	}
@@ -250,7 +249,8 @@ public class SocketAdapter implements Adapter {
 				return buffer;
 			}
 			else return "@listaGiocatori";
-		} catch (InvalidTokenException e) {
+		}
+		catch (InvalidTokenException e) {
 			return returnInvalidToken();
 		}
 	}
@@ -267,9 +267,8 @@ public class SocketAdapter implements Adapter {
 				return buffer;
 			}
 			else return returnInvalidToken();
-		} catch (NonAutenticatoException e) {
-			return returnInvalidToken();
-		} catch (InvalidTokenException e) {
+		}
+		catch (InvalidTokenException e) {
 			return returnInvalidToken();
 		}
 	}
@@ -279,9 +278,8 @@ public class SocketAdapter implements Adapter {
 		try {
 			if (myLogica.doLogout(token)) return "@ok";
 			else return "@no";
-		} catch (InvalidTokenException e) {
-			return returnInvalidToken();
-		} catch (NonAutenticatoException e) {
+		}
+		catch (InvalidTokenException e) {
 			return returnInvalidToken();
 		}
 	}
@@ -295,9 +293,8 @@ public class SocketAdapter implements Adapter {
 				return buffer;
 			}
 			else return "@no,@nonInPartita"; 
-		} catch (InvalidTokenException e) {
-			return returnInvalidToken();
-		} catch (NonAutenticatoException e) {
+		}
+		catch (InvalidTokenException e) {
 			return returnInvalidToken();
 		}
 	}
@@ -316,9 +313,8 @@ public class SocketAdapter implements Adapter {
 				return buffer;
 			}
 			else return "@no,@nonInPartita";
-		} catch (InvalidTokenException e) {
-			return returnInvalidToken();
-		} catch (NonAutenticatoException e) {
+		}
+		catch (InvalidTokenException e) {
 			return returnInvalidToken();
 		}
 	}
@@ -331,10 +327,10 @@ public class SocketAdapter implements Adapter {
 					String buffer = "@vistaLocale";
 					Dinosauro tempDinosauro = myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
 					int rangeVista = tempDinosauro.getRangeVista();
-					int leftCornerX = myLogica.doSubtraction(tempDinosauro.getCoord().getX(), rangeVista);
-					int bottomCornerY = myLogica.doSubtraction(tempDinosauro.getCoord().getY(), rangeVista);
-					int rightCornerX = myLogica.doAddition(tempDinosauro.getCoord().getX(), rangeVista);
-					int topCornerY = myLogica.doAddition(tempDinosauro.getCoord().getY(), rangeVista);
+					int leftCornerX = CommonUtils.doSubtraction(tempDinosauro.getCoord().getX(), rangeVista, myLogica.getMappa().getLatoDellaMappa());
+					int bottomCornerY = CommonUtils.doSubtraction(tempDinosauro.getCoord().getY(), rangeVista, myLogica.getMappa().getLatoDellaMappa());
+					int rightCornerX = CommonUtils.doAddition(tempDinosauro.getCoord().getX(), rangeVista, myLogica.getMappa().getLatoDellaMappa());
+					int topCornerY = CommonUtils.doAddition(tempDinosauro.getCoord().getY(), rangeVista, myLogica.getMappa().getLatoDellaMappa());
 					buffer = buffer + ",{" + leftCornerX + "," + bottomCornerY + "},{"
 					+ (topCornerY-bottomCornerY) + "," + (rightCornerX-leftCornerX) + "},";
 					Iterator<Cella> subItCelle = myLogica.getMappa().subIterator(new Coord(leftCornerX, bottomCornerY), (topCornerY-bottomCornerY), (rightCornerX-leftCornerX));
@@ -359,9 +355,8 @@ public class SocketAdapter implements Adapter {
 				else return "@no,@idNonValido";
 			}
 			else return "@no,@nonInPartita";
-		} catch (InvalidTokenException e) {
-			return returnInvalidToken();
-		} catch (NonAutenticatoException e) {
+		}
+		catch (InvalidTokenException e) {
 			return returnInvalidToken();
 		}
 	}
@@ -385,9 +380,8 @@ public class SocketAdapter implements Adapter {
 				else return "@no,@idNonValido";
 			}
 			else return "@no,@nonInPartita";
-		} catch (InvalidTokenException e) {
-			return returnInvalidToken();
-		} catch (NonAutenticatoException e) {
+		}
+		catch (InvalidTokenException e) {
 			return returnInvalidToken();
 		}
 	}
@@ -406,13 +400,14 @@ public class SocketAdapter implements Adapter {
 				else return "@no,@idNonValido";
 			}
 			else return "@no,@nonIlTuoTurno";
-		} catch (InvalidTokenException e) {
+		}
+		catch (InvalidTokenException e) {
 			return returnInvalidToken();
-		} catch (NonInPartitaException e) {
+		}
+		catch (NonInPartitaException e) {
 			return "@no,@nonInPartita";
-		} catch (NonAutenticatoException e) {
-			return returnInvalidToken();
-		} catch (GenericDinosauroException e) {
+		}
+		catch (GenericDinosauroException e) {
 			if (e.getMessage().equals("mortePerInedia")) return "@no,@mortePerInedia";
 			if (e.getMessage().equals("raggiuntoLimiteMosseDinosauro")) return "@no,@raggiuntoLimiteMosseDinosauro";
 		}
@@ -430,13 +425,14 @@ public class SocketAdapter implements Adapter {
 				return "@no,@idNonValido";
 			}
 			else return "@no,@nonIlTuoTurno";
-		} catch (InvalidTokenException e) {
+		}
+		catch (InvalidTokenException e) {
 			return returnInvalidToken();
-		} catch (NonInPartitaException e) {
+		} 
+		catch (NonInPartitaException e) {
 			return "@no,@nonInPartita";
-		} catch (NonAutenticatoException e) {
-			return returnInvalidToken();
-		} catch (GenericDinosauroException e) {
+		}
+		catch (GenericDinosauroException e) {
 			if (e.getMessage().equals("mortePerInedia")) return "@no,@mortePerInedia";
 			if (e.getMessage().equals("raggiuntaDimensioneMax")) return "@no,@raggiuntaDimensioneMax";
 			if (e.getMessage().equals("raggiuntoLimiteMosseDinosauro")) return "@no,@raggiuntoLimiteMosseDinosauro";
@@ -455,13 +451,14 @@ public class SocketAdapter implements Adapter {
 				return "@no,@idNonValido";
 			}
 			else return "@no,@nonIlTuoTurno";
-		} catch (InvalidTokenException e) {
+		} 
+		catch (InvalidTokenException e) {
 			return returnInvalidToken();
-		} catch (NonInPartitaException e) {
+		}
+		catch (NonInPartitaException e) {
 			return "@no,@nonInPartita";
-		} catch (NonAutenticatoException e) {
-			return returnInvalidToken();
-		} catch (GenericDinosauroException e) {
+		}
+		catch (GenericDinosauroException e) {
 			if (e.getMessage().equals("mortePerInedia")) return "@no,@mortePerInedia";
 			if (e.getMessage().equals("raggiuntaDimensioneMax")) return "@no,@raggiuntaDimensioneMax";
 			if (e.getMessage().equals("raggiuntoLimiteMosseDinosauro")) return "@no,@raggiuntoLimiteMosseDinosauro";
@@ -477,12 +474,12 @@ public class SocketAdapter implements Adapter {
 				return "@ok";
 			}
 			return "@no";
-		} catch (InvalidTokenException e) {
+		}
+		catch (InvalidTokenException e) {
 			return returnInvalidToken();
-		} catch (NonInPartitaException e) {
+		}
+		catch (NonInPartitaException e) {
 			return "@no,@nonInPartita";
-		} catch (NonAutenticatoException e) {
-			return returnInvalidToken();
 		}
 	}
 
@@ -494,12 +491,12 @@ public class SocketAdapter implements Adapter {
 				return "@ok";
 			}
 			return "@no";
-		} catch (InvalidTokenException e) {
+		}
+		catch (InvalidTokenException e) {
 			return returnInvalidToken();
-		} catch (NonInPartitaException e) {
+		} 
+		catch (NonInPartitaException e) {
 			return "@no,@nonInPartita";
-		} catch (NonAutenticatoException e) {
-			return returnInvalidToken();
 		}
 	}
 }

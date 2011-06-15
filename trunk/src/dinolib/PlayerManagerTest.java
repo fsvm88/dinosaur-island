@@ -61,7 +61,7 @@ public class PlayerManagerTest {
 		assertNotNull(tmpGioc);
 		tmpGioc.creaNuovaRazza("prova", 'c');
 		assertNotNull(tmpGioc.getRazza());
-		tmpGioc.getRazza().add(new Carnivoro(new Coord(0,0)));
+		tmpGioc.getRazza().add(new Carnivoro(new Coord(12,23)));
 		int curPunteggio = tmpGioc.getPunteggio().getPunteggioDaNome("prova");
 		assertEquals(0, curPunteggio);
 		pMan.aggiorna();

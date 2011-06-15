@@ -156,7 +156,7 @@ public class Mappa implements Iterable<Cella> {
 		HashSet<Coord> mySet = new HashSet<Coord>();
 		Iterator<Coord> itCoord = null;
 		do {
-			tempCoord = getNewRandomCoord();
+			tempCoord = CommonUtils.getNewRandomCoord(getLatoDellaMappa());
 		} while (!isCellaTerra(tempCoord));
 		mySet.add(tempCoord);
 		HashSet<Coord> tempSet = new HashSet<Coord>();
@@ -203,11 +203,6 @@ public class Mappa implements Iterable<Cella> {
 			i++;
 		}
 		return counter;
-	}
-
-	private Coord getNewRandomCoord() {
-		return new Coord((CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa())),
-				(CommonUtils.getNewRandomIntValueOnMyMap(getLatoDellaMappa())));
 	}
 	
 	/**
@@ -267,7 +262,7 @@ public class Mappa implements Iterable<Cella> {
 		//		System.out.println("[popolaMappa] sto per allocare la vegetazione");
 		int curVeg = 0;
 		while (curVeg<conteggioVegetazioneStatico) {
-			Coord vegCoord = getNewRandomCoord();
+			Coord vegCoord = CommonUtils.getNewRandomCoord(getLatoDellaMappa());
 			if (isCellaTerra(vegCoord)) {
 				MappaACelle[vegCoord.getX()][vegCoord.getY()] = new Vegetazione((150+CommonUtils.getNewRandomIntValueOnMyMap(201)));
 				curVeg++;
@@ -279,7 +274,7 @@ public class Mappa implements Iterable<Cella> {
 		//		System.out.println("[popolaMappa] sto per allocare le carogne");
 		int curCarogne = 0;
 		while (curCarogne<fixed_SOD_COUNT) {
-			Coord carCoord = getNewRandomCoord();
+			Coord carCoord = CommonUtils.getNewRandomCoord(getLatoDellaMappa());
 			if (isCellaTerra(carCoord)) {
 				MappaACelle[carCoord.getX()][carCoord.getY()] = new Carogna((350+CommonUtils.getNewRandomIntValueOnMyMap(301)));
 				curCarogne++;

@@ -53,6 +53,10 @@ public class Giocatore {
 	 * Invoca l'aggiornamento su tutte le variabili aggiornabili del giocatore.
 	 */
 	protected void aggiorna() { // Testato
+		if (hasRazza() && getRazza().isEmpty()) {
+			getPunteggio().updatePunteggio(getRazza().getNome(), getRazza().getPunteggio());
+			razzaDelGiocatore = null;
+		}
 		if (hasRazza()) {
 			getRazza().aggiornaRazza();
 			getPunteggio().updatePunteggio(getRazza().getNome(), getRazza().getPunteggio());
@@ -84,8 +88,7 @@ public class Giocatore {
 	 * @return
 	 */
 	protected boolean hasRazza() { // Testato
-		if ((getRazza() != null) &&
-				!getRazza().isEmpty()) return true;
+		if ((getRazza() != null)) return true;
 		else return false;
 	}
 }

@@ -44,7 +44,9 @@ public class GiocatoreTest {
 	}
 	
 	private void testHasRazza() {
+		setUp();
 		assertFalse(testGiocatore.hasRazza());
+		testCreaRazza();
 		testGiocatore.getRazza().add(new Carnivoro(new Coord(0,0)));
 		assertTrue(testGiocatore.hasRazza());
 	}
