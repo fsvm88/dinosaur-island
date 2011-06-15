@@ -20,7 +20,7 @@ public class RRScheduler {
 	 * Costruttore, inizializza la coda con la lunghezza specificata.
 	 * @param queue_lenght
 	 */
-	public RRScheduler(int queue_lenght) {
+	public RRScheduler(int queue_lenght) { // Testato - throws IllegalArgumentException if ((queue_lenght <= 0) || queue_lenght != (int))
 		playersQueue = new ArrayBlockingQueue<String>(queue_lenght);
 		max_PLAYERS_INGAME = queue_lenght;
 	}
@@ -30,7 +30,7 @@ public class RRScheduler {
 	 * @return
 	 * @throws InterruptedException
 	 */
-	protected boolean newTask(String token) throws InterruptedException {
+	protected boolean newTask(String token) throws InterruptedException { // Testato
 		if (!playersQueue.contains(token)) {
 			playersQueue.put(token);
 			return true;
@@ -42,7 +42,7 @@ public class RRScheduler {
 	 * @param token
 	 * @return
 	 */
-	protected boolean killTask(String token) {
+	protected boolean killTask(String token) { // Testato
 		if (playersQueue.contains(token)) {
 			playersQueue.remove(token);
 			return true;
@@ -61,7 +61,7 @@ public class RRScheduler {
 	 * Dice se la lista è piena.
 	 * @return
 	 */
-	protected boolean maxPlayers() {
+	protected boolean maxPlayers() { // Testato
 		if (playersQueue.size() < max_PLAYERS_INGAME) return false;
 		else return true;
 	}
@@ -69,7 +69,7 @@ public class RRScheduler {
 	 * Dice se qualcuno sta giocando (la lista non è vuota).
 	 * @return
 	 */
-	protected boolean hasQueuedTasks() {
+	protected boolean hasQueuedTasks() { // Testato
 		if (playersQueue.size() == 0) return false;
 		else return true;
 	}
@@ -78,7 +78,7 @@ public class RRScheduler {
 	 * @param token
 	 * @return
 	 */
-	protected boolean hasTask(String token) {
+	protected boolean hasTask(String token) { // Testato
 		if (playersQueue.contains(token)) return true;
 		else return false;
 	}
@@ -86,7 +86,7 @@ public class RRScheduler {
 	 * Ritorna un iteratore sulla lista di giocatori nella coda.
 	 * @return
 	 */
-	protected Iterator<String> getIteratorOnTasks() {
+	protected Iterator<String> iterator() { // Testato
 		return playersQueue.iterator();
 	}
 }
