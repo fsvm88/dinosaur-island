@@ -1,6 +1,5 @@
 package dinolib;
 
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -18,17 +17,11 @@ import dinolib.Razza.RazzaTest;
 	CellaTest.class,
 	MappaTest.class,
 	PunteggioTest.class,
+	RRScheduler.class,
 	GiocatoreTest.class,
 	PlayerManagerTest.class,
 	ConnectionManagerTest.class,
-	RRScheduler.class,
 	LogicaTest.class})
 	
 public class DinolibTest {
-
-	public static Test suite() {
-		return null;
-		
-	}
-
 }

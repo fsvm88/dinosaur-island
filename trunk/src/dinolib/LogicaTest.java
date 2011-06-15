@@ -17,7 +17,7 @@ public class LogicaTest {
 	private String testingToken = null;
 	private String testingToken2 = null;
 	private String testingToken3 = null;
-
+	
 	@Before
 	public void setUp() {
 		logicaTest = new Logica();
