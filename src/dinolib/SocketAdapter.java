@@ -260,7 +260,7 @@ public class SocketAdapter implements Adapter {
 		try {
 			if (myLogica.isPlayerLogged(token)) {
 				String buffer = "@classifica";
-				Iterator<Giocatore> itGiocatori = myLogica.getPMan().getIteratorOnPlayers();
+				Iterator<Giocatore> itGiocatori = myLogica.getPMan().iterator();
 				while (itGiocatori.hasNext()) {
 					buffer = assemblaPunteggio(buffer, itGiocatori.next());
 				}
