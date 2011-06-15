@@ -2,7 +2,7 @@ package dinolib;
 
 import java.util.Random;
 
-public class CommonUtils {
+public abstract class CommonUtils {
 	/**
 	 * Helper per la generazione di un nuovo token alfanumerico.
 	 * @return
@@ -30,7 +30,7 @@ public class CommonUtils {
 	 * @return
 	 */
 	public static int translateYforServer (int yToTranslate, int modulus) {
-		return modulus - yToTranslate;
+		return (modulus-1) - yToTranslate;
 	}
 	
 	/**
