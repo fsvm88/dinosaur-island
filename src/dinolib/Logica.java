@@ -249,7 +249,7 @@ public class Logica implements Runnable {
 	 */
 	private void updatePartita() {
 		getMappa().aggiorna();
-		getPMan().updateGiocatori();
+		getPMan().aggiorna();
 	}
 	/*
 	 * Algoritmo:

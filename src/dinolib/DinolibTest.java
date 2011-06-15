@@ -12,9 +12,17 @@ import dinolib.Razza.DinosauroTest;
 import dinolib.Razza.RazzaTest;
 
 @RunWith(Suite.class)
-@SuiteClasses({DinosauroTest.class, CellaTest.class, RazzaTest.class,
-	CoordTest.class, GiocatoreTest.class, PunteggioTest.class, MappaTest.class,
+@SuiteClasses({DinosauroTest.class,
+	RazzaTest.class,
+	CoordTest.class,
+	CellaTest.class,
+	MappaTest.class,
+	PunteggioTest.class,
+	GiocatoreTest.class,
+	PlayerManagerTest.class,
+	ConnectionManagerTest.class,
 	LogicaTest.class})
+	
 public class DinolibTest {
 
 	public static Test suite() {

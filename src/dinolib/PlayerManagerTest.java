@@ -2,8 +2,13 @@ package dinolib;
 
 import static org.junit.Assert.*;
 
+import java.util.Iterator;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import dinolib.Mappa.Coord;
+import dinolib.Razza.Carnivoro;
 
 public class PlayerManagerTest {
 	private PlayerManager pMan = null;
@@ -35,8 +40,32 @@ public class PlayerManagerTest {
 		pMan.add(new Giocatore("abg", "pass"));
 		pMan.add(new Giocatore("abh", "pass"));
 		assertNotNull(pMan.iterator());
-		assertTrue(pMan.hasNext());
-		while ()
+		Iterator<Giocatore> itP = pMan.iterator();
+		assertTrue(itP.hasNext());
+		while (itP.hasNext()) {
+			assertNotNull(itP.next());
+		}
+	}
+	
+	private void testContains() {
+		Iterator<Giocatore> itP = pMan.iterator();
+		itP.next();
+		itP.next();
+		Giocatore tmpGioc = itP.next();
+		assertTrue(pMan.contains(tmpGioc));
+		assertFalse(pMan.contains(new Giocatore("abi", "pass")));
+	}
+	
+	private void testAggiorna() {
+		Giocatore tmpGioc = pMan.iterator().next();
+		assertNotNull(tmpGioc);
+		tmpGioc.creaNuovaRazza("prova", 'c');
+		assertNotNull(tmpGioc.getRazza());
+		tmpGioc.getRazza().add(new Carnivoro(new Coord(0,0)));
+		int curPunteggio = tmpGioc.getPunteggio().getPunteggioDaNome("prova");
+		assertEquals(0, curPunteggio);
+		pMan.aggiorna();
+		assertEquals(2, tmpGioc.getPunteggio().getPunteggioDaNome("prova").intValue());
 	}
 	
 	@Test
@@ -45,5 +74,7 @@ public class PlayerManagerTest {
 		testAddExists();
 		testGetPlayer();
 		testIterator();
+		testContains();
+		testAggiorna();
 	}
 }

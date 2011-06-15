@@ -39,7 +39,7 @@ public class PlayerManager implements List<Giocatore> {
 	 * @param nomeGiocatore
 	 * @return
 	 */
-	protected Giocatore getPlayer(String nomeGiocatore) {
+	protected Giocatore getPlayer(String nomeGiocatore) { // Testato
 		if (exists(nomeGiocatore)) {
 			Iterator<Giocatore> itGiocatori = iterator();
 			Giocatore tempGiocatore = null;
@@ -54,7 +54,7 @@ public class PlayerManager implements List<Giocatore> {
 	/**
 	 * Aggiorna tutti i giocatori sul cambio turno.
 	 */
-	protected void updateGiocatori() {
+	protected void aggiorna() {
 		Iterator<Giocatore> itGiocatori = this.iterator();
 		while (itGiocatori.hasNext()) {
 			itGiocatori.next().aggiorna();
@@ -62,11 +62,11 @@ public class PlayerManager implements List<Giocatore> {
 	}
 	/* Metodi di interfaccia - implementati */
 	@Override // Testato
-	public boolean add(Giocatore newGiocatore) { return listaGiocatori.add(newGiocatore); }
+	public boolean add(Giocatore newGiocatore) { return listaGiocatori.add(newGiocatore); } // Testato
 	@Override
-	public boolean contains(Object arg0) { return listaGiocatori.contains(arg0); }
+	public boolean contains(Object arg0) { return listaGiocatori.contains(arg0); } // Testato
 	@Override
-	public Iterator<Giocatore> iterator() { return listaGiocatori.iterator(); }
+	public Iterator<Giocatore> iterator() { return listaGiocatori.iterator(); } // Testato
 	
 	/* Metodi di interfaccia - non implementati */
 	@Override
