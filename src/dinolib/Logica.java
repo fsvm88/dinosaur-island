@@ -351,7 +351,7 @@ public class Logica implements Runnable {
 	private boolean tryActualSpawn(Coord newCoord, String idDinosauro) {
 		if ( !isCellaAcqua(newCoord) &&
 				!isCellaDinosauro(newCoord)) {
-			getMappa().spawnDinosauro(newCoord, idDinosauro, getMappa().getCella(newCoord));
+			getMappa().spawnDinosauro(newCoord, idDinosauro);
 			return true;
 		}
 		return false;
