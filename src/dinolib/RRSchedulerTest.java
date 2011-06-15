@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class RRSchedulerTest {
 	private RRScheduler rrsched = null;
-
+	
 	@Before
 	public void setUp() {
 		rrsched = new RRScheduler(8);
@@ -16,9 +16,6 @@ public class RRSchedulerTest {
 	private void testCostruttore() {
 		setUp();
 		assertNotNull(rrsched);
-		assertNotNull(new RRScheduler(1));
-		assertNotNull(new RRScheduler(90));
-		assertNotNull(new RRScheduler(10000));
 	}
 
 	private void testNewTask() {
