@@ -21,6 +21,7 @@ import dinolib.Razza.RazzaTest;
 	GiocatoreTest.class,
 	PlayerManagerTest.class,
 	ConnectionManagerTest.class,
+	RRScheduler.class,
 	LogicaTest.class})
 	
 public class DinolibTest {

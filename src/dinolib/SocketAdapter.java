@@ -242,7 +242,7 @@ public class SocketAdapter implements Adapter {
 	public Object listaGiocatori(String token) {
 		try {
 			if (myLogica.getRRSched().hasQueuedTasks()) {
-				Iterator<String> itTasks = myLogica.getRRSched().getIteratorOnTasks();
+				Iterator<String> itTasks = myLogica.getRRSched().iterator();
 				String buffer = "@listaGiocatori";
 				while (itTasks.hasNext()) {
 					buffer = assemblaBuffer(buffer, myLogica.getCMan().getName(token));
