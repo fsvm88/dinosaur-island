@@ -15,7 +15,7 @@ public class ConnectionManager {
 	/**
 	 * Costruttore, inizializza l'hashtable.
 	 */
-	public ConnectionManager() {
+	public ConnectionManager() { // Testato
 		connTable = new Hashtable<String, String>();
 	}
 	/**
@@ -23,7 +23,7 @@ public class ConnectionManager {
 	 * @param token
 	 * @return
 	 */
-	protected boolean existsToken(String token) {
+	protected boolean existsToken(String token) { // Testato
 		if (connTable.containsKey(token)) return true;
 		else return false;
 	}
@@ -32,7 +32,7 @@ public class ConnectionManager {
 	 * @param nomeGiocatore
 	 * @return
 	 */
-	protected boolean existsName(String nomeGiocatore) {
+	protected boolean existsName(String nomeGiocatore) { // Testato
 		if (connTable.containsValue(nomeGiocatore)) return true;
 		else return false;
 	}
@@ -43,7 +43,7 @@ public class ConnectionManager {
 	 * @param token
 	 * @return
 	 */
-	protected boolean collega(String nomeGiocatore, String token) {
+	protected boolean collega(String nomeGiocatore, String token) { // Testato
 		if (connTable.put(token, nomeGiocatore) == null) return true;
 		else return false;
 	}
@@ -52,7 +52,7 @@ public class ConnectionManager {
 	 * @param token
 	 * @return
 	 */
-	protected boolean scollega(String token) {
+	protected boolean scollega(String token) { // Testato
 		if (connTable.remove(token) != null) return true;
 		else return false;
 	}
@@ -60,7 +60,7 @@ public class ConnectionManager {
 	 * Dà un iteratore sui token.
 	 * @return
 	 */
-	protected Iterator<String> getIteratorOnTokens() {
+	protected Iterator<String> getIteratorOnTokens() { // Testato
 		if (!connTable.isEmpty()) return connTable.keySet().iterator();
 		else return null;
 	}
@@ -68,7 +68,7 @@ public class ConnectionManager {
 	 * Dà un iteratore sui nomi dei giocatori connessi.	
 	 * @return
 	 */
-	protected Iterator<String> getIteratorOnConnectedPlayerNames() {
+	protected Iterator<String> getIteratorOnConnectedPlayerNames() { // Testato
 		if (!connTable.isEmpty()) return connTable.values().iterator();
 		else return null;
 	}
@@ -77,7 +77,7 @@ public class ConnectionManager {
 	 * @return 
 	 * @throws InvalidTokenException 
 	 */
-	protected String getName(String token) throws InvalidTokenException {
+	protected String getName(String token) throws InvalidTokenException { // Testato
 		if (existsToken(token)) return connTable.get(token);
 		else throw new InvalidTokenException();
 	}
@@ -86,7 +86,7 @@ public class ConnectionManager {
 	 * @param nomeGiocatore
 	 * @return
 	 */
-	protected String getToken(String nomeGiocatore) {
+	protected String getToken(String nomeGiocatore) { // Testato
 		Iterator<String> itNames = getIteratorOnTokens();
 		String tmpToken = null;
 		while (itNames.hasNext()) {

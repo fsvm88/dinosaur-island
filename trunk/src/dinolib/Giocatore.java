@@ -55,8 +55,8 @@ public class Giocatore {
 	protected void aggiorna() { // Testato
 		if (hasRazza()) {
 			getRazza().aggiornaRazza();
+			getPunteggio().updatePunteggio(getRazza().getNome(), getRazza().getPunteggio());
 		}
-		getPunteggio().updatePunteggio(getRazza().getNome(), getRazza().getPunteggio());
 	}
 
 	/* Funzioni miscellanee */
