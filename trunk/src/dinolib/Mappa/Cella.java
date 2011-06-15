@@ -78,7 +78,7 @@ public abstract class Cella extends Mappa {
 	 * Nel caso sia una cella senza vegetazione o carogna non fa nulla.
 	 * Nel caso la cella invece sia vegetazione o carogna viene chiamato il metodo delle sottoclassi.
 	 */
-	public void aggiornaCellaSulTurno() { return; }
+	public void aggiorna() { return; }
 	
 	/**
 	 * Contiene la lista dei nomi dei giocatori che hanno visitato la cella.

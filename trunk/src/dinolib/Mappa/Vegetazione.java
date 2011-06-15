@@ -5,21 +5,22 @@ public class Vegetazione extends Cella {
 	/**
 	 * Il costruttore si occupa di inizializzare il valore di tettoMassimo.
 	 */
-	public Vegetazione(int tettoMassimo) {
-		super.valoreIniziale = tettoMassimo;
-		super.valoreAttuale = tettoMassimo;
+	public Vegetazione(int nuovoValore) {
+		super.valoreIniziale = nuovoValore;
+		super.valoreAttuale = nuovoValore;
 	}
 	
 	/**
 	 * Aggiorna il valore attuale della cella al passare dei turni di gioco.
 	 */
-	public void aggiornaCellaSulTurno() {
-		if (super.valoreAttuale < super.valoreIniziale) {
-			int sommaTemp = super.valoreAttuale + (super.valoreIniziale/20);
-			if (sommaTemp < super.valoreIniziale) {
-				super.valoreAttuale = sommaTemp;
+	@Override
+	public void aggiorna() {
+		if (valoreAttuale < valoreIniziale) {
+			int sommaTemp = valoreAttuale + (valoreIniziale/20);
+			if (sommaTemp < valoreIniziale) {
+				valoreAttuale = sommaTemp;
 			}
-			else super.valoreAttuale = super.valoreIniziale;
+			else valoreAttuale = valoreIniziale;
 		}
 	}
 	
@@ -27,5 +28,5 @@ public class Vegetazione extends Cella {
 	 * Override del metodo della classe cella.
 	 */
 	@Override
-	public int getValoreAttuale() { return super.valoreAttuale; }
+	public int getValoreAttuale() { return valoreAttuale; }
 }

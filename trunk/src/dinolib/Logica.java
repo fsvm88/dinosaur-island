@@ -244,18 +244,11 @@ public class Logica implements Runnable {
 	protected void broadcastCambioTurno() {
 
 	}
-
-	/**
-	 * Aggiorna la mappa ogni volta che si passa da un giocatore all'altro.
-	 */
-	private void updateMappa() {
-		getMappa().aggiornaSuTurno();
-	}
 	/**
 	 * Aggiorna l'ambiente di gioco ogni volta che si passa da un giocatore all'altro.
 	 */
 	private void updatePartita() {
-		updateMappa();
+		getMappa().aggiorna();
 		getPMan().updateGiocatori();
 	}
 	/*
