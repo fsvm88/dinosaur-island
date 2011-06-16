@@ -17,7 +17,8 @@ public class Coord {
 	public int getY() { return y; } // Testato
 	
 	public boolean equals(Coord coordToConf) { // Testato
-		return ((this.x == coordToConf.getX()) &&
-				(this.y == coordToConf.getY())); 
+		if ((this.x == coordToConf.getX()) &&
+				(this.y == coordToConf.getY())) return true;
+		else return false;
 	}
 }
