@@ -1,11 +1,11 @@
 package dinolib.Mappa;
 
 
-public class Vegetazione extends Cella {
+class Vegetazione extends Cella {
 	/**
 	 * Il costruttore si occupa di inizializzare il valore di tettoMassimo.
 	 */
-	public Vegetazione(int nuovoValore) {
+	protected Vegetazione(int nuovoValore) {
 		super.valoreIniziale = nuovoValore;
 		super.valoreAttuale = nuovoValore;
 	}

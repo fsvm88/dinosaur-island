@@ -249,7 +249,7 @@ class ClientWorker extends Server implements Runnable {
 	/**
 	 * Helper per fermare il thread, imposta stopThread a true.
 	 */
-	public void stopTheThread () {
+	private void stopTheThread () {
 		stopThread = true;
 	}
 

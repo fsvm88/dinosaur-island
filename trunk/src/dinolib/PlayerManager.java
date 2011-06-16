@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class PlayerManager implements List<Giocatore> {
+class PlayerManager implements List<Giocatore> {
 	/**
 	 * Istanzia il riferimento alla lista dei Giocatori.
 	 * @uml.property name="listaGiocatori"

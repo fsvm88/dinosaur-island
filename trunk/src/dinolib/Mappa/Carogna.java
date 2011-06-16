@@ -1,11 +1,11 @@
 package dinolib.Mappa;
 
 
-public class Carogna extends Cella {
+class Carogna extends Cella {
 	/**
 	 * Il costruttore si occupa di inizializzare il valore di tettoMassimo.
 	 */
-	public Carogna(int nuovoValore){
+	protected Carogna(int nuovoValore){
 		super.valoreIniziale = nuovoValore;
 		super.valoreAttuale = nuovoValore;
 	}

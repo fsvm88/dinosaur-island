@@ -1,6 +1,6 @@
 package dinolib.Mappa;
 
 
-public class Terra extends Cella {
+class Terra extends Cella {
 
 }

@@ -226,7 +226,7 @@ public class Logica implements Runnable {
 		return tempGiocatore;
 	}
 
-	protected void broadcastCambioTurno() {
+	private void broadcastCambioTurno() {
 
 	}
 	/**

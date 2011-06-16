@@ -3,7 +3,7 @@ package dinolib;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-public class Punteggio {
+class Punteggio {
 	/**
 	 * Contiene la lista di punteggio del giocatore corrente.
 	 * @uml.property name="listaPunteggio"
@@ -20,7 +20,7 @@ public class Punteggio {
 	 * @param punteggioToUpdate
 	 * @return
 	 */
-	public boolean updatePunteggio(String nomeRazza, Integer punteggioToUpdate) {  // Testato
+	protected boolean updatePunteggio(String nomeRazza, Integer punteggioToUpdate) {  // Testato
 		if ((nomeRazza != null) &&
 				(punteggioToUpdate != null) &&
 				(punteggioToUpdate.intValue()>0)) {
@@ -33,7 +33,7 @@ public class Punteggio {
 	 * Ritorna un iteratore sui nomi delle razze che sono in classifica.
 	 * @return
 	 */
-	public Iterator<String> iterator() { // Testato
+	protected Iterator<String> iterator() { // Testato
 		return listaPunteggio.keySet().iterator();
 	}
 	/**
@@ -41,7 +41,7 @@ public class Punteggio {
 	 * @param nomeRazza
 	 * @return
 	 */
-	public Integer getPunteggioDaNome(String nomeRazza) { // Testato
+	protected Integer getPunteggioDaNome(String nomeRazza) { // Testato
 		if (listaPunteggio.containsKey(nomeRazza)) {
 			return listaPunteggio.get(nomeRazza).intValue();
 		}
