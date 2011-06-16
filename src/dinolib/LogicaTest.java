@@ -7,6 +7,7 @@ import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Test;
 
+import dinolib.Exceptions.GenericDinosauroException;
 import dinolib.Exceptions.InvalidTokenException;
 import dinolib.Exceptions.NomeRazzaOccupatoException;
 import dinolib.Exceptions.RazzaNonCreataException;
@@ -235,6 +236,87 @@ public class LogicaTest {
 		assertFalse(logicaTest.existsDinosauroWithId("iu23jwegnw"));
 	}
 
+	private void testGetPlayerByIdDinosauro() {
+		Iterator<Dinosauro> itDino = null;
+		try {
+			itDino = logicaTest.getPlayerByToken(testingToken).getRazza().iterator();
+		}
+		catch (InvalidTokenException e) { }
+		assertNotNull(itDino);
+		assertTrue(itDino.hasNext());
+		Dinosauro tmpDino = itDino.next();
+		assertNotNull(tmpDino);
+		String tmpId = tmpDino.getIdDinosauro();
+		assertNotNull(tmpId);
+		assertEquals(tmpId, tmpDino.getIdDinosauro());
+		assertNotNull(logicaTest.getPlayerByIdDinosauro(tmpId));
+		Giocatore tempGiocatore = logicaTest.getPlayerByIdDinosauro(tmpId);
+		assertNotNull(tempGiocatore);
+		assertNull(logicaTest.getPlayerByIdDinosauro("kajsf"));
+		assertTrue(tempGiocatore.getRazza().existsDinosauroWithId(tmpId));
+	}
+	
+	private void testDoDeponiUovo() {
+		Iterator<Dinosauro> itDino = null;
+		try {
+			itDino = logicaTest.getPlayerByToken(testingToken).getRazza().iterator();
+		}
+		catch (InvalidTokenException e) { }
+		assertNotNull(itDino);
+		assertTrue(itDino.hasNext());
+		Dinosauro tmpDino = itDino.next();
+		assertNotNull(tmpDino);
+		tmpDino.setEnergiaAttuale(tmpDino.getEnergiaMax());
+		String tmpId = tmpDino.getIdDinosauro();
+		assertNotNull(tmpId);
+		assertEquals(tmpId, tmpDino.getIdDinosauro());
+		/* Fai crescere il dinosauro quanto serve per testare deponiUovo */
+		try {
+			logicaTest.getPlayerByToken(testingToken).getRazza().cresciDinosauro(tmpId);
+			logicaTest.getPlayerByToken(testingToken).getRazza().aggiornaRazza();
+		}
+		catch (InvalidTokenException e) { System.out.println("Eccezione InvalidToken gestita correttamente."); }
+		catch (GenericDinosauroException e) {
+			System.out.println("Eccezione GenericDinosauroException gestita correttamente");
+			System.out.println(e.getMessage());
+		}
+		/* Riportalo a energia massima */
+		tmpDino.setEnergiaAttuale(tmpDino.getEnergiaMax());
+		String newToken = null;
+		/* Prova a fargli deporre un uovo */
+		try {
+			newToken = logicaTest.doDeponiUovo(testingToken, tmpId);
+			assertNotNull(newToken);
+			assertTrue(logicaTest.existsDinosauroWithId(newToken));
+		}
+		catch (GenericDinosauroException e) {
+			System.out.println("Eccezione GenericDinosauroException gestita correttamente");
+			System.out.println(e.getMessage());
+		}
+		catch (InvalidTokenException e) { System.out.println("Eccezione InvalidToken gestita correttamente."); }
+		/* Testa GenericDinosauroException con causa "raggiuntoLimiteMosse" */
+		try {
+			assertNotNull(logicaTest.doDeponiUovo(testingToken, tmpId));
+		}
+		catch (GenericDinosauroException e) {
+			System.out.println("Eccezione GenericDinosauroException gestita correttamente");
+			System.out.println(e.getMessage());
+		}
+		catch (InvalidTokenException e) { System.out.println("Eccezione InvalidToken gestita correttamente."); }
+		/* Porta il dinosauro a energia minima (di modo che muoia) */
+		tmpDino.setEnergiaAttuale(1);
+		/* Testa GenericDinosauroException con causa "mortePerInedia" */
+		try {
+			logicaTest.getPlayerByToken(testingToken).getRazza().aggiornaRazza();
+			assertNotNull(logicaTest.doDeponiUovo(testingToken, tmpId));
+		}
+		catch (GenericDinosauroException e) {
+			System.out.println("Eccezione GenericDinosauroException gestita correttamente");
+			System.out.println(e.getMessage());
+		}
+		catch (InvalidTokenException e) { System.out.println("Eccezione InvalidToken gestita correttamente."); }
+	}
+	
 	@Test
 	public void testAll() throws Exception {
 		testCostruttore();
@@ -252,16 +334,16 @@ public class LogicaTest {
 		testIsPlayerInGame();
 		System.out.println("Testo existsDinosauroWithId");
 		testExistsDinosauroWithId();
+		System.out.println("Testo getPlayerByIdDinosauro");
+		testGetPlayerByIdDinosauro();
+		System.out.println("Testo doDeponiUovo");
+		testDoDeponiUovo();
 		System.out.println("Testato tutto correttamente");
 	}
 
 	// TODO
-	/* existsDinosauroWithId
-	 * isPlayerInGame
-	 * isMioTurno
-	 * getPlayerByIdDinosauro
+	/* isMioTurno
 	 * updatePartita
-	 * doDeponiUovo
 	 * doUscitaPartita
 	 * doLogout
 	 * doMuoviDinosauro

@@ -200,7 +200,7 @@ public class Logica implements Runnable {
 	 * @param idDinosauro
 	 * @return
 	 */
-	protected boolean existsDinosauroWithId(String idDinosauro) {
+	protected boolean existsDinosauroWithId(String idDinosauro) { // Testato
 		Iterator<Giocatore> itGiocatori = getPMan().iterator();
 		Giocatore tempGiocatore = null;
 		while (itGiocatori.hasNext()) {
@@ -218,12 +218,18 @@ public class Logica implements Runnable {
 	 * @param idDinosauro
 	 * @return
 	 */
-	protected Giocatore getPlayerByIdDinosauro(String idDinosauro) {
+	protected Giocatore getPlayerByIdDinosauro(String idDinosauro) { // Testato
 		Iterator<Giocatore> itSuiGiocatori = getPMan().iterator();
 		Giocatore tempGiocatore = null;
-		while (itSuiGiocatori.hasNext()) {
-			tempGiocatore = itSuiGiocatori.next();
-			if (tempGiocatore.getRazza().existsDinosauroWithId(idDinosauro)) break;
+		if (existsDinosauroWithId(idDinosauro)) {
+			while (itSuiGiocatori.hasNext()) {
+				tempGiocatore = itSuiGiocatori.next();
+				if (tempGiocatore.hasRazza()) {
+					if (tempGiocatore.getRazza().existsDinosauroWithId(idDinosauro))  {
+						break;
+					}
+				}
+			}
 		}
 		return tempGiocatore;
 	}
@@ -374,25 +380,27 @@ public class Logica implements Runnable {
 	 * @throws GenericDinosauroException
 	 * @throws InvalidTokenException
 	 */
-	protected String doDeponiUovo(String token, String idDinosauro) throws GenericDinosauroException, InvalidTokenException {
-		Dinosauro tempDinosauro = getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
-		if (!tempDinosauro.hasAzioneStatica()) throw new GenericDinosauroException("raggiuntoLimiteMosseDinosauro");
-		getPlayerByToken(token).getRazza().deponiUovo(idDinosauro);
-		if (getPlayerByToken(token).getRazza().getTipo().equals('c')) {
-			Dinosauro newDinosauro = new Carnivoro(tempDinosauro.getCoord());
-			newDinosauro.nonUsabile();
-			if (getPlayerByToken(token).getRazza().add(newDinosauro)) {
-				if(trySpawn(newDinosauro, 0)) {
-					return newDinosauro.getIdDinosauro();
+	protected String doDeponiUovo(String token, String idDinosauro) throws GenericDinosauroException, InvalidTokenException { // Testato
+		if (getPlayerByToken(token).hasRazza()) {
+			Dinosauro tempDinosauro = getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
+			if (!tempDinosauro.hasAzioneStatica()) throw new GenericDinosauroException("raggiuntoLimiteMosseDinosauro");
+			getPlayerByToken(token).getRazza().deponiUovo(idDinosauro);
+			if (getPlayerByToken(token).getRazza().getTipo().equals('c')) {
+				Dinosauro newDinosauro = new Carnivoro(tempDinosauro.getCoord());
+				newDinosauro.nonUsabile();
+				if (getPlayerByToken(token).getRazza().add(newDinosauro)) {
+					if(trySpawn(newDinosauro, 0)) {
+						return newDinosauro.getIdDinosauro();
+					}
 				}
 			}
-		}
-		else if (getPlayerByToken(token).getRazza().getTipo().equals('e')) {
-			Dinosauro newDinosauro = new Erbivoro(tempDinosauro.getCoord());
-			newDinosauro.nonUsabile();
-			if (getPlayerByToken(token).getRazza().add(newDinosauro)) {
-				if(trySpawn(newDinosauro, 0)) {
-					return newDinosauro.getIdDinosauro();
+			else if (getPlayerByToken(token).getRazza().getTipo().equals('e')) {
+				Dinosauro newDinosauro = new Erbivoro(tempDinosauro.getCoord());
+				newDinosauro.nonUsabile();
+				if (getPlayerByToken(token).getRazza().add(newDinosauro)) {
+					if(trySpawn(newDinosauro, 0)) {
+						return newDinosauro.getIdDinosauro();
+					}
 				}
 			}
 		}
