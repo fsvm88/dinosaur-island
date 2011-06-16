@@ -14,6 +14,7 @@ import dinolib.Exceptions.RazzaNonCreataException;
 import dinolib.Exceptions.TroppiGiocatoriException;
 import dinolib.Exceptions.UserAuthenticationFailedException;
 import dinolib.Exceptions.UserExistsException;
+import dinolib.Mappa.Coord;
 import dinolib.Razza.Dinosauro;
 
 public class LogicaTest {
@@ -317,6 +318,52 @@ public class LogicaTest {
 		catch (InvalidTokenException e) { System.out.println("Eccezione InvalidToken gestita correttamente."); }
 	}
 	
+	private void testDoMuoviDinosauro() {
+		Iterator<Dinosauro> itDino = null;
+		try {
+			itDino = logicaTest.getPlayerByToken(testingToken).getRazza().iterator();
+		}
+		catch (InvalidTokenException e) { }
+		assertNotNull(itDino);
+		assertTrue(itDino.hasNext());
+		Dinosauro tmpDino = itDino.next();
+		assertNotNull(tmpDino);
+		tmpDino.setEnergiaAttuale(tmpDino.getEnergiaMax());
+		String tmpId = tmpDino.getIdDinosauro();
+		assertNotNull(tmpId);
+		assertEquals(tmpId, tmpDino.getIdDinosauro());
+		tmpDino.setEnergiaAttuale(tmpDino.getEnergiaMax());
+		/* Fai crescere il dinosauro quanto serve */
+		try {
+			logicaTest.getPlayerByToken(testingToken).getRazza().cresciDinosauro(tmpId);
+			logicaTest.getPlayerByToken(testingToken).getRazza().aggiornaRazza();
+		}
+		catch (InvalidTokenException e) { System.out.println("Eccezione InvalidToken gestita correttamente."); }
+		catch (GenericDinosauroException e) {
+			System.out.println("Eccezione GenericDinosauroException gestita correttamente");
+			System.out.println(e.getMessage());
+		}
+		tmpDino.setEnergiaAttuale(tmpDino.getEnergiaMax());
+		/* Testa movimento quando tutto è corretto */
+		try {
+			assertNotNull(logicaTest.doMuoviDinosauro(testingToken, tmpId, new Coord(tmpDino.getCoord().getX()+1, tmpDino.getCoord().getY()+1)));
+		}
+		catch (InvalidTokenException e) { System.out.println("Eccezione InvalidToken gestita correttamente."); }
+		catch (GenericDinosauroException e) {
+			System.out.println("Eccezione GenericDinosauroException gestita correttamente");
+			System.out.println(e.getMessage());
+		}
+		/* Testa movimento quando il dinosauro ha esaurito le mosse (GenericDinosauroException con causa "raggiuntoLimiteMosse") */
+		try {
+			assertNull(logicaTest.doMuoviDinosauro(testingToken, tmpId, new Coord(tmpDino.getCoord().getX()+1, tmpDino.getCoord().getY()+1)));
+		}
+		catch (InvalidTokenException e) { System.out.println("Eccezione InvalidToken gestita correttamente."); }
+		catch (GenericDinosauroException e) {
+			System.out.println("Eccezione GenericDinosauroException gestita correttamente");
+			System.out.println(e.getMessage());
+		}
+	}
+	
 	@Test
 	public void testAll() throws Exception {
 		testCostruttore();
@@ -338,6 +385,8 @@ public class LogicaTest {
 		testGetPlayerByIdDinosauro();
 		System.out.println("Testo doDeponiUovo");
 		testDoDeponiUovo();
+		System.out.println("Testo doMuoviDinosauro");
+		testDoMuoviDinosauro();
 		System.out.println("Testato tutto correttamente");
 	}
 
