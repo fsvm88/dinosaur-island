@@ -30,7 +30,13 @@ public class LogicaTest {
 
 	private void testCostruttore() {
 		setUp();
+		testingToken = null;
+		testingToken2 = null;
+		testingToken3 = null;
 		assertNotNull(logicaTest);
+		assertNull(testingToken);
+		assertNull(testingToken2);
+		assertNull(testingToken3);
 	}
 
 	private void testObjectsGetters() {
@@ -344,9 +350,13 @@ public class LogicaTest {
 			System.out.println(e.getMessage());
 		}
 		tmpDino.setEnergiaAttuale(tmpDino.getEnergiaMax());
+		System.out.println("Il dinosauro parte da (" + tmpDino.getCoord().getX() + ", " + tmpDino.getCoord().getY() + ")");
 		/* Testa movimento quando tutto è corretto */
+		String ret = null;
 		try {
-			assertNotNull(logicaTest.doMuoviDinosauro(testingToken, tmpId, new Coord(tmpDino.getCoord().getX()+1, tmpDino.getCoord().getY()+1)));
+			do {
+				ret = logicaTest.doMuoviDinosauro(testingToken, tmpId, new Coord(tmpDino.getCoord().getX()+CommonUtils.getNewRandomIntValueOnMyMap(3), tmpDino.getCoord().getY()+CommonUtils.getNewRandomIntValueOnMyMap(3)));
+			} while (!ret.equals("@ok"));
 		}
 		catch (InvalidTokenException e) { System.out.println("Eccezione InvalidToken gestita correttamente."); }
 		catch (GenericDinosauroException e) {
@@ -355,13 +365,17 @@ public class LogicaTest {
 		}
 		/* Testa movimento quando il dinosauro ha esaurito le mosse (GenericDinosauroException con causa "raggiuntoLimiteMosse") */
 		try {
-			assertNull(logicaTest.doMuoviDinosauro(testingToken, tmpId, new Coord(tmpDino.getCoord().getX()+1, tmpDino.getCoord().getY()+1)));
+			tmpDino = logicaTest.getPlayerByIdDinosauro(tmpId).getRazza().getDinosauroById(tmpId);
+			tmpDino.setEnergiaAttuale(tmpDino.getEnergiaMax());
+			ret = logicaTest.doMuoviDinosauro(testingToken, tmpId, new Coord(tmpDino.getCoord().getX()+1, tmpDino.getCoord().getY()+1));
+			assertNotNull(ret);
+			System.out.println("[testDoMuoviDinosauro] ret: " + ret);
 		}
 		catch (InvalidTokenException e) { System.out.println("Eccezione InvalidToken gestita correttamente."); }
 		catch (GenericDinosauroException e) {
 			System.out.println("Eccezione GenericDinosauroException gestita correttamente");
 			System.out.println(e.getMessage());
-		}
+		} // TODO implementare test più estensivi per erbivoro su vegetazione e carnivoro su carogna. Usare l'iteratore della mappa per avere una cella di tipo desiderato
 	}
 	
 	@Test

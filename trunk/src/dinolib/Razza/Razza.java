@@ -198,16 +198,16 @@ public class Razza implements Set<Dinosauro> {
 	 */
 	public void muoviDinosauro(String idDinosauro, Coord newCoord) throws GenericDinosauroException { // Testato
 		Dinosauro tempDinosauro = getDinosauroById(idDinosauro);
-		if(!(tempDinosauro.getEnergiaAttuale()<tempDinosauro.getEnergiaMovimento())) {
+		if (tempDinosauro.getEnergiaAttuale()<tempDinosauro.getEnergiaMovimento()) {
+			tempDinosauro.nonUsabile();
+			this.removeById(idDinosauro);
+			throw new GenericDinosauroException("mortePerInedia");
+		}
+		else {
 			tempDinosauro.setCoord(newCoord);
 			tempDinosauro.setEnergiaAttuale(tempDinosauro.getEnergiaAttuale()-tempDinosauro.getEnergiaMovimento());
 			tempDinosauro.haMosso();
 			return;
-		}
-		else {
-			tempDinosauro.nonUsabile();
-			this.removeById(idDinosauro);
-			throw new GenericDinosauroException("mortePerInedia");
 		}
 	}
 	
