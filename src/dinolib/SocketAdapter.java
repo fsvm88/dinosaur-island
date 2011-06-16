@@ -418,8 +418,7 @@ public class SocketAdapter implements Adapter {
 	public Object cresciDinosauro(String token, String idDinosauro) {
 		try {
 			if (myLogica.isMioTurno(token)) {
-				if ( myLogica.getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
-					myLogica.getPlayerByToken(token).getRazza().cresciDinosauro(idDinosauro);
+				if ( myLogica.doCresciDinosauro(token, idDinosauro)) {
 					return "@ok";
 				}
 				return "@no,@idNonValido";
