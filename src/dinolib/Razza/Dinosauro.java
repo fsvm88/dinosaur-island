@@ -187,9 +187,9 @@ public abstract class Dinosauro {
 	}
 	
 	/* Tutti i setter */
-	public void haMosso() { movimentoCompiuto = true; }
+	protected void haMosso() { movimentoCompiuto = true; }
 	public void nonUsabile() { isUsabile = false; } // Testato
-	public void usabile() { isUsabile = true; } // Testato
+	protected void usabile() { isUsabile = true; } // Testato
 	public void setCoord(Coord myCoords) { this.coord = myCoords; } // Testato
 	/**
 	 * @param energiaAttuale
@@ -208,7 +208,7 @@ public abstract class Dinosauro {
 	 * Aumenta di uno il turno di vita del dinosauro. (Invecchia il dinosauro).
 	 * Rimuove i marker per movimento e azione statica compiuti.
 	 */
-	public void invecchia() { // Testato
+	protected void invecchia() { // Testato
 		this.turnoDiVita += 1;
 		this.azioneStaticaCompiuta = false;
 		this.movimentoCompiuto = false;

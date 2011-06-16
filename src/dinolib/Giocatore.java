@@ -4,7 +4,7 @@ import dinolib.Razza.*;
 /**
  * @author  fabio
  */
-public class Giocatore {
+class Giocatore {
 	/* Tutte le variabili statiche/definitive e non modificabili */
 
 	/* Tutte le variabili istanziabili */

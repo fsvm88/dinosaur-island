@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 import dinolib.Exceptions.InvalidTokenException;
 
-public class ConnectionManager {
+class ConnectionManager {
 	/**
 	 * Istanzia il riferimento all'hashtable che contiene le coppie token-chiave.
 	 * @uml.property name="connTable"

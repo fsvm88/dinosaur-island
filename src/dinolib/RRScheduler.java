@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-public class RRScheduler {
+class RRScheduler {
 	/**
 	 * Istanzia il riferimento alla coda dei giocatori in gioco.
 	 */
@@ -20,7 +20,7 @@ public class RRScheduler {
 	 * Costruttore, inizializza la coda con la lunghezza specificata.
 	 * @param queue_lenght
 	 */
-	public RRScheduler(int queue_lenght) { // Testato - throws IllegalArgumentException if ((queue_lenght <= 0) || queue_lenght != (int))
+	protected RRScheduler(int queue_lenght) { // Testato - throws IllegalArgumentException if ((queue_lenght <= 0) || queue_lenght != (int))
 		playersQueue = new ArrayBlockingQueue<String>(queue_lenght);
 		max_PLAYERS_INGAME = queue_lenght;
 	}
