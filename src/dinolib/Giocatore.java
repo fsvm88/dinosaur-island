@@ -88,7 +88,7 @@ class Giocatore {
 	 * @return
 	 */
 	protected boolean hasRazza() { // Testato
-		if ((getRazza() != null)) return true;
-		else return false;
+		if ((getRazza() == null)) return false;
+		else return true;
 	}
 }
