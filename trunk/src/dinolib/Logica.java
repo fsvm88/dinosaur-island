@@ -407,13 +407,13 @@ public class Logica implements Runnable {
 		if (!tempDinosauro.hasAzioneStatica()) throw new GenericDinosauroException("raggiuntoLimiteMosseDinosauro");
 		getPlayerByToken(token).getRazza().deponiUovo(idDinosauro);
 		Coord newCoords = tempDinosauro.getCoord();
-		if (getPlayerByToken(token).getRazza().getTipo().equals("Carnivoro")) {
+		if (getPlayerByToken(token).getRazza().getTipo().equals('c')) {
 			Dinosauro newDinosauro = new Carnivoro(newCoords);
 			newDinosauro.nonUsabile();
 			trySpawnOfAnEgg(token, newCoords, newDinosauro);
 			return newDinosauro.getIdDinosauro();
 		}
-		else if (tempDinosauro.getTipoRazza().equals("Erbivoro")) {
+		else if (getPlayerByToken(token).getRazza().getTipo().equals('e')) {
 			Dinosauro newDinosauro = new Erbivoro(newCoords);
 			newDinosauro.nonUsabile();
 			trySpawnOfAnEgg(token, newCoords, newDinosauro);
