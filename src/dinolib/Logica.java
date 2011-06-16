@@ -578,42 +578,56 @@ public class Logica implements Runnable {
 	}
 
 	private boolean isCellaRaggiungibile(Coord oldCoord, Coord newCoord, int maxHops) {
+		System.out.println("[isCellaRaggiungibile] start con maxHops " + maxHops);
 		/* Se ho superato il numero massimo di passi */
 		if (maxHops < 0) {
+			System.out.println("[isCellaRaggiungibile] ramo if con maxHops<0");
 			return false;
 		}
-		/* Se ho raggiunto il numero massimo di passi */
-		else if (maxHops == 0) {
-			/* e sono arrivato alla cella ritorna true */
-			if (getCostoSpostamento(oldCoord, newCoord) == 0) return true;
-			/* e non sono arrivato alla cella ritorna false */
-			else return false;
+		/* Se sono arrivato alla cella desiderata nel numero massimo di passi */
+		if ( (getCostoSpostamento(oldCoord, newCoord) == 0) &&
+				maxHops >= 0) {
+			System.out.println("[isCellaRaggiungibile] ramo if con costo 0 e maxHops>=0");
+			return true;
 		}
-		/* Se non ho ancora raggiunto il numero di passi */
+		/* Se non ho ancora raggiunto il numero di passi o la cella desiderata */
 		else {
+			System.out.println("[isCellaRaggiungibile] ramo else");
 			/* Scansiona con due indici (righe, colonne) le celle adiacenti a quella di partenza, aggiungi le terre a un'ArrayList */
 			int i = -1;
 			int j = -1;
 			ArrayList<Coord> myPaths = new ArrayList<Coord>();
 			Coord tempCoord = null;
 			while (i<2) {
+				j = -1;
 				while (j<2) {
 					tempCoord = new Coord(oldCoord.getX()+i, oldCoord.getY()+j);
-					if(!isCellaAcqua(tempCoord)) myPaths.add(tempCoord);
+					if(!isCellaAcqua(tempCoord)) {
+						myPaths.add(tempCoord);
+						//						System.out.println("[isCellaRaggiungibile] aggiunta cella a myPaths");
+					}
+					j++;
 				}
+				i++;
 			}
 			/* Se l'array non ha celle ritorno false.
 			 * Attenzione! Dovrebbe essere una condizione NON verificabile, se qui l'array non ha celle o qualcosa è andato storto sopra,
 			 * oppure sono su una singola isola di terra, che è comunque non verificabile come scenario. */
-			if (myPaths.isEmpty()) return false;
+			if (myPaths.isEmpty()) {
+				return false;
+			}
 			Coord curCoord = null;
 			boolean hasPath = false;
 			/* Fintanto che l'array non è vuoto */
 			while (!myPaths.isEmpty()) {
 				curCoord = getMinimumFromCoordArrayList(myPaths, newCoord);
-				if (isCellaRaggiungibile(curCoord, newCoord, (maxHops-1))) hasPath = true;
-				else continue;
-				if (hasPath) return hasPath;
+				if (isCellaRaggiungibile(curCoord, newCoord, (maxHops-1))) {
+					hasPath = true;
+					//					System.out.println("[isCellaRaggiungibile] hasPath = true");
+				}
+				if (hasPath) {
+					return true;
+				}
 			}
 			return hasPath;
 		}
@@ -705,29 +719,32 @@ public class Logica implements Runnable {
 	 * @throws InvalidTokenException 
 	 */
 	protected String doMuoviDinosauro(String token, String idDinosauro, Coord newCoord) throws InvalidTokenException, GenericDinosauroException {
-		Dinosauro tempDinosauro = getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
-		if (!tempDinosauro.hasMovimento()) throw new GenericDinosauroException("raggiuntoLimiteMosseDinosauro");
-		if (isCellaRaggiungibile(tempDinosauro.getCoord(), newCoord, tempDinosauro.getSpostamentoMax()) && // TODO invoca garbage collector dopo questi check!
-				!isCellaAcqua(newCoord) &&
-				!isEntrambiDinosauriErbivori(tempDinosauro, newCoord)) {
-			Character tipoCella = getMappa().getCella(newCoord).toString().toLowerCase().charAt(0);
-			getPlayerByToken(token).getRazza().muoviDinosauro(idDinosauro, newCoord);
-			if (tipoCella.equals('v') &&
-					tempDinosauro.getTipoRazza().toLowerCase().equals("erbivoro")) {
-				mangiaCella(tempDinosauro);
-			}
-			if (tipoCella.equals('c') &&
-					tempDinosauro.getTipoRazza().toLowerCase().equals("carnivoro")) {
-				mangiaCella(tempDinosauro);
-			}
-			if (tipoCella.equals('d')) {
-				if (combattimentoTraDinosauri(tempDinosauro)) {
-					return "v";
+		if (isValidCoord(newCoord)) {
+			Dinosauro tempDinosauro = getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
+			if (!tempDinosauro.hasMovimento()) throw new GenericDinosauroException("raggiuntoLimiteMosseDinosauro");
+			if (isCellaRaggiungibile(tempDinosauro.getCoord(), newCoord, tempDinosauro.getSpostamentoMax()) && // TODO invoca garbage collector dopo questi check!
+					!isCellaAcqua(newCoord) &&
+					!isEntrambiDinosauriErbivori(tempDinosauro, newCoord)) {
+				String tipoCella = getMappa().getCella(newCoord).toString().toLowerCase();
+				getPlayerByToken(token).getRazza().muoviDinosauro(idDinosauro, newCoord); // TODO riordinare questo check, altrimenti si finisce sempre in combattimento (il dinosauro combatte con se stesso perchè PRIMA imposto la cella e POI controllo che tipo di cella è)
+				if (tipoCella.equals("vegetazione") &&
+						tempDinosauro.getTipoRazza().toLowerCase().equals("erbivoro")) {
+					mangiaCella(tempDinosauro);
 				}
-				else return "p";
-			}
-			return "@ok";
+				if (tipoCella.equals("carogna") &&
+						tempDinosauro.getTipoRazza().toLowerCase().equals("carnivoro")) {
+					mangiaCella(tempDinosauro);
+				}
+				if (isCellaDinosauro(newCoord)) {
+					if (combattimentoTraDinosauri(tempDinosauro)) {
+						return "v";
+					}
+					else return "p";
+				}
+				return "@ok";
 
+			}
+			else return "destinazioneNonValida";
 		}
 		else return "destinazioneNonValida";
 	}
