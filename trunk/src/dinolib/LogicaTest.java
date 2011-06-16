@@ -2,6 +2,8 @@ package dinolib;
 
 import static org.junit.Assert.*;
 
+import java.util.Iterator;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,6 +13,7 @@ import dinolib.Exceptions.RazzaNonCreataException;
 import dinolib.Exceptions.TroppiGiocatoriException;
 import dinolib.Exceptions.UserAuthenticationFailedException;
 import dinolib.Exceptions.UserExistsException;
+import dinolib.Razza.Dinosauro;
 
 public class LogicaTest {
 	private Logica logicaTest = null;
@@ -215,6 +218,22 @@ public class LogicaTest {
 		catch (InvalidTokenException e) { }
 	}
 
+	private void testExistsDinosauroWithId() {
+		Iterator<Dinosauro> itDino = null;
+		try {
+			itDino = logicaTest.getPlayerByToken(testingToken).getRazza().iterator();
+		}
+		catch (InvalidTokenException e) { }
+		assertNotNull(itDino);
+		assertTrue(itDino.hasNext());
+		Dinosauro tmpDino = itDino.next();
+		assertNotNull(tmpDino);
+		String tmpId = tmpDino.getIdDinosauro();
+		assertNotNull(tmpId);
+		assertEquals(tmpId, tmpDino.getIdDinosauro());
+		assertTrue(logicaTest.existsDinosauroWithId(tmpId));
+		assertFalse(logicaTest.existsDinosauroWithId("iu23jwegnw"));
+	}
 
 	@Test
 	public void testAll() throws Exception {
@@ -227,8 +246,13 @@ public class LogicaTest {
 		testDoCreaRazza();
 		testIsPlayerLogged();
 		testGetPlayerByToken();
+		System.out.println("Testo doAccessoPartita");
 		testDoAccessoPartita();
+		System.out.println("Testo IsPlayerInGame");
 		testIsPlayerInGame();
+		System.out.println("Testo existsDinosauroWithId");
+		testExistsDinosauroWithId();
+		System.out.println("Testato tutto correttamente");
 	}
 
 	// TODO
