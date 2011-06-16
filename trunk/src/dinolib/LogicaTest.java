@@ -201,16 +201,16 @@ public class LogicaTest {
 		try {
 			assertTrue(logicaTest.isPlayerInGame(testingToken));
 			assertFalse(logicaTest.isPlayerInGame(testingToken2));
-			assertFalse(logicaTest.isPlayerInGame(testingToken3));
-			assertFalse(logicaTest.isPlayerInGame(logicaTest.getCMan().getToken("abf")));
+			assertTrue(logicaTest.isPlayerInGame(testingToken3));
+			assertTrue(logicaTest.isPlayerInGame(logicaTest.getCMan().getToken("abf")));
 			assertTrue(logicaTest.isPlayerInGame(logicaTest.getCMan().getToken("abg")));
 			assertTrue(logicaTest.isPlayerInGame(logicaTest.getCMan().getToken("abh")));
 			assertTrue(logicaTest.isPlayerInGame(logicaTest.getCMan().getToken("abi")));
 			assertTrue(logicaTest.isPlayerInGame(logicaTest.getCMan().getToken("abj")));
 			assertTrue(logicaTest.isPlayerInGame(logicaTest.getCMan().getToken("abk")));
-			assertTrue(logicaTest.isPlayerInGame(logicaTest.getCMan().getToken("abl")));
-			assertTrue(logicaTest.isPlayerInGame(logicaTest.getCMan().getToken("abm")));
-			assertTrue(logicaTest.isPlayerInGame(logicaTest.getCMan().getToken("abn")));
+			assertFalse(logicaTest.isPlayerInGame(logicaTest.getCMan().getToken("abl")));
+			assertFalse(logicaTest.isPlayerInGame(logicaTest.getCMan().getToken("abm")));
+			assertFalse(logicaTest.isPlayerInGame(logicaTest.getCMan().getToken("abn")));
 		}
 		catch (InvalidTokenException e) { }
 	}
