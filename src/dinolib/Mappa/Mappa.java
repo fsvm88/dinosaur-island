@@ -204,7 +204,33 @@ public class Mappa implements Iterable<Cella> {
 		}
 		return counter;
 	}
+
+	private int contaCarogne() { // Testato da popolaMappa e aggiorna
+			int i = 0;
+			int j = 0;
+			int counter = 0;
+			while (i<(getLatoDellaMappa()-1)) {
+				j = 0;
+				while (j<(getLatoDellaMappa()-1)) {
+					if (getCellaForIterator(new Coord(i, j)).toString().toLowerCase().equals("carogna")) counter++;
+					j++;
+				}
+				i++;
+			}
+			return counter;
+	}
 	
+	private void spawnCarogne() {
+		int curCarogne = contaCarogne();
+		while (curCarogne<fixed_SOD_COUNT) {
+			Coord carCoord = CommonUtils.getNewRandomCoord(getLatoDellaMappa());
+			if (isCellaTerra(carCoord)) {
+				MappaACelle[carCoord.getX()][carCoord.getY()] = new Carogna((350+CommonUtils.getNewRandomIntValueOnMyMap(301)));
+				curCarogne = contaCarogne();
+			}
+		}
+	}
+
 	/**
 	 * Implementa la creazione di una nuova mappa.
 	 */
@@ -267,20 +293,11 @@ public class Mappa implements Iterable<Cella> {
 				MappaACelle[vegCoord.getX()][vegCoord.getY()] = new Vegetazione((150+CommonUtils.getNewRandomIntValueOnMyMap(201)));
 				curVeg++;
 			}
-			else continue;
 		}
 		//		System.out.println("[popolaMappa] allocata la vegetazione");
 		/* Ho completato l'inserimento della vegetazione, ora penso alle carogne. */
 		//		System.out.println("[popolaMappa] sto per allocare le carogne");
-		int curCarogne = 0;
-		while (curCarogne<fixed_SOD_COUNT) {
-			Coord carCoord = CommonUtils.getNewRandomCoord(getLatoDellaMappa());
-			if (isCellaTerra(carCoord)) {
-				MappaACelle[carCoord.getX()][carCoord.getY()] = new Carogna((350+CommonUtils.getNewRandomIntValueOnMyMap(301)));
-				curCarogne++;
-			}
-			else continue;
-		}
+		spawnCarogne();
 		//		System.out.println("[popolaMappa] allocate le carogne");
 		/* Ho completato l'inserimento delle carogne.
 		 * La mappa è completa.
@@ -326,8 +343,15 @@ public class Mappa implements Iterable<Cella> {
 	 */
 	public void aggiorna() { // Testato
 		Iterator<Cella> itCelle = this.iterator();
+		Cella tempCella = null;
 		while (itCelle.hasNext()) {
-			itCelle.next().aggiorna();
+			tempCella = itCelle.next();
+			tempCella.aggiorna();
+			if ((tempCella.toString().toLowerCase().equals("carogna")) &&
+					(tempCella.getValoreAttuale() == 0)) {
+				tempCella = new Terra();
+				spawnCarogne();
+			}
 		}
 	}
 

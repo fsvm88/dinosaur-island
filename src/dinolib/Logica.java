@@ -180,8 +180,11 @@ public class Logica implements Runnable {
 	 * @throws NonAutenticatoException 
 	 */
 	protected boolean isPlayerInGame(String token) throws InvalidTokenException {
-		if (getRRSched().hasTask(token)) return true;
-		else return false;
+		if (isPlayerLogged(token)) {
+			if (getRRSched().hasTask(token)) return true;
+			else return false;
+		}
+		else throw new InvalidTokenException();
 	}
 	/**
 	 * Verifica se l'utente è autenticato, altrimenti lancia eccezione.
@@ -192,7 +195,7 @@ public class Logica implements Runnable {
 	 */
 	protected boolean isPlayerLogged(String token) throws InvalidTokenException { // Testato
 		if (getCMan().existsToken(token)) return true;
-		else throw new InvalidTokenException();
+		else return false;
 	}
 
 	/**
@@ -237,6 +240,7 @@ public class Logica implements Runnable {
 	private void broadcastCambioTurno() {
 
 	}
+
 	/**
 	 * Aggiorna l'ambiente di gioco ogni volta che si passa da un giocatore all'altro.
 	 */
@@ -299,12 +303,15 @@ public class Logica implements Runnable {
 	 * @throws InvalidTokenException 
 	 */
 	private void rimuoviDinosauriDallaMappa(Giocatore tempGiocatore) {
-		Iterator<Dinosauro> itDinosauri = tempGiocatore.getRazza().iterator();
-		Dinosauro tempDinosauro;
-		while (itDinosauri.hasNext()) {
-			tempDinosauro = itDinosauri.next();
-			getMappa().rimuoviIlDinosauroDallaCella(tempDinosauro.getCoord());
+		if (tempGiocatore.hasRazza()) {
+			Iterator<Dinosauro> itDinosauri = tempGiocatore.getRazza().iterator();
+			Dinosauro tempDinosauro;
+			while (itDinosauri.hasNext()) {
+				tempDinosauro = itDinosauri.next();
+				getMappa().rimuoviIlDinosauroDallaCella(tempDinosauro.getCoord());
+			}
 		}
+		return;
 	}
 
 	private boolean trySpawn(Dinosauro tempDinosauro, int maxDistance) {
@@ -500,7 +507,7 @@ public class Logica implements Runnable {
 			}
 			else return false;
 		}
-		else return false;
+		else throw new InvalidTokenException();
 	}
 
 	private boolean creaPrimoDinosauro(String token) throws InvalidTokenException {
@@ -546,7 +553,7 @@ public class Logica implements Runnable {
 			}
 			else throw new RazzaNonCreataException();
 		}
-		else return false;
+		else throw new InvalidTokenException();
 	}
 	/**
 	 * Permette l'uscita dalla partita.
@@ -556,13 +563,13 @@ public class Logica implements Runnable {
 	 * @throws InvalidTokenException
 	 * @throws NonAutenticatoException
 	 */
-	protected boolean doUscitaPartita(String token) throws InvalidTokenException {
+	protected boolean doUscitaPartita(String token) throws InvalidTokenException { // Testato
 		if (isPlayerInGame(token)) {
 			getRRSched().killTask(token);
 			rimuoviDinosauriDallaMappa(getPlayerByToken(token));
 			return true;
 		}
-		else return false;
+		return false;
 	}
 	/**
 	 * Permette il logout dal server.
@@ -575,12 +582,14 @@ public class Logica implements Runnable {
 	protected boolean doLogout(String token) throws InvalidTokenException {
 		if (isPlayerLogged(token)) {
 			if (isPlayerInGame(token)) {
-				getRRSched().killTask(token);
+				if(!doUscitaPartita(token)) {
+					return false;
+				}
 			}
 			getCMan().scollega(token);
 			return true;
 		}
-		else return false;
+		else throw new InvalidTokenException();
 	}
 
 	private int getCostoSpostamento(Coord oldCoord, Coord newCoord) {
@@ -804,12 +813,11 @@ public class Logica implements Runnable {
 				else if (isCellaDinosauro(newCoord)) {
 					System.out.println("ramo dinosauro");
 					if (combattimentoTraDinosauri(tempDinosauro, newCoord)) {
-						getPlayerByToken(token).getRazza().muoviDinosauro(idDinosauro, newCoord);
 						getMappa().rimuoviIlDinosauroDallaCella(oldCoord);
+						getPlayerByToken(token).getRazza().muoviDinosauro(idDinosauro, newCoord);
 						return "v";
 					}
 					else {
-						getMappa().rimuoviIlDinosauroDallaCella(oldCoord);
 						return "p";
 					}
 				}
