@@ -27,7 +27,8 @@ public class RazzaTest {
 		myRazza = new Razza("testRazza", defaultType.charValue());
 	}
 
-	private void testAdd() {
+	@Test
+	public void testAdd() {
 		assertEquals(0, myRazza.size());
 		myRazza.add(new Erbivoro(defaultCoord));
 		assertEquals(1, myRazza.size());
@@ -37,7 +38,10 @@ public class RazzaTest {
 		assertEquals(3, myRazza.size());
 	}
 
-	private void testRemove() {
+	@Test
+	public void testRemove() {
+		// Aggiungi 3 dinosauri alla razza tramite testAdd
+		testAdd();
 		assertEquals(3, myRazza.size());
 		Iterator<Dinosauro> itDinosauro = myRazza.iterator();
 		if (itDinosauro.hasNext()) {
@@ -48,33 +52,58 @@ public class RazzaTest {
 		assertEquals(2, myRazza.size());
 	}
 
-	private void testIterator() {
+	@Test
+	public void testIterator() {
+		// Aggiungi 3 dinosauri alla razza tramite testAdd
+		testAdd();
+		assertEquals(3, myRazza.size());
 		Iterator<Dinosauro> itDinosauri = myRazza.iterator();
 		assertNotNull(itDinosauri);
-		assertNotNull(itDinosauri.hasNext());
+		assertTrue(itDinosauri.hasNext());
 		assertNotNull(itDinosauri.next());
+		assertTrue(itDinosauri.hasNext());
+		assertNotNull(itDinosauri.next());
+		assertTrue(itDinosauri.hasNext());
+		assertNotNull(itDinosauri.next());
+		assertFalse(itDinosauri.hasNext());
 	}
 
-	private void testSize() {
+	@Test
+	public void testSize() {
 		assertEquals(0, myRazza.size());
+		// Aggiungi 3 dinosauri alla razza tramite testAdd
+		testAdd();
+		assertEquals(3, myRazza.size());
 	}
 
-	private void testIsEmpty() {
-		assertEquals(2, myRazza.size());
-		assertFalse(myRazza.isEmpty());
+	@Test
+	public void testIsEmpty() {
+		assertEquals(0, myRazza.size());
+		assertTrue(myRazza.isEmpty());
 		myRazza.clear();
 		assertTrue(myRazza.isEmpty());
+		// Aggiungi 3 dinosauri alla razza tramite testAdd
+		testAdd();
+		assertEquals(3, myRazza.size());
+		assertFalse(myRazza.isEmpty());
 	}
 
-	private void testClear() {
+	@Test
+	public void testClear() {
+		// Aggiungi 3 dinosauri alla razza tramite testAdd
+		testAdd();
 		assertEquals(3, myRazza.size());
 		myRazza.clear();
 		assertEquals(0, myRazza.size());
-		setUp();
 	}
 
-	private void testContains() {
+	@Test
+	public void testContains() {
+		// Aggiungi 3 dinosauri alla razza tramite testAdd
+		testAdd();
+		assertEquals(3, myRazza.size());
 		Iterator<Dinosauro> itDinosauri = myRazza.iterator();
+		assertTrue(itDinosauri.hasNext());
 		if (itDinosauri.hasNext()) {
 			Dinosauro tempDinosauro = itDinosauri.next();
 			assertTrue(myRazza.contains(tempDinosauro));
@@ -84,20 +113,10 @@ public class RazzaTest {
 	}
 
 	@Test
-	public void testInterface() {
-		testSize();
+	public void testRemoveById() {
+		// Aggiungi 3 dinosauri alla razza tramite testAdd
 		testAdd();
-		testClear();
-		testAdd();
-		testIterator();
-		testRemove();
-		testIsEmpty();
-		testAdd();
-		testContains();
-		testRemoveById();
-	}
-
-	private void testRemoveById() {
+		assertEquals(3, myRazza.size());
 		int startCount = myRazza.size();
 		Iterator<Dinosauro> itDinosauri = myRazza.iterator();
 		Dinosauro tempDinosauro = null;
@@ -113,14 +132,18 @@ public class RazzaTest {
 		myRazza.add(tempDinosauro);
 		assertEquals(startCount, myRazza.size());
 	}
-
-	private void testGetTipo() {
+	
+	@Test
+	public void testGetTipo() {
 		assertNotNull(myRazza.getTipo());
 		assertEquals('e', myRazza.getTipo().charValue());
-		setUp();
 	}
 
-	private void testEstinzione() {
+	@Test
+	public void testEstinzione() {
+		// Aggiungi 3 dinosauri alla razza tramite testAdd
+		testAdd();
+		assertEquals(3, myRazza.size());
 		assertFalse(myRazza.isEmpty());
 		Dinosauro tempDinosauro = null;
 		while (!myRazza.isEmpty()) {
@@ -135,10 +158,12 @@ public class RazzaTest {
 		}
 		assertEquals(0, myRazza.size());
 		assertTrue(myRazza.isEmpty());
-		setUp();
 	}
 
-	private void testGetDinosauroById() {
+	@Test
+	public void testGetDinosauroById() {
+		// Aggiungi 3 dinosauri alla razza tramite testAdd
+		testAdd();
 		assertEquals(3, myRazza.size());
 		int startCount = myRazza.size();
 		Iterator<Dinosauro> itDinosauri = myRazza.iterator();
@@ -159,7 +184,11 @@ public class RazzaTest {
 		assertNotNull(myRazza.getDinosauroById(tempDinosauro.getIdDinosauro()));
 	}
 
-	private void testHasNumeroMassimo() {
+	@Test
+	public void testHasNumeroMassimo() {
+		// Aggiungi 3 dinosauri alla razza tramite testAdd
+		testAdd();
+		assertEquals(3, myRazza.size());
 		assertFalse(myRazza.hasNumeroMassimo());
 		myRazza.add(new Erbivoro(defaultCoord));
 		assertEquals(4, myRazza.size());
@@ -169,7 +198,11 @@ public class RazzaTest {
 		assertTrue(myRazza.hasNumeroMassimo());
 	}
 
-	private void testExistsDinosauroWithId() {
+	@Test
+	public void testExistsDinosauroWithId() {
+		// Aggiungi 3 dinosauri alla razza tramite testAdd
+		testAdd();
+		assertEquals(3, myRazza.size());
 		int startCount = myRazza.size();
 		Iterator<Dinosauro> itDinosauri = myRazza.iterator();
 		Dinosauro tempDinosauro = null;
@@ -187,10 +220,17 @@ public class RazzaTest {
 		assertTrue(myRazza.existsDinosauroWithId(tempDinosauro.getIdDinosauro()));
 	}
 
-	private void testAggiornaPunteggio() {
+	@Test
+	public void testAggiornaPunteggio() {
+		// Aggiungi 3 dinosauri alla razza tramite testAdd
+		testAdd();
+		assertEquals(3, myRazza.size());
 		int initPunteggio = myRazza.getPunteggio();
 		Iterator<Dinosauro> itDino = myRazza.iterator();
+		assertNotNull(itDino);
+		assertTrue(itDino.hasNext());
 		Dinosauro tempDinosauro = itDino.next();
+		assertNotNull(tempDinosauro);
 		tempDinosauro.setEnergiaAttuale(tempDinosauro.getEnergiaMax());
 		tempDinosauro.cresci();
 		tempDinosauro.setEnergiaAttuale(tempDinosauro.getEnergiaMax());
@@ -198,6 +238,7 @@ public class RazzaTest {
 		assertFalse(initPunteggio == myRazza.getPunteggio());
 	}
 
+	// Helper per far crescere il dinosauro alla dimensione massima
 	private void ageDinosauro(Dinosauro tempDinosauro) {
 		while (!tempDinosauro.isAtDimensioneMax()) {
 			tempDinosauro.setEnergiaAttuale(tempDinosauro.getEnergiaMax());
@@ -205,16 +246,25 @@ public class RazzaTest {
 		}
 	}
 
-	private void testCresciDinosauro() {
+	@Test
+	public void testCresciDinosauro() {
+		// Aggiungi 3 dinosauri alla razza tramite testAdd
+		testAdd();
+		assertEquals(3, myRazza.size());
 		Iterator<Dinosauro> itDino = myRazza.iterator();
+		assertNotNull(itDino);
+		assertTrue(itDino.hasNext());
 		Dinosauro tempDinosauro = itDino.next();
+		assertNotNull(tempDinosauro);
 		ageDinosauro(tempDinosauro);
 		try {
 			myRazza.cresciDinosauro(tempDinosauro.getIdDinosauro());
 		} catch (GenericDinosauroException e) {
 			assertEquals("raggiuntaDimensioneMax", e.getMessage());
 		}
+		assertTrue(itDino.hasNext());
 		tempDinosauro = itDino.next();
+		assertNotNull(tempDinosauro);
 		tempDinosauro.setEnergiaAttuale(1);
 		try {
 			myRazza.cresciDinosauro(tempDinosauro.getIdDinosauro());
@@ -223,10 +273,16 @@ public class RazzaTest {
 		}
 	}
 
-	private void testDeponiUovo() {
+	@Test
+	public void testDeponiUovo() {
+		// Aggiungi 3 dinosauri alla razza tramite testAdd
+		testAdd();
+		assertEquals(3, myRazza.size());
 		Iterator<Dinosauro> itDino = myRazza.iterator();
+		assertNotNull(itDino);
+		assertTrue(itDino.hasNext());
 		Dinosauro tempDinosauro = itDino.next();
-		tempDinosauro = itDino.next();
+		assertNotNull(tempDinosauro);
 		tempDinosauro.setEnergiaAttuale(1);
 		try {
 			myRazza.deponiUovo(tempDinosauro.getIdDinosauro());
@@ -238,44 +294,37 @@ public class RazzaTest {
 			myRazza.add(new Erbivoro(new Coord(0, 0)));
 		}
 		assertTrue(myRazza.hasNumeroMassimo());
-		Iterator<Dinosauro> itDino2 = myRazza.iterator();
-		Dinosauro tempDinosauro2 = itDino2.next();
+		itDino = myRazza.iterator();
+		assertNotNull(itDino);
+		assertTrue(itDino.hasNext());
+		tempDinosauro = itDino.next();
+		assertNotNull(tempDinosauro);
 		try {
-			myRazza.deponiUovo(tempDinosauro2.getIdDinosauro());
+			myRazza.deponiUovo(tempDinosauro.getIdDinosauro());
 		} catch (GenericDinosauroException e) {
 			assertEquals("raggiuntoNumeroMaxDinosauri", e.getMessage());
 		}
 	}
 
-	private void testMuoviDinosauro() {
+	@Test
+	public void testMuoviDinosauro() {
+		// Aggiungi 3 dinosauri alla razza tramite testAdd
+		testAdd();
+		assertEquals(3, myRazza.size());
 		Iterator<Dinosauro> itDino = myRazza.iterator();
+		assertNotNull(itDino);
+		assertTrue(itDino.hasNext());
 		Dinosauro tempDinosauro = itDino.next();
+		assertNotNull(tempDinosauro);
 		try {
 			myRazza.muoviDinosauro(tempDinosauro.getIdDinosauro(), new Coord(1, 1));
 		} catch (GenericDinosauroException e) {}
+		tempDinosauro.invecchia();
 		try {
 			tempDinosauro.setEnergiaAttuale(1);
 			myRazza.muoviDinosauro(tempDinosauro.getIdDinosauro(), new Coord(1, 1));
 		} catch (GenericDinosauroException e) {
 			assertEquals("mortePerInedia", e.getMessage());
 		}
-
-	}
-
-	@Test
-	public void testMiscellanea() {
-		setUp();
-		testGetTipo();
-		testAdd();
-		testGetDinosauroById();
-		testEstinzione();
-		testAdd();
-		testRemoveById();
-		testHasNumeroMassimo();
-		testExistsDinosauroWithId();
-		testAggiornaPunteggio();
-		testCresciDinosauro();
-		testDeponiUovo();
-		testMuoviDinosauro();
 	}
 }
