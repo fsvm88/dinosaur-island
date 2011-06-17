@@ -25,6 +25,7 @@ public class DinosauroTest {
 		dinosauro = new Erbivoro(defaultCoord);
 	}
 	
+	// Fa crescere il dinosauro fino alla dimensione massima, helper per tutti gli altri test.
 	private void ageDinosauro() {
 		while (!dinosauro.isAtDimensioneMax()) {
 			dinosauro.setEnergiaAttuale(dinosauro.getEnergiaMax());

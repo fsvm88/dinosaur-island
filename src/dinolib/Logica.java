@@ -796,9 +796,9 @@ public class Logica implements Runnable {
 				return "destinazioneNonValida";
 			}
 			Coord oldCoord = tempDinosauro.getCoord();
-			if (!tempDinosauro.hasMovimento()) {
+/*			if (!tempDinosauro.hasMovimento()) {
 				throw new GenericDinosauroException("raggiuntoLimiteMosseDinosauro");
-			}
+			}*/
 			if (!isCellaAcqua(newCoord) &&
 					!isEntrambiDinosauriErbivori(tempDinosauro, newCoord) &&
 					!isCellaConMioDinosauro(token, newCoord) && 
