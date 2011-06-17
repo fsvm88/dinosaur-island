@@ -445,7 +445,7 @@ public class Logica implements Runnable {
 		}
 	}
 
-	protected boolean doCresciDinosauro(String token, String idDinosauro) throws InvalidTokenException, GenericDinosauroException { // Non testato - affidabile per inferenza. È stato creato più tardi degli altri helper, ma funziona per certo. Il codice è poco e lineare, non dovrei avere alcun tipo ti problema (le ultime parole famose)
+	protected boolean doCresciDinosauro(String token, String idDinosauro) throws InvalidTokenException, GenericDinosauroException { // Testato
 		Coord coordToRemove = null;
 		try {
 			if (getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
@@ -720,10 +720,14 @@ public class Logica implements Runnable {
 	 * @return
 	 */
 	private boolean isEntrambiDinosauriErbivori(Dinosauro tmpDinosauro, Coord newCoord) {
-		if (tmpDinosauro.getTipoRazza().toLowerCase().equals("erbivoro") &&
-				getPlayerByIdDinosauro(getMappa().getCella(newCoord).getIdDelDinosauro()).getRazza().getDinosauroById(getMappa().getCella(newCoord).getIdDelDinosauro()).getTipoRazza().toLowerCase().equals("erbivoro"))
-			return true;
-		else return false;
+		if (tmpDinosauro.getTipoRazza().toLowerCase().equals("erbivoro")) {
+			if (isCellaDinosauro(newCoord)) {
+				if (getPlayerByIdDinosauro(getMappa().getCella(newCoord).getIdDelDinosauro()).getRazza().getTipo().equals('e')) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -796,7 +800,7 @@ public class Logica implements Runnable {
 				return "destinazioneNonValida";
 			}
 			Coord oldCoord = tempDinosauro.getCoord();
-/*			if (!tempDinosauro.hasMovimento()) {
+			/*			if (!tempDinosauro.hasMovimento()) {
 				throw new GenericDinosauroException("raggiuntoLimiteMosseDinosauro");
 			}*/
 			if (!isCellaAcqua(newCoord) &&
