@@ -11,7 +11,7 @@ class ConnectionManager {
 	 * @uml.property name="connTable"
 	 */
 	private Hashtable<String, String> connTable = null;
-	
+
 	/**
 	 * Costruttore, inizializza l'hashtable.
 	 */
@@ -24,8 +24,12 @@ class ConnectionManager {
 	 * @return
 	 */
 	protected boolean existsToken(String token) { // Testato
-		if (connTable.containsKey(token)) return true;
-		else return false;
+		if (token != null) {
+			if (connTable.containsKey(token)) { 
+				return true;
+			}
+		}
+		return false;
 	}
 	/**
 	 * Controlla se esiste l'utente nella lista.
@@ -36,7 +40,7 @@ class ConnectionManager {
 		if (connTable.containsValue(nomeGiocatore)) return true;
 		else return false;
 	}
-	
+
 	/**
 	 * Aggiunge un utente alla lista delle connessioni.
 	 * @param nomeGiocatore
@@ -88,6 +92,7 @@ class ConnectionManager {
 	 */
 	protected String getToken(String nomeGiocatore) { // Testato
 		Iterator<String> itNames = getIteratorOnTokens();
+		if (itNames == null) return null;
 		String tmpToken = null;
 		while (itNames.hasNext()) {
 			tmpToken = itNames.next();
