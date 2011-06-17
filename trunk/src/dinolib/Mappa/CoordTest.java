@@ -13,18 +13,22 @@ public class CoordTest {
 		coord = new Coord(0, 0);
 	}
 	
-	private void testGetters() {
-		assertEquals(0, coord.getX());
-		assertEquals(0, coord.getY());
-	}
-	
-	private void testEquals() {
-		assertTrue(coord.equals(new Coord(0, 0)));
+	@Test
+	public void testCostruttore() {
+		assertNotNull(coord);
 	}
 	
 	@Test
-	public void testCoord() {
-		testGetters();
-		testEquals();
+	public void testGetters() {
+		assertEquals(0, coord.getX());
+		assertEquals(0, coord.getY());
+		coord = new Coord(999, 1000);
+		assertEquals(999, coord.getX());
+		assertEquals(1000, coord.getY());
+	}
+	
+	@Test
+	public void testEquals() {
+		assertTrue(coord.equals(new Coord(0, 0)));
 	}
 }
