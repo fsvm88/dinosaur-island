@@ -2,50 +2,37 @@ package dinolib.Mappa;
 
 import static org.junit.Assert.*;
 
+import org.junit.Before;
 import org.junit.Test;
 
-
-/**
- * @author  fabio
- */
 public class CellaTest {
-	/**
-	 * @uml.property  name="cella"
-	 * @uml.associationEnd  
-	 */
 	private Cella cella;
 
-	private void testCommon() {
+	@Before
+	public void setUp() {
+		cella = null;
+	}
+	
+	@Test
+	public void testAcqua() {
+		cella = new Acqua();
+		assertEquals("Acqua", cella.toString());
+		assertEquals(0, cella.getValoreAttuale());
 		assertNull(cella.getIdDelDinosauro());
 		assertNull(cella.getCellaSuCuiSiTrova());
 	}
 	
-	private void testCommonVuote() {
-		testCommon();
-		assertEquals(0, cella.getValoreAttuale());
-	}
-	
-	private void testAcqua() {
-		cella = new Acqua();
-		assertEquals("Acqua", cella.toString());
-		testCommonVuote();
-	}
-	
-	private void testTerra() {
+	@Test
+	public void testTerra() {
 		cella = new Terra();
 		assertEquals("Terra", cella.toString());
-		testCommonVuote();
-	}
-	/**
-	 * Testa le celle vuote come acqua o terra.
-	 */
-	@Test
-	public void testVuote() {
-		testAcqua();
-		testTerra();
+		assertEquals(0, cella.getValoreAttuale());
+		assertNull(cella.getIdDelDinosauro());
+		assertNull(cella.getCellaSuCuiSiTrova());
 	}
 	
-	private void testCellaConDinosauro() {
+	@Test
+	public void testCellaConDinosauro() {
 		String idDino = "abcd";
 		cella = new CellaConDinosauro(idDino, new Terra());
 		assertEquals("Dinosauro", cella.toString());
@@ -55,10 +42,12 @@ public class CellaTest {
 		assertEquals(0, cella.getValoreAttuale());
 	}
 	
-	private void testVegetazione() {
+	@Test
+	public void testVegetazione() {
 		cella = new Vegetazione(400);
 		assertEquals("Vegetazione", cella.toString());
-		testCommon();
+		assertNull(cella.getIdDelDinosauro());
+		assertNull(cella.getCellaSuCuiSiTrova());
 		int initValue = cella.getValoreAttuale();
 		cella.mangia(100);
 		assertEquals(initValue-100, cella.getValoreAttuale());
@@ -69,10 +58,12 @@ public class CellaTest {
 		assertEquals(0, cella.getValoreAttuale());
 	}
 	
-	private void testCarogna() {
+	@Test
+	public void testCarogna() {
 		cella = new Carogna(400);
 		assertEquals("Carogna", cella.toString());
-		testCommon();
+		assertNull(cella.getIdDelDinosauro());
+		assertNull(cella.getCellaSuCuiSiTrova());
 		int initValue = cella.getValoreAttuale();
 		cella.aggiorna();
 		assertTrue((cella.getValoreAttuale() < initValue));
@@ -81,15 +72,5 @@ public class CellaTest {
 		assertEquals(initValue-100, cella.getValoreAttuale());
 		cella.mangia(1000);
 		assertEquals(0, cella.getValoreAttuale());
-	}
-	
-	/**
-	 * Testa le celle che contengono qualcosa come dinosauro, vegetazione e carogna.
-	 */
-	@Test
-	public void testPiene() {
-		testCellaConDinosauro();
-		testVegetazione();
-		testCarogna();
 	}
 }
