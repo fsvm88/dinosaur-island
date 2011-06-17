@@ -65,7 +65,7 @@ public class Logica implements Runnable {
 	 * Definisce la stringa che contiene il nome del giocatore che in questo momento ha il turno.
 	 * @uml.property  name="Giocatori"
 	 */
-	private String giocatoreCorrente = null;
+	private String tokenGiocatoreCorrente = null;
 	/**
 	 * Contiene una variabile che dice se la logica sta funzionando.
 	 * @uml.property  name="logicaIsRunning"
@@ -168,7 +168,7 @@ public class Logica implements Runnable {
 	 */
 	protected boolean isMioTurno(String token) throws InvalidTokenException, NonInPartitaException {
 		if (isPlayerInGame(token)) {
-			if (giocatoreCorrente.equals(token)) return true;
+			if (tokenGiocatoreCorrente.equals(token)) return true;
 			else return false;
 		}
 		else throw new NonInPartitaException();
@@ -179,7 +179,7 @@ public class Logica implements Runnable {
 	 * @throws NonInPartitaException 
 	 * @throws NonAutenticatoException 
 	 */
-	protected boolean isPlayerInGame(String token) throws InvalidTokenException {
+	protected boolean isPlayerInGame(String token) throws InvalidTokenException { // Testato
 		if (isPlayerLogged(token)) {
 			if (getRRSched().hasTask(token)) return true;
 			else return false;
@@ -261,29 +261,47 @@ public class Logica implements Runnable {
 	 * In questo modo tutta la logica è effettivamente implementata in Logica e creare nuovi modi di accesso ai dati richiede solo l'implementazione di Adattatori.
 	 */
 	public void run () {
+		/* Prova a ...*/
 		try {
+			/* Fintanto che logica è accesa */
 			while (isLogicaRunning()) {
+				/* Se ci sono giocatori connessi */
 				if (getRRSched().hasQueuedTasks()) {
-					giocatoreCorrente = getRRSched().getCurrentTask();
+					/* Prendi un nuovo giocatore dalla lista */
+					tokenGiocatoreCorrente = getRRSched().getCurrentTask();
+					/* Prendi l'istante da cui conto il tempo per confermare il turno */
 					long conferma_start = System.currentTimeMillis();
+					/* Fintanto che posso confermare il turno (30 secondi) */
 					while ((System.currentTimeMillis()-conferma_start) < (sleep_CONFERMA_TURNO*1000)) {
+						/* Se il turno è stato confermato */
 						if (turnoConfermato) {
+							/* Prendi l'istante da cui conto il tempo per usare il turno */
 							long turno_start = System.currentTimeMillis();
+							/* Fintanto che posso usare il turno (muovere i dinosauri o usare le loro azioni) */
 							while ((System.currentTimeMillis()-turno_start) < (sleep_TEMPO_TURNO*1000)) {
+								/* Se il turno è stato passato ferma il ciclo */
 								if (!turnoConfermato) break;
+								/* Altrimenti aspetta 1 secondo */
 								else {
 									Thread.sleep(1000);
 								}
 							}
-							getRRSched().newTask(giocatoreCorrente);
+							/* Ri-aggiungi il giocatore corrente in coda alla lista dei giocatori in gioco */
+							getRRSched().newTask(tokenGiocatoreCorrente);
+							/* Aggiorna il campo di gioco */
 							updatePartita();
+							/* Notifica che cambia il turno */
 							broadcastCambioTurno();
 						}
+						/* Se il turno non è stato confermato aspetta 1 secondo,
+						 * fino a quando il turno viene confermato OPPURE
+						 * fino a quando scade il tempo per confermare il turno */
 						else {
 							Thread.sleep(1000);
 						}
 					}
 				}
+				/* Se non ci sono giocatori connessi aspetta 1 secondo */
 				else {
 					Thread.sleep(1000);
 				}
@@ -375,7 +393,7 @@ public class Logica implements Runnable {
 	} 
 
 	void doPassaTurno() {
-		// TODO Auto-generated method stub
+		turnoConfermato = false;
 	}
 
 	/**
@@ -427,7 +445,7 @@ public class Logica implements Runnable {
 		}
 	}
 
-	protected boolean doCresciDinosauro(String token, String idDinosauro) throws InvalidTokenException, GenericDinosauroException {
+	protected boolean doCresciDinosauro(String token, String idDinosauro) throws InvalidTokenException, GenericDinosauroException { // Non testato - affidabile per inferenza. È stato creato più tardi degli altri helper, ma funziona per certo. Il codice è poco e lineare, non dovrei avere alcun tipo ti problema (le ultime parole famose)
 		Coord coordToRemove = null;
 		try {
 			if (getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
@@ -536,7 +554,7 @@ public class Logica implements Runnable {
 	 * @throws TroppiGiocatoriException
 	 * @throws RazzaNonCreataException
 	 */
-	protected boolean doAccessoPartita(String token) throws InvalidTokenException, InterruptedException, TroppiGiocatoriException, RazzaNonCreataException {
+	protected boolean doAccessoPartita(String token) throws InvalidTokenException, InterruptedException, TroppiGiocatoriException, RazzaNonCreataException { // Testato
 		if (isPlayerLogged(token)) {
 			if (getPlayerByToken(token).hasRazza()) {
 				if (!getRRSched().maxPlayers()) {
@@ -579,7 +597,7 @@ public class Logica implements Runnable {
 	 * @throws InvalidTokenException
 	 * @throws NonAutenticatoException
 	 */
-	protected boolean doLogout(String token) throws InvalidTokenException {
+	protected boolean doLogout(String token) throws InvalidTokenException { // Testato
 		if (isPlayerLogged(token)) {
 			if (isPlayerInGame(token)) {
 				if(!doUscitaPartita(token)) {
@@ -770,7 +788,7 @@ public class Logica implements Runnable {
 	 * @return
 	 * @throws InvalidTokenException 
 	 */
-	protected String doMuoviDinosauro(String token, String idDinosauro, Coord newCoord) throws InvalidTokenException, GenericDinosauroException {
+	protected String doMuoviDinosauro(String token, String idDinosauro, Coord newCoord) throws InvalidTokenException, GenericDinosauroException { // Testato
 		System.out.println("[doMuoviDinosauro] start. Chiamato con token: " + token + " idDinosauro: " + idDinosauro + " newCoord(" + newCoord.getX() + ", " + newCoord.getY() + ")");
 		if (isValidCoord(newCoord)) {
 			Dinosauro tempDinosauro = getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
@@ -802,7 +820,7 @@ public class Logica implements Runnable {
 					getPlayerByToken(token).getRazza().muoviDinosauro(idDinosauro, newCoord);
 					getMappa().rimuoviIlDinosauroDallaCella(oldCoord);
 				}
-				else if (tipoCella.equals("carogna")) { // TODO implementare il respawn di nuove carogne, partire da qui.
+				else if (tipoCella.equals("carogna")) {
 					System.out.println("ramo carogna");
 					if (tempDinosauro.getTipoRazza().toLowerCase().equals("carnivoro")) {
 						mangiaCella(tempDinosauro, newCoord);

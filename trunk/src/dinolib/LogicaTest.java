@@ -453,5 +453,6 @@ public class LogicaTest {
 	// TODO
 	/* isMioTurno
 	 * run
+	 * doCresciDinosauro
 	 */
 }
