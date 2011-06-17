@@ -16,26 +16,30 @@ public class GiocatoreTest {
 		testGiocatore = new Giocatore("abc", "passWord");
 	}
 	
-	private void testGiocatore() {
-		setUp();
+	@Test
+	public void testCostruttore() {
 		assertNotNull(testGiocatore);
 	}
 	
-	private void testGetNome() {
+	@Test
+	public void testGetNome() {
 		assertEquals("abc", testGiocatore.getNome());
 		assertFalse("abd".equals(testGiocatore.getNome()));
 	}
 	
-	private void testPasswordIsValid() {
+	@Test
+	public void testPasswordIsValid() {
 		assertTrue(testGiocatore.passwordIsValid("passWord"));
 		assertFalse(testGiocatore.passwordIsValid("password"));
 	}
 	
-	private void testGetPunteggio() {
+	@Test
+	public void testGetPunteggio() {
 		assertNotNull(testGiocatore.getPunteggio());
 	}
 	
-	private void testCreaRazza() {
+	@Test
+	public void testCreaRazza() {
 		assertNull(testGiocatore.getRazza());
 		testGiocatore.creaNuovaRazza("myRazza", 'c');
 		assertNotNull(testGiocatore.getRazza());
@@ -43,28 +47,19 @@ public class GiocatoreTest {
 		assertEquals('c', testGiocatore.getRazza().getTipo().charValue());
 	}
 	
-	private void testHasRazza() {
-		setUp();
+	@Test
+	public void testHasRazza() {
 		assertFalse(testGiocatore.hasRazza());
 		testCreaRazza();
 		testGiocatore.getRazza().add(new Carnivoro(new Coord(0,0)));
 		assertTrue(testGiocatore.hasRazza());
 	}
 	
-	private void testAggiorna() {
+	@Test
+	public void testAggiorna() {
+		testHasRazza();
 		assertEquals(0, testGiocatore.getPunteggio().getPunteggioDaNome("myRazza").intValue());
 		testGiocatore.aggiorna();
 		assertEquals(2, testGiocatore.getPunteggio().getPunteggioDaNome("myRazza").intValue());
-	}
-	
-	@Test
-	public void testAll() {
-		testGiocatore();
-		testGetNome();
-		testPasswordIsValid();
-		testGetPunteggio();
-		testCreaRazza();
-		testHasRazza();
-		testAggiorna();
 	}
 }
