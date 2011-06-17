@@ -15,14 +15,13 @@ public class PunteggioTest {
 		myPunteggio = new Punteggio();
 	}
 	
-	private void testCostruttore() {
-		myPunteggio = null;
-		assertNull(myPunteggio);
-		setUp();
+	@Test
+	public void testCostruttore() {
 		assertNotNull(myPunteggio);
 	}
 	
-	private void testUpdatePunteggio() {
+	@Test
+	public void testUpdatePunteggio() {
 		assertFalse(myPunteggio.updatePunteggio(null, null));
 		assertFalse(myPunteggio.updatePunteggio("myP", null));
 		assertFalse(myPunteggio.updatePunteggio("myP", 0));
@@ -32,24 +31,24 @@ public class PunteggioTest {
 		assertTrue(myPunteggio.updatePunteggio("myR", 64));
 	}
 	
-	private void testIterator() {
+	@Test
+	public void testIterator() {
+		// Crea qualche entrata di modo da poterla testare
+		testUpdatePunteggio();
 		Iterator<String> itP = myPunteggio.iterator();
 		assertNotNull(itP);
 		assertNotNull(itP.hasNext());
 		assertNotNull(itP.next());
 	}
 	
-	private void testGetPunteggioDaNome() {
+	@Test
+	public void testGetPunteggioDaNome() {
+		assertTrue(myPunteggio.updatePunteggio("myP", 45));
+		assertTrue(myPunteggio.updatePunteggio("myP", 87));
+		assertTrue(myPunteggio.updatePunteggio("myQ", 97));
+		assertTrue(myPunteggio.updatePunteggio("myR", 64));
 		assertEquals(87, myPunteggio.getPunteggioDaNome("myP").intValue());
 		assertEquals(97, myPunteggio.getPunteggioDaNome("myQ").intValue());
 		assertEquals(64, myPunteggio.getPunteggioDaNome("myR").intValue());
-	}
-	
-	@Test
-	public void testAll() {
-		testCostruttore();
-		testUpdatePunteggio();
-		testIterator();
-		testGetPunteggioDaNome();
 	}
 }
