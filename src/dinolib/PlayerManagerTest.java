@@ -18,45 +18,57 @@ public class PlayerManagerTest {
 		pMan = new PlayerManager();
 	}
 	
-	private void testCostruttore() {
-		setUp();
+	@Test
+	public void testCostruttore() {
 		assertNotNull(pMan);
 	}
 	
-	private void testAddExists() {
+	@Test
+	public void testAddExists() {
 		pMan.add(new Giocatore("abc", "pass"));
 		assertTrue(pMan.exists("abc"));
 		assertFalse(pMan.exists("abd"));
 	}
 	
-	private void testGetPlayer() {
+	@Test
+	public void testGetPlayer() {
+		testAddExists();
 		assertNotNull(pMan.getPlayer("abc"));
 		assertNull(pMan.getPlayer("abd"));
 	}
 	
-	private void testIterator() {
+	@Test
+	public void testIterator() {
+		testAddExists();
 		pMan.add(new Giocatore("abe", "pass"));
 		pMan.add(new Giocatore("abf", "pass"));
-		pMan.add(new Giocatore("abg", "pass"));
-		pMan.add(new Giocatore("abh", "pass"));
 		assertNotNull(pMan.iterator());
 		Iterator<Giocatore> itP = pMan.iterator();
 		assertTrue(itP.hasNext());
-		while (itP.hasNext()) {
-			assertNotNull(itP.next());
-		}
+		assertNotNull(itP.next());
+		assertTrue(itP.hasNext());
+		assertNotNull(itP.next());
+		assertTrue(itP.hasNext());
+		assertNotNull(itP.next());
+		assertFalse(itP.hasNext());
 	}
 	
-	private void testContains() {
+	@Test
+	public void testContains() {
+		// Crea almeno un giocatore
+		testAddExists();
 		Iterator<Giocatore> itP = pMan.iterator();
-		itP.next();
-		itP.next();
+		assertTrue(itP.hasNext());
 		Giocatore tmpGioc = itP.next();
+		assertNotNull(tmpGioc);
 		assertTrue(pMan.contains(tmpGioc));
 		assertFalse(pMan.contains(new Giocatore("abi", "pass")));
 	}
 	
-	private void testAggiorna() {
+	@Test
+	public void testAggiorna() {
+		// Crea più di un giocatore
+		testIterator();
 		Giocatore tmpGioc = pMan.iterator().next();
 		assertNotNull(tmpGioc);
 		tmpGioc.creaNuovaRazza("prova", 'c');
@@ -66,15 +78,5 @@ public class PlayerManagerTest {
 		assertEquals(0, curPunteggio);
 		pMan.aggiorna();
 		assertEquals(2, tmpGioc.getPunteggio().getPunteggioDaNome("prova").intValue());
-	}
-	
-	@Test
-	public void testAll() {
-		testCostruttore();
-		testAddExists();
-		testGetPlayer();
-		testIterator();
-		testContains();
-		testAggiorna();
 	}
 }
