@@ -18,7 +18,13 @@ public class MappaTest {
 		testMappa = new Mappa(40);
 	}
 
-	private void testGetCella() {
+	@Test
+	public void testCostruttore() {
+		assertNotNull(testMappa);
+	}
+	
+	@Test
+	public void testGetCella() {
 		assertNotNull(testMappa.getCella(new Coord(0, 0)));
 		assertNotNull(testMappa.getCella(new Coord(0, testMappa.getLatoDellaMappa()-1)));
 		assertNotNull(testMappa.getCella(new Coord(testMappa.getLatoDellaMappa()-1, 0)));
@@ -30,7 +36,8 @@ public class MappaTest {
 		assertNull(testMappa.getCella(new Coord(0, testMappa.getLatoDellaMappa()+1)));
 	}
 
-	private void testSpawnRimuoviDinosauro() {
+	@Test
+	public void testSpawnRimuoviDinosauro() {
 		Coord tempCoord = new Coord(17, 15);
 		String tipoCellaHost = testMappa.getCella(tempCoord).toString().toLowerCase();
 		testMappa.spawnDinosauro(tempCoord, "myPrivateID");
@@ -43,7 +50,8 @@ public class MappaTest {
 		assertEquals(tipoCellaHost, testMappa.getCella(tempCoord).toString().toLowerCase());
 	}
 
-	private void testIterator() {
+	@Test
+	public void testIterator() {
 		assertNotNull(testMappa.iterator());
 		Iterator<Cella> itCelle = testMappa.iterator();
 		assertTrue(itCelle.hasNext());
@@ -65,7 +73,8 @@ public class MappaTest {
 		assertFalse(itCelle.hasNext());
 	}
 
-	private void testSubIterator() {
+	@Test
+	public void testSubIterator() {
 		Coord tempCoord = new Coord(15,20);
 		assertNotNull(testMappa.subIterator(tempCoord, 5, 5));
 		Iterator<Cella> itCelle = testMappa.subIterator(tempCoord, 5, 5);
@@ -88,7 +97,8 @@ public class MappaTest {
 		assertFalse(itCelle.hasNext());
 	}
 
-	private void testAggiornaSuTurno() {
+	@Test
+	public void testAggiornaSuTurno() {
 		Cella tempCella = null;
 		Iterator<Cella> itCelle = testMappa.iterator();
 		while (itCelle.hasNext()) {
@@ -101,14 +111,5 @@ public class MappaTest {
 		int prevValue = tempCella.getValoreAttuale();
 		testMappa.aggiorna();
 		if (prevValue == tempCella.getValoreAttuale()) fail();
-	}
-
-	@Test
-	public void testAll() {
-		testGetCella();
-		testSpawnRimuoviDinosauro();
-		testIterator();
-		testSubIterator();
-		testAggiornaSuTurno();
 	}
 }
