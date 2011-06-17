@@ -57,7 +57,7 @@ class Giocatore {
 			getPunteggio().updatePunteggio(getRazza().getNome(), getRazza().getPunteggio());
 			razzaDelGiocatore = null;
 		}
-		if (hasRazza()) {
+		if (hasRazza() && !getRazza().isEmpty()) {
 			getRazza().aggiornaRazza();
 			getPunteggio().updatePunteggio(getRazza().getNome(), getRazza().getPunteggio());
 		}

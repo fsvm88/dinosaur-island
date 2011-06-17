@@ -120,19 +120,27 @@ public class Razza implements Set<Dinosauro> {
 	 */
 	private void invecchiaDinosauri() {
 		Iterator<Dinosauro> itDinosauri = this.iterator();
+		Dinosauro tempDinosauro = null;
 		while (itDinosauri.hasNext()) {
-			itDinosauri.next().invecchia();
+			tempDinosauro = itDinosauri.next();
+			tempDinosauro.invecchia();
+			if (tempDinosauro.getTurnoDiVita()>tempDinosauro.getDurataVitaMax()) {
+				tempDinosauro.nonUsabile();
+				remove(tempDinosauro);
+			}
 		}
 	}
 	/**
 	 * Helper per aggiornare la specie.
 	 */
 	public void aggiornaRazza() { // Testato
+		turniDiVita += 1;
+		if (turniDiVita >= TURNI_DI_VITA_MAX) {
+			dinosauri.clear();
+		}
 		if (!isEmpty()) {
-			invecchiaDinosauri();
 			aggiornaPunteggio();
-			turniDiVita += 1;
-			if (turniDiVita >= TURNI_DI_VITA_MAX) dinosauri.clear();
+			invecchiaDinosauri();
 		}
 	}
 	/**
@@ -210,7 +218,7 @@ public class Razza implements Set<Dinosauro> {
 			return;
 		}
 	}
-	
+
 	/* Tutti i metodi importati dall'interfaccia, questi sono quelli supportati */
 	@Override
 	public int size() { // Testato
@@ -254,7 +262,9 @@ public class Razza implements Set<Dinosauro> {
 	public boolean remove(Object o) {  // Testato
 		if (o != null) {
 			dinosauri.remove((Dinosauro) o);
-			if (this.isEmpty()) dinosauri.clear();
+			if (this.isEmpty()) {
+				dinosauri.clear();
+			}
 			return true;
 		}
 		else return false;

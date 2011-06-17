@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-class RRScheduler {
+public class RRScheduler {
 	/**
 	 * Istanzia il riferimento alla coda dei giocatori in gioco.
 	 */

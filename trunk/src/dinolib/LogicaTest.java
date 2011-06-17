@@ -378,6 +378,48 @@ public class LogicaTest {
 		} // TODO implementare test più estensivi per erbivoro su vegetazione e carnivoro su carogna. Usare l'iteratore della mappa per avere una cella di tipo desiderato
 	}
 	
+	private void testDoUscitaPartita() {
+		try {
+			assertTrue(logicaTest.doUscitaPartita(testingToken));
+			assertFalse(logicaTest.isPlayerInGame(testingToken));
+			assertFalse(logicaTest.doUscitaPartita(testingToken2));
+			assertFalse(logicaTest.isPlayerInGame(testingToken2));
+			assertTrue(logicaTest.doUscitaPartita(testingToken3));
+			assertFalse(logicaTest.isPlayerInGame(testingToken3));
+			assertTrue(logicaTest.doUscitaPartita(logicaTest.getCMan().getToken("abf")));
+			assertTrue(logicaTest.doUscitaPartita(logicaTest.getCMan().getToken("abg")));
+			assertTrue(logicaTest.doUscitaPartita(logicaTest.getCMan().getToken("abh")));
+			assertTrue(logicaTest.doUscitaPartita(logicaTest.getCMan().getToken("abi")));
+			assertTrue(logicaTest.doUscitaPartita(logicaTest.getCMan().getToken("abj")));
+			assertTrue(logicaTest.doUscitaPartita(logicaTest.getCMan().getToken("abk")));
+			assertFalse(logicaTest.doUscitaPartita(logicaTest.getCMan().getToken("abl")));
+			assertTrue(logicaTest.doUscitaPartita("myInvalidToken"));
+		}
+		catch (InvalidTokenException e) { System.out.println("Eccezione InvalidToken gestita correttamente."); }
+	}
+	
+	private void testDoLogout() {
+		try {
+			assertTrue(logicaTest.doLogout(testingToken));
+			assertFalse(logicaTest.isPlayerLogged(testingToken));
+			assertTrue(logicaTest.doLogout(testingToken2));
+			assertFalse(logicaTest.isPlayerLogged(testingToken2));
+			assertTrue(logicaTest.doLogout(testingToken3));
+			assertFalse(logicaTest.isPlayerLogged(testingToken3));
+			assertTrue(logicaTest.doLogout(logicaTest.getCMan().getToken("abf")));
+			assertTrue(logicaTest.doLogout(logicaTest.getCMan().getToken("abg")));
+			assertTrue(logicaTest.doLogout(logicaTest.getCMan().getToken("abh")));
+			assertTrue(logicaTest.doLogout(logicaTest.getCMan().getToken("abi")));
+			assertTrue(logicaTest.doLogout(logicaTest.getCMan().getToken("abj")));
+			assertTrue(logicaTest.doLogout(logicaTest.getCMan().getToken("abk")));
+			assertTrue(logicaTest.doLogout(logicaTest.getCMan().getToken("abl")));
+			assertTrue(logicaTest.doLogout(logicaTest.getCMan().getToken("abm")));
+			assertTrue(logicaTest.doLogout(logicaTest.getCMan().getToken("abn")));
+			assertTrue(logicaTest.doLogout("myInvalidToken"));
+		}
+		catch (InvalidTokenException e) { System.out.println("Eccezione InvalidToken gestita correttamente."); }
+	}
+	
 	@Test
 	public void testAll() throws Exception {
 		testCostruttore();
@@ -401,14 +443,15 @@ public class LogicaTest {
 		testDoDeponiUovo();
 		System.out.println("Testo doMuoviDinosauro");
 		testDoMuoviDinosauro();
+		System.out.println("Testo doUscitaPartita");
+		testDoUscitaPartita();
+		System.out.println("Testo doLogout");
+		testDoLogout();
 		System.out.println("Testato tutto correttamente");
 	}
 
 	// TODO
 	/* isMioTurno
-	 * updatePartita
-	 * doUscitaPartita
-	 * doLogout
-	 * doMuoviDinosauro
+	 * run
 	 */
 }
