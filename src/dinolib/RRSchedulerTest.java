@@ -2,23 +2,26 @@ package dinolib;
 
 import static org.junit.Assert.*;
 
+import java.util.Iterator;
+
 import org.junit.Before;
 import org.junit.Test;
 
 public class RRSchedulerTest {
 	private RRScheduler rrsched = null;
-	
+
 	@Before
 	public void setUp() {
 		rrsched = new RRScheduler(8);
 	}
 
-	private void testCostruttore() {
-		setUp();
+	@Test
+	public void testCostruttore() {
 		assertNotNull(rrsched);
 	}
 
-	private void testNewTask() {
+	@Test
+	public void testNewTask() {
 		try {
 			assertTrue(rrsched.newTask("abcd"));
 			assertTrue(rrsched.newTask("abce"));
@@ -31,30 +34,50 @@ public class RRSchedulerTest {
 		}
 	}
 
-	private void testHasQueuedTasks() {
-		setUp();
+	@Test
+	public void testHasQueuedTasks() {
 		assertFalse(rrsched.hasQueuedTasks());
-		testNewTask();
+		try {
+			assertTrue(rrsched.newTask("abcd"));
+		}
+		catch (InterruptedException e) { fail(); }
 		assertTrue(rrsched.hasQueuedTasks());
 	}
 
-	private void testHasTask() {
+	@Test
+	public void testHasTask() {
+		assertFalse(rrsched.hasTask("abcd"));
+		try {
+			assertTrue(rrsched.newTask("abcd"));
+		}
+		catch (InterruptedException e) { fail(); }
 		assertTrue(rrsched.hasTask("abcd"));
-		assertTrue(rrsched.hasTask("abce"));
-		assertTrue(rrsched.hasTask("abcf"));
-		assertFalse(rrsched.hasTask("abdf"));
-		assertFalse(rrsched.hasTask("abcb"));
 	}
 
-	private void testIterator() {
+	@Test
+	public void testIterator() {
+		try {
+			assertTrue(rrsched.newTask("abcd"));
+			assertTrue(rrsched.newTask("abce"));
+		}
+		catch (InterruptedException e) { fail(); }
 		assertNotNull(rrsched.iterator());
-		assertTrue(rrsched.iterator().hasNext());
-		assertNotNull(rrsched.iterator().next());
+		Iterator<String> itTasks = rrsched.iterator();
+		assertNotNull(itTasks);
+		assertTrue(itTasks.hasNext());
+		assertNotNull(itTasks.next());
+		assertTrue(itTasks.hasNext());
+		assertNotNull(itTasks.next());
+		assertFalse(itTasks.hasNext());
 	}
 
-	private void testMaxPlayers() {
+	@Test
+	public void testMaxPlayers() {
 		assertFalse(rrsched.maxPlayers());
 		try {
+			assertTrue(rrsched.newTask("abcd"));
+			assertTrue(rrsched.newTask("abce"));
+			assertTrue(rrsched.newTask("abcf"));
 			assertTrue(rrsched.newTask("abcg"));
 			assertTrue(rrsched.newTask("abch"));
 			assertTrue(rrsched.newTask("abci"));
@@ -67,38 +90,39 @@ public class RRSchedulerTest {
 		assertTrue(rrsched.maxPlayers());
 	}
 
-	private void testKillTask() {
-		assertTrue(rrsched.hasQueuedTasks());
+	@Test
+	public void testKillTask() {
+		assertFalse(rrsched.hasQueuedTasks());
+		try {
+			assertTrue(rrsched.newTask("abcd"));
+			assertTrue(rrsched.newTask("abce"));
+			assertTrue(rrsched.newTask("abcf"));
+		}
+		catch (InterruptedException e) {
+			fail();
+		}
 		assertTrue(rrsched.hasTask("abcd"));
-		assertTrue(rrsched.killTask("abcd"));
-		assertFalse(rrsched.hasTask("abcd"));
 		assertTrue(rrsched.hasTask("abce"));
-		assertTrue(rrsched.killTask("abce"));
-		assertFalse(rrsched.hasTask("abce"));
 		assertTrue(rrsched.hasTask("abcf"));
+		assertTrue(rrsched.killTask("abcd"));
+		assertTrue(rrsched.killTask("abce"));
 		assertTrue(rrsched.killTask("abcf"));
+		assertFalse(rrsched.hasTask("abcd"));
+		assertFalse(rrsched.hasTask("abce"));
 		assertFalse(rrsched.hasTask("abcf"));
-		assertTrue(rrsched.hasTask("abcg"));
-		assertTrue(rrsched.killTask("abcg"));
-		assertFalse(rrsched.hasTask("abcg"));
-		assertTrue(rrsched.hasTask("abch"));
-		assertTrue(rrsched.killTask("abch"));
-		assertFalse(rrsched.hasTask("abch"));
-		assertTrue(rrsched.hasTask("abci"));
-		assertTrue(rrsched.killTask("abci"));
-		assertFalse(rrsched.hasTask("abci"));
-		assertTrue(rrsched.hasTask("abcj"));
-		assertTrue(rrsched.killTask("abcj"));
-		assertFalse(rrsched.hasTask("abcj"));
-		assertTrue(rrsched.hasTask("abck"));
-		assertTrue(rrsched.killTask("abck"));
-		assertFalse(rrsched.hasTask("abck"));
 		assertFalse(rrsched.hasQueuedTasks());
 	}
 
-	private void testGetCurrentTask() {
-		setUp();
-		testNewTask();
+	@Test
+	public void testGetCurrentTask() {
+		try {
+			assertTrue(rrsched.newTask("abcd"));
+			assertTrue(rrsched.newTask("abce"));
+			assertTrue(rrsched.newTask("abcf"));
+		}
+		catch (InterruptedException e) {
+			fail();
+		}
 		assertTrue(rrsched.hasQueuedTasks());
 		try {
 			assertEquals("abcd", rrsched.getCurrentTask());
@@ -109,17 +133,5 @@ public class RRSchedulerTest {
 			fail();
 		}
 		assertFalse(rrsched.hasQueuedTasks());
-	}
-
-	@Test
-	public void testAll() {
-		testCostruttore();
-		testNewTask();
-		testHasQueuedTasks();
-		testHasTask();
-		testIterator();
-		testMaxPlayers();
-		testKillTask();
-		testGetCurrentTask();
 	}
 }
