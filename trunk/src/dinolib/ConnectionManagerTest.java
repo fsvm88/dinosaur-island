@@ -2,6 +2,8 @@ package dinolib;
 
 import static org.junit.Assert.*;
 
+import java.util.Iterator;
+
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,18 +18,23 @@ public class ConnectionManagerTest {
 		cMan = new ConnectionManager();
 	}
 
-	private void testCostruttore() {
-		setUp();
+	@Test
+	public void testCostruttore() {
 		assertNotNull(cMan);
 	}
 
-	private void testCollega() {
+	@Test
+	public void testCollega() {
 		if (! cMan.collega("user1", "tk1")) fail();
 		if (! cMan.collega("user2", "tk2")) fail();
 		if (! cMan.collega("user3", "tk3")) fail();
 	}
 
-	private void testExists() {
+	@Test
+	public void testExists() {
+		if (! cMan.collega("user1", "tk1")) fail();
+		if (! cMan.collega("user2", "tk2")) fail();
+		if (! cMan.collega("user3", "tk3")) fail();
 		assertTrue(cMan.existsName("user1"));
 		assertTrue(cMan.existsName("user2"));
 		assertTrue(cMan.existsName("user3"));
@@ -41,25 +48,45 @@ public class ConnectionManagerTest {
 		assertFalse(cMan.existsToken("tk5"));
 	}
 
-	private void testGetIteratorOnTokens() {
-		setUp();
+	@Test
+	public void testGetIteratorOnTokens() {
 		assertNull(cMan.getIteratorOnTokens());
-		testCollega();
-		assertNotNull(cMan.getIteratorOnTokens());
-		assertTrue(cMan.getIteratorOnTokens().hasNext());
-		assertNotNull(cMan.getIteratorOnTokens().next());
+		if (! cMan.collega("user1", "tk1")) fail();
+		if (! cMan.collega("user2", "tk2")) fail();
+		if (! cMan.collega("user3", "tk3")) fail();
+		Iterator<String> itTokens = cMan.getIteratorOnTokens();
+		assertNotNull(itTokens);
+		assertTrue(itTokens.hasNext());
+		assertNotNull(itTokens.next());
+		assertTrue(itTokens.hasNext());
+		assertNotNull(itTokens.next());
+		assertTrue(itTokens.hasNext());
+		assertNotNull(itTokens.next());
+		assertFalse(itTokens.hasNext());
 	}
 
-	private void testGetIteratorOnConnectedPlayerNames() {
-		setUp();
+	@Test
+	public void testGetIteratorOnConnectedPlayerNames() {
 		assertNull(cMan.getIteratorOnConnectedPlayerNames());
-		testCollega();
-		assertNotNull(cMan.getIteratorOnConnectedPlayerNames());
-		assertTrue(cMan.getIteratorOnConnectedPlayerNames().hasNext());
-		assertNotNull(cMan.getIteratorOnConnectedPlayerNames().next());
+		if (! cMan.collega("user1", "tk1")) fail();
+		if (! cMan.collega("user2", "tk2")) fail();
+		if (! cMan.collega("user3", "tk3")) fail();
+		Iterator<String> itNames = cMan.getIteratorOnConnectedPlayerNames();
+		assertNotNull(itNames);
+		assertTrue(itNames.hasNext());
+		assertNotNull(itNames.next());
+		assertTrue(itNames.hasNext());
+		assertNotNull(itNames.next());
+		assertTrue(itNames.hasNext());
+		assertNotNull(itNames.next());
+		assertFalse(itNames.hasNext());
 	}
 
-	private void testGetName() {
+	@Test
+	public void testGetName() {
+		if (! cMan.collega("user1", "tk1")) fail();
+		if (! cMan.collega("user2", "tk2")) fail();
+		if (! cMan.collega("user3", "tk3")) fail();
 		try {
 			assertNotNull(cMan.getName("tk1"));
 			assertEquals("user1", cMan.getName("tk1"));
@@ -74,7 +101,11 @@ public class ConnectionManagerTest {
 		}
 	}
 
-	private void testGetToken() {
+	@Test
+	public void testGetToken() {
+		if (! cMan.collega("user1", "tk1")) fail();
+		if (! cMan.collega("user2", "tk2")) fail();
+		if (! cMan.collega("user3", "tk3")) fail();
 		assertNotNull(cMan.getToken("user1"));
 		assertEquals("tk1", cMan.getToken("user1"));
 		assertNotNull(cMan.getToken("user2"));
@@ -85,7 +116,11 @@ public class ConnectionManagerTest {
 		assertNull(cMan.getToken("tk5"));
 	}
 	
-	private void testScollega() {
+	@Test
+	public void testScollega() {
+		if (! cMan.collega("user1", "tk1")) fail();
+		if (! cMan.collega("user2", "tk2")) fail();
+		if (! cMan.collega("user3", "tk3")) fail();
 		assertTrue(cMan.existsToken("tk1"));
 		assertTrue(cMan.scollega("tk1"));
 		assertFalse(cMan.existsToken("tk1"));
@@ -97,17 +132,5 @@ public class ConnectionManagerTest {
 		assertFalse(cMan.existsToken("tk3"));
 		assertFalse(cMan.existsToken("tk4"));
 		assertFalse(cMan.existsToken("tk5"));
-	}
-	
-	@Test
-	public void testAll() {
-		testCostruttore();
-		testCollega();
-		testExists();
-		testGetIteratorOnTokens();
-		testGetIteratorOnConnectedPlayerNames();
-		testGetName();
-		testGetToken();
-		testScollega();
 	}
 }
