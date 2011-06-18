@@ -15,7 +15,7 @@ public class Razza implements Set<Dinosauro> {
 	/* Tutte le variabili statiche/definitive e non modificabili */
 	/**
 	 * Definisce definitivamente i turni di vita massimi per una specie.
-	 * uml.property name="turni_DI_VITA_MAX"
+	 * @uml.property name="turni_DI_VITA_MAX"
 	 */
 	private final int TURNI_DI_VITA_MAX = 120;
 	/**
@@ -24,7 +24,7 @@ public class Razza implements Set<Dinosauro> {
 	 */
 	private String nome = null;
 	/**
-	 * Contiene il numero massimo di dinosauri per specie. È una costante di gioco.
+	 * Contiene il numero massimo di dinosauri per specie. E' una costante di gioco.
 	 * @uml.property  name="numero_MAX_DINOSAURI"
 	 */
 	private final int numero_MAX_DINOSAURI = 5;
@@ -42,7 +42,7 @@ public class Razza implements Set<Dinosauro> {
 	private int punteggio = 0;
 	/**
 	 * Contiene i turni di vita della specie.
-	 * uml.property name="turniDiVita"
+	 * @uml.property name="turniDiVita"
 	 */
 	private int turniDiVita = 0;
 	/**
@@ -54,8 +54,7 @@ public class Razza implements Set<Dinosauro> {
 
 	/* Costruttore */
 	/**
-	 * Implementa la costruzione della classe Specie.
-	 * Richiede il nuovo nome della razza e l'istanza del nuovo dinosauro.
+	 * Richiede il nuovo nome della razza e il tipo della razza.
 	 */
 	public Razza(String nomeRazza, Character tipoRazza) { // Testato
 		this.nome = nomeRazza;
@@ -64,20 +63,25 @@ public class Razza implements Set<Dinosauro> {
 
 	/* Tutti i getter */
 	/**
-	 * @return
-	 * @uml.property  name="nomeRazza"
+	 * Restituisce il nome della razza.
+	 * @return Il nome della razza.
 	 */
 	public String getNome() { return nome; }
 	/**
-	 * @return
-	 * @uml.property  name="punteggio"
+	 * Restituisce il punteggio corrente della razza.
+	 * @return Il punteggio corrente della razzza.
 	 */
 	public int getPunteggio() { return punteggio; } // Testato
 	/**
-	 * @return
-	 * @uml.property  name="tipoRazza"
+	 * Restituisce il tipo della razza.
+	 * @return Il tipo della razza.
 	 */
 	public Character getTipo() { return tipoRazza; } // Testato
+	/**
+	 * Restituisce un dinosauro a partire dal suo Id.
+	 * @param idDinosauroCercato L'Id del dinosauro che sto cercando.
+	 * @return Il dinosauro che stavo cercando. Null altrimenti.
+	 */
 	public Dinosauro getDinosauroById(String idDinosauroCercato) { // Testato
 		if (existsDinosauroWithId(idDinosauroCercato)) {
 			Iterator<Dinosauro> itDinosauri = this.iterator();
@@ -89,14 +93,18 @@ public class Razza implements Set<Dinosauro> {
 		}
 		return null;
 	}
+	/**
+	 * Verifica se la razza ha il numero massimo di dinosauri.
+	 * @return True se ho raggiunto il numero massimo, False altrimenti.
+	 */
 	protected boolean hasNumeroMassimo() { // Testato
 		if (this.size() >= numero_MAX_DINOSAURI) return true;
 		else return false;
 	}
 	/**
-	 * Helper booleano per verificare l'esistenza di un id (cioè l'esistenza di un dinosauro).
-	 * @param idDaCercare
-	 * @return
+	 * Verifica se esiste un dinosauro nella razza.
+	 * @param idDaCercare L'Id del dinosauro che non so se esiste.
+	 * @return True se il dinosauro esiste, false altrimenti.
 	 */
 	public boolean existsDinosauroWithId(String idDaCercare) { // Testato
 		Iterator<Dinosauro> itDinosauri = this.iterator();
@@ -131,21 +139,26 @@ public class Razza implements Set<Dinosauro> {
 		}
 	}
 	/**
-	 * Helper per aggiornare la specie.
+	 * Aggiorna la razza di dinosauri:
+	 * -se la razza non e' estinta aggiorna il punteggio e invecchia i suoi dinosauri
+	 * -se la razza non e' estinta aumenta di 1 il turno di vita
+	 * -verifica se la razza deve estinguersi questo turno perche' e' troppo vecchia, se si' estinguila.
 	 */
 	public void aggiornaRazza() { // Testato
-		turniDiVita += 1;
-		if (turniDiVita >= TURNI_DI_VITA_MAX) {
-			dinosauri.clear();
-		}
 		if (!isEmpty()) {
 			aggiornaPunteggio();
 			invecchiaDinosauri();
 		}
+		if (!isEmpty()) {
+			turniDiVita += 1;
+			if (turniDiVita >= TURNI_DI_VITA_MAX) {
+				dinosauri.clear();
+			}
+		}
 	}
 	/**
-	 * Rimuove un dinosauro usando l'id come parametro.
-	 * @param idToRemove
+	 * Rimuove un dinosauro dalla razza usando l'id come parametro.
+	 * @param idToRemove L'Id del dinosauro da rimuovere.
 	 */
 	public void removeById(String idToRemove) { // Testato
 		Iterator<Dinosauro> itDinosauri = this.iterator();
@@ -162,8 +175,8 @@ public class Razza implements Set<Dinosauro> {
 	/**
 	 * Helper per far crescere il dinosauro richiesto.
 	 * Nel caso muoia d'inedia lo uccide, lo rimuove e lancia un'eccezione.
-	 * @param idDinosauro
-	 * @throws GenericDinosauroException 
+	 * @param idDinosauro L'Id del dinosauro da crescere.
+	 * @throws GenericDinosauroException Se il dinosauro muore per inedia o raggiunge la dimensione massima.
 	 */
 	public void cresciDinosauro(String idDinosauro) throws GenericDinosauroException { // Testato
 		Dinosauro tempDinosauro = getDinosauroById(idDinosauro);
@@ -181,8 +194,8 @@ public class Razza implements Set<Dinosauro> {
 	/**
 	 * Helper per far deporre l'uovo al dinosauro richiesto.
 	 * Nel caso muoia d'inedia lo uccide, lo rimuove e lancia un'eccezione.
-	 * @param idDinosauro
-	 * @throws GenericDinosauroException
+	 * @param idDinosauro L'Id del dinosauro a cui far deporre l'uovo.
+	 * @throws GenericDinosauroException Se il dinosauro muore per inedia o la razza ha gia' il numero massimo di dinosauri.
 	 */
 	public void deponiUovo(String idDinosauro) throws GenericDinosauroException { // Testato
 		Dinosauro tempDinosauro = getDinosauroById(idDinosauro);
@@ -200,9 +213,9 @@ public class Razza implements Set<Dinosauro> {
 	/**
 	 * Helper per far muovere il dinosauro.
 	 * Nel caso muoia d'inedia lo uccide, lo rimuove e lancia un'eccezione.
-	 * @param idDinosauro
-	 * @param newCoord
-	 * @throws GenericDinosauroException 
+	 * @param idDinosauro L'id del dinosauro da muovere.
+	 * @param newCoord Le nuove coordinate del dinosauro.
+	 * @throws GenericDinosauroException Se il dinosauro muore per inedia o ha gia' raggiunto il suo limite di mosse.
 	 */
 	public void muoviDinosauro(String idDinosauro, Coord newCoord) throws GenericDinosauroException { // Testato
 		Dinosauro tempDinosauro = getDinosauroById(idDinosauro);
@@ -223,37 +236,62 @@ public class Razza implements Set<Dinosauro> {
 	}
 
 	/* Tutti i metodi importati dall'interfaccia, questi sono quelli supportati */
+	/**
+	 * Restituisce la dimensione della razza.
+	 * @return Intero che dice quanti dinosauri sono presenti nella razza.
+	 */
 	@Override
 	public int size() { // Testato
 		return dinosauri.size();
 	}
 
+	/**
+	 * Dice se la razza e' vuota.
+	 * @return True se la razza e' vuota, false se non e' vuota.
+	 */
 	@Override
 	public boolean isEmpty() { // Testato
 		if (dinosauri.isEmpty()) return true;
 		else return false;
 	}
 
+	/**
+	 * Verifica se la razza ha il dinosauro richiesto.
+	 * @return True se il dinosauro e' nella razza, false se non e' nella razza.
+	 */
 	@Override
 	public boolean contains(Object o) { // Testato
 		if (dinosauri.contains(o)) return true;
 		else return false;
 	}
 
+	/**
+	 * Restituisce un iteratore sulla razza.
+	 * @return Iteratore sulla razza.
+	 */
 	@Override
 	public Iterator<Dinosauro> iterator() { // Testato
 		return dinosauri.iterator();
 	}
 
+	/**
+	 * Elimina tutti i dinosauri nella razza.
+	 */
 	@Override
 	public void clear() { dinosauri = new HashSet<Dinosauro>(); } // Testato
 
+	/**
+	 * Aggiunge un dinosauro alla razza (se non e' gia' presente).
+	 * @return True se la collezione e' stata modificata (il dinosauro e' stato aggiunto), false se la collezione non e' stata modificata (il dinosauro non e' stato aggiunto).
+	 */
 	@Override
 	public boolean add(Dinosauro e) { // Testato
 		if (e != null) {
 			Iterator<Dinosauro> itDinosauro = this.iterator();
 			while (itDinosauro.hasNext()) {
-				if (e.getIdDinosauro().equals(itDinosauro.next().getIdDinosauro())) return false;
+				if (e.getIdDinosauro().equals(itDinosauro.next().getIdDinosauro())) {
+					return false;
+				}
 			}
 			dinosauri.add(e);
 			return true;
@@ -261,6 +299,10 @@ public class Razza implements Set<Dinosauro> {
 		else return false;
 	}
 
+	/**
+	 * Rimuove un dinosauro richiesto dalla razza.
+	 * @return True se la collezione e' stata modificata (il dinosauro e' stato rimosso), false se la collezione non e' stata modificata (il dinosauro non e' stato rimosso).
+	 */
 	@Override
 	public boolean remove(Object o) {  // Testato
 		if (o != null) {
@@ -274,16 +316,34 @@ public class Razza implements Set<Dinosauro> {
 	}
 
 	/* Tutti i metodi importati dall'interfaccia, quelli non supportati */
+	/**
+	 * Operazione non supportata.
+	 */
 	@Override
 	public boolean addAll(Collection<? extends Dinosauro> c) { throw new UnsupportedOperationException(); }
+	/**
+	 * Operazione non supportata.
+	 */
 	@Override
 	public boolean containsAll(Collection<?> c) { throw new UnsupportedOperationException(); }
+	/**
+	 * Operazione non supportata.
+	 */
 	@Override
 	public boolean removeAll(Collection<?> c) { throw new UnsupportedOperationException(); }
+	/**
+	 * Operazione non supportata.
+	 */
 	@Override
 	public boolean retainAll(Collection<?> c) { throw new UnsupportedOperationException(); }
+	/**
+	 * Operazione non supportata.
+	 */
 	@Override
 	public Object[] toArray() { throw new UnsupportedOperationException(); }
+	/**
+	 * Operazione non supportata.
+	 */
 	@Override
 	public <T> T[] toArray(T[] a) { throw new UnsupportedOperationException(); }
 }

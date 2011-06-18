@@ -745,11 +745,13 @@ public class Logica implements Runnable {
 		if (forzaSfidante >= forzaAttaccato) {
 			dinosauroAttaccato.nonUsabile();
 			getPlayerByIdDinosauro(idDinosauroAttaccato).getRazza().removeById(idDinosauroAttaccato);
+			getMappa().rimuoviIlDinosauroDallaCella(dinosauroAttaccato.getCoord());
 			return true;
 		}
 		else if (forzaSfidante < forzaAttaccato) {
 			dinosauroSfidante.nonUsabile();
 			getPlayerByIdDinosauro(idDinosauroSfidante).getRazza().removeById(idDinosauroSfidante);
+			getMappa().rimuoviIlDinosauroDallaCella(dinosauroSfidante.getCoord());
 			return false;
 		}
 		return false;
@@ -793,16 +795,12 @@ public class Logica implements Runnable {
 	 * @throws InvalidTokenException 
 	 */
 	protected String doMuoviDinosauro(String token, String idDinosauro, Coord newCoord) throws InvalidTokenException, GenericDinosauroException { // Testato
-		System.out.println("[doMuoviDinosauro] start. Chiamato con token: " + token + " idDinosauro: " + idDinosauro + " newCoord(" + newCoord.getX() + ", " + newCoord.getY() + ")");
 		if (isValidCoord(newCoord)) {
 			Dinosauro tempDinosauro = getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
 			if (newCoord.equals(tempDinosauro.getCoord())) {
 				return "destinazioneNonValida";
 			}
 			Coord oldCoord = tempDinosauro.getCoord();
-			/*			if (!tempDinosauro.hasMovimento()) {
-				throw new GenericDinosauroException("raggiuntoLimiteMosseDinosauro");
-			}*/
 			if (!isCellaAcqua(newCoord) &&
 					!isEntrambiDinosauriErbivori(tempDinosauro, newCoord) &&
 					!isCellaConMioDinosauro(token, newCoord) && 
@@ -810,33 +808,66 @@ public class Logica implements Runnable {
 				System.runFinalization();
 				System.gc();
 				String tipoCella = getMappa().getCella(newCoord).toString().toLowerCase();
-				System.out.println("[doMuoviDinosauro] tipoCella: " + tipoCella);
 				if (tipoCella.equals("terra")) {
-					System.out.println("ramo terra");
-					getPlayerByToken(token).getRazza().muoviDinosauro(idDinosauro, newCoord);
+					try {
+						getPlayerByToken(token).getRazza().muoviDinosauro(idDinosauro, newCoord);
+					}
+					catch (GenericDinosauroException e) {
+						if (e.getMessage().equals("mortePerInedia")) {
+							getMappa().rimuoviIlDinosauroDallaCella(oldCoord);
+						}
+						throw new GenericDinosauroException(e.getMessage());
+					}
 					getMappa().rimuoviIlDinosauroDallaCella(oldCoord);
+					getMappa().spawnDinosauro(newCoord, idDinosauro);
 				}
 				else if (tipoCella.equals("vegetazione")) {
-					System.out.println("ramo vegetazione");
+					try {
+						getPlayerByToken(token).getRazza().muoviDinosauro(idDinosauro, newCoord);
+					}
+					catch (GenericDinosauroException e) {
+						if (e.getMessage().equals("mortePerInedia")) {
+							getMappa().rimuoviIlDinosauroDallaCella(oldCoord);
+						}
+						throw new GenericDinosauroException(e.getMessage());
+					}
+					getMappa().rimuoviIlDinosauroDallaCella(oldCoord);
+					getMappa().spawnDinosauro(newCoord, idDinosauro);
 					if (tempDinosauro.getTipoRazza().toLowerCase().equals("erbivoro")) {
 						mangiaCella(tempDinosauro, newCoord);
 					}
-					getPlayerByToken(token).getRazza().muoviDinosauro(idDinosauro, newCoord);
 					getMappa().rimuoviIlDinosauroDallaCella(oldCoord);
+					getPlayerByToken(token).getRazza().muoviDinosauro(idDinosauro, newCoord);
 				}
 				else if (tipoCella.equals("carogna")) {
-					System.out.println("ramo carogna");
+					try {
+						getPlayerByToken(token).getRazza().muoviDinosauro(idDinosauro, newCoord);
+					}
+					catch (GenericDinosauroException e) {
+						if (e.getMessage().equals("mortePerInedia")) {
+							getMappa().rimuoviIlDinosauroDallaCella(oldCoord);
+						}
+						throw new GenericDinosauroException(e.getMessage());
+					}
+					getMappa().rimuoviIlDinosauroDallaCella(oldCoord);
+					getMappa().spawnDinosauro(newCoord, idDinosauro);
 					if (tempDinosauro.getTipoRazza().toLowerCase().equals("carnivoro")) {
 						mangiaCella(tempDinosauro, newCoord);
 					}
-					getPlayerByToken(token).getRazza().muoviDinosauro(idDinosauro, newCoord);
-					getMappa().rimuoviIlDinosauroDallaCella(oldCoord);
 				}
 				else if (isCellaDinosauro(newCoord)) {
-					System.out.println("ramo dinosauro");
 					if (combattimentoTraDinosauri(tempDinosauro, newCoord)) {
+						try {
+							getPlayerByToken(token).getRazza().muoviDinosauro(idDinosauro, newCoord);
+						}
+						catch (GenericDinosauroException e) {
+							if (e.getMessage().equals("mortePerInedia")) {
+								getMappa().rimuoviIlDinosauroDallaCella(oldCoord);
+							}
+							throw new GenericDinosauroException(e.getMessage());
+						}
 						getMappa().rimuoviIlDinosauroDallaCella(oldCoord);
-						getPlayerByToken(token).getRazza().muoviDinosauro(idDinosauro, newCoord);
+						getMappa().spawnDinosauro(newCoord, idDinosauro);
 						return "v";
 					}
 					else {
