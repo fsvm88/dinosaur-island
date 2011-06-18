@@ -139,10 +139,10 @@ public class Razza implements Set<Dinosauro> {
 		}
 	}
 	/**
-	 * Aggiorna la razza di dinosauri:
-	 * -se la razza non e' estinta aggiorna il punteggio e invecchia i suoi dinosauri
-	 * -se la razza non e' estinta aumenta di 1 il turno di vita
-	 * -verifica se la razza deve estinguersi questo turno perche' e' troppo vecchia, se si' estinguila.
+	 * Aggiorna la razza di dinosauri.
+	 * Se la razza non e' estinta aggiorna il punteggio e invecchia i suoi dinosauri.
+	 * Se la razza non e' estinta aumenta di 1 il turno di vita.
+	 * Verifica se la razza deve estinguersi questo turno perche' e' troppo vecchia, se si' estinguila.
 	 */
 	public void aggiornaRazza() { // Testato
 		if (!isEmpty()) {

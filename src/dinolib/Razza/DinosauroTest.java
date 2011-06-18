@@ -102,7 +102,7 @@ public class DinosauroTest {
 	@Test
 	public void testHasEnergyMethods() {
 		ageDinosauro();
-		dinosauro.setEnergiaAttuale(dinosauro.getEnergiaAttuale());
+		dinosauro.setEnergiaAttuale(dinosauro.getEnergiaMax());
 		assertTrue(dinosauro.hasEnergyToGrow());
 		assertTrue(dinosauro.hasEnergyToRepl());
 		dinosauro.setEnergiaAttuale(1);
