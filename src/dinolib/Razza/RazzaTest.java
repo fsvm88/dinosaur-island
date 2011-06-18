@@ -14,14 +14,11 @@ import dinolib.Mappa.Coord;
  * @author  fabio
  */
 public class RazzaTest {
-	/**
-	 * @uml.property  name="specie"
-	 * @uml.associationEnd  
-	 */
 	private Razza myRazza;
 	private final Coord defaultCoord = new Coord(0,0);
 	private final Character defaultType = 'e';
 
+	// SetUp, creo una razza con valori di default accettabili
 	@Before
 	public void setUp() {
 		myRazza = new Razza("testRazza", defaultType.charValue());
@@ -146,6 +143,7 @@ public class RazzaTest {
 		assertEquals(3, myRazza.size());
 		assertFalse(myRazza.isEmpty());
 		Dinosauro tempDinosauro = null;
+		// Prendo tutti i dinosauri e li rimuovo uno per uno
 		while (!myRazza.isEmpty()) {
 			Iterator<Dinosauro> itDinosauro = myRazza.iterator();
 			while (itDinosauro.hasNext()) {
@@ -156,6 +154,7 @@ public class RazzaTest {
 			}
 			else break;
 		}
+		// Alla fine la lista deve essere pulita (viene resettata da remove quando vede che è l'ultimo dinosauro)
 		assertEquals(0, myRazza.size());
 		assertTrue(myRazza.isEmpty());
 	}
@@ -175,6 +174,7 @@ public class RazzaTest {
 				counter++;
 			}
 		}
+		// Aggiungo e rimuovo il dinosauro con lo stesso id per verificare che effettivamente l'associazione dinosauro<->id è univoca
 		assertNotNull(myRazza.getDinosauroById(tempDinosauro.getIdDinosauro()));
 		myRazza.removeById(tempDinosauro.getIdDinosauro());
 		assertEquals((startCount-1), myRazza.size());
@@ -211,6 +211,7 @@ public class RazzaTest {
 			tempDinosauro = itDinosauri.next();
 			counter++;
 		}
+		// Aggiungo e rimuovo il dinosauro con lo stesso id per verificare che effettivamente l'associazione dinosauro<->id è univoca
 		assertTrue(myRazza.existsDinosauroWithId(tempDinosauro.getIdDinosauro()));
 		myRazza.removeById(tempDinosauro.getIdDinosauro());
 		assertEquals((startCount-1), myRazza.size());
@@ -231,6 +232,7 @@ public class RazzaTest {
 		assertTrue(itDino.hasNext());
 		Dinosauro tempDinosauro = itDino.next();
 		assertNotNull(tempDinosauro);
+		// Verifico che il punteggio iniziale sia diverso da quello finale dopo che ho chiamato aggiornaRazza
 		tempDinosauro.setEnergiaAttuale(tempDinosauro.getEnergiaMax());
 		tempDinosauro.cresci();
 		tempDinosauro.setEnergiaAttuale(tempDinosauro.getEnergiaMax());
