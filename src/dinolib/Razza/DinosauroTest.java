@@ -46,7 +46,6 @@ public class DinosauroTest {
 			dinosauro.cresci();
 			assertEquals(curDimensione, dinosauro.getDimensione());
 		}
-		setUp();
 	}
 	
 	@Test
@@ -54,7 +53,6 @@ public class DinosauroTest {
 		assertFalse(dinosauro.isAtDimensioneMax());
 		ageDinosauro();
 		assertTrue(dinosauro.isAtDimensioneMax());
-		setUp();
 	}
 	
 	@Test
@@ -64,7 +62,6 @@ public class DinosauroTest {
 		assertFalse(dinosauro.isUsabile());
 		dinosauro.usabile();
 		assertTrue(dinosauro.isUsabile());
-		setUp();
 	}
 	
 	@Test
@@ -72,7 +69,6 @@ public class DinosauroTest {
 		int energiaAttuale = dinosauro.getEnergiaAttuale();
 		dinosauro.setEnergiaAttuale(energiaAttuale+1);
 		assertEquals(energiaAttuale+1, dinosauro.getEnergiaAttuale());
-		setUp();
 	}
 	
 	@Test
@@ -83,7 +79,6 @@ public class DinosauroTest {
 		Coord tc2 = new Coord(27, 19);
 		dinosauro.setCoord(tc2);
 		assertEquals(tc2, dinosauro.getCoord());
-		setUp();
 	}
 	
 	@Test
@@ -91,7 +86,6 @@ public class DinosauroTest {
 		int curVita = dinosauro.getTurnoDiVita();
 		dinosauro.invecchia();
 		assertEquals(curVita+1, dinosauro.getTurnoDiVita());
-		setUp();
 	}
 	
 	@Test
@@ -108,7 +102,6 @@ public class DinosauroTest {
 		dinosauro.setEnergiaAttuale(1);
 		assertFalse(dinosauro.hasEnergyToGrow());
 		assertFalse(dinosauro.hasEnergyToRepl());
-		setUp();
 	}
 	
 	@Test
@@ -123,6 +116,5 @@ public class DinosauroTest {
 		assertEquals(3, dinosauro.getRangeVista());
 		ageDinosauro();
 		assertEquals(4, dinosauro.getRangeVista());
-		setUp();
 	}
 }
