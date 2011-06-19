@@ -2,6 +2,8 @@ package dinolib.Mappa;
 /**
  * Classe che contiene una coppia di coordinate, serve per semplificare la logica di alto livello.
  * Dichiara il metodo equals, di modo da avere un confronto diretto corretto tra due elementi.
+ */
+/**
  * @author fabio
  */
 public class Coord {
