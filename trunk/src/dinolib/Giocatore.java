@@ -4,12 +4,13 @@ import dinolib.Razza.*;
 /**
  * @author  fabio
  */
+/**
+ * Classe che gestisce il singolo giocatore.
+ */
 class Giocatore {
-	/* Tutte le variabili statiche/definitive e non modificabili */
-
 	/* Tutte le variabili istanziabili */
 	/**
-	 * Contiene il nome del giocatore corrente.
+	 * Contiene il nome del giocatore.
 	 * @uml.property  name="nome"
 	 */
 	private String nome = null;
@@ -19,9 +20,8 @@ class Giocatore {
 	 */
 	private String password = null;
 	/**
-	 * Fa riferimento a un oggetto Specie, viene inizializzato a zero fino a che non viene costruita la specie tramite l'implementazione in server.
-	 * @uml.property  name="specieDiDinosauri"
-	 * @uml.associationEnd  
+	 * Fa riferimento a un oggetto Razza.
+	 * @uml.property  name="razzaDelGiocatore"
 	 */
 	private Razza razzaDelGiocatore = null;
 	/**
@@ -31,7 +31,9 @@ class Giocatore {
 
 	/* Costruttore */
 	/**
-	 * Costruttore pubblico per la classe giocatore. Richiede solo nome utente e password.
+	 * Assegna il nome e la password passate al nuovo utente, istanzia l'oggetto punteggio.
+	 * @param nome Il nome del nuovo giocatore.
+	 * @param password La password del nuovo giocatore.
 	 */
 	protected Giocatore(String nome, String password) { // Testato
 		this.nome = nome;
@@ -40,10 +42,19 @@ class Giocatore {
 	}
 
 	/* Tutti i getter */
+	/**
+	 * Restituisce l'oggetto Punteggio.
+	 * @return L'oggetto Punteggio.
+	 */
 	public Punteggio getPunteggio() { return punteggio; } // Testato
+	/**
+	 * Restituisce l'oggetto Razza.
+	 * @return L'oggetto Razza.
+	 */
 	public Razza getRazza() { return razzaDelGiocatore; } // Testato
 	/**
-	 * @return
+	 * Restituisce il nome del giocatore.
+	 * @return Il nome del giocatore.
 	 * @uml.property  name="nome"
 	 */
 	public String getNome() { return nome; } // Testato
@@ -51,6 +62,7 @@ class Giocatore {
 	/* Tutti i setter */
 	/**
 	 * Invoca l'aggiornamento su tutte le variabili aggiornabili del giocatore.
+	 * Punteggio e/o razza.
 	 */
 	protected void aggiorna() { // Testato
 		if (hasRazza() && getRazza().isEmpty()) {
@@ -65,27 +77,26 @@ class Giocatore {
 
 	/* Funzioni miscellanee */
 	/**
-	 * Validate the password and return a boolean value.
-	 * @param passwordToMatch
+	 * Valida la password passata.
+	 * @param passwordToMatch La password da controllare.
+	 * @return True se la password e' valida, false se non e' valida.
 	 */
 	protected boolean passwordIsValid(String suppliedPassword) { // Testato
 		if (password.equals(suppliedPassword)) return true;
 		else return false;
 	}
-
 	/**
-	 * Crea la razza di dinosauri e assegna un tipo specie.
-	 * Richiede il nuovo nome della razza come parametro.
-	 * Modifica il campo privato specieDiDinosauri.
-	 * @param nuovoNomeRazza
-	 * @param nuovoDinosauro
+	 * Crea la razza di dinosauri e assegna un tipo alla razza.
+	 * Richiede il nuovo nome della razza e il tipo come parametri.
+	 * @param nuovoNomeRazza Il nome della nuova razza.
+	 * @param nuovoTipoRazza Il tipo della nuova razza.
 	 */
 	protected void creaNuovaRazza(String nuovoNomeRazza, Character nuovoTipoRazza) { // Testato
 		razzaDelGiocatore = new Razza(nuovoNomeRazza, nuovoTipoRazza);
 	}
 	/**
-	 * Helper per verificare che l'utente abbia una razza di dinosauri.
-	 * @return
+	 * Verifica che l'utente abbia una razza di dinosauri.
+	 * @return True se il giocatore ha gia' una razza, false se non ce l'ha gia'.
 	 */
 	protected boolean hasRazza() { // Testato
 		if ((getRazza() == null)) return false;

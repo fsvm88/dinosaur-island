@@ -587,7 +587,7 @@ public class LogicaTest {
 		String ret = null;
 		try {
 			do {
-				ret = logicaTest.doMuoviDinosauro(testingToken, tmpId, new Coord(tmpDino.getCoord().getX()+CommonUtils.getNewRandomIntValueOnMyMap(3), tmpDino.getCoord().getY()+CommonUtils.getNewRandomIntValueOnMyMap(3)));
+				ret = logicaTest.doMuoviDinosauro(testingToken, tmpId, new Coord(tmpDino.getCoord().getX()+CommonUtils.getNewRandomIntValue(3), tmpDino.getCoord().getY()+CommonUtils.getNewRandomIntValue(3)));
 				System.out.println("ret: " + ret);
 				assertNotNull(ret);
 			} while (!ret.equals("@ok"));

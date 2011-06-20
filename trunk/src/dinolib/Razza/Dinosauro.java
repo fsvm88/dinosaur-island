@@ -109,7 +109,7 @@ public abstract class Dinosauro {
 	protected Dinosauro(Coord nCoord, int nuovo_spostamento_MAX, int nuovo_moltiplicatore_FORZA) { // Testato
 		this.setCoord(nCoord);
 		this.turnoDiVita = 1;
-		this.durataVitaMax = 24 + (CommonUtils.getNewRandomIntValueOnMyMap(13));
+		this.durataVitaMax = 24 + (CommonUtils.getNewRandomIntValue(13));
 		this.setEnergiaAttuale(750);
 		this.dimensione = 1;
 		this.updateEnergiaMax();
