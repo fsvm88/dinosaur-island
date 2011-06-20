@@ -17,7 +17,7 @@ public class Coord {
 	private int y = 0;
 	
 	/**
-	 * Costruttorem richiede le x e y desiderata.
+	 * Richiede le x e y desiderata.
 	 * @param x La x desiderata.
 	 * @param y La y desiderata.
 	 */
