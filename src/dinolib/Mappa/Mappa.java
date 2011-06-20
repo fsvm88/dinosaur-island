@@ -247,7 +247,7 @@ public class Mappa implements Iterable<Cella> {
 		while (curCarogne<fixed_SOD_COUNT) {
 			Coord carCoord = CommonUtils.getNewRandomCoord(getLatoDellaMappa());
 			if (isCellaTerra(carCoord)) {
-				MappaACelle[carCoord.getX()][carCoord.getY()] = new Carogna((350+CommonUtils.getNewRandomIntValueOnMyMap(301)));
+				MappaACelle[carCoord.getX()][carCoord.getY()] = new Carogna((350+CommonUtils.getNewRandomIntValue(301)));
 				curCarogne = contaCarogne();
 			}
 		}
@@ -296,7 +296,7 @@ public class Mappa implements Iterable<Cella> {
 		int curAcqua = contaAcque();
 		while (curAcqua<(conteggioAcquaStatico-max_GRUPPO_ACQUA-min_GRUPPO_ACQUA+9)) {
 			//			System.out.println("[popolaMappa] chiamo allocaAcqua");
-			allocaAcqua(min_GRUPPO_ACQUA+CommonUtils.getNewRandomIntValueOnMyMap(max_GRUPPO_ACQUA-min_GRUPPO_ACQUA+1));
+			allocaAcqua(min_GRUPPO_ACQUA+CommonUtils.getNewRandomIntValue(max_GRUPPO_ACQUA-min_GRUPPO_ACQUA+1));
 			curAcqua = contaAcque();
 		}
 		/* Alloco le acque rimanenti dal passo precedente. e' per evitare un underflow di acque disponibili. */
@@ -311,7 +311,7 @@ public class Mappa implements Iterable<Cella> {
 		while (curVeg<conteggioVegetazioneStatico) {
 			Coord vegCoord = CommonUtils.getNewRandomCoord(getLatoDellaMappa());
 			if (isCellaTerra(vegCoord)) {
-				MappaACelle[vegCoord.getX()][vegCoord.getY()] = new Vegetazione((150+CommonUtils.getNewRandomIntValueOnMyMap(201)));
+				MappaACelle[vegCoord.getX()][vegCoord.getY()] = new Vegetazione((150+CommonUtils.getNewRandomIntValue(201)));
 				curVeg++;
 			}
 		}
