@@ -6,20 +6,28 @@ import java.util.NoSuchElementException;
 
 import dinolib.CommonUtils;
 
-
 /**
  * @author  fabio
  */
+/**
+ * Classe che gestisce la mappa.
+ * Prende in input dall'esterno coordinate e riferimenti in modo cartesiano.
+ * Produce in output verso l'esterno coordinate e riferimento modo cartesiano.
+ * La logica interna invece e' interamente implementata in formato matriciale.
+ */
 public class Mappa implements Iterable<Cella> {
 	/**
-	 * La mappa a celle, contiene tutta la mappa in celle. Attenzione! Il sistema di conteggio è un sistema di coordinate cartesiane! Non una matrice! Verrà usata come piano cartesiano anche se l'accesso verrà effettuato come una matrice. Le colonne tengono la stessa numerazione (l'ascissa non cambia). Le righe invece hanno la seguente numerazione: 0 indica la riga più in basso (il bordo in basso della mappa), 39 indica la riga più in alto (il bordo in alto della mappa).
+	 * Contiene tutta la mappa in celle di un array di tipo Cella.
+	 * Attenzione! Il sistema della logica e' un sistema di coordinate cartesiane! Non una matrice!
+	 * Tutte le coordinate passate tramite funzioni pubbliche vengono traslate secondo la y prima di essere usate.
+	 * L'ascissa invece non cambia. L'iteratore restituisce la mappa come un piano cartesiano, non come una matrice.
 	 * @uml.property  name="MappaACelle"
 	 * @uml.associationEnd  multiplicity="(0 -1)"
 	 */
 	private Cella[][] MappaACelle;
 
 	/**
-	 * Costruttore protetto per soddisfare la sottoclasse Cella
+	 * Costruttore protetto per soddisfare la sottoclasse Cella.
 	 */
 	protected Mappa() { }
 
@@ -29,13 +37,13 @@ public class Mappa implements Iterable<Cella> {
 	 */
 	private final int fixed_WATER_PERCENT = 20;
 	/**
-	 * Percentuale della mappa che deve essere composta di vegetazione
+	 * Percentuale della mappa che deve essere composta di vegetazione.
 	 * @uml.property name="FIXED_FLORA_PERCENT" readOnly="true"
 	 */
 	private final int fixed_FLORA_PERCENT = 40;
 	/**
 	 * Numero di carogne sempre presenti sulla mappa.
-	 * ATTENZIONE! Questo è un numero! NON una percentuale!
+	 * ATTENZIONE! Questo e' un numero! NON una percentuale!
 	 * @uml.property name="FIXED_SOD_COUNT" readOnly="true"
 	 */
 	private final int fixed_SOD_COUNT = 20;
@@ -51,13 +59,15 @@ public class Mappa implements Iterable<Cella> {
 	private final int max_GRUPPO_ACQUA = 15;
 
 	/**
-	 * Dichiara la variabile che verrà usata per gestire il lato della mappa in tutta la classe.
+	 * Dichiara la variabile che verra' usata per gestire il lato della mappa in tutta la classe.
 	 * @uml.property  name="latoDellaMappa"
 	 */
 	private int latoDellaMappa = 0;
 
 	/**
-	 * Costruttore per la mappa. Richiede il lato della nuova mappa come argomento.
+	 * Costruttore per la mappa.
+	 * Richiede il lato della nuova mappa come argomento.
+	 * @param lato Il nuovo lato della mappa. 
 	 */
 	public Mappa(int lato) { // Testato
 		latoDellaMappa = lato;
@@ -74,7 +84,6 @@ public class Mappa implements Iterable<Cella> {
 	 * @uml.property name="conteggioVegetazioneStatico" 
 	 */
 	private int conteggioVegetazioneStatico = 0;
-
 	/**
 	 * Contatore per le celle di acqua, indica quante celle di acqua ci devono essere sulla mappa.
 	 * @uml.property  name="conteggioAcquaStatico"
@@ -83,19 +92,17 @@ public class Mappa implements Iterable<Cella> {
 
 	/**
 	 * Restituisce il lato della mappa.
+	 * @return Il lato della mappa.
 	 * @uml.property  name="latoDellaMappa"
 	 */
-	public int getLatoDellaMappa() {
-		return latoDellaMappa;
-	}
-
+	public int getLatoDellaMappa() { return latoDellaMappa; }
 	/**
 	 * Calcola il numero di Celle con il lato fornito.
+	 * @return Il totale delle celle della mappa di lato n.
 	 */
 	private int calcolaTotaleCelle () { return (latoDellaMappa*latoDellaMappa); } // Testato - chiamato da un chiamato dal costruttore
-
 	/**
-	 * Calcola il numero di Celle per di Acqua e Terra sulla Mappa.
+	 * Calcola il numero di Celle per di Acqua e Terra sulla Mappa e riempie i campi conteggioAcquaStatico e conteggioTerraStatico.
 	 */
 	private void calcolaNumeroCelleDaPercentuali () { // Testato - col costruttore
 		conteggioAcquaStatico = (int) ( ( calcolaTotaleCelle() / 100 ) * fixed_WATER_PERCENT );
@@ -103,23 +110,24 @@ public class Mappa implements Iterable<Cella> {
 	}
 
 	/**
-	 * Controlla se la cella richiesta è una terra. Utile per semplificare popolaMappa().
-	 * @param x
-	 * @param y
-	 * @return
+	 * Controlla se la cella richiesta e' una terra. Utile per semplificare popolaMappa().
+	 * @param x La x della coordinata (matrice).
+	 * @param y La y della coordinata (matrice).
+	 * @return True se la cella e' una terra, false altrimenti.
 	 */
-	private boolean isCellaTerra(Coord nCoord) { // Testato da popolaMappa
-		return MappaACelle[nCoord.getX()][nCoord.getY()].toString().toLowerCase().equals("terra");
-	}
-
-	private boolean isCellaAcqua(Coord nCoord) { // Testato da popolaMappa
-		return MappaACelle[nCoord.getX()][nCoord.getY()].toString().toLowerCase().equals("acqua");
-	}
-
+	private boolean isCellaTerra(Coord nCoord) { return MappaACelle[nCoord.getX()][nCoord.getY()].toString().toLowerCase().equals("terra"); } // Testato da popolaMappa
 	/**
-	 * Controlla se la cella di coordinate richieste ha celle Acqua adiacenti.
-	 * @param nCoord
-	 * @return
+	 * Controlla se la cella richiesta e' un'acqua. Utile per semplificare popolaMappa().
+	 * @param x La x della coordinata (matrice).
+	 * @param y La y della coordinata (matrice).
+	 * @return True se la cella e' una terra, false altrimenti.
+	 */
+	private boolean isCellaAcqua(Coord nCoord) { return MappaACelle[nCoord.getX()][nCoord.getY()].toString().toLowerCase().equals("acqua"); } // Testato da popolaMappa
+	/**
+	 * Controlla se la cella di coordinate richieste ha celle acqua adiacenti.
+	 * Per adiacenti si intendono tutte le celle attorno a quella data, incluse quelle sulle diagonali.
+	 * @param nCoord La coordinata su cui effettuare il controllo (matrice).
+	 * @return True se la cella richiesta ha acque adiacenti, false altrimenti.
 	 */
 	private boolean haCelleAcquaVicine(Coord nCoord) { // Testato da popolaMappa
 		int i = -1;
@@ -134,7 +142,12 @@ public class Mappa implements Iterable<Cella> {
 		}
 		return false;
 	}
-
+	/**
+	 * Riempie l'array passato come parametro con le celle terra intorno a quella data.
+	 * Per adiacenti si intendono tutte le celle attorno a quella data, incluse quelle sulle diagonali.
+	 * @param myCoord La coordinata attorno alla quale prendere le celle.
+	 * @param tempSet L'array da riempire con le celle di terra.
+	 */
 	private void getNearbyEarthCells(Coord myCoord, HashSet<Coord> tempSet) { // Testato da popolaMappa
 		int i = -1;
 		int j = -1;
@@ -150,7 +163,11 @@ public class Mappa implements Iterable<Cella> {
 			i++;
 		}
 	}
-
+	/**
+	 * Funzione usata per allocare un numero richiesto di celle di acqua.
+	 * Viene usata da popolaMappa.
+	 * @param numeroCelle Il numero di celle da allocare e trasformare in acqua.
+	 */
 	private void allocaAcqua(int numeroCelle) { // Testato da popolaMappa
 		Coord tempCoord = null;
 		HashSet<Coord> mySet = new HashSet<Coord>();
@@ -189,7 +206,11 @@ public class Mappa implements Iterable<Cella> {
 		}
 		//		System.out.println("[allocaAcqua] allocate " + mySet.size() + " celle");
 	}
-
+	/**
+	 * Semplice contatore per le celle di acqua su tutta la mappa.
+	 * Viene usato da popolaMappa.
+	 * @return Il numero di celle acqua presenti sulla mappa.
+	 */
 	private int contaAcque() { // Testato da popolaMappa
 		int i = 0;
 		int j = 0;
@@ -204,7 +225,11 @@ public class Mappa implements Iterable<Cella> {
 		}
 		return counter;
 	}
-
+	/**
+	 * Semplice contatore per le celle carogna su tutta la mappa.
+	 * Viene usato da popolaMappa e dall'aggiornamento della mappa per fare il respawn delle carogne.
+	 * @return Il numero di celle carogna presenti sulla mappa.
+	 */
 	private int contaCarogne() { // Testato da popolaMappa e aggiorna
 			int i = 0;
 			int j = 0;
@@ -219,7 +244,10 @@ public class Mappa implements Iterable<Cella> {
 			}
 			return counter;
 	}
-	
+	/**
+	 * Funzione usata per allocare le celle carogna.
+	 * Viene usata per popolaMappa e aggiornarla (quando le carogne terminano l'energia disponibile).
+	 */
 	private void spawnCarogne() {
 		int curCarogne = contaCarogne();
 		while (curCarogne<fixed_SOD_COUNT) {
@@ -230,9 +258,8 @@ public class Mappa implements Iterable<Cella> {
 			}
 		}
 	}
-
 	/**
-	 * Implementa la creazione di una nuova mappa.
+	 * Crea una nuova mappa.
 	 */
 	private void popolaMappa() { // Testato - col costruttore
 		//		System.out.println("[popolaMappa] start");
@@ -278,11 +305,11 @@ public class Mappa implements Iterable<Cella> {
 			allocaAcqua(min_GRUPPO_ACQUA+CommonUtils.getNewRandomIntValueOnMyMap(max_GRUPPO_ACQUA-min_GRUPPO_ACQUA+1));
 			curAcqua = contaAcque();
 		}
-		/* Alloco le acque rimanenti dal passo precedente. È per evitare un underflow di acque disponibili. */
+		/* Alloco le acque rimanenti dal passo precedente. e' per evitare un underflow di acque disponibili. */
 		allocaAcqua(conteggioAcquaStatico-curAcqua);
 		//		System.out.println("[popolaMappa] allocate le acque rimanenti");
 		/* A questo punto, grazie all'algoritmo con cui vengono piazzate le celle d'acqua,
-		 * la mappa è semplicemente connessa per quanto riguarda le terre e rispetta
+		 * la mappa e' semplicemente connessa per quanto riguarda le terre e rispetta
 		 * il conteggio di acque e terre prefissato. */
 		/* Ora penso alla vegetazione. */
 		//		System.out.println("[popolaMappa] sto per allocare la vegetazione");
@@ -300,23 +327,23 @@ public class Mappa implements Iterable<Cella> {
 		spawnCarogne();
 		//		System.out.println("[popolaMappa] allocate le carogne");
 		/* Ho completato l'inserimento delle carogne.
-		 * La mappa è completa.
+		 * La mappa e' completa.
 		 * Attenzione! Devo aggiornare il numero di carogne ogni volta!!!
 		 */
 		//		System.out.println("[popolaMappa] termino.");
 	}
-
 	/**
-	 * Inserisce un dinosauro sulla mappa.
-	 * Passa il tipo corrente della cella così che venga tenuta valida.
+	 * Inserisce un dinosauro su una cella della mappa.
+	 * @param myCoord Le coordinate della cella che sara' occupata dal dinosauro (piano cartesiano).
+	 * @param idDinosauroOccupante L'id del dinosauro che occupera' la cella.
 	 */
 	public void spawnDinosauro(Coord myCoord, String idDinosauroOccupante) { // Testato
 		Cella tempCella = getCella(myCoord);
 		MappaACelle[myCoord.getX()][CommonUtils.translateYforServer(myCoord.getY(), getLatoDellaMappa())] = new CellaConDinosauro(idDinosauroOccupante, tempCella);
 	}
-
 	/**
 	 * Restituisce la cella richiesta.
+	 * @param myCoord Le coordinate della cella richiesta (piano cartesiano).
 	 */
 	public Cella getCella(Coord myCoord) { // Testato
 		if ((0 <= myCoord.getX()) &&
@@ -326,9 +353,9 @@ public class Mappa implements Iterable<Cella> {
 			return MappaACelle[myCoord.getX()][CommonUtils.translateYforServer(myCoord.getY(), getLatoDellaMappa())];
 		else return null;
 	}
-
 	/**
-	 * Rimuove il dinosauro dalla cella corrente e reimposta la cella al suo vecchio valore.
+	 * Rimuove il dinosauro dalla cella richiesta e reimposta la cella al suo vecchio valore.
+	 * @param coordToRemove La coordinate della cella richiesta (piano cartesiano).
 	 */
 	public void rimuoviIlDinosauroDallaCella(Coord coordToRemove) { // Testato
 		int tempY = CommonUtils.translateYforServer(coordToRemove.getY(), getLatoDellaMappa());
@@ -350,25 +377,36 @@ public class Mappa implements Iterable<Cella> {
 			if ((tempCella.toString().toLowerCase().equals("carogna")) &&
 					(tempCella.getValoreAttuale() == 0)) {
 				tempCella = new Terra();
-				spawnCarogne();
 			}
 		}
+		spawnCarogne();
 	}
-
-	private Cella getCellaForIterator(Coord myCoords) { // Testato
-		return MappaACelle[myCoords.getX()][myCoords.getY()];
-	}
-
+	
+	/**
+	 * Restituisce la cella richiesta all'iteratore.
+	 * ATTENZIONE! Differisce dalla variante pubblica perche' richiede coordinate in forma di matrice.
+	 * @param myCoords Le coordinate della cella richiesta (matrice).
+	 * @return La cella richiesta.
+	 */
+	private Cella getCellaForIterator(Coord myCoords) { return MappaACelle[myCoords.getX()][myCoords.getY()]; } // Testato
 	/**
 	 * Restituisce un iteratore sulle celle della mappa.
 	 * Lo fa usando l'ultima riga della matrice come riga zero della mappa.
 	 * Quindi scorre dal basso verso l'alto, restituendo le celle in ordine come le vuole la logica client (non avrebbe avuto senso esporle in modo diverso).
+	 * Questo e' un iteratore TOTALE, non parziale. L'iteratore PARZIALE e' implementato tramite subMapIterator(...).
+	 * @return Iteratore sulle celle della mappa, da sinistra in basso a destra in alto (piano cartesiano).
 	 */
 	@Override
 	public Iterator<Cella> iterator() { // Testato
 		return new MapIterator();
 	}
-
+	/**
+	 * @author fabio
+	 */
+	/**
+	 * Classe privata che implementa l'iteratore sulla mappa.
+	 * Quindi scorre da sinistra a destra, dal basso verso l'alto, restituendo le celle in ordine come le vuole la logica client (non avrebbe avuto senso esporle in modo diverso).
+	 */
 	private class MapIterator implements Iterator<Cella> { // Testato
 		private Coord curCoord = null;
 		private int latoDellaMappaIterator;
@@ -405,18 +443,26 @@ public class Mappa implements Iterable<Cella> {
 	}
 
 	/**
-	 * Restituisce un iteratore sulle celle per una porzione richiesta di Mappa.
-	 * È uguale a MapIterator nella logica di funzionamento.
-	 * @param fromX
-	 * @param fromY
-	 * @param rangeX
-	 * @param rangeY
-	 * @return
+	 * Restituisce un iteratore sulle celle per una porzione richiesta di mappa.
+	 * Lo fa usando la coordinata di partenza come cella in basso a sinistra.
+	 * Quindi scorre dal basso verso l'alto, da sinistra a destra, restituendo le celle in ordine come le vuole la logica client (non avrebbe avuto senso esporle in modo diverso).
+	 * Questo e' un iteratore PARZIALE, non totale. L'iteratore TOTALE e' implementato tramite iterator().
+	 * @return Iteratore sulle celle della mappa, da sinistra in basso a destra in alto (piano cartesiano).
+	 * @param myCoords Le coordinate di partenza (piano cartesiano).
+	 * @param rangeX Quante colonne a destra della coordinata d'avvio.
+	 * @param rangeY Quante righe sopra della coordinata d'avvio.
+	 * @return Iteratore su un numero ristretto di celle della mappa, da sinistra a destra, dal basso in alto.
 	 */
 	public Iterator<Cella> subIterator(Coord myCoords, int rangeX, int rangeY) { // Testato
 		return new subMapIterator(new Coord(myCoords.getX(), CommonUtils.translateYforServer(myCoords.getY(), getLatoDellaMappa())), rangeX, rangeY);
 	}
-
+	/**
+	 * @author fabio
+	 */
+	/**
+	 * Classe privata che implementa l'iteratore su una porzione della mappa.
+	 * Quindi dall'avvio scorre da sinistra a destra, dal basso verso l'alto, restituendo le celle in ordine come le vuole la logica client (non avrebbe avuto senso esporle in modo diverso).
+	 */
 	private class subMapIterator implements Iterator<Cella> { // Testato
 		private int startRow;
 		private int startColumn;
