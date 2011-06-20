@@ -11,11 +11,11 @@ import java.util.HashSet;
  */
 public abstract class Cella {
 	/**
-	 * Costruttore per la cella comune (non cella con dinosauro).
+	 * Istanzia una cella comune (non cella con dinosauro).
 	 */
 	protected Cella() { }
 	/**
-	 * Costruttore per la cella con dinosauro, che ha bisogno due parametri extra.
+	 * Istanzia una cella con dinosauro, che ha bisogno due parametri extra.
 	 * @param idDelDinosauro L'id del dinosauro che occupa la cella.
 	 * @param cellaSuCuiSiTrova La cella su cui il dinosauro si trova.
 	 */

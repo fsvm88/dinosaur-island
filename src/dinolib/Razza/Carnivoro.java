@@ -17,7 +17,7 @@ public class Carnivoro extends Dinosauro {
 	private static final int moltiplicatore_FORZA = 2;
 		
 	/**
-	 * Implementa il costruttore pubblico per il tipo di dinosauro Carnivoro.
+	 * Costruttore pubblico per un dinosauro di tipo Carnivoro.
 	 * @param myCoords Le coordinate del nuovo dinosauro.
 	 */
 	public Carnivoro(Coord myCoord){

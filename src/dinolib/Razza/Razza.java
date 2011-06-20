@@ -55,6 +55,8 @@ public class Razza implements Set<Dinosauro> {
 	/* Costruttore */
 	/**
 	 * Richiede il nuovo nome della razza e il tipo della razza.
+	 * @param nomeRazza Il nome della razza.
+	 * @param tipoRazza Il tipo della razza.
 	 */
 	public Razza(String nomeRazza, Character tipoRazza) { // Testato
 		this.nome = nomeRazza;

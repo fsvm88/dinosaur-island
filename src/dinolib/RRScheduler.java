@@ -23,7 +23,7 @@ public class RRScheduler {
 	 */
 	private ArrayBlockingQueue<String> playersQueue = null;
 	/**
-	 * Costruttore, inizializza la coda con la lunghezza specificata.
+	 * Inizializza la coda con la lunghezza specificata.
 	 * @param queue_lenght La lunghezza massima della coda dei giocatori.
 	 */
 	protected RRScheduler(int queue_lenght) { // Testato - throws IllegalArgumentException if ((queue_lenght <= 0) || queue_lenght != (int))
@@ -34,8 +34,8 @@ public class RRScheduler {
 	/**
 	 * Aggiunge un giocatore in fondo alla coda.
 	 * @param token Il token del giocatore da aggiungere.
-	 * @return True se il giocatore è stato aggiunto (la collezione è stata modificata), false altrimenti.
-	 * @throws InterruptedException Se un altro thread sta già modificando la collezione.
+	 * @return True se il giocatore e' stato aggiunto (la collezione e' stata modificata), false altrimenti.
+	 * @throws InterruptedException Se un altro thread sta gia' modificando la collezione.
 	 */
 	protected boolean newTask(String token) throws InterruptedException { // Testato
 		if (!playersQueue.contains(token)) {
@@ -47,7 +47,7 @@ public class RRScheduler {
 	/**
 	 * Rimuove un giocatore dalla lista (in qualunque posizione sia).
 	 * @param token Il token del giocatore da rimuovere.
-	 * @return True se il giocatore è stato rimosso (la collezione è stata modificata), false altrimenti.
+	 * @return True se il giocatore e' stato rimosso (la collezione e' stata modificata), false altrimenti.
 	 */
 	protected boolean killTask(String token) { // Testato
 		if (playersQueue.contains(token)) {
@@ -63,15 +63,15 @@ public class RRScheduler {
 	 */
 	protected String getCurrentTask() throws InterruptedException { return playersQueue.poll(1L, TimeUnit.SECONDS); } // Testato
 	/**
-	 * Dice se la lista è piena.
-	 * @return True se la lista è piena, false altrimenti.
+	 * Dice se la lista e' piena.
+	 * @return True se la lista e' piena, false altrimenti.
 	 */
 	protected boolean maxPlayers() { // Testato
 		if (playersQueue.size() < max_PLAYERS_INGAME) return false;
 		else return true;
 	}
 	/**
-	 * Dice se qualcuno sta giocando (la lista non è vuota).
+	 * Dice se qualcuno sta giocando (la lista non e' vuota).
 	 * @return True se qualcuno sta giocando, false altrimenti.
 	 */
 	protected boolean hasQueuedTasks() { // Testato
@@ -80,8 +80,8 @@ public class RRScheduler {
 	}
 	/**
 	 * Dice se la lista contiene un giocatore in particolare.
-	 * @param token Il token del giocatore che non so se è contenuto nella lista.
-	 * @return True se il giocatore è nella lista, false altrimenti.
+	 * @param token Il token del giocatore che non so se e' contenuto nella lista.
+	 * @return True se il giocatore e' nella lista, false altrimenti.
 	 */
 	protected boolean hasTask(String token) { // Testato
 		if (playersQueue.contains(token)) return true;

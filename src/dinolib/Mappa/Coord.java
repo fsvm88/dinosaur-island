@@ -17,7 +17,7 @@ public class Coord {
 	private int y = 0;
 	
 	/**
-	 * Richiede le x e y desiderata.
+	 * Richiede le x e y desiderate.
 	 * @param x La x desiderata.
 	 * @param y La y desiderata.
 	 */

@@ -27,11 +27,6 @@ public class Mappa implements Iterable<Cella> {
 	private Cella[][] MappaACelle;
 
 	/**
-	 * Costruttore protetto per soddisfare la sottoclasse Cella.
-	 */
-	protected Mappa() { }
-
-	/**
 	 * Percentuale della mappa che deve essere composta di acqua.
 	 * @uml.property  name="FIXED_WATER_PERCENT" readOnly="true"
 	 */
@@ -65,8 +60,7 @@ public class Mappa implements Iterable<Cella> {
 	private int latoDellaMappa = 0;
 
 	/**
-	 * Costruttore per la mappa.
-	 * Richiede il lato della nuova mappa come argomento.
+	 * Crea la mappa.
 	 * @param lato Il nuovo lato della mappa. 
 	 */
 	public Mappa(int lato) { // Testato

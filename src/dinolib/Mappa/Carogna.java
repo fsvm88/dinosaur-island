@@ -8,7 +8,8 @@ package dinolib.Mappa;
  */
 class Carogna extends Cella {
 	/**
-	 * Il costruttore si occupa di prendere in input il valore massimo per la cella e impostarlo nell'oggetto.
+	 * Prende in input il valore massimo per la cella e lo imposta nell'oggetto.
+	 * @param nuovoValore Il valore iniziale della cella.
 	 */
 	protected Carogna(int nuovoValore){
 		super.valoreIniziale = nuovoValore;
