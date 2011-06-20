@@ -101,7 +101,7 @@ public abstract class Dinosauro {
 	
 	/* Costruttore */
 	/**
-	 * Costruttore visibile solo alle sottoclassi da usare come costruttore comune per Carnivoro e Erbivoro.
+	 * Visibile solo alle sottoclassi da usare come costruttore comune per Carnivoro e Erbivoro.
 	 * @param nCoord Le nuove coordinate del dinosauro.
 	 * @param nuovo_spostamento_MAX Impostato dalle sottoclassi, lo spostamento massimo del dinosauro quando esegue il movimento.
 	 * @param nuovo_moltiplicatore_FORZA Impostato dalle sottoclassi, il moltiplicatore della forza del dinosauro.
