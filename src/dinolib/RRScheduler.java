@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * Classe che implementa lo scheduler per i turni dei giocatori.
  * Gestisce la coda dei giocatori attualmente in gioco e nient'altro.
  */
-public class RRScheduler {
+class RRScheduler {
 	/**
 	 * Contiene il numero massimo dei giocatori in gioco.
 	 * Ne viene fatta una copia locale da parte del costruttore, di modo da poter implementare altre funzioni.

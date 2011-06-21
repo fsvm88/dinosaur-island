@@ -22,7 +22,7 @@ class PlayerManager implements List<Giocatore> {
 	 * Inizializza una collezione vuota di giocatori.
 	 */
 	public PlayerManager() { listaGiocatori = new ArrayList<Giocatore>(); } // Testato
-	
+
 	/**
 	 * Controlla se l'utente esiste nella lista.
 	 * @param nomeGiocatore Il nome dell'utente che non so se esiste nella lista.
@@ -72,117 +72,115 @@ class PlayerManager implements List<Giocatore> {
 	@Override // Testato
 	public boolean add(Giocatore newGiocatore) { return listaGiocatori.add(newGiocatore); } // Testato
 	/**
-	 * Dice se la collezione contiene un giocatore.
-	 * @param arg0 Il giocatore che non so se e' contenuto nella lista.
-	 * @return True se il giocatore e' contenuto nella lista, false altrimenti.
-	 */
-	@Override
-	public boolean contains(Object arg0) { return listaGiocatori.contains(arg0); } // Testato
-	/**
 	 * Restituisce un iteratore sui giocatori.
 	 * @return Un iteratore sui giocatori.
 	 */
 	@Override
 	public Iterator<Giocatore> iterator() { return listaGiocatori.iterator(); } // Testato
-	
+
 	/* Metodi di interfaccia - non implementati */
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public void add(int arg0, Giocatore arg1) { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public boolean addAll(Collection<? extends Giocatore> arg0) { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public boolean addAll(int arg0, Collection<? extends Giocatore> arg1) { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public void clear() { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public boolean containsAll(Collection<?> arg0) { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public Giocatore get(int arg0) { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public int indexOf(Object arg0) { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public boolean isEmpty() { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public int lastIndexOf(Object arg0) { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public ListIterator<Giocatore> listIterator() { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public ListIterator<Giocatore> listIterator(int arg0) { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public boolean remove(Object arg0) { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public Giocatore remove(int arg0) { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public boolean removeAll(Collection<?> arg0) { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public boolean retainAll(Collection<?> arg0) { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public Giocatore set(int arg0, Giocatore arg1) { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public int size() { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public List<Giocatore> subList(int arg0, int arg1) { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */
 	@Override
 	public Object[] toArray() { throw new UnsupportedOperationException(); }
 	/**
-	 * Metodo non implementato
+	 * Metodo non implementato.
 	 */@Override
-	public <T> T[] toArray(T[] arg0) { throw new UnsupportedOperationException(); }
+	 public <T> T[] toArray(T[] arg0) { throw new UnsupportedOperationException(); }
+	 /**
+	  * Metodo non implementato.
+	  */
+	 @Override
+	 public boolean contains(Object arg0) { throw new UnsupportedOperationException(); }
 }

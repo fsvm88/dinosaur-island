@@ -258,16 +258,6 @@ public class Razza implements Set<Dinosauro> {
 	}
 
 	/**
-	 * Verifica se la razza ha il dinosauro richiesto.
-	 * @return True se il dinosauro e' nella razza, false se non e' nella razza.
-	 */
-	@Override
-	public boolean contains(Object o) { // Testato
-		if (dinosauri.contains(o)) return true;
-		else return false;
-	}
-
-	/**
 	 * Restituisce un iteratore sulla razza.
 	 * @return Iteratore sulla razza.
 	 */
@@ -275,13 +265,6 @@ public class Razza implements Set<Dinosauro> {
 	public Iterator<Dinosauro> iterator() { // Testato
 		return dinosauri.iterator();
 	}
-
-	/**
-	 * Elimina tutti i dinosauri nella razza.
-	 */
-	@Override
-	public void clear() { dinosauri = new HashSet<Dinosauro>(); } // Testato
-
 	/**
 	 * Aggiunge un dinosauro alla razza (se non e' gia' presente).
 	 * @return True se la collezione e' stata modificata (il dinosauro e' stato aggiunto), false se la collezione non e' stata modificata (il dinosauro non e' stato aggiunto).
@@ -348,4 +331,14 @@ public class Razza implements Set<Dinosauro> {
 	 */
 	@Override
 	public <T> T[] toArray(T[] a) { throw new UnsupportedOperationException(); }
+	/**
+	 * Operazione non supportata.
+	 */
+	@Override
+	public boolean contains(Object o) { throw new UnsupportedOperationException(); }
+	/**
+	 * Operazione non supportata.
+	 */
+	@Override
+	public void clear() { throw new UnsupportedOperationException(); }
 }

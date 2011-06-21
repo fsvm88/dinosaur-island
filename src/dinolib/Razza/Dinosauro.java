@@ -130,7 +130,7 @@ public abstract class Dinosauro {
 	 * Dice se il dinosauro ha ancora a disposizione l'azione di movimento.
 	 * @return True se ha ancora l'azione a disposizione, false se non ha l'azione a disposizione.
 	 */
-	public boolean hasMovimento() { return !movimentoCompiuto; }
+	protected boolean hasMovimento() { return !movimentoCompiuto; }
 	/**
 	 * Restituisce l'energia attuale del dinosauro.
 	 * @return L'energia attuale del dinosauro.

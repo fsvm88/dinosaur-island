@@ -10,8 +10,10 @@ import java.util.regex.Pattern;
 
 import dinolib.*;
 import dinolib.Mappa.Coord;
-
-/** 
+/**
+ * @author fabio
+ */
+/**
  * Implementa l'ascoltatore per i client. Ascolta i comandi e gestisce le giuste risposte.
  */
 class ClientWorker extends Server implements Runnable {
@@ -42,9 +44,9 @@ class ClientWorker extends Server implements Runnable {
 	private SocketAdapter socketAdapter = null; 
 
 	/**
-	 * Costruttore pubblico e unico costruttore definito per ClientWorker.
-	 * @param socket
-	 * @throws IOException
+	 * Prende in ingresso il socket per comunicare con l'esterno.
+	 * @param socket Il socket attraverso cui passa la comunicazione.
+	 * @throws IOException Se ci sono problemi con la comunicazione.
 	 */
 	protected ClientWorker(Socket socket) throws IOException {
 		mySocket = socket;
@@ -57,50 +59,71 @@ class ClientWorker extends Server implements Runnable {
 			terminateThreadOnIOException("Cannot initialize input/output streams!");
 		}
 	}
-
-	private String estraiUser(Scanner scanner) {
-		return scanner.next(Pattern.compile("[^(user=)]"));
-	}
-
-	private String estraiPwd(Scanner scanner) {
-		return scanner.next(Pattern.compile("[^(pass=)]"));
-	}
-
+	/**
+	 * Estrae il nome utente dallo scanner.
+	 * @param scanner Lo scanner da cui estrarre il nome utente.
+	 * @return Una stringa che contiene il nome utente.
+	 */
+	private String estraiUser(Scanner scanner) { return scanner.next(Pattern.compile("[^(user=)]")); }
+	/**
+	 * Estrae la password dallo scanner.
+	 * @param scanner Lo scanner da cui estrarre la password dell'utente.
+	 * @return Una stringa che contiene la password dell'utente.
+	 */
+	private String estraiPwd(Scanner scanner) { return scanner.next(Pattern.compile("[^(pass=)]")); }
+	/**
+	 * Estra il token dallo scanner.
+	 * @param scanner Lo scanner da cui estrarre il token dell'utente.
+	 * @return Una stringa che contiene il token dell'utente.
+	 */
 	private String getToken(Scanner scanner) {
-		if (scanner.hasNext()) {
-			return scanner.next(Pattern.compile("[^(token=)]"))	;
-		}
-		else return null;
+		if (scanner.hasNext()) { return scanner.next(Pattern.compile("[^(token=)]")); }
+		else { return null; }
 	}
-
+	/**
+	 * Dice se e' un comando di login o creazione.
+	 * @param comando Il comando da verificare.
+	 * @return True se e' un comando di login o creazione, false altrimenti
+	 */
 	private boolean isLoginOrCreation(String comando) {
-		if (comando.equals("@creaUtente") || comando.equals("@login")) return true;
-		else return false;
+		if (comando.equals("@creaUtente") || comando.equals("@login")) { return true; }
+		else { return false; }
 	}
-
+	/**
+	 * Verifica se il token e' un token valido (non nullo).
+	 * @param token Il token da verificare.
+	 * @return True se il token e' buono, false altrimenti.
+	 */
 	private boolean isGoodToken(String token) {
-		if (token != null) return true;
-		else return false;
+		if (token != null) { return true; }
+		else { return false; }
 	}
-
-	private String estraiRazza(Scanner scanner) {
-		return scanner.next(Pattern.compile("[^(nome=)]"));
-	}
-
-	private Character estraiTipo(Scanner scanner) {
-		String myString = scanner.next("[^(tipo=)]");
-		return myString.charAt(0);
-	}
-
+	/**
+	 * Estrae il nome della razza dallo scanner.
+	 * @param scanner Lo scanner da cui estrarre il nome della razza.
+	 * @return Una stringa che contiene il nome della razza.
+	 */
+	private String estraiRazza(Scanner scanner) { return scanner.next(Pattern.compile("[^(nome=)]")); }
+	/**
+	 * Estrae il tipo della razza dallo scanner.
+	 * @param scanner Lo scanner da cui estrarre il tipo della razza.
+	 * @return Un Character che contiene il tipo della razza.
+	 */
+	private Character estraiTipo(Scanner scanner) { String myString = scanner.next("[^(tipo=)]"); return myString.charAt(0); }
+	/**
+	 * Valida il nome e il tipo della razza (entrambi non devono essere nulli).
+	 * @param nomeRazza Il nome della razza da validare.
+	 * @param tipo Il tipo della razza da validare.
+	 * @return True se il nome della razza e il tipo non sono null, false altrimenti.
+	 */
 	private boolean validaRazzaETipo(String nomeRazza, Character tipo) {
-		if ((nomeRazza != null) && (tipo != null) ) return true;
-		else return false;
+		if ((nomeRazza != null) && (tipo != null) ) { return true; }
+		else { return false; }
 	}
-
 	/**
 	 * Invia no al client, se viene aggiunta una stringa come argomento la aggiunge.
-	 * @param toAppend
-	 * @throws IOException 
+	 * @param toAppend La stringa da appendere (opzionale).
+	 * @throws IOException Se ci sono errori di comunicazione.
 	 */
 	private void writeNoToOutput(String...toAppend) throws IOException {
 		if (toAppend != null) {
@@ -108,10 +131,10 @@ class ClientWorker extends Server implements Runnable {
 		}
 		else writeLineToOutput("@no");
 	}
-
+	
 	/**
 	 * Implementazione del metodo run dall'interfaccia runnable, avvia il thread.
-	 * Fa il parsing dei comandi e chiama le azioni appropriate su logica tramite gli adattatori (a<NomeFunzione>) o direttamente.
+	 * Fa il parsing dei comandi e chiama le azioni appropriate su logica tramite gli adattatori o direttamente.
 	 */
 	public void run () {
 		while (isServerRunning() && !stopThread) {
@@ -228,35 +251,27 @@ class ClientWorker extends Server implements Runnable {
 
 	/* Quattro helper molto generici di cui due per l'IO per il client e due per fermare il thread. */
 	/**
-	 * Helper per ricevere comandi dal client
-	 * @return
-	 * @throws IOException
+	 * Legge una linea dal client.
+	 * @return Una stringa che contiene la linea letta.
+	 * @throws IOException Se ci sono errori di comunicazione.
 	 */
-	private String readLineFromInput () throws IOException {
-		return incomingData.readLine();
-	}
-
+	private String readLineFromInput () throws IOException { return incomingData.readLine(); }
 	/**
-	 * Helper per rispondere ai comandi del client
-
-	 * @param toSend
-	 * @throws IOException
+	 * Manda una linea al client.
+	 * @param toSend La stringa da mandare al client.
+	 * @throws IOException Se ci sono errori di comunicazione.
 	 */
-	private void writeLineToOutput (String...toSend) throws IOException {
-		outgoingData.println(toSend[0]);
+	private void writeLineToOutput (String toSend) throws IOException {
+		outgoingData.println(toSend);
 	}
-
 	/**
 	 * Helper per fermare il thread, imposta stopThread a true.
 	 */
-	private void stopTheThread () {
-		stopThread = true;
-	}
-
+	private void stopTheThread () { stopThread = true; }
 	/** 
 	 * Termina il thread su eccezione:
-	 * dà notifica con motivazione e imposta il parametro per lo stop.
-	 * @param cause 
+	 * Da' notifica con motivazione e imposta il parametro per lo stop.
+	 * @param cause Stringa che contiene la causa per cui il thread e' stato fermato.
 	 */
 	private void terminateThreadOnIOException (String cause) {
 		System.out.println(cause);

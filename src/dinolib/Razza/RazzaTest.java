@@ -77,36 +77,10 @@ public class RazzaTest {
 	public void testIsEmpty() {
 		assertEquals(0, myRazza.size());
 		assertTrue(myRazza.isEmpty());
-		myRazza.clear();
-		assertTrue(myRazza.isEmpty());
 		// Aggiungi 3 dinosauri alla razza tramite testAdd
 		testAdd();
 		assertEquals(3, myRazza.size());
 		assertFalse(myRazza.isEmpty());
-	}
-
-	@Test
-	public void testClear() {
-		// Aggiungi 3 dinosauri alla razza tramite testAdd
-		testAdd();
-		assertEquals(3, myRazza.size());
-		myRazza.clear();
-		assertEquals(0, myRazza.size());
-	}
-
-	@Test
-	public void testContains() {
-		// Aggiungi 3 dinosauri alla razza tramite testAdd
-		testAdd();
-		assertEquals(3, myRazza.size());
-		Iterator<Dinosauro> itDinosauri = myRazza.iterator();
-		assertTrue(itDinosauri.hasNext());
-		if (itDinosauri.hasNext()) {
-			Dinosauro tempDinosauro = itDinosauri.next();
-			assertTrue(myRazza.contains(tempDinosauro));
-			itDinosauri.remove();
-			assertFalse(myRazza.contains(tempDinosauro));
-		}
 	}
 
 	@Test
