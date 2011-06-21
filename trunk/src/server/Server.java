@@ -39,7 +39,7 @@ class Server {
 	public Server () {
 		listenSocket();
 	}
-	
+
 	private boolean serverIsRunning = true; 
 
 	/**
@@ -53,24 +53,22 @@ class Server {
 			System.out.println("Could not listen on port " + PORTA_DI_GIOCO);
 			System.exit(-1);
 		}
-		while (isServerRunning()) {
-			try {
-				servLogica = new Logica();
-				Thread threadedLogica = new Thread(servLogica);
-				threadedLogica.start();
-				System.out.println("Server started successfully, creating threads on need..");
+		try {
+			servLogica = new Logica();
+			Thread threadedLogica = new Thread(servLogica);
+			threadedLogica.start();
+			System.out.println("Server started successfully, creating threads on need..");
+			while (isServerRunning()) {
 				ClientWorker clientWorker = new ClientWorker(serverInstSocket.accept());
 				Thread threadedClientWorker = new Thread(clientWorker);
 				threadedClientWorker.start();
 			}
-			catch (IOException e) {
-				System.out.println("Accept failed on " + PORTA_DI_GIOCO);
-				System.exit(-1);
-			}
+		}
+		catch (IOException e) {
+			System.out.println("Accept failed on " + PORTA_DI_GIOCO);
+			System.exit(-1);
 		}
 	}
-	
-	protected boolean isServerRunning() {
-		return serverIsRunning;
-	}
+
+	protected boolean isServerRunning() { return serverIsRunning; }
 }
