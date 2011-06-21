@@ -3,7 +3,12 @@ package dinolib;
 import java.util.Random;
 
 import dinolib.Mappa.Coord;
-
+/**
+ * @author fabio
+ */
+/**
+ * Classe che contiene un po' di funzioni di utilita'.
+ */
 public abstract class CommonUtils {
 	/* Funzioni per la generazione di valori casuali. */
 	/**
