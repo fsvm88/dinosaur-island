@@ -151,7 +151,7 @@ public class Mappa implements Iterable<Cella> {
 			while (j<2) {
 				tempCoord = new Coord(myCoord.getX()+i, myCoord.getY()+j);
 				if (isCellaTerra(tempCoord) &&
-						!haCelleAcquaVicine(tempCoord)) tempSet.add(tempCoord);
+						!haCelleAcquaVicine(tempCoord)) { tempSet.add(tempCoord); }
 				j++;
 			}
 			i++;
@@ -171,23 +171,23 @@ public class Mappa implements Iterable<Cella> {
 		} while (!isCellaTerra(tempCoord));
 		mySet.add(tempCoord);
 		HashSet<Coord> tempSet = new HashSet<Coord>();
-		//		System.out.println("[allocaAcqua] sto per entrare nel ciclo per allocare " + numeroCelle + " acque");
+		System.out.println("[allocaAcqua] sto per entrare nel ciclo per allocare " + numeroCelle + " acque");
 		while (mySet.size()<numeroCelle) {
-			//				System.out.println("[allocaAcqua] cerco " + (numeroCelle-mySet.size()) + " celle");
+			System.out.println("[allocaAcqua] cerco " + (numeroCelle-mySet.size()) + " celle");
 			tempSet.clear();
 			itCoord = mySet.iterator();
 			while (itCoord.hasNext()) {
 				getNearbyEarthCells(itCoord.next(), tempSet);
-				if (tempSet.size() != 0) break;
+				if (tempSet.size() != 0) { break; }
 			}
-			//				System.out.println("[allocaAcqua] trovate " + tempSet.size() + " celle");
+			System.out.println("[allocaAcqua] trovate " + tempSet.size() + " celle");
 			if (tempSet.size() != 0) {
 				itCoord = tempSet.iterator();
 				while (itCoord.hasNext()) {
-					if (mySet.size()>=numeroCelle) break;
+					if (mySet.size()>=numeroCelle) { break; }
 					mySet.add(itCoord.next());
 				}
-				//					System.out.println("[allocaAcqua] ho aggiunto le celle nuove al set.");
+				System.out.println("[allocaAcqua] ho aggiunto le celle nuove al set.");
 			}
 			else {
 				if (mySet.size()<numeroCelle) return;
@@ -198,7 +198,7 @@ public class Mappa implements Iterable<Cella> {
 			tempCoord = itCoord.next();
 			MappaACelle[tempCoord.getX()][tempCoord.getY()] = new Acqua();
 		}
-		//		System.out.println("[allocaAcqua] allocate " + mySet.size() + " celle");
+		System.out.println("[allocaAcqua] allocate " + mySet.size() + " celle");
 	}
 	/**
 	 * Semplice contatore per le celle di acqua su tutta la mappa.
