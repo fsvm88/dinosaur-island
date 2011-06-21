@@ -42,9 +42,17 @@ public class Coord {
 	 * @param coordToConf La coordinata con cui confrontare l'oggetto corrente.
 	 * @return True se l'argomento e' uguale all'oggetto corrente, false altrimenti.
 	 */
-	public boolean equals(Coord coordToConf) { // Testato
-		if ((this.x == coordToConf.getX()) &&
-				(this.y == coordToConf.getY())) return true;
+	@Override
+	public boolean equals(Object coordToConf) { // Testato
+		if (coordToConf == null) return false;
+		if ((this.x == ((Coord) coordToConf).getX()) &&
+				(this.y == ((Coord) coordToConf).getY())) return true;
 		else return false;
 	}
+	/**
+	 * Ritorna un hashCode univoco per l'oggetto corrente.
+	 * @return L'hashCode dell'oggetto.
+	 */
+	@Override
+	public int hashCode() { return this.getX() + this.getY(); }
 }
