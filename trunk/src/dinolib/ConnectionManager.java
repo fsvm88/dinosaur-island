@@ -35,17 +35,6 @@ class ConnectionManager {
 		return false;
 	}
 	/**
-	 * Controlla se esiste il giocatore nella lista.
-	 * @param nomeGiocatore Il nome del giocatore di cui verificare la validita'.
-	 * @return True se il nome esiste nella collezione, false altrimenti.
-	 */
-	protected boolean existsName(String nomeGiocatore) { // Testato
-		if (nomeGiocatore != null) {
-			if (connTable.containsValue(nomeGiocatore)) return true;
-		}
-		return false;
-	}
-	/**
 	 * Aggiunge un giocatore alla collezione.
 	 * @param nomeGiocatore Il nome del giocatore da aggiungere.
 	 * @param token Il token del giocatore da aggiungere.
@@ -70,14 +59,6 @@ class ConnectionManager {
 	 */
 	protected Iterator<String> getIteratorOnTokens() { // Testato
 		if (!connTable.isEmpty()) return connTable.keySet().iterator();
-		else return null;
-	}
-	/**
-	 * Restituisce un iteratore sui nomi dei giocatori presenti nella collezione.
-	 * @return Un iteratore sui nomi dei giocatori presenti nella collezione.
-	 */
-	protected Iterator<String> getIteratorOnConnectedPlayerNames() { // Testato
-		if (!connTable.isEmpty()) return connTable.values().iterator();
 		else return null;
 	}
 	/**

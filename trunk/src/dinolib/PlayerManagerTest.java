@@ -54,18 +54,6 @@ public class PlayerManagerTest {
 	}
 	
 	@Test
-	public void testContains() {
-		// Crea almeno un giocatore
-		testAddExists();
-		Iterator<Giocatore> itP = pMan.iterator();
-		assertTrue(itP.hasNext());
-		Giocatore tmpGioc = itP.next();
-		assertNotNull(tmpGioc);
-		assertTrue(pMan.contains(tmpGioc));
-		assertFalse(pMan.contains(new Giocatore("abi", "pass")));
-	}
-	
-	@Test
 	public void testAggiorna() {
 		// Crea più di un giocatore
 		testIterator();

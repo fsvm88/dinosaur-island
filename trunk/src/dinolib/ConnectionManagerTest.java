@@ -29,25 +29,7 @@ public class ConnectionManagerTest {
 		if (! cMan.collega("user2", "tk2")) fail();
 		if (! cMan.collega("user3", "tk3")) fail();
 	}
-
-	@Test
-	public void testExists() {
-		if (! cMan.collega("user1", "tk1")) fail();
-		if (! cMan.collega("user2", "tk2")) fail();
-		if (! cMan.collega("user3", "tk3")) fail();
-		assertTrue(cMan.existsName("user1"));
-		assertTrue(cMan.existsName("user2"));
-		assertTrue(cMan.existsName("user3"));
-		assertFalse(cMan.existsName("user4"));
-		assertFalse(cMan.existsName("user5"));
-
-		assertTrue(cMan.existsToken("tk1"));
-		assertTrue(cMan.existsToken("tk2"));
-		assertTrue(cMan.existsToken("tk3"));
-		assertFalse(cMan.existsToken("tk4"));
-		assertFalse(cMan.existsToken("tk5"));
-	}
-
+	
 	@Test
 	public void testGetIteratorOnTokens() {
 		assertNull(cMan.getIteratorOnTokens());
@@ -64,24 +46,6 @@ public class ConnectionManagerTest {
 		assertNotNull(itTokens.next());
 		assertFalse(itTokens.hasNext());
 	}
-
-	@Test
-	public void testGetIteratorOnConnectedPlayerNames() {
-		assertNull(cMan.getIteratorOnConnectedPlayerNames());
-		if (! cMan.collega("user1", "tk1")) fail();
-		if (! cMan.collega("user2", "tk2")) fail();
-		if (! cMan.collega("user3", "tk3")) fail();
-		Iterator<String> itNames = cMan.getIteratorOnConnectedPlayerNames();
-		assertNotNull(itNames);
-		assertTrue(itNames.hasNext());
-		assertNotNull(itNames.next());
-		assertTrue(itNames.hasNext());
-		assertNotNull(itNames.next());
-		assertTrue(itNames.hasNext());
-		assertNotNull(itNames.next());
-		assertFalse(itNames.hasNext());
-	}
-
 	@Test
 	public void testGetName() {
 		if (! cMan.collega("user1", "tk1")) fail();
