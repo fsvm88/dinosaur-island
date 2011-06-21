@@ -49,10 +49,10 @@ public class Coord {
 				(this.y == ((Coord) coordToConf).getY())) return true;
 		else return false;
 	}
-	/**
-	 * Ritorna un hashCode univoco per l'oggetto corrente.
-	 * @return L'hashCode dell'oggetto.
-	 */
-	@Override
-	public int hashCode() { return this.getX() + this.getY(); }
+//	/**
+//	 * Ritorna un hashCode univoco per l'oggetto corrente.
+//	 * @return L'hashCode dell'oggetto.
+//	 */
+	/*@Override
+	public int hashCode() { return ((1000*this.getX()) + this.getY()); }*/
 }
