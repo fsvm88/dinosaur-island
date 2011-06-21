@@ -590,10 +590,10 @@ public class LogicaTest {
 				ret = logicaTest.doMuoviDinosauro(testingToken, tmpId, new Coord(tmpDino.getCoord().getX()+CommonUtils.getNewRandomIntValue(3), tmpDino.getCoord().getY()+CommonUtils.getNewRandomIntValue(3)));
 				System.out.println("ret: " + ret);
 				assertNotNull(ret);
-			} while (!ret.equals("@ok"));
+			} while (ret.equals("destinazioneNonValida"));
 		}
 		catch (InvalidTokenException e) { fail(); }
-		catch (GenericDinosauroException e) { fail(); }
+		catch (GenericDinosauroException e) { System.out.println("GenericDinosauroException incontrata! " + e.getMessage()); fail(); }
 		// Testa movimento quando il dinosauro ha esaurito le mosse (GenericDinosauroException con causa "raggiuntoLimiteMosse")
 		try {
 			tmpDino = logicaTest.getPlayerByIdDinosauro(tmpId).getRazza().getDinosauroById(tmpId);

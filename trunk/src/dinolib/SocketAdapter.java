@@ -392,9 +392,10 @@ public class SocketAdapter implements Adapter {
 			if (myLogica.isMioTurno(token)) {
 				if (myLogica.getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
 					String ret = myLogica.doMuoviDinosauro(token, idDinosauro, newCoord);
-					if (ret.equals("v")) return "@combattimento,v";
+					if (ret.equals("destinazioneNonValida")) return "@no,@destinazioneNonValida";
+					else if (ret.equals("v")) return "@combattimento,v";
 					else if (ret.equals("p")) return "@combattimento,p";
-					else if (ret.equals("@ok")) return "@ok";
+					else if (ret.equals("ok")) return "@ok";
 					else return "@no";
 				}
 				else return "@no,@idNonValido";
