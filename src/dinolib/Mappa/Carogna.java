@@ -1,4 +1,7 @@
 package dinolib.Mappa;
+
+import java.io.Serializable;
+
 /**
  * @author fabio
  */
@@ -6,7 +9,11 @@ package dinolib.Mappa;
  * Classe per la cella Carogna.
  * Eredita parte dei metodi dalla superclasse. Fa l'override di altri implementandoli.
  */
-class Carogna extends Cella {
+class Carogna extends Cella implements Serializable {
+	/**
+	 * Generated version ID for Serializable.
+	 */
+	private static final long serialVersionUID = 4095487320686924269L;
 	/**
 	 * Prende in input il valore massimo per la cella e lo imposta nell'oggetto.
 	 * @param nuovoValore Il valore iniziale della cella.

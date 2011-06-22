@@ -1,6 +1,12 @@
 package dinolib.Mappa;
 
-class CellaConDinosauro extends Cella {
+import java.io.Serializable;
+
+class CellaConDinosauro extends Cella implements Serializable {
+	/**
+	 * Generated version ID for Serializable.
+	 */
+	private static final long serialVersionUID = 1420527517663293865L;
 	/**
 	 * Crea la cella CellaConDinosauro e imposta il campo cellaSuCuiSiTrova con il riferimento alla cella passato durante l'inizializzazione della stessa.
 	 */

@@ -430,7 +430,6 @@ public class LogicaTest {
 		// Verifico che il giocatore non sia nullo
 		assertNotNull(tempGiocatore);
 		// Verifico che effettivamente il dinosauro è tra quelli del giocatore
-		assertTrue(tempGiocatore.getRazza().contains(tmpDino));
 		assertTrue(tempGiocatore.getRazza().existsDinosauroWithId(tmpId));
 		// Verifico che con un Id fasullo getPlayerByIdDinosauro ritorna null
 		assertNull(logicaTest.getPlayerByIdDinosauro("kajsf"));

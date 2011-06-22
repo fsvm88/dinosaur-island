@@ -1,4 +1,7 @@
 package dinolib.Mappa;
+
+import java.io.Serializable;
+
 /**
  * @author fabio
  */
@@ -6,7 +9,12 @@ package dinolib.Mappa;
  * Classe per la cella Vegetazione.
  * Eredita parte dei metodi dalla superclasse. Fa l'override di altri implementandoli.
  */
-class Vegetazione extends Cella {
+class Vegetazione extends Cella implements Serializable {
+	/**
+	 * Generated version ID for Serializable.
+	 */
+	private static final long serialVersionUID = -5913453482942723982L;
+
 	/**
 	 * Prende in input il valore massimo per la cella e lo imposta nell'oggetto.
 	 * @param nuovoValore Il valore iniziale della cella.

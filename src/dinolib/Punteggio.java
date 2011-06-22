@@ -1,5 +1,6 @@
 package dinolib;
 
+import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Iterator;
 /**
@@ -8,7 +9,11 @@ import java.util.Iterator;
 /**
  * Classe che gestisce il punteggio delle razze di un giocatore.
  */
-class Punteggio {
+class Punteggio implements Serializable {
+	/**
+	 * Generated version ID for Serializable.
+	 */
+	private static final long serialVersionUID = 4678035763975658903L;
 	/**
 	 * Contiene la lista di punteggio del giocatore corrente.
 	 * @uml.property name="listaPunteggio"

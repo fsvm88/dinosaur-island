@@ -1,5 +1,6 @@
 package dinolib.Mappa;
 
+import java.io.Serializable;
 import java.util.HashSet;
 /**
  * @author fabio
@@ -9,7 +10,12 @@ import java.util.HashSet;
  * E' astratta perche' non e' istanziabile come classe a se' stante ma solo tramite le sottoclassi.
  * E' l'oggetto che compone tutta la mappa.
  */
-public abstract class Cella {
+public abstract class Cella implements Serializable {
+	/**
+	 * Generated version ID for Serializable.
+	 */
+	private static final long serialVersionUID = 2730121625974433232L;
+
 	/**
 	 * Istanzia una cella comune (non cella con dinosauro).
 	 */

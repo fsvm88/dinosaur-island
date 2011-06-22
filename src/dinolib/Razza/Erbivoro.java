@@ -1,9 +1,15 @@
 package dinolib.Razza;
 
+import java.io.Serializable;
+
 import dinolib.Mappa.Coord;
 
 
-public class Erbivoro extends Dinosauro {
+public class Erbivoro extends Dinosauro implements Serializable {
+	/**
+	 * Generated version ID for Serializable.
+	 */
+	private static final long serialVersionUID = -3344882289341289703L;
 	/**
 	 * Definisce in modo statico e definitivo lo spostamento massimo per un dinosauro di questo tipo.
 	 * Viene passato al costruttore e poi non serve piu'.

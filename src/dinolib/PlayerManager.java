@@ -1,5 +1,6 @@
 package dinolib;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -11,7 +12,11 @@ import java.util.ListIterator;
 /**
  * Classe che gestisce l'elenco di giocatori.
  */
-class PlayerManager implements List<Giocatore> {
+class PlayerManager implements List<Giocatore>, Serializable {
+	/**
+	 * Generated version ID for Serializable.
+	 */
+	private static final long serialVersionUID = 5678219460972436704L;
 	/**
 	 * Istanzia il riferimento alla lista dei Giocatori.
 	 * @uml.property name="listaGiocatori"

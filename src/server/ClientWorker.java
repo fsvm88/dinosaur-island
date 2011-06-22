@@ -17,12 +17,7 @@ import dinolib.Mappa.Coord;
  * Implementa l'ascoltatore per i client.
  * Ascolta i comandi e gestisce le giuste risposte.
  */
-class ClientWorker extends Server implements Runnable {
-	/**
-	 * Variabile per fermare il thread.
-	 * @uml.property  name="stopThread"
-	 */
-	private volatile boolean stopThread = false;
+class ClientWorker implements Runnable {
 	/**
 	 * Istanzia riferimento al socket.
 	 * @uml.property  name="mySocket"
@@ -39,26 +34,32 @@ class ClientWorker extends Server implements Runnable {
 	 */
 	private PrintWriter outgoingData = null;
 	/**
-	 * Istanzia riferimento all'adattatore per il socket.
-	 * @uml.property name="socketAdapter"
+	 * Istanzia riferimento al socketAdapter.
 	 */
-	private SocketAdapter socketAdapter = null; 
+	private SocketAdapter socketAdapter = null;
+	/**
+	 * La variabile che dice se il thread sta funzionando.
+	 * Server per disaccoppiare i thread dal server.
+	 * @uml.property name="threadIsRunning"
+	 */
+	private boolean threadIsRunning = false;
 
 	/**
 	 * Prende in ingresso il socket per comunicare con l'esterno.
 	 * @param socket Il socket attraverso cui passa la comunicazione.
 	 * @throws IOException Se ci sono problemi con la comunicazione.
 	 */
-	protected ClientWorker(Socket socket) throws IOException {
+	protected ClientWorker(Socket socket, SocketAdapter inSocketAdapter) throws IOException {
 		mySocket = socket;
 		try {
 			incomingData = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
 			outgoingData = new PrintWriter(mySocket.getOutputStream(), true);
-			socketAdapter = new SocketAdapter(servLogica);
+			socketAdapter = inSocketAdapter;
 		}
 		catch (IOException e) {
 			terminateThreadOnIOException("Cannot initialize input/output streams!");
 		}
+		threadIsRunning = true;
 	}
 	/**
 	 * Estrae il nome utente dallo scanner.
@@ -100,6 +101,11 @@ class ClientWorker extends Server implements Runnable {
 		else { return false; }
 	}
 	/**
+	 * Dice se il thread sta funzionando o no.
+	 * @return True se il thread sta funzionando, false altrimenti.
+	 */
+	private boolean isThreadRunning() { return threadIsRunning; }
+	/**
 	 * Estrae il nome della razza dallo scanner.
 	 * @param scanner Lo scanner da cui estrarre il nome della razza.
 	 * @return Una stringa che contiene il nome della razza.
@@ -138,109 +144,107 @@ class ClientWorker extends Server implements Runnable {
 	 * Fa il parsing dei comandi e chiama le azioni appropriate su logica tramite gli adattatori o direttamente.
 	 */
 	public void run() {
-		while (isServerRunning() && !stopThread) {
+		System.out.println("[" + Thread.currentThread().getName() + "] Started ClientWorker.");
+		while (isThreadRunning() && (mySocket != null)) {
 			try {
-				if (stopThread) { wait(); }
-				else {
-					Scanner scanner = new Scanner(readLineFromInput());
-					scanner.useDelimiter(",");
-					if (scanner.hasNext()) {
-						String comando = scanner.next();
-						if (isLoginOrCreation(comando)) {
-							String user = null;
-							String pwd = null;
+				Scanner scanner = new Scanner(readLineFromInput());
+				scanner.useDelimiter(",");
+				if (scanner.hasNext()) {
+					String comando = scanner.next();
+					if (isLoginOrCreation(comando) && isThreadRunning() && (mySocket != null)) {
+						String user = null;
+						String pwd = null;
+						if (scanner.hasNext()) {
+							user = estraiUser(scanner);
 							if (scanner.hasNext()) {
-								user = estraiUser(scanner);
-								if (scanner.hasNext()) {
-									pwd = estraiPwd(scanner);
-								}
-								else writeNoToOutput();
-							}
-							else writeNoToOutput();
-							if (comando.equals("@creaUtente")) {
-								writeLineToOutput((String) socketAdapter.creaUtente(user, pwd));
-							}
-							else if (comando.equals("@login")) {
-								writeLineToOutput((String) socketAdapter.loginUtente(user, pwd));
+								pwd = estraiPwd(scanner);
 							}
 							else writeNoToOutput();
 						}
-						else if (!isLoginOrCreation(comando)) {
-							String token = getToken(scanner);
-							if (isGoodToken(token)) {
-								/* comandi fuori partita*/
-								if (comando.equals("@creaRazza")) {
-									String nomeRazza = null;
-									Character tipoRazza = null;
+						else writeNoToOutput();
+						if (comando.equals("@creaUtente")) {
+							writeLineToOutput((String) socketAdapter.creaUtente(user, pwd));
+						}
+						else if (comando.equals("@login")) {
+							writeLineToOutput((String) socketAdapter.loginUtente(user, pwd));
+						}
+						else writeNoToOutput();
+					}
+					else if (!isLoginOrCreation(comando) && isThreadRunning() && (mySocket != null)) {
+						String token = getToken(scanner);
+						if (isGoodToken(token)) {
+							/* comandi fuori partita*/
+							if (comando.equals("@creaRazza")) {
+								String nomeRazza = null;
+								Character tipoRazza = null;
+								if (scanner.hasNext()) {
+									nomeRazza = estraiRazza(scanner);
 									if (scanner.hasNext()) {
-										nomeRazza = estraiRazza(scanner);
-										if (scanner.hasNext()) {
-											tipoRazza = estraiTipo(scanner);
+										tipoRazza = estraiTipo(scanner);
+									}
+									else writeNoToOutput();
+								}
+								else writeNoToOutput();
+								if (validaRazzaETipo(nomeRazza, tipoRazza)) {
+									writeLineToOutput((String) socketAdapter.creaRazza(token, nomeRazza, tipoRazza));
+								}
+							}
+							else if (comando.equals("@accessoPartita")) {
+								writeLineToOutput((String) socketAdapter.accessoPartita(token));
+							}
+							else if (comando.equals("@uscitaPartita")) {
+								writeLineToOutput((String) socketAdapter.uscitaPartita(token));
+							}
+							else if (comando.equals("@listaGiocatori")) {
+								writeLineToOutput((String) socketAdapter.listaGiocatori(token));
+							}
+							else if (comando.equals("@classifica")) {
+								writeLineToOutput((String) socketAdapter.classifica(token));
+							}
+							else if (comando.equals("@logout")) {
+								writeLineToOutput((String) socketAdapter.logoutUtente(token));
+							}
+							/* comandi in partita */
+							/* comandi di informazione */
+							else if (comando.equals("@mappaGenerale")) {
+								writeLineToOutput((String) socketAdapter.mappaGenerale(token));
+							}
+							else if (comando.equals("@listaDinosauri")) {
+								writeLineToOutput((String) socketAdapter.listaDinosauri(token));
+							}
+							/* comandi di turno */
+							else if (comando.equals("@confermaTurno")) {
+								writeLineToOutput((String) socketAdapter.confermaTurno(token));
+							}
+							else if (comando.equals("@passaTurno")) {
+								writeLineToOutput((String) socketAdapter.passaTurno(token));
+							}
+							else if (scanner.hasNext()) {
+								String idDinosauro = scanner.next(Pattern.compile("[^(idDino=)]"));
+								if (comando.equals("@vistaLocale")) {
+									writeLineToOutput((String) socketAdapter.vistaLocale(token, idDinosauro));
+								}
+								else if (comando.equals("@statoDinosauro")) {
+									writeLineToOutput((String) socketAdapter.statoDinosauro(token, idDinosauro));
+								}
+								else if (comando.equals("@cresciDinosauro")) {
+									writeLineToOutput((String) socketAdapter.cresciDinosauro(token, idDinosauro));
+								}
+								else if (comando.equals("@deponiUovo")) {
+									writeLineToOutput((String) socketAdapter.deponiUovo(token, idDinosauro));
+								}
+								else if (comando.equals("@muoviDinosauro")) {
+									int x = 0;
+									int y = 0;
+									if (scanner.hasNextInt()) {
+										x = scanner.nextInt();
+										if (scanner.hasNextInt()) {
+											y = scanner.nextInt();
+											writeLineToOutput((String) socketAdapter.muoviDinosauro(token, idDinosauro, new Coord(x, y)));
 										}
 										else writeNoToOutput();
 									}
 									else writeNoToOutput();
-									if (validaRazzaETipo(nomeRazza, tipoRazza)) {
-										writeLineToOutput((String) socketAdapter.creaRazza(token, nomeRazza, tipoRazza));
-									}
-								}
-								else if (comando.equals("@accessoPartita")) {
-									writeLineToOutput((String) socketAdapter.accessoPartita(token));
-								}
-								else if (comando.equals("@uscitaPartita")) {
-									writeLineToOutput((String) socketAdapter.uscitaPartita(token));
-								}
-								else if (comando.equals("@listaGiocatori")) {
-									writeLineToOutput((String) socketAdapter.listaGiocatori(token));
-								}
-								else if (comando.equals("@classifica")) {
-									writeLineToOutput((String) socketAdapter.classifica(token));
-								}
-								else if (comando.equals("@logout")) {
-									writeLineToOutput((String) socketAdapter.logoutUtente(token));
-								}
-								/* comandi in partita */
-								/* comandi di informazione */
-								else if (comando.equals("@mappaGenerale")) {
-									writeLineToOutput((String) socketAdapter.mappaGenerale(token));
-								}
-								else if (comando.equals("@listaDinosauri")) {
-									writeLineToOutput((String) socketAdapter.listaDinosauri(token));
-								}
-								/* comandi di turno */
-								else if (comando.equals("@confermaTurno")) {
-									writeLineToOutput((String) socketAdapter.confermaTurno(token));
-								}
-								else if (comando.equals("@passaTurno")) {
-									writeLineToOutput((String) socketAdapter.passaTurno(token));
-								}
-								else if (scanner.hasNext()) {
-									String idDinosauro = scanner.next(Pattern.compile("[^(idDino=)]"));
-									if (comando.equals("@vistaLocale")) {
-										writeLineToOutput((String) socketAdapter.vistaLocale(token, idDinosauro));
-									}
-									else if (comando.equals("@statoDinosauro")) {
-										writeLineToOutput((String) socketAdapter.statoDinosauro(token, idDinosauro));
-									}
-									else if (comando.equals("@cresciDinosauro")) {
-										writeLineToOutput((String) socketAdapter.cresciDinosauro(token, idDinosauro));
-									}
-									else if (comando.equals("@deponiUovo")) {
-										writeLineToOutput((String) socketAdapter.deponiUovo(token, idDinosauro));
-									}
-									else if (comando.equals("@muoviDinosauro")) {
-										int x = 0;
-										int y = 0;
-										if (scanner.hasNextInt()) {
-											x = scanner.nextInt();
-											if (scanner.hasNextInt()) {
-												y = scanner.nextInt();
-												writeLineToOutput((String) socketAdapter.muoviDinosauro(token, idDinosauro, new Coord(x, y)));
-											}
-											else writeNoToOutput();
-										}
-										else writeNoToOutput();
-									}
 								}
 							}
 						}
@@ -248,13 +252,10 @@ class ClientWorker extends Server implements Runnable {
 				}
 			}
 			catch (IOException e) {
-				terminateThreadOnIOException("Unable to communicate with the client, stopping thread.");
-			}
-			catch (InterruptedException e) {
-				System.out.println("InterruptedException caught while stopping the thread. This is ok, so don't worry.");
+				terminateThreadOnIOException("[" + Thread.currentThread().getName() + "] Unable to communicate with the client, stopping thread.");
 			}
 		}
-		this.stop();
+		System.out.println("[" + Thread.currentThread().getName() + "] Terminated ClientWorker.");
 	}
 
 	/* Quattro helper molto generici di cui due per l'IO per il client e due per fermare il thread. */
@@ -273,9 +274,11 @@ class ClientWorker extends Server implements Runnable {
 		outgoingData.println(toSend);
 	}
 	/**
-	 * Helper per fermare il thread, imposta stopThread a true.
+	 * Imposta la variabile che ferma il thread a true.
+	 * Serve per gestire i thread indipendentement dal server.
 	 */
-	public synchronized void stop() { stopThread = true; notify(); }
+	public void stop() { threadIsRunning = false; }
+	
 	/** 
 	 * Termina il thread su eccezione:
 	 * Da' notifica con motivazione e imposta il parametro per lo stop.
@@ -283,7 +286,6 @@ class ClientWorker extends Server implements Runnable {
 	 */
 	private void terminateThreadOnIOException (String cause) {
 		System.out.println(cause);
-		System.out.println("Killing this thread!");
 		stop();
 	}
 }
