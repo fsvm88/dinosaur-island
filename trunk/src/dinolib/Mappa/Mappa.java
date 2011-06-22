@@ -1,5 +1,6 @@
 package dinolib.Mappa;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -15,7 +16,12 @@ import dinolib.CommonUtils;
  * Produce in output verso l'esterno coordinate e riferimento modo cartesiano.
  * La logica interna invece e' interamente implementata in formato matriciale.
  */
-public class Mappa implements Iterable<Cella> {
+public class Mappa implements Iterable<Cella>, Serializable {
+	/**
+	 * Generated version ID for Serializable.
+	 */
+	private static final long serialVersionUID = 1147302263106943805L;
+
 	/**
 	 * Contiene tutta la mappa in celle di un array di tipo Cella.
 	 * Attenzione! Il sistema della logica e' un sistema di coordinate cartesiane! Non una matrice!
@@ -171,23 +177,23 @@ public class Mappa implements Iterable<Cella> {
 		} while (!isCellaTerra(tempCoord));
 		mySet.add(tempCoord);
 		HashSet<Coord> tempSet = new HashSet<Coord>();
-		System.out.println("[allocaAcqua] sto per entrare nel ciclo per allocare " + numeroCelle + " acque");
+		//System.out.println("[allocaAcqua] sto per entrare nel ciclo per allocare " + numeroCelle + " acque");
 		while (mySet.size()<numeroCelle) {
-			System.out.println("[allocaAcqua] cerco " + (numeroCelle-mySet.size()) + " celle");
+			//System.out.println("[allocaAcqua] cerco " + (numeroCelle-mySet.size()) + " celle");
 			tempSet.clear();
 			itCoord = mySet.iterator();
 			while (itCoord.hasNext()) {
 				getNearbyEarthCells(itCoord.next(), tempSet);
 				if (tempSet.size() != 0) { break; }
 			}
-			System.out.println("[allocaAcqua] trovate " + tempSet.size() + " celle");
+			//System.out.println("[allocaAcqua] trovate " + tempSet.size() + " celle");
 			if (tempSet.size() != 0) {
 				itCoord = tempSet.iterator();
 				while (itCoord.hasNext()) {
 					if (mySet.size()>=numeroCelle) { break; }
 					mySet.add(itCoord.next());
 				}
-				System.out.println("[allocaAcqua] ho aggiunto le celle nuove al set.");
+				//System.out.println("[allocaAcqua] ho aggiunto le celle nuove al set.");
 			}
 			else {
 				if (mySet.size()<numeroCelle) return;
@@ -198,7 +204,7 @@ public class Mappa implements Iterable<Cella> {
 			tempCoord = itCoord.next();
 			MappaACelle[tempCoord.getX()][tempCoord.getY()] = new Acqua();
 		}
-		System.out.println("[allocaAcqua] allocate " + mySet.size() + " celle");
+		//System.out.println("[allocaAcqua] allocate " + mySet.size() + " celle");
 	}
 	/**
 	 * Semplice contatore per le celle di acqua su tutta la mappa.
@@ -391,9 +397,7 @@ public class Mappa implements Iterable<Cella> {
 	 * @return Iteratore sulle celle della mappa, da sinistra in basso a destra in alto (piano cartesiano).
 	 */
 	@Override
-	public Iterator<Cella> iterator() { // Testato
-		return new MapIterator();
-	}
+	public Iterator<Cella> iterator() { return new MapIterator(); } // Testato
 	/**
 	 * @author fabio
 	 */

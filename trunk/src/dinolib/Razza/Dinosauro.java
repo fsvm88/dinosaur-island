@@ -1,5 +1,7 @@
 package dinolib.Razza;
 
+import java.io.Serializable;
+
 import dinolib.CommonUtils;
 import dinolib.Mappa.Coord;
 /**
@@ -9,7 +11,11 @@ import dinolib.Mappa.Coord;
  * Rappresenta un dinosauro singolo.
  * Il tipo e i parametri vengono impostati dal costruttore della sottoclasse.
  */
-public abstract class Dinosauro {
+public abstract class Dinosauro implements Serializable {
+	/**
+	 * Generated version ID for Serializable.
+	 */
+	private static final long serialVersionUID = 7956386749602820936L;
 	/* Tutte le variabili statiche/definitive e non modificabili */
 	/**
 	 * Indica l'energia necessaria per deporre un uovo.

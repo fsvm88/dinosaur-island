@@ -1,5 +1,6 @@
 package dinolib.Razza;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -11,7 +12,11 @@ import dinolib.Mappa.Coord;
 /**
  * Astrae la collezione dei dinosauri rispetto al giocatore.
  */
-public class Razza implements Set<Dinosauro> {
+public class Razza implements Set<Dinosauro>, Serializable {
+	/**
+	 * Generated version ID for Serializable.
+	 */
+	private static final long serialVersionUID = -6356926535239722927L;
 	/* Tutte le variabili statiche/definitive e non modificabili */
 	/**
 	 * Definisce definitivamente i turni di vita massimi per una specie.

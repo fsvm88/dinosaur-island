@@ -1,4 +1,7 @@
 package dinolib.Mappa;
+
+import java.io.Serializable;
+
 /**
  * Classe che contiene una coppia di coordinate, serve per semplificare la logica di alto livello.
  * Dichiara il metodo equals, di modo da avere un confronto diretto corretto tra due elementi.
@@ -6,7 +9,11 @@ package dinolib.Mappa;
 /**
  * @author fabio
  */
-public class Coord {
+public class Coord implements Serializable {
+	/**
+	 * Generated version ID for Serializable.
+	 */
+	private static final long serialVersionUID = -4481817555753451477L;
 	/**
 	 * La x delle coordinate.
 	 */

@@ -1,5 +1,7 @@
 package dinolib;
 
+import java.io.Serializable;
+
 import dinolib.Razza.*;
 /**
  * @author  fabio
@@ -7,7 +9,11 @@ import dinolib.Razza.*;
 /**
  * Classe che gestisce il singolo giocatore.
  */
-class Giocatore {
+class Giocatore implements Serializable {
+	/**
+	 * Generated version ID for Serializable.
+	 */
+	private static final long serialVersionUID = 5141915650424446123L;
 	/* Tutte le variabili istanziabili */
 	/**
 	 * Contiene il nome del giocatore.

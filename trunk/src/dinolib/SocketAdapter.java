@@ -15,7 +15,7 @@ public class SocketAdapter implements Adapter {
 	 * @uml.associationEnd  
 	 */
 	private Logica myLogica = null;
-
+	
 	/**
 	 * Costruttore pubblico, riceve come unico argomento la classe Logica che deve gestire.
 	 * @param newLogica
@@ -23,11 +23,19 @@ public class SocketAdapter implements Adapter {
 	public SocketAdapter (Logica newLogica) {
 		myLogica = newLogica;
 	}
-
-	private String returnInvalidToken() {
-		return "@no,@tokenNonValido";
-	}
-
+	/**
+	 * Ritorna il messaggio che il token non e' valido.
+	 * @return Il messaggio che il token non e' valido.
+	 */
+	private String returnInvalidToken() { return "@no,@tokenNonValido"; }
+	/**
+	 * Assembla una tupla per il punteggio.
+	 * @param myBuffer Il buffer corrente a cui aggiungere la tupla.
+	 * @param curNomeRazza Il nome della razza della tupla.
+	 * @param myPunteggio Il punteggio della razza della tupla.
+	 * @param isEstinta Lo stato della razza nella tupla, se e' estinta o meno.
+	 * @return Una stringa con il buffer in ingresso con in coda la tupla richiesta.
+	 */
 	private String assemblaTuplaDelPunteggio(String myBuffer, String curNomeRazza, int myPunteggio, String isEstinta) {
 		return myBuffer +
 		"," + "{" + "," +
@@ -37,10 +45,10 @@ public class SocketAdapter implements Adapter {
 	}
 
 	/**
-	 * Helper per assemblare il punteggio per un singolo giocatore.
-	 * @param newBuffer
-	 * @param giocatore
-	 * @return
+	 * Assembla il punteggio per un singolo giocatore.
+	 * @param newBuffer Il buffer corrente a cui aggiungere il punteggio di un giocatore.
+	 * @param giocatore Il giocatore di cui fare il parsing del punteggio.
+	 * @return Una stringa che contiene il buffer in ingresso con in coda la tupla richiesta.
 	 */
 	private String assemblaPunteggio(String newBuffer, Giocatore giocatore) {
 		newBuffer = assemblaBuffer(newBuffer, giocatore.getNome());
@@ -67,18 +75,16 @@ public class SocketAdapter implements Adapter {
 	/**
 	 * Aggiunge al buffer una singola cella della mappa.
 	 * Non include informazioni addizionali se questa è vegetazione o carogna.
-	 * @param tmpBuf
-	 * @param myChar
-	 * @return
+	 * @param tmpBuf Il buffer corrente a cui aggiungere la stringa.
+	 * @param myChar Il tipo della cella corrente.
+	 * @return Una stringa contenente il buffer in ingresso con in coda la cella richiesta.
 	 */
-	private String aggiungiCellaSingolaSenzaInfoAddizionali(String tmpBuf, Character myChar) {
-		return tmpBuf + "[" + myChar.charValue() + "]";
-	}
+	private String aggiungiCellaSingolaSenzaInfoAddizionali(String tmpBuf, Character myChar) { return tmpBuf + "[" + myChar.charValue() + "]"; }
 
 	/**
 	 * Assembla tutta la mappa generale in un unico buffer tramite l'iteratore sulla mappa.
-	 * @param mioBuffer
-	 * @return
+	 * @param mioBuffer Il buffer a cui voglio aggiungere la mappa generale.
+	 * @return Una stringa con il buffer in ingresso con in coda la mappa generale.
 	 */
 	private String assemblaMappaGenerale(String mioBuffer, String token) throws InvalidTokenException {
 		Iterator<Cella> itCelle = myLogica.getMappa().iterator();
@@ -117,20 +123,18 @@ public class SocketAdapter implements Adapter {
 	/**
 	 * Aggiunge al buffer una singola cella della mappa.
 	 * Aggiunge anche informazioni addizionali se si tratta di carogna, vegetazione o dinosauro.
-	 * @param tmpBuf
-	 * @param myChar
-	 * @param myInfo
-	 * @return
+	 * @param tmpBuf Il buffer in ingresso a cui voglio aggiungere la cella.
+	 * @param myChar Il tipo della cella che voglio aggiungere.
+	 * @param myInfo L'informazione addizionale sulla cella che voglio aggiungere.
+	 * @return Una stringa contenente il buffer in input con in coda la cella richiesta. 
 	 */
-	private String aggiungiCellaSingolaConInfoAddizionali(String tmpBuf, Character myChar, Object myInfo) {
-		return tmpBuf + "[" + myChar.charValue() + "," + myInfo.toString() + "]";
-	}
+	private String aggiungiCellaSingolaConInfoAddizionali(String tmpBuf, Character myChar, Object myInfo) { return tmpBuf + "[" + myChar.charValue() + "," + myInfo.toString() + "]"; }
 
 	/**
-	 * Aggiunge al buffer una cella, viene chiamata solo da vista locale.
-	 * @param buffer
-	 * @param miaCella
-	 * @return
+	 * Aggiunge al buffer una cella.
+	 * @param buffer Il buffer a cui voglio aggiungere la cella.
+	 * @param miaCella La cella che voglio venga aggiunta al buffer.
+	 * @return Una stringa con il buffer in input e la cella desiderata in coda.
 	 */
 	private String assemblaBufferCellaSingolaPerVistaLocale(String buffer, Cella miaCella) {
 		Character tipoCella = miaCella.toString().toLowerCase().charAt(0);
@@ -144,6 +148,9 @@ public class SocketAdapter implements Adapter {
 
 	/**
 	 * Assembla lo stato del dinosauro comune a entrambi gli if/else di statoDinosauro.
+	 * @param tempGiocatore Il giocatore a cui appartiene il dinosauro.
+	 * @param idDinosauro L'id del dinosauro che voglio aggiungere.
+	 * @return Una stringa contenente le informazioni richieste.
 	 */
 	private String assemblaStatoComuneDinosauro(Giocatore tempGiocatore, String idDinosauro) {
 		return tempGiocatore.getNome() + "," +
@@ -153,9 +160,10 @@ public class SocketAdapter implements Adapter {
 		tempGiocatore.getRazza().getDinosauroById(idDinosauro).getDimensione();
 	}
 	/**
-	 * Helper per alcune delle funzioni che restituiscono liste.
-	 * @param localBuffer
-	 * @param toAppend
+	 * Assembla un buffer appendendogli la stringa richiesta.
+	 * @param localBuffer Il buffer in ingresso a cui voglio appendere la stringa.
+	 * @param toAppend La stringa da appendere al buffer.
+	 * @return Una stringa con il buffer in input e in coda la stringa passata.
 	 */
 	private String assemblaBuffer(String localBuffer, String toAppend) {
 		if (localBuffer != null)

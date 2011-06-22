@@ -1,7 +1,5 @@
 package dinolib;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -60,22 +58,22 @@ public class Logica implements Runnable {
 	private Mappa rifMappa = null;
 	/**
 	 * Istanzia il riferimento alla collezione dei giocatori.
-	 * @uml.property name="playerManager"
+	 * @uml.property name="pMan"
 	 */
 	private PlayerManager pMan = null;
 	/**
 	 * Istanzia il riferimento alla collezione dei giocatori connessi e dei loro token.
-	 * @uml.property name="connectionManager"
+	 * @uml.property name="cMan"
 	 */
 	private ConnectionManager cMan = null;
 	/**
 	 * Contiene tutti i giocatori correntemente connessi alla partita.
-	 * @uml.property  name="playersQueue"
+	 * @uml.property  name="rrsched"
 	 */
 	private RRScheduler rrsched = null;
 	/**
 	 * Definisce la stringa che contiene il nome del giocatore che in questo momento ha il turno.
-	 * @uml.property  name="Giocatori"
+	 * @uml.property  name="tokenGiocatoreCorrente"
 	 */
 	private String tokenGiocatoreCorrente = null;
 	/**
@@ -83,6 +81,11 @@ public class Logica implements Runnable {
 	 * @uml.property  name="logicaIsRunning"
 	 */
 	private boolean logicaIsRunning = false;
+	/**
+	 * Contiene una variabile che dice se la logica si sta chiudendo.
+	 * @uml.property  name="logicaIsShuttingDown"
+	 */
+	private boolean logicaIsShuttingDown = false;
 	/**
 	 * Variabile che dice se il turno del giocatore è stato confermato.
 	 * @uml.property  name="turnoConfermato"
@@ -95,26 +98,37 @@ public class Logica implements Runnable {
 	 */
 	public Logica () { // Testato
 		try {
+			System.out.println("[Logica] Trying to resume game from save files...");
 			caricaPartitaDaFile();
+			System.out.println("[Logica] Game successfully resumed.");
 		}
 		catch (FileNotFoundException e) {
-			System.out.println("No save files found, creating a new map..");
+			System.out.println("[Logica] No save files found, creating a new map...");
 			creaNuovaMappa();
+			System.out.println("[Logica] Map successfully created.");
+			System.out.println("[Logica] Istantiating the Player Collection...");
 			pMan = new PlayerManager();
+			System.out.println("[Logica] Player Collection successfully initialized.");
 		}
 		catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("IOException while trying to open save files. Exiting..");
+			System.out.println("IOException while trying to open save files. Exiting...");
 			System.exit(-1);
 		}
 		catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			System.out.println("ClassNotFoundException while trying to read save files. Exiting..");
+			System.out.println("ClassNotFoundException while trying to read save files. Exiting...");
 			System.exit(-1);
 		}
+		System.out.println("[Logica] Istantiating new Connection Manager...");
 		cMan = new ConnectionManager();
+		System.out.println("[Logica] New Connection Manager istantiated.");
+		System.out.println("[Logica] Istantiating new Player Queue of length " + numero_MASSIMO_GIOCATORI_INGAME + "...");
 		rrsched = new RRScheduler(numero_MASSIMO_GIOCATORI_INGAME);
+		System.out.println("[Logica] New Player Queue istantiated.");
+		System.out.println("[Logica] Logica initialized successfully.");
 		logicaIsRunning = true;
+		logicaIsShuttingDown = false;
 	}
 	/**
 	 * Carica i file di salvataggio, se esistono.
@@ -137,8 +151,11 @@ public class Logica implements Runnable {
 	 * @throws ClassNotFoundException Se la classe che deve essere usata per leggere i file non viene trovata. 
 	 */
 	private void caricaFileMappa(String nomefile) throws IOException, ClassNotFoundException, FileNotFoundException {
-		ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(nomefile)));
+		System.out.println("[Logica] Trying to load map file <" + nome_FILE_MAPPA + ">...");
+		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nomefile));
 		rifMappa = (Mappa) ois.readObject();
+		ois.close();
+		System.out.println("[Logica] Map file loaded successfully.");
 	}
 	/**
 	 * Implementa il caricamento del file giocatori, se esiste.
@@ -147,8 +164,46 @@ public class Logica implements Runnable {
 	 * @throws ClassNotFoundException Se la classe che deve essere usata per leggere i file non viene trovata.
 	 */
 	private void caricaFileGiocatori(String nomefile) throws IOException, FileNotFoundException, ClassNotFoundException {
-		ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(nomefile)));
+		System.out.println("[Logica] Trying to load players file <" + nome_FILE_GIOCATORI + ">...");
+		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nomefile));
 		pMan = (PlayerManager) ois.readObject();
+		ois.close();
+		System.out.println("[Logica] Player file loaded successfully.");
+	}
+	/**
+	 * Salva la partita su file (la collezione di giocatori e il file di mappa).
+	 * @throws FileNotFoundException Se il file risulta inaccessibile.
+	 * @throws IOException Se si sono verificati problemi con la scrittura.
+	 */
+	private void salvaPartita() throws FileNotFoundException, IOException {
+		salvaFileMappa(nome_FILE_MAPPA);
+		salvaFileGiocatori(nome_FILE_GIOCATORI);
+	}
+	/**
+	 * Salva la mappa su file.
+	 * @param nomefile Il nome del file su quale salvare la mappa.
+	 * @throws FileNotFoundException Se il file risulta inaccessibile.
+	 * @throws IOException Se si sono verificati problemi con la scrittura.
+	 */
+	private void salvaFileMappa(String nomefile) throws FileNotFoundException, IOException {
+		System.out.println("[Logica] Trying to save map file <" + nome_FILE_MAPPA + ">...");
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nomefile));
+		oos.writeObject(rifMappa);
+		oos.close();
+		System.out.println("[Logica] Map file saved successfully.");
+	}
+	/**
+	 * Salva i giocatori su file.
+	 * @param nomefile Il nome del file sul quale salvare i giocatori.
+	 * @throws FileNotFoundException Se il file risulta inaccessibile.
+	 * @throws IOException Se si sono verificati problemi con la scrittura.
+	 */
+	private void salvaFileGiocatori(String nomefile) throws FileNotFoundException, IOException {
+		System.out.println("[Logica] Trying to save player file <" + nome_FILE_GIOCATORI + ">...");
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nomefile));
+		oos.writeObject(pMan);
+		System.out.println("[Logica] Player file saved successfully.");
+		oos.close();
 	}
 	/**
 	 * Crea una nuova mappa.
@@ -180,7 +235,12 @@ public class Logica implements Runnable {
 	 * Dice se la logica sta ancora lavorando.
 	 * @return True se la logica sta ancora lavorando, false altrimenti.
 	 */
-	protected boolean isLogicaRunning() { return logicaIsRunning; } // Testato
+	public boolean isLogicaRunning() { return logicaIsRunning; } // Testato
+	/**
+	 * Dice se la logica sta ancora lavorando.
+	 * @return True se la logica sta ancora lavorando, false altrimenti.
+	 */
+	public boolean isLogicaShuttingDown() { return logicaIsShuttingDown; } // Testato
 	/**
 	 * Ritorna il giocatore richiesto tramite il token.
 	 * @param token Il token dell'utente richiesto.
@@ -289,28 +349,29 @@ public class Logica implements Runnable {
 	 * Creare un thread extra è più semplice che sincronizzare gli accessi da ogni client.
 	 * In questo modo tutta la logica è effettivamente implementata in Logica e creare nuovi modi di accesso ai dati richiede solo l'implementazione di Adattatori.
 	 */
-	public void run () {
+	public void run() {
+		System.out.println("[Logica] Now allowing gameplay...");
 		/* Prova a ...*/
 		try {
 			/* Fintanto che logica è accesa...
 			 * !!ATTENZIONE!!
 			 * Impongo la condizione isLogicaRunning() in TUTTI i condizionali che controllano i cicli,
 			 * di modo che non appena la logica viene spenta, l'uscita è immediata senza le attese di turno */
-			while (isLogicaRunning()) {
+			while (!isLogicaShuttingDown()) {
 				/* Se ci sono giocatori connessi */
-				if (getRRSched().hasQueuedTasks() && isLogicaRunning()) {
+				if (getRRSched().hasQueuedTasks() && !isLogicaShuttingDown()) {
 					/* Prendi un nuovo giocatore dalla lista */
 					tokenGiocatoreCorrente = getRRSched().getCurrentTask();
 					/* Prendi l'istante da cui conto il tempo per confermare il turno */
 					long conferma_start = System.currentTimeMillis();
 					/* Fintanto che posso confermare il turno (30 secondi) */
-					while (((System.currentTimeMillis()-conferma_start) < (sleep_CONFERMA_TURNO*1000)) && isLogicaRunning()) {
+					while (((System.currentTimeMillis()-conferma_start) < (sleep_CONFERMA_TURNO*1000)) && !isLogicaShuttingDown()) {
 						/* Se il turno è stato confermato */
 						if (turnoConfermato) {
 							/* Prendi l'istante da cui conto il tempo per usare il turno */
 							long turno_start = System.currentTimeMillis();
 							/* Fintanto che posso usare il turno (muovere i dinosauri o usare le loro azioni) */
-							while (((System.currentTimeMillis()-turno_start) < (sleep_TEMPO_TURNO*1000)) && isLogicaRunning()) {
+							while (((System.currentTimeMillis()-turno_start) < (sleep_TEMPO_TURNO*1000)) && !isLogicaShuttingDown()) {
 								/* Se il turno è stato passato ferma il ciclo */
 								if (!turnoConfermato) break;
 								/* Altrimenti aspetta 1 secondo */
@@ -342,62 +403,48 @@ public class Logica implements Runnable {
 		catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		notify();
-	}
-	/**
-	 * Ferma la logica, imposta logicaIsRunning a false, così che il thread possa essere spento 
-	 */
-	public synchronized void stop() {
-		logicaIsRunning = false;
-		try {
-			wait();
-		}
-		catch (InterruptedException e) {
-			System.out.println("InterruptedException caught while stopping the thread. This is ok, so don't worry.");
-		}
-		try {
-			salvaPartita();
-		}
-		catch (FileNotFoundException e) { System.out.println("FileNotFoundException thrown while trying to save the game. Unable to save the game to file, aborting."); }
-		catch (IOException e) { System.out.println("IOException thrown while trying to save the game. Unable to save the game to file, aborting."); }
-	}
-	/**
-	 * Salva la partita su file (la collezione di giocatori e il file di mappa).
-	 * @throws FileNotFoundException Se il file risulta inaccessibile.
-	 * @throws IOException Se si sono verificati problemi con la scrittura.
-	 */
-	private void salvaPartita() throws FileNotFoundException, IOException {
-		salvaFileMappa(nome_FILE_MAPPA);
-		salvaFileGiocatori(nome_FILE_GIOCATORI);
-	}
-	/**
-	 * Salva la mappa su file.
-	 * @param nomefile Il nome del file su quale salvare la mappa.
-	 * @throws FileNotFoundException Se il file risulta inaccessibile.
-	 * @throws IOException Se si sono verificati problemi con la scrittura.
-	 */
-	private void salvaFileMappa(String nomefile) throws FileNotFoundException, IOException {
-		ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(nomefile)));
-		oos.writeObject(rifMappa);
-	}
-	/**
-	 * Salva i giocatori su file.
-	 * @param nomefile Il nome del file sul quale salvare i giocatori.
-	 * @throws FileNotFoundException Se il file risulta inaccessibile.
-	 * @throws IOException Se si sono verificati problemi con la scrittura.
-	 */
-	private void salvaFileGiocatori(String nomefile) throws FileNotFoundException, IOException {
-		ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(nomefile)));
-		oos.writeObject(pMan);
+		System.out.println("[Logica] Gameplay disallowed, Logica is going down.");
+		stop();
 	}
 	
+	/**
+	 * Implementa il metodo stop per lo shutdown, che chiude la logica e salva i file.
+	 */
+	public void stop() {
+		/* Fai uscire tutti gli utenti dalla partita.
+		 * Rende la mappa consistente e rimuove tutti i dinosauri. */
+		System.out.println("[Logica] Disconnecting players from game...");
+		while (getRRSched().hasQueuedTasks()) {
+			Iterator<String> itTasks = getRRSched().iterator();
+			if (itTasks.hasNext()) {
+				String nextTask = itTasks.next();
+				try {
+					doUscitaPartita(nextTask);
+				}
+				catch (InvalidTokenException e) {
+					System.out.println("[Logica] Problems while trying to disconnect players from game, aborting save!");
+					System.exit(-1);
+				}
+			}
+		}
+		System.out.println("[Logica] Players disconnected.");
+		/* Ora si puo' salvare lo stato della partita. */
+		try { salvaPartita(); }
+		catch (FileNotFoundException e) { System.out.println("FileNotFoundException thrown while trying to save the game. Unable to save the game to file, aborting."); }
+		catch (IOException e) { System.out.println("IOException thrown while trying to save the game. Unable to save the game to file, aborting."); }
+		logicaIsRunning = false;
+	}
+	
+	/**
+	 * Fornisce a server un modo per chiudere logica in modo corretto.
+	 */
+	public void shutdownLogica() { logicaIsShuttingDown = true; }
+
 	/* Helper esterni */
 	/**
-	 * Conferma il turno  // TODO implementa il controllo di accesso, solo l'utente legittimo deve poterlo chiamare!
+	 * Conferma il turno
 	 */
-	void doConfermaTurno() {
-		turnoConfermato = true;
-	}
+	void doConfermaTurno() { turnoConfermato = true; }
 	/**
 	 * Gestisce la rimozione di tutti i dinosauri dalla mappa per il dato giocatore.
 	 * @param tempGiocatore Il giocatore i cui dinosauri devono essere rimossi dalla mappa.	
@@ -486,9 +533,7 @@ public class Logica implements Runnable {
 	/**
 	 * Passa il turno.
 	 */
-	void doPassaTurno() { // TODO implementa controllo degli accessi.
-		turnoConfermato = false;
-	}
+	void doPassaTurno() { turnoConfermato = false; }
 	/**
 	 * Fa deporre l'uovo al dinosauro.
 	 * È un helper comune, gli adattatori non devono vedere niente della logica interna.
