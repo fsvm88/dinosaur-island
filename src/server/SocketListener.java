@@ -30,7 +30,7 @@ public class SocketListener implements Runnable {
 	private Logica servLogica = null;
 	/**
 	 * Definisce il riferimento al SocketAdapter.
-	 * @uml.property name="sockAdap"
+	 * @uml.property name="socketAdapter"
 	 */
 	protected SocketAdapter socketAdapter = null;
 

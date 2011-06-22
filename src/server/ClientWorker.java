@@ -57,7 +57,7 @@ class ClientWorker implements Runnable {
 			socketAdapter = inSocketAdapter;
 		}
 		catch (IOException e) {
-			terminateThreadOnIOException("Cannot initialize input/output streams!");
+			terminateThreadOnIOException("[ClientWorker] Cannot initialize input/output streams!");
 		}
 		threadIsRunning = true;
 	}
@@ -250,6 +250,7 @@ class ClientWorker implements Runnable {
 						}
 					}
 				}
+				scanner.close();
 			}
 			catch (IOException e) {
 				terminateThreadOnIOException("[" + Thread.currentThread().getName() + "] Unable to communicate with the client, stopping thread.");
