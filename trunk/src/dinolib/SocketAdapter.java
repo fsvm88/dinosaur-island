@@ -172,7 +172,10 @@ public class SocketAdapter implements Adapter {
 			localBuffer = toAppend;
 		return localBuffer;
 	}
-
+	
+	/**
+	 * Implementa il metodo CreaUtente dall'interfaccia.
+	 */
 	@Override
 	public Object creaUtente(String nomeUtente, String passwordUtente) {
 		try {
@@ -183,7 +186,9 @@ public class SocketAdapter implements Adapter {
 			return "@no,@usernameOccupato";
 		}
 	}
-
+	/**
+	 * Implementa LoginUtente dall'interfaccia.
+	 */
 	@Override
 	public Object loginUtente(String nomeUtente, String passwordUtente) {
 		try {
@@ -196,7 +201,9 @@ public class SocketAdapter implements Adapter {
 			return "@no,@autenticazioneFallita";
 		}
 	}
-
+	/**
+	 * Implementa CreaRazza dall'interfaccia.
+	 */
 	@Override
 	public Object creaRazza(String token, String nomeRazza, Character tipo) {
 		try {
@@ -213,7 +220,9 @@ public class SocketAdapter implements Adapter {
 			return returnInvalidToken();
 		}
 	}
-
+	/**
+	 * Implementa AccessoPartita dall'interfaccia.
+	 */
 	@Override
 	public Object accessoPartita(String token) {
 		try {
@@ -233,7 +242,9 @@ public class SocketAdapter implements Adapter {
 			return "@no,@razzaNonCreata";
 		}
 	}
-
+	/**
+	 * Implementa UscitaPartita dall'interfaccia.
+	 */
 	@Override
 	public Object uscitaPartita(String token) {
 		try {
@@ -244,7 +255,9 @@ public class SocketAdapter implements Adapter {
 			return returnInvalidToken();
 		}
 	}
-
+	/**
+	 * Implementa ListaGiocatori dall'interfaccia.
+	 */
 	@Override
 	public Object listaGiocatori(String token) {
 		try {
@@ -262,7 +275,9 @@ public class SocketAdapter implements Adapter {
 			return returnInvalidToken();
 		}
 	}
-
+	/**
+	 * Implementa Classifica dall'interfaccia.
+	 */
 	@Override
 	public Object classifica(String token) {
 		try {
@@ -280,7 +295,9 @@ public class SocketAdapter implements Adapter {
 			return returnInvalidToken();
 		}
 	}
-
+	/**
+	 * Implementa LogoutUtente dall'interfaccia.
+	 */
 	@Override
 	public Object logoutUtente(String token) {
 		try {
@@ -291,7 +308,9 @@ public class SocketAdapter implements Adapter {
 			return returnInvalidToken();
 		}
 	}
-
+	/**
+	 * Implementa MappaGenerale dall'interfaccia.
+	 */
 	@Override
 	public Object mappaGenerale(String token) {
 		try {
@@ -306,7 +325,9 @@ public class SocketAdapter implements Adapter {
 			return returnInvalidToken();
 		}
 	}
-
+	/**
+	 * Implementa ListaDinosauri dall'interfaccia.
+	 */
 	@Override
 	public Object listaDinosauri(String token) {
 		try {
@@ -326,7 +347,9 @@ public class SocketAdapter implements Adapter {
 			return returnInvalidToken();
 		}
 	}
-
+	/**
+	 * Implementa VistaLocale dall'interfaccia.
+	 */
 	@Override
 	public Object vistaLocale(String token, String idDinosauro) {
 		try {
@@ -368,7 +391,9 @@ public class SocketAdapter implements Adapter {
 			return returnInvalidToken();
 		}
 	}
-
+	/**
+	 * Implementa StatoDinosauro dall'interfaccia.
+	 */
 	@Override
 	public Object statoDinosauro(String token, String idDinosauro) {
 		try {
@@ -393,7 +418,9 @@ public class SocketAdapter implements Adapter {
 			return returnInvalidToken();
 		}
 	}
-
+	/**
+	 * Implementa MuoviDinosauro dall'interfaccia.
+	 */
 	@Override
 	public Object muoviDinosauro(String token, String idDinosauro, Coord newCoord) {
 		try {
@@ -422,7 +449,9 @@ public class SocketAdapter implements Adapter {
 		}
 		return null;
 	}
-
+	/**
+	 * Implementa CresciDinosauro dall'interfaccia.
+	 */
 	@Override
 	public Object cresciDinosauro(String token, String idDinosauro) {
 		try {
@@ -447,7 +476,9 @@ public class SocketAdapter implements Adapter {
 		}
 		return "@no";
 	}
-
+	/**
+	 * Implementa DeponiUovo dall'interfaccia.
+	 */
 	@Override
 	public Object deponiUovo(String token, String idDinosauro) {
 		try {
@@ -473,7 +504,9 @@ public class SocketAdapter implements Adapter {
 		}
 		return "@no";
 	}
-
+	/**
+	 * Implementa ConfermaTurno dall'interfaccia.
+	 */
 	@Override
 	public Object confermaTurno(String token) {
 		try {
@@ -490,7 +523,9 @@ public class SocketAdapter implements Adapter {
 			return "@no,@nonInPartita";
 		}
 	}
-
+	/**
+	 * Implementa PassaTurno dall'interfaccia.
+	 */
 	@Override
 	public Object passaTurno(String token) {
 		try {
