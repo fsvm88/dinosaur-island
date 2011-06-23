@@ -85,7 +85,7 @@ public class Logica implements Runnable {
 	 * Contiene una variabile che dice se la logica si sta chiudendo.
 	 * @uml.property  name="logicaIsShuttingDown"
 	 */
-	private boolean logicaIsShuttingDown = false;
+	private boolean logicaIsShuttingDown = true;
 	/**
 	 * Variabile che dice se il turno del giocatore è stato confermato.
 	 * @uml.property  name="turnoConfermato"
@@ -127,8 +127,8 @@ public class Logica implements Runnable {
 		rrsched = new RRScheduler(numero_MASSIMO_GIOCATORI_INGAME);
 		System.out.println("[Logica] New Player Queue istantiated.");
 		System.out.println("[Logica] Logica initialized successfully.");
-		logicaIsRunning = true;
 		logicaIsShuttingDown = false;
+		logicaIsRunning = true;
 	}
 	/**
 	 * Carica i file di salvataggio, se esistono.
