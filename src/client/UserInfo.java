@@ -31,32 +31,32 @@ public class UserInfo {
 	 * Imposta il nome dell'utente.
 	 * @param newNomeUtente Il nome dell'utente
 	 */
-	void setNome(String newNomeUtente) { this.nomeUtente = newNomeUtente; }
+	public void setNome(String newNomeUtente) { this.nomeUtente = newNomeUtente; }
 	/**
 	 * Imposta la password dell'utente.
 	 * @param newNomeUtente La password dell'utente
 	 */
-	void setPwd(String newPwdUtente) { this.pwdUtente = newPwdUtente; }
+	public void setPwd(String newPwdUtente) { this.pwdUtente = newPwdUtente; }
 	/**
 	 * Imposta il token dell'utente.
 	 * @param newNomeUtente Il token dell'utente
 	 */
-	void setToken(String newToken) { this.curToken = newToken; }
+	public void setToken(String newToken) { this.curToken = newToken; }
 	/**
 	 * Restituisce il nome dell'utente.
 	 * @return Il nome dell'utente.
 	 */
-	String getNome() { return this.nomeUtente; }
+	public String getNome() { return this.nomeUtente; }
 	/**
 	 * Restituisce la password dell'utente.
 	 * @return La password dell'utente.
 	 */
-	String getPwd() {return this.pwdUtente; }
+	public String getPwd() {return this.pwdUtente; }
 	/**
 	 * Restituisce il token dell'utente.
 	 * @return Il token dell'utente.
 	 */
-	String getToken() { return this.curToken; }
+	public String getToken() { return this.curToken; }
 	/**
 	 * Dice se l'utente e' loggato.
 	 * @return True se e' loggato, false altrimenti.

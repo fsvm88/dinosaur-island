@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import client.ClientInterface;
+import client.InputVerifiers.AlphanumericPlusDotInput;
+import client.InputVerifiers.NumericInput;
 
 public class ParametersPanel extends JPanel {
 	/**
@@ -24,11 +26,13 @@ public class ParametersPanel extends JPanel {
 		hostPanel.add(new JLabel("Hostname:"), BorderLayout.NORTH);
 		//JTextField hostField = new JTextField(clientInterface.getHost(), 20);
 		JFormattedTextField hostField = new JFormattedTextField();
+		hostField.setInputVerifier(new AlphanumericPlusDotInput());
 		hostPanel.add(hostField, BorderLayout.SOUTH);
 		add(hostPanel, BorderLayout.NORTH);
 		JPanel portPanel = new JPanel(new BorderLayout());
 		portPanel.add(new JLabel("Porta:"), BorderLayout.NORTH);
 		JTextField portField = new JTextField(clientInterface.getPort().toString(), 6);
+		portField.setInputVerifier(new NumericInput());
 		portPanel.add(portField, BorderLayout.SOUTH);
 		add(portPanel, BorderLayout.SOUTH);
 		// TODO Implementare verifica dell'input!
