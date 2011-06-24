@@ -9,6 +9,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import client.Buttons.AccediAPartitaButton;
+
 public class StartLoggedMenu extends JFrame implements ActionListener {
 	/**
 	 * Default generated Serial Version ID.
@@ -27,7 +29,7 @@ public class StartLoggedMenu extends JFrame implements ActionListener {
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JPanel loggedPanel = new JPanel(new GridLayout(0, 1));
-		loggedPanel.add(bAccediAPartita);
+		loggedPanel.add(new AccediAPartitaButton(clientInterface, userInfo));
 		loggedPanel.add(new CommonLoggedMenu(clientInterface, userInfo));
 		add(loggedPanel);
 		

@@ -4,7 +4,6 @@ import javax.swing.*;
 
 import client.Client;
 
-
 public class Client {
 	/**
 	 * @param args
