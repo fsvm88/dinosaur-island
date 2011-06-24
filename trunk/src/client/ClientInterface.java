@@ -2,6 +2,24 @@ package client;
 
 public class ClientInterface implements Communication, Runnable {
 	/**
+	 * Variabile che aiuta gli utenti di ClientInterface a selezionare il metodo di connessione senza conoscere i dettagli implementativi.
+	 * E' per la connessione via RMI.
+	 * @uml.property name="CONN_RMI"
+	 */
+	public static final String CONN_RMI = "conn_rmi";
+	/**
+	 * Variabile che aiuta gli utenti di ClientInterface a selezionare il metodo di connessione senza conoscere i dettagli implementativi.
+	 * E' per la connessione via Socket.
+	 * @uml.property name="CONN_SOCKET"
+	 */
+	public static final String CONN_SOCKET = "conn_socket";
+	/**
+	 * Variabile che aiuta gli utenti di ClientInterface a selezionare il metodo di connessione senza conoscere i dettagli implementativi.
+	 * E' per la connessione in locale.
+	 * @uml.property name="CONN_LOCAL"
+	 */
+	public static final String CONN_LOCAL = "conn_local";
+	/**
 	 * Contiene il valore predefinito per l'hostname.
 	 * @uml.property name="DEFAULT_HOSTNAME"
 	 */
@@ -37,6 +55,10 @@ public class ClientInterface implements Communication, Runnable {
 	 * @uml.property name="porta"
 	 */
 	private Integer porta = 0;
+	/**
+	 * Variabile che contiene il tip di connessione desiderato.
+	 */
+	private String selectedConnType = null;
 	
 	/**
 	 * Crea le strutture e rende usabile ClientInterface.
@@ -82,6 +104,21 @@ public class ClientInterface implements Communication, Runnable {
 	 * @return Un intero che indica la porta di gioco a cui collegarsi.
 	 */
 	public Integer getPort() { return this.porta; }
+	/**
+	 * Imposta l'hostname a cui collegarsi.
+	 * @param newHost L'hostname.
+	 */
+	public void setHost(String newHost) { this.hostname = newHost; }
+	/**
+	 * Imposta la porta dell'hostname a cui collegarsi.
+	 * @param newPort La porta.
+	 */
+	public void setPort(Integer newPort) { this.porta = newPort; }
+	/**
+	 * Imposta il tipo di connessione da usare.
+	 * @param newConnType Il nuovo tipo di connessione desiderato.
+	 */
+	public void setConnType(String newConnType) { this.selectedConnType = newConnType; }
 
 	@Override
 	public boolean doLogin() {
@@ -105,5 +142,11 @@ public class ClientInterface implements Communication, Runnable {
 	public Object doListaGiocatori() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean doAccediPartita() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
