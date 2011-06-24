@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import client.ClientInterface;
+import client.FrontendCommunication.ClientInterface;
 
 public class ClassificaButton extends JButton implements ActionListener {
 	/**

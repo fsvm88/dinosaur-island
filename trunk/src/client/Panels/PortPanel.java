@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import client.ClientInterface;
+import client.FrontendCommunication.ClientInterface;
 import client.InputVerifiers.NumericInput;
 
 public class PortPanel extends JPanel implements FocusListener{

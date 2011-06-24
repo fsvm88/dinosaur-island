@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import client.UserInfo;
+import client.FrontendCommunication.UserInfo;
 import client.InputVerifiers.AlphanumericInput;
 
 public class UsernamePanel extends JPanel implements FocusListener{

@@ -8,10 +8,10 @@ import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import client.ClientInterface;
 import client.Buttons.LocaleButton;
 import client.Buttons.RMIButton;
 import client.Buttons.SocketButton;
+import client.FrontendCommunication.ClientInterface;
 
 public class ConnectionPanel extends JPanel {
 	/**

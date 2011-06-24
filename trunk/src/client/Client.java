@@ -3,6 +3,11 @@ package client;
 import javax.swing.*;
 
 import client.Client;
+import client.FrontendCommunication.ClientInterface;
+import client.FrontendCommunication.UserInfo;
+import client.MainFrames.GameWindow;
+import client.MainFrames.Selector;
+import client.MainFrames.StartLoggedMenu;
 
 public class Client {
 	/**

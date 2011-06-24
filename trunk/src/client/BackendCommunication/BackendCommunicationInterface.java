@@ -1,8 +1,8 @@
-package dinolib;
+package client.BackendCommunication;
 
 import dinolib.Mappa.Coord;
 
-interface Adapter {
+public interface BackendCommunicationInterface {
 	Object creaUtente(String nomeUtente, String passwordUtente);
 	Object loginUtente(String nomeUtente, String passwordUtente);
 	Object creaRazza(String token, String nomeRazza, Character tipo);
