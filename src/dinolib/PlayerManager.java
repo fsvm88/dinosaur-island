@@ -26,7 +26,7 @@ class PlayerManager implements List<Giocatore>, Serializable {
 	/**
 	 * Inizializza una collezione vuota di giocatori.
 	 */
-	public PlayerManager() { listaGiocatori = new ArrayList<Giocatore>(); } // Testato
+	public PlayerManager() { listaGiocatori = new ArrayList<Giocatore>(); /*listaGiocatori.clear();*/ } // Testato
 
 	/**
 	 * Controlla se l'utente esiste nella lista.
@@ -37,7 +37,7 @@ class PlayerManager implements List<Giocatore>, Serializable {
 		if (!listaGiocatori.isEmpty()) {
 			Iterator<Giocatore> itGiocatori = iterator();
 			while (itGiocatori.hasNext()) {
-				if (itGiocatori.next().getNome().equals(nomeGiocatore)) return true;
+				if (itGiocatori.next().getNome().equals(nomeGiocatore)) { return true; }
 			}
 		}
 		return false;

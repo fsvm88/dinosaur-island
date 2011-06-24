@@ -66,20 +66,38 @@ class ClientWorker implements Runnable {
 	 * @param scanner Lo scanner da cui estrarre il nome utente.
 	 * @return Una stringa che contiene il nome utente.
 	 */
-	private String estraiUser(Scanner scanner) { return scanner.next(Pattern.compile("[^(user=)]")); }
+	private String estraiUser(Scanner scanner) {
+		String nextScanner = scanner.next();
+		if (nextScanner.matches("(^user=)(\\w)+")) {
+			return nextScanner.substring(nextScanner.indexOf('=')+1);
+		}
+		return null;
+	}
 	/**
 	 * Estrae la password dallo scanner.
 	 * @param scanner Lo scanner da cui estrarre la password dell'utente.
 	 * @return Una stringa che contiene la password dell'utente.
 	 */
-	private String estraiPwd(Scanner scanner) { return scanner.next(Pattern.compile("[^(pass=)]")); }
+	private String estraiPwd(Scanner scanner) {
+		String nextScanner = scanner.next();
+		if (nextScanner.matches("(^pass=)\\w+")) {
+			return nextScanner.substring(nextScanner.indexOf('=')+1);
+		}
+		return null;
+	}
 	/**
 	 * Estra il token dallo scanner.
 	 * @param scanner Lo scanner da cui estrarre il token dell'utente.
 	 * @return Una stringa che contiene il token dell'utente.
 	 */
 	private String getToken(Scanner scanner) {
-		if (scanner.hasNext()) { return scanner.next(Pattern.compile("[^(token=)]")); }
+		if (scanner.hasNext()) {
+			String nextScanner = scanner.next();
+			if (nextScanner.matches("(^token=)\\w+")) {
+				return nextScanner.substring(nextScanner.indexOf('=')+1);
+			}
+			return null;
+		}
 		else { return null; }
 	}
 	/**
