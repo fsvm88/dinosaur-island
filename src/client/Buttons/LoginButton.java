@@ -5,7 +5,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import client.ClientInterface;
+import client.Exceptions.GenericConnectionException;
+import client.FrontendCommunication.ClientInterface;
 
 public class LoginButton extends JButton implements ActionListener {
 	/**
@@ -13,7 +14,7 @@ public class LoginButton extends JButton implements ActionListener {
 	 */
 	private static final long serialVersionUID = -1814625966216966410L;
 	private ClientInterface myClientInterface = null;
-	
+
 	public LoginButton(ClientInterface newClientInterface) {
 		super("Login");
 		this.myClientInterface = newClientInterface;
@@ -22,6 +23,11 @@ public class LoginButton extends JButton implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		try {
 			myClientInterface.doLogin();
+		}
+		catch (GenericConnectionException e1) {
+			// TODO implementare JDialog di errores
+		}
 	}
 }

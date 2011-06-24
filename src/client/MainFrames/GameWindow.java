@@ -1,9 +1,12 @@
-package client;
+package client.MainFrames;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
+
+import client.FrontendCommunication.ClientInterface;
+import client.FrontendCommunication.UserInfo;
 
 public class GameWindow extends JFrame implements ActionListener {
 	/**

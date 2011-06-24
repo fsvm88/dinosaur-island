@@ -1,4 +1,4 @@
-package client;
+package client.FrontendCommunication;
 
 public class UserInfo {
 	/**
@@ -61,12 +61,12 @@ public class UserInfo {
 	 * Dice se l'utente e' loggato.
 	 * @return True se e' loggato, false altrimenti.
 	 */
-	boolean isLogged() { return isLogged; }
+	public boolean isLogged() { return isLogged; }
 	/**
 	 * Dice se l'utente e' in partita.
 	 * @return True se l'utente e' in partita, false altrimenti.
 	 */
-	boolean isInGame() { return isInGame; }
+	public boolean isInGame() { return isInGame; }
 	/**
 	 * Cambia lo stato della variabile che dice se l'utente e' loggato. 
 	 */

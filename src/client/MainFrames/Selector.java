@@ -1,4 +1,4 @@
-package client;
+package client.MainFrames;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -9,6 +9,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import client.Buttons.LoginButton;
+import client.FrontendCommunication.ClientInterface;
+import client.FrontendCommunication.UserInfo;
 import client.Panels.ConnectionPanel;
 import client.Panels.ParametersPanel;
 import client.Panels.UserInputPanel;

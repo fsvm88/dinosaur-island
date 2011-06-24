@@ -4,7 +4,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
 
-import client.ClientInterface;
+import client.FrontendCommunication.ClientInterface;
 
 public class ParametersPanel extends JPanel {
 	/**

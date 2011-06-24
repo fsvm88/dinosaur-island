@@ -9,8 +9,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import client.ClientInterface;
-import client.UserInfo;
+import client.FrontendCommunication.ClientInterface;
+import client.FrontendCommunication.UserInfo;
 import client.InputVerifiers.AlphanumericInput;
 import client.InputVerifiers.AlphanumericPlusDotInput;
 

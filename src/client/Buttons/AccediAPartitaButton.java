@@ -5,8 +5,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import client.ClientInterface;
-import client.UserInfo;
+import client.FrontendCommunication.ClientInterface;
+import client.FrontendCommunication.UserInfo;
 
 public class AccediAPartitaButton extends JButton implements ActionListener {
 	/**

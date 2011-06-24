@@ -1,4 +1,4 @@
-package client;
+package client.Panels;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -10,8 +10,10 @@ import javax.swing.JPanel;
 import client.Buttons.ClassificaButton;
 import client.Buttons.ListaGiocatoriButton;
 import client.Buttons.LogoutButton;
+import client.FrontendCommunication.ClientInterface;
+import client.FrontendCommunication.UserInfo;
 
-public class CommonLoggedMenu extends JPanel {
+public class CommonLoggedPanel extends JPanel {
 	/**
 	 * Default generated Serial Version ID.
 	 */
@@ -19,21 +21,19 @@ public class CommonLoggedMenu extends JPanel {
 	private ClientInterface clientInterface = null;
 	private UserInfo userInfo = null;
 	
-	JButton bListaGiocatori = new ListaGiocatoriButton(clientInterface);
-	JButton bClassifica = new ClassificaButton(clientInterface);
-	JButton bLogout = new LogoutButton(clientInterface);
-	
-	public CommonLoggedMenu(ClientInterface newClientInterface, UserInfo newUserInfo) {
+	public CommonLoggedPanel(ClientInterface newClientInterface, UserInfo newUserInfo) {
+		super(new GridLayout(0, 1));
 		this.clientInterface = newClientInterface;
 		this.userInfo = newUserInfo;
-		JPanel myPanel = new JPanel(new GridLayout(0, 1));
-		myPanel.add(bClassifica);
-		myPanel.add(bListaGiocatori);
-		myPanel.add(bLogout);
+		JButton bListaGiocatori = new ListaGiocatoriButton(clientInterface);
+		JButton bClassifica = new ClassificaButton(clientInterface);
+		JButton bLogout = new LogoutButton(clientInterface);
 		ButtonGroup myGroup = new ButtonGroup();
 		myGroup.add(bClassifica);
 		myGroup.add(bListaGiocatori);
 		myGroup.add(bLogout);
-		add(myPanel, BorderLayout.NORTH);
+		add(bClassifica);
+		add(bListaGiocatori);
+		add(bLogout);
 	}
 }

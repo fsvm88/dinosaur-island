@@ -4,7 +4,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
 
-import client.UserInfo;
+import client.FrontendCommunication.UserInfo;
 
 public class UserInputPanel extends JPanel {
 	/**

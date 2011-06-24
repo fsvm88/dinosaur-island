@@ -1,4 +1,4 @@
-package client;
+package client.MainFrames;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -10,6 +10,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import client.Buttons.AccediAPartitaButton;
+import client.FrontendCommunication.ClientInterface;
+import client.FrontendCommunication.UserInfo;
+import client.Panels.CommonLoggedPanel;
 
 public class StartLoggedMenu extends JFrame implements ActionListener {
 	/**
@@ -21,7 +24,7 @@ public class StartLoggedMenu extends JFrame implements ActionListener {
 	
 	JButton bAccediAPartita = new JButton("Accesso alla partita!");
 	
-	StartLoggedMenu(ClientInterface newClientInterface, UserInfo newUserInfo) {
+	public StartLoggedMenu(ClientInterface newClientInterface, UserInfo newUserInfo) {
 		super("Dino Island - Logged");
 		this.clientInterface = newClientInterface;
 		this.userInfo = newUserInfo;
@@ -30,7 +33,7 @@ public class StartLoggedMenu extends JFrame implements ActionListener {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JPanel loggedPanel = new JPanel(new GridLayout(0, 1));
 		loggedPanel.add(new AccediAPartitaButton(clientInterface, userInfo));
-		loggedPanel.add(new CommonLoggedMenu(clientInterface, userInfo));
+		loggedPanel.add(new CommonLoggedPanel(clientInterface, userInfo));
 		add(loggedPanel);
 		
 		pack();

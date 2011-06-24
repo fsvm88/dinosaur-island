@@ -1,6 +1,8 @@
-package client;
+package client.FrontendCommunication;
 
-public class ClientInterface implements Communication, Runnable {
+import client.Exceptions.GenericConnectionException;
+
+public class ClientInterface implements ClientFrontendCommunication, Runnable {
 	/**
 	 * Variabile che aiuta gli utenti di ClientInterface a selezionare il metodo di connessione senza conoscere i dettagli implementativi.
 	 * E' per la connessione via RMI.
@@ -120,9 +122,37 @@ public class ClientInterface implements Communication, Runnable {
 	 */
 	public void setConnType(String newConnType) { this.selectedConnType = newConnType; }
 
+	private void checkCredentialsValidity() throws GenericConnectionException {
+		if (ciUserInfo.getNome() == null) { throw new GenericConnectionException("Nessun nome utente specificato!"); }
+		if (ciUserInfo.getPwd() == null) { throw new GenericConnectionException("Nessuna password specificata!"); }
+	}
+	
+	private void checkConnTypeValidity() throws GenericConnectionException {
+		if ((selectedConnType != null)) {
+			if (selectedConnType.equals(CONN_LOCAL) ||
+					selectedConnType.equals(CONN_RMI) ||
+					selectedConnType.equals(CONN_SOCKET)) { return; }
+		}
+		throw new GenericConnectionException("Nessun tipo di connessione selezionato!");
+	}
+	
+	private void connectionSetup() throws GenericConnectionException {
+		checkConnTypeValidity();
+		checkCredentialsValidity();
+		if (selectedConnType.equals(CONN_RMI)) {
+			
+		}
+		else if (selectedConnType.equals(CONN_RMI)) {
+			
+		}
+		else if (selectedConnType.equals(CONN_LOCAL)) {
+			
+		}
+	}
+	
 	@Override
-	public boolean doLogin() {
-		// TODO Auto-generated method stub
+	public boolean doLogin() throws GenericConnectionException {
+		connectionSetup();
 		return false;
 	}
 

@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JRadioButton;
 
-import client.ClientInterface;
+import client.FrontendCommunication.ClientInterface;
 
 public class SocketButton extends JRadioButton implements ActionListener {
 	/**

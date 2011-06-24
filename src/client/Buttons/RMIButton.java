@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 
-import client.ClientInterface;
+import client.FrontendCommunication.ClientInterface;
 
 public class RMIButton extends JRadioButton implements ActionListener {
 	/**
