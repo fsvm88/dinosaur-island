@@ -40,7 +40,9 @@ class Server {
 				serverIsRunning = false;
 				System.out.println("[Server] Sending stop signal to Logica and SocketListener...");
 				servLogica.shutdownLogica();
-				socketListener.shutdownSocketListener();
+				if (socketListener != null) {
+					if (socketListener.isSocketListenerRunning()) { socketListener.shutdownSocketListener(); }
+				}
 				try {
 					while (servLogica.isLogicaRunning()) { sleep(500); }
 				}

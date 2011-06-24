@@ -1,5 +1,8 @@
 package client.FrontendCommunication;
 
+import java.io.IOException;
+
+import client.BackendCommunication.*;
 import client.Exceptions.GenericConnectionException;
 
 public class ClientInterface implements ClientFrontendCommunication, Runnable {
@@ -31,7 +34,7 @@ public class ClientInterface implements ClientFrontendCommunication, Runnable {
 	 * @uml.property name="DEFAULT_PORT"
 	 */
 	private final int default_PORT = 32845;
-	
+
 	/**
 	 * Variabile che contiene il riferimento a ciUserInfo.
 	 * @uml.property name="ciUserInfo"
@@ -58,10 +61,16 @@ public class ClientInterface implements ClientFrontendCommunication, Runnable {
 	 */
 	private Integer porta = 0;
 	/**
-	 * Variabile che contiene il tip di connessione desiderato.
+	 * Variabile che contiene il tipo di connessione desiderato.
+	 * @uml.property name="selectedConnType"
 	 */
 	private String selectedConnType = null;
-	
+	/**
+	 * Contiene il backend per la connessione.
+	 * @uml.property name="myBackend"
+	 */
+	private BackendCommunication myBackend = null;
+
 	/**
 	 * Crea le strutture e rende usabile ClientInterface.
 	 * @param newUserInfo Le informazioni sull'utente richieste per far funzionare ClientInterface.
@@ -73,7 +82,7 @@ public class ClientInterface implements ClientFrontendCommunication, Runnable {
 		this.hostname = default_HOSTNAME;
 		this.porta = default_PORT;
 	}
-	
+
 	/**
 	 * Dice se ClientInterface sta ancora funzionando.
 	 * @return True se ClientInterface sta funzionando, false altrimenti.
@@ -88,14 +97,14 @@ public class ClientInterface implements ClientFrontendCommunication, Runnable {
 	 * Riceve il segnale di chiusura e imposta a true la variabile di spegnimento.
 	 */
 	void shutdownCI() { this.isCIShuttingDown = true; }
-	
+
 	@Override
 	public void run() {
 		while(!isCIShuttingDown()) {
-			
+
 		}
 	}
-	
+
 	/**
 	 * Restituisce il valore corrente dell'hostname a cui collegarsi.
 	 * @return Una stringa contenente l'hostname a cui collegarsi.
@@ -126,7 +135,7 @@ public class ClientInterface implements ClientFrontendCommunication, Runnable {
 		if (ciUserInfo.getNome() == null) { throw new GenericConnectionException("Nessun nome utente specificato!"); }
 		if (ciUserInfo.getPwd() == null) { throw new GenericConnectionException("Nessuna password specificata!"); }
 	}
-	
+
 	private void checkConnTypeValidity() throws GenericConnectionException {
 		if ((selectedConnType != null)) {
 			if (selectedConnType.equals(CONN_LOCAL) ||
@@ -135,23 +144,29 @@ public class ClientInterface implements ClientFrontendCommunication, Runnable {
 		}
 		throw new GenericConnectionException("Nessun tipo di connessione selezionato!");
 	}
-	
-	private void connectionSetup() throws GenericConnectionException {
+
+	private void connectionSetup() throws GenericConnectionException, IOException {
 		checkConnTypeValidity();
 		checkCredentialsValidity();
-		if (selectedConnType.equals(CONN_RMI)) {
-			
+		try {
+			if (selectedConnType.equals(CONN_RMI)) {
+
+			}
+			else if (selectedConnType.equals(CONN_RMI)) {
+				myBackend = new SocketBackendCommunication(getHost(), getPort());
+			}
+			else if (selectedConnType.equals(CONN_LOCAL)) {
+
+			}
 		}
-		else if (selectedConnType.equals(CONN_RMI)) {
-			
-		}
-		else if (selectedConnType.equals(CONN_LOCAL)) {
-			
+		catch (IOException e) {
+			System.out.println("[ClientInterface] IOException while trying to open connection!");
+			throw new IOException("[ClientInterface] IOExcception mentre tentavo di aprire la connessione!");
 		}
 	}
-	
+
 	@Override
-	public boolean doLogin() throws GenericConnectionException {
+	public boolean doLogin() throws GenericConnectionException, IOException {
 		connectionSetup();
 		return false;
 	}

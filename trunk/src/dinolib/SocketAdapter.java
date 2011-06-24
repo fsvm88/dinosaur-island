@@ -192,6 +192,7 @@ public class SocketAdapter implements Adapter {
 	@Override
 	public Object loginUtente(String nomeUtente, String passwordUtente) {
 		try {
+			System.out.println(nomeUtente + " " + passwordUtente);
 			if (myLogica.doLogin(nomeUtente, passwordUtente)) {
 				return "@ok," + myLogica.getCMan().getToken(nomeUtente);
 			}

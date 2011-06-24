@@ -2,6 +2,7 @@ package client.Buttons;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 
@@ -28,6 +29,9 @@ public class LoginButton extends JButton implements ActionListener {
 		}
 		catch (GenericConnectionException e1) {
 			// TODO implementare JDialog di errores
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 	}
 }
