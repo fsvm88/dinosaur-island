@@ -1,8 +1,10 @@
 package dinolib;
 
 import dinolib.Exceptions.GenericDinosauroException;
+import dinolib.Exceptions.InvalidIDException;
 import dinolib.Exceptions.InvalidTokenException;
 import dinolib.Exceptions.NomeRazzaOccupatoException;
+import dinolib.Exceptions.NonCollegatoException;
 import dinolib.Exceptions.NonInPartitaException;
 import dinolib.Exceptions.RazzaNonCreataException;
 import dinolib.Exceptions.TroppiGiocatoriException;
@@ -16,13 +18,13 @@ interface Adapter {
 	Object creaRazza(String token, String nomeRazza, Character tipo) throws NomeRazzaOccupatoException, InvalidTokenException;
 	Object accessoPartita(String token) throws InvalidTokenException, TroppiGiocatoriException, RazzaNonCreataException, InterruptedException;
 	Object uscitaPartita(String token) throws InvalidTokenException;
-	Object listaGiocatori(String token) throws InvalidTokenException, NonInPartitaException;
-	Object classifica(String token) throws InvalidTokenException, NonInPartitaException;
+	Object listaGiocatori(String token) throws InvalidTokenException, NonInPartitaException, NonCollegatoException;
+	Object classifica(String token) throws InvalidTokenException, NonInPartitaException, NonCollegatoException;
 	Object logoutUtente(String token) throws InvalidTokenException;
 	Object mappaGenerale(String token);
-	Object listaDinosauri(String token);
+	Object listaDinosauri(String token) throws InvalidTokenException, RazzaNonCreataException, NonInPartitaException;
 	Object vistaLocale(String token, String idDinosauro);
-	Object statoDinosauro(String token, String idDinosauro);
+	Object statoDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException, NonInPartitaException;
 	Object muoviDinosauro(String token, String idDinosauro, Coord newCoord) throws InvalidTokenException, GenericDinosauroException;
 	Object cresciDinosauro(String token, String idDinosauro) throws InvalidTokenException, GenericDinosauroException;
 	Object deponiUovo(String token, String idDinosauro) throws GenericDinosauroException, InvalidTokenException;

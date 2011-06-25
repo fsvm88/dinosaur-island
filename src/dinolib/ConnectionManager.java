@@ -10,7 +10,7 @@ import dinolib.Exceptions.InvalidTokenException;
 /**
  * Classe che gestisce le connessioni.
  */
-class ConnectionManager {
+public class ConnectionManager {
 	/**
 	 * Istanzia il riferimento all'hashtable che contiene le coppie token-chiave.
 	 * @uml.property name="connTable"
@@ -66,7 +66,7 @@ class ConnectionManager {
 	 * @return Il nome dell'utente associato al token.
 	 * @throws InvalidTokenException Se il token non e' valido (non e' contenuto nella lista).
 	 */
-	protected String getName(String token) throws InvalidTokenException { // Testato
+	public String getName(String token) throws InvalidTokenException { // Testato
 		if (existsToken(token)) return connTable.get(token);
 		else throw new InvalidTokenException();
 	}

@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * Classe che implementa lo scheduler per i turni dei giocatori.
  * Gestisce la coda dei giocatori attualmente in gioco e nient'altro.
  */
-class RRScheduler {
+public class RRScheduler {
 	/**
 	 * Contiene il numero massimo dei giocatori in gioco.
 	 * Ne viene fatta una copia locale da parte del costruttore, di modo da poter implementare altre funzioni.
@@ -74,7 +74,7 @@ class RRScheduler {
 	 * Dice se qualcuno sta giocando (la lista non e' vuota).
 	 * @return True se qualcuno sta giocando, false altrimenti.
 	 */
-	protected boolean hasQueuedTasks() { // Testato
+	public boolean hasQueuedTasks() { // Testato
 		if (playersQueue.size() == 0) return false;
 		else return true;
 	}
@@ -91,5 +91,5 @@ class RRScheduler {
 	 * Ritorna un iteratore sulla lista di giocatori nella coda.
 	 * @return L'iteratore sulla lista dei giocatori nella coda.
 	 */
-	protected Iterator<String> iterator() { return playersQueue.iterator(); } // Testato
+	public Iterator<String> iterator() { return playersQueue.iterator(); } // Testato
 }
