@@ -22,7 +22,7 @@ public class Coord implements Serializable {
 	 * La y delle coordinate.
 	 */
 	private int y = 0;
-	
+
 	/**
 	 * Richiede le x e y desiderate.
 	 * @param x La x desiderata.
@@ -32,7 +32,7 @@ public class Coord implements Serializable {
 		this.x = x;
 		this.y = y;
 	}
-	
+
 	/**
 	 * Restituisce la x delle coordinate.
 	 * @return La x delle coordinate.
@@ -43,7 +43,7 @@ public class Coord implements Serializable {
 	 * @return La y delle coordinate.
 	 */
 	public int getY() { return y; } // Testato
-	
+
 	/**
 	 * Confronta l'oggetto attuale con l'argomento.
 	 * @param coordToConf La coordinata con cui confrontare l'oggetto corrente.
@@ -51,15 +51,26 @@ public class Coord implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object coordToConf) { // Testato
-		if (coordToConf == null) return false;
+		if (coordToConf == null) { return false; }
 		if ((this.x == ((Coord) coordToConf).getX()) &&
-				(this.y == ((Coord) coordToConf).getY())) return true;
-		else return false;
+				(this.y == ((Coord) coordToConf).getY())) { return true; }
+		else { return false; }
 	}
-//	/**
-//	 * Ritorna un hashCode univoco per l'oggetto corrente.
-//	 * @return L'hashCode dell'oggetto.
-//	 */
+	
+	// /**
+	// * Override del metodo hashCode (teoricamente va ridefinito assieme ad equals).
+	// * Dico semplicemente che non e' implementato correttamente e ritorno un valore qualunque.
+	// */
+	/*@Override
+	public int hashCode() {
+		assert false : "hashCode not designed";
+		return 42; // any arbitrary constant will do
+	}*/
+	
+	//	/**
+	//	 * Ritorna un hashCode univoco per l'oggetto corrente.
+	//	 * @return L'hashCode dell'oggetto.
+	//	 */
 	/*@Override
 	public int hashCode() { return ((1000*this.getX()) + this.getY()); }*/
 }
