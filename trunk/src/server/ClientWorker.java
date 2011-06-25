@@ -296,7 +296,7 @@ class ClientWorker implements Runnable {
 	 * Imposta la variabile che ferma il thread a true.
 	 * Serve per gestire i thread indipendentement dal server.
 	 */
-	public void stop() { threadIsRunning = false; }
+	private void stop() { threadIsRunning = false; }
 	
 	/** 
 	 * Termina il thread su eccezione:

@@ -11,14 +11,14 @@ import javax.swing.JTextField;
 import client.FrontendCommunication.UserInfo;
 import client.InputVerifiers.AlphanumericInput;
 
-public class UsernamePanel extends JPanel implements FocusListener{
+class UsernamePanel extends JPanel implements FocusListener{
 	/**
 	 * Default generated Serial Version ID.
 	 */
 	private static final long serialVersionUID = 7132721055132162577L;
 	private UserInfo userInfo = null;
 
-	public UsernamePanel(UserInfo newUserInfo) {
+	UsernamePanel(UserInfo newUserInfo) {
 		super(new BorderLayout());
 		this.userInfo = newUserInfo;
 		add(new JLabel("Username:"), BorderLayout.NORTH);

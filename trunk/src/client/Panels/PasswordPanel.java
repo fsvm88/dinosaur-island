@@ -12,14 +12,14 @@ import javax.swing.JTextField;
 import client.FrontendCommunication.UserInfo;
 import client.InputVerifiers.AlphanumericInput;
 
-public class PasswordPanel extends JPanel implements FocusListener{
+class PasswordPanel extends JPanel implements FocusListener{
 	/**
 	 * Default generated Serial Version ID.
 	 */
 	private static final long serialVersionUID = 1594678875399601555L;
 	private UserInfo userInfo = null;
 
-	public PasswordPanel(UserInfo newUserInfo) {
+	PasswordPanel(UserInfo newUserInfo) {
 		super(new BorderLayout());
 		this.userInfo = newUserInfo;
 		add(new JLabel("Password:"), BorderLayout.NORTH);

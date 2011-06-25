@@ -10,18 +10,16 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import client.FrontendCommunication.ClientInterface;
-import client.FrontendCommunication.UserInfo;
-import client.InputVerifiers.AlphanumericInput;
 import client.InputVerifiers.AlphanumericPlusDotInput;
 
-public class HostPanel extends JPanel implements FocusListener{
+class HostPanel extends JPanel implements FocusListener{
 	/**
 	 * Default generated Serial Version ID.
 	 */
 	private static final long serialVersionUID = 1740446437579289546L;
 	private ClientInterface clientInterface = null;
 
-	public HostPanel(ClientInterface newClientInterface) {
+	HostPanel(ClientInterface newClientInterface) {
 		super(new BorderLayout());
 		this.clientInterface = newClientInterface;
 		add(new JLabel("Hostname:"), BorderLayout.NORTH);
