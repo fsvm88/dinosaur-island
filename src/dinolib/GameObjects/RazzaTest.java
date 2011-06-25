@@ -1,4 +1,4 @@
-package dinolib.Razza;
+package dinolib.GameObjects;
 
 import static org.junit.Assert.*;
 
@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import dinolib.Exceptions.GenericDinosauroException;
-import dinolib.Mappa.Coord;
 
 /**
  * @author  fabio

@@ -8,7 +8,7 @@ import dinolib.Exceptions.RazzaNonCreataException;
 import dinolib.Exceptions.TroppiGiocatoriException;
 import dinolib.Exceptions.UserAuthenticationFailedException;
 import dinolib.Exceptions.UserExistsException;
-import dinolib.Mappa.Coord;
+import dinolib.GameObjects.Coord;
 
 interface Adapter {
 	Object creaUtente(String nomeUtente, String passwordUtente) throws UserExistsException;

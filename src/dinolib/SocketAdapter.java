@@ -4,9 +4,10 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import dinolib.Exceptions.*;
-import dinolib.Mappa.Cella;
-import dinolib.Mappa.Coord;
-import dinolib.Razza.Dinosauro;
+import dinolib.GameObjects.Cella;
+import dinolib.GameObjects.Coord;
+import dinolib.GameObjects.Dinosauro;
+import dinolib.GameObjects.Giocatore;
 
 public class SocketAdapter implements Adapter {
 	/**

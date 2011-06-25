@@ -1,12 +1,9 @@
-package dinolib;
+package dinolib.GameObjects;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import dinolib.Mappa.*;
-import dinolib.Razza.Carnivoro;
 
 public class GiocatoreTest {
 	private Giocatore testGiocatore;

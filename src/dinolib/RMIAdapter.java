@@ -1,12 +1,9 @@
 package dinolib;
 
-import java.util.Iterator;
-
 import dinolib.CommunicationObjects.Classifica;
 import dinolib.CommunicationObjects.ListaGiocatori;
 import dinolib.Exceptions.*;
-import dinolib.Mappa.Coord;
-import dinolib.Razza.Dinosauro;
+import dinolib.GameObjects.Coord;
 
 public class RMIAdapter implements Adapter {
 	/**

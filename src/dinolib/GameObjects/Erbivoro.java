@@ -1,8 +1,7 @@
-package dinolib.Razza;
+package dinolib.GameObjects;
 
 import java.io.Serializable;
 
-import dinolib.Mappa.Coord;
 
 
 public class Erbivoro extends Dinosauro implements Serializable {

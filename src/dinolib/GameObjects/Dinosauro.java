@@ -1,9 +1,8 @@
-package dinolib.Razza;
+package dinolib.GameObjects;
 
 import java.io.Serializable;
 
 import dinolib.CommonUtils;
-import dinolib.Mappa.Coord;
 /**
  * @author  fabio
  */
