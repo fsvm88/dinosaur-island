@@ -1,7 +1,12 @@
 package dinolib;
 
+import java.util.Iterator;
+
+import dinolib.CommunicationObjects.Classifica;
+import dinolib.CommunicationObjects.ListaGiocatori;
 import dinolib.Exceptions.*;
 import dinolib.Mappa.Coord;
+import dinolib.Razza.Dinosauro;
 
 public class RMIAdapter implements Adapter {
 	/**
@@ -46,15 +51,21 @@ public class RMIAdapter implements Adapter {
 	}
 
 	@Override
-	public Object listaGiocatori(String token) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object listaGiocatori(String token) throws InvalidTokenException, NonInPartitaException {
+		if (myLogica.isPlayerInGame(token)) {
+			if (myLogica.getPlayerByToken(token).hasRazza()) {
+				return new ListaGiocatori(myLogica.getPMan());
+			}
+		}
+		throw new NonInPartitaException();
 	}
 
 	@Override
-	public Object classifica(String token) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object classifica(String token) throws InvalidTokenException, NonInPartitaException {
+		if (myLogica.isPlayerLogged(token)) {
+			return new Classifica(myLogica);
+		}
+		throw new NonInPartitaException();
 	}
 
 	@Override

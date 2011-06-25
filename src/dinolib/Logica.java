@@ -220,7 +220,7 @@ public class Logica implements Runnable {
 	 * Restituisce l'oggetto PlayerManager.
 	 * @return L'oggetto PlayerManager.
 	 */
-	protected PlayerManager getPMan() { return pMan; } // Testato
+	public PlayerManager getPMan() { return pMan; } // Testato
 	/**
 	 * Restituisce l'oggetto ConnectionManager.
 	 * @return L'oggetto ConnectionManager.

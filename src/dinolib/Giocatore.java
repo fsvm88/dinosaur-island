@@ -9,7 +9,7 @@ import dinolib.Razza.*;
 /**
  * Classe che gestisce il singolo giocatore.
  */
-class Giocatore implements Serializable {
+public class Giocatore implements Serializable {
 	/**
 	 * Generated version ID for Serializable.
 	 */
@@ -104,7 +104,7 @@ class Giocatore implements Serializable {
 	 * Verifica che l'utente abbia una razza di dinosauri.
 	 * @return True se il giocatore ha gia' una razza, false se non ce l'ha gia'.
 	 */
-	protected boolean hasRazza() { // Testato
+	public boolean hasRazza() { // Testato
 		if ((getRazza() == null)) return false;
 		else return true;
 	}
