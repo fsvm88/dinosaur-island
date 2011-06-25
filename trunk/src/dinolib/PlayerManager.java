@@ -12,7 +12,7 @@ import java.util.ListIterator;
 /**
  * Classe che gestisce l'elenco di giocatori.
  */
-class PlayerManager implements List<Giocatore>, Serializable {
+public class PlayerManager implements List<Giocatore>, Serializable {
 	/**
 	 * Generated version ID for Serializable.
 	 */

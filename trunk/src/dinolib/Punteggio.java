@@ -49,7 +49,7 @@ class Punteggio implements Serializable {
 	 * @param nomeRazza Il nome della razza di cui e' richiesto il punteggio.
 	 * @return Il punteggio della razza richiesto.
 	 */
-	protected Integer getPunteggioDaNome(String nomeRazza) { // Testato
+	public Integer getPunteggioDaNome(String nomeRazza) { // Testato
 		if (listaPunteggio.containsKey(nomeRazza)) {
 			return listaPunteggio.get(nomeRazza).intValue();
 		}

@@ -3,6 +3,7 @@ package dinolib;
 import dinolib.Exceptions.GenericDinosauroException;
 import dinolib.Exceptions.InvalidTokenException;
 import dinolib.Exceptions.NomeRazzaOccupatoException;
+import dinolib.Exceptions.NonInPartitaException;
 import dinolib.Exceptions.RazzaNonCreataException;
 import dinolib.Exceptions.TroppiGiocatoriException;
 import dinolib.Exceptions.UserAuthenticationFailedException;
@@ -15,8 +16,8 @@ interface Adapter {
 	Object creaRazza(String token, String nomeRazza, Character tipo) throws NomeRazzaOccupatoException, InvalidTokenException;
 	Object accessoPartita(String token) throws InvalidTokenException, TroppiGiocatoriException, RazzaNonCreataException, InterruptedException;
 	Object uscitaPartita(String token) throws InvalidTokenException;
-	Object listaGiocatori(String token);
-	Object classifica(String token);
+	Object listaGiocatori(String token) throws InvalidTokenException, NonInPartitaException;
+	Object classifica(String token) throws InvalidTokenException, NonInPartitaException;
 	Object logoutUtente(String token) throws InvalidTokenException;
 	Object mappaGenerale(String token);
 	Object listaDinosauri(String token);
