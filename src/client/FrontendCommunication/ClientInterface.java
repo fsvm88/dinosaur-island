@@ -92,7 +92,7 @@ public class ClientInterface implements ClientFrontendCommunication, Runnable {
 	 * Dice se ClientInterface si sta spegnendo.
 	 * @return True se ClientInterface si sta spegnendo, false altrimenti.
 	 */
-	boolean isCIShuttingDown() { return isCIShuttingDown; }
+	private boolean isCIShuttingDown() { return isCIShuttingDown; }
 	/**
 	 * Riceve il segnale di chiusura e imposta a true la variabile di spegnimento.
 	 */

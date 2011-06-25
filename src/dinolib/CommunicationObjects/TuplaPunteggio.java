@@ -2,7 +2,7 @@ package dinolib.CommunicationObjects;
 
 import java.io.Serializable;
 
-public class TuplaPunteggio implements Serializable {
+class TuplaPunteggio implements Serializable {
 	/**
 	 * Default generated Serial Version ID.
 	 */
@@ -35,7 +35,7 @@ public class TuplaPunteggio implements Serializable {
 	 * @param newPunteggioRazza Il punteggio della razza del giocatore.
 	 * @param newStatoRazza Lo stato della razza del giocatore.
 	 */
-	public TuplaPunteggio(String newNomeGiocatore, String newNomeRazza, Integer newPunteggioRazza, Character newStatoRazza) {
+	TuplaPunteggio(String newNomeGiocatore, String newNomeRazza, Integer newPunteggioRazza, Character newStatoRazza) {
 		this.nomeGiocatore = newNomeGiocatore;
 		this.nomeRazza = newNomeRazza;
 		this.punteggioRazza = newPunteggioRazza;

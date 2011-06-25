@@ -12,14 +12,14 @@ import javax.swing.JTextField;
 import client.FrontendCommunication.ClientInterface;
 import client.InputVerifiers.NumericInput;
 
-public class PortPanel extends JPanel implements FocusListener{
+class PortPanel extends JPanel implements FocusListener{
 	/**
 	 * Default generated Serial Version ID.
 	 */
 	private static final long serialVersionUID = -1936866410764892717L;
 	private ClientInterface clientInterface = null;
 
-	public PortPanel(ClientInterface newClientInterface) {
+	PortPanel(ClientInterface newClientInterface) {
 		super(new FlowLayout());
 		this.clientInterface = newClientInterface;
 		add(new JLabel("Porta:"));

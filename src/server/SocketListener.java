@@ -12,7 +12,7 @@ import dinolib.SocketAdapter;
 /**
  * Classe che gestisce le connessioni via socket.
  */
-public class SocketListener implements Runnable {
+class SocketListener implements Runnable {
 	/**
 	 * Definisce staticamente la porta di gioco.
 	 * @uml.property  name="PORTA_DI_GIOCO"
@@ -32,7 +32,7 @@ public class SocketListener implements Runnable {
 	 * Definisce il riferimento al SocketAdapter.
 	 * @uml.property name="socketAdapter"
 	 */
-	protected SocketAdapter socketAdapter = null;
+	private SocketAdapter socketAdapter = null;
 
 	/**
 	 * Variabile che dice se il SocketListener sta ancora funzionando.
@@ -43,7 +43,7 @@ public class SocketListener implements Runnable {
 	/**
 	 * Inizializza il socket.
 	 */
-	public SocketListener(Logica inLogica) {
+	SocketListener(Logica inLogica) {
 		servLogica = inLogica;
 		try {
 			System.out.println("[SocketListener] Trying to instantiate a new ServerSocket...");
@@ -78,7 +78,7 @@ public class SocketListener implements Runnable {
 	}
 
 	public boolean isSocketListenerRunning() { return socketListenerRunning; }
-	public void shutdownSocketListener() { socketListenerRunning = false; }
+	void shutdownSocketListener() { socketListenerRunning = false; }
 	@Override
 	public void finalize() {
 		System.out.println("[SocketListener] Closing socket...");

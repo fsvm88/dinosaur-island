@@ -2,7 +2,7 @@ package client.BackendCommunication;
 
 import dinolib.GameObjects.Coord;
 
-public interface BackendCommunicationInterface {
+interface BackendCommunicationInterface {
 	Object creaUtente(String nomeUtente, String passwordUtente);
 	Object loginUtente(String nomeUtente, String passwordUtente);
 	Object creaRazza(String token, String nomeRazza, Character tipo);

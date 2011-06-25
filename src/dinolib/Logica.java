@@ -411,7 +411,7 @@ public class Logica implements Runnable {
 	/**
 	 * Implementa il metodo stop per lo shutdown, che chiude la logica e salva i file.
 	 */
-	public void stop() {
+	private void stop() {
 		/* Fai uscire tutti gli utenti dalla partita.
 		 * Rende la mappa consistente e rimuove tutti i dinosauri. */
 		System.out.println("[Logica] Disconnecting players from game...");

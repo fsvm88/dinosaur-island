@@ -62,7 +62,7 @@ public class Razza implements Set<Dinosauro>, Serializable {
 	 * @param nomeRazza Il nome della razza.
 	 * @param tipoRazza Il tipo della razza.
 	 */
-	public Razza(String nomeRazza, Character tipoRazza) { // Testato
+	Razza(String nomeRazza, Character tipoRazza) { // Testato
 		this.nome = nomeRazza;
 		this.tipoRazza = tipoRazza;
 	}
