@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import dinolib.Logica;
 import dinolib.GameObjects.Giocatore;
 
 public class Classifica implements Serializable {
@@ -12,27 +11,35 @@ public class Classifica implements Serializable {
 	 * Default generated Serial Version ID.
 	 */
 	private static final long serialVersionUID = 2813658587475977859L;
-
+	/**
+	 * Contiene le tuple dei punteggi della classifica.
+	 * @uml.property name="myPunteggi"
+	 */
 	private ArrayList<TuplaPunteggio> myPunteggi = null;
-
-	public Classifica(Logica myLogica) {
+	/**
+	 * Crea un'istanza e riempie la classifica con le tuple.
+	 * @param myLogica La Logica da cui prendere le informazioni.
+	 */
+	public Classifica(Iterator<Giocatore> itGiocatori) {
 		myPunteggi = new ArrayList<TuplaPunteggio>();
 
-		Iterator<Giocatore> itGiocatori = myLogica.getPMan().iterator();
 		while (itGiocatori.hasNext()) {
 			aggiungiUnaTupla(itGiocatori.next());
 		}
 	}
-
+	/**
+	 * Aggiunge alla lista una tupla.
+	 * @param giocatore Il giocatore da cui estrarre i punteggi.
+	 */
 	private void aggiungiUnaTupla(Giocatore giocatore) {
 		String curPlayingRazza = null;
 		if (giocatore.hasRazza()) {
 			curPlayingRazza = giocatore.getRazza().getNome();
 		}
-		Iterator<String> itRazze = giocatore.getPunteggio().iterator();
+		Iterator<String> itNomeRazze = giocatore.getPunteggio().iterator();
 		String curRazza = null;
-		while (itRazze.hasNext()) {
-			curRazza = itRazze.next();
+		while (itNomeRazze.hasNext()) {
+			curRazza = itNomeRazze.next();
 			if (curPlayingRazza != null) {
 				if ((curRazza.equals(curPlayingRazza))) {
 					myPunteggi.add(new TuplaPunteggio(giocatore.getNome(), curRazza, giocatore.getPunteggio().getPunteggioDaNome(curRazza), 's'));
@@ -43,4 +50,9 @@ public class Classifica implements Serializable {
 			}
 		}
 	}
+	/**
+	 * Restituisce un iteratore sulle tuple dei punteggi.
+	 * @return L'iteratore sulle tuple dei punteggi.
+	 */
+	public Iterator<TuplaPunteggio> iterator() { return myPunteggi.iterator(); }
 }

@@ -1,7 +1,9 @@
 package dinolib;
 
 import dinolib.CommunicationObjects.Classifica;
+import dinolib.CommunicationObjects.ListaDinosauri;
 import dinolib.CommunicationObjects.ListaGiocatori;
+import dinolib.CommunicationObjects.StatoDinosauro;
 import dinolib.Exceptions.*;
 import dinolib.GameObjects.Coord;
 
@@ -9,17 +11,15 @@ public class RMIAdapter implements Adapter {
 	/**
 	 * Contiene la classe logica che viene istanziata da server.
 	 * @uml.property  name="myLogica"
-	 * @uml.associationEnd  
+	 * @uml.associationEnd
 	 */
 	private Logica myLogica = null;
-	
+
 	/**
 	 * Costruttore pubblico, riceve come unico argomento la classe Logica che deve gestire.
 	 * @param newLogica
 	 */
-	public RMIAdapter (Logica newLogica) {
-		myLogica = newLogica;
-	}
+	public RMIAdapter (Logica newLogica) { myLogica = newLogica; }
 
 	@Override
 	public Object creaUtente(String nomeUtente, String passwordUtente) throws UserExistsException {
@@ -48,21 +48,19 @@ public class RMIAdapter implements Adapter {
 	}
 
 	@Override
-	public Object listaGiocatori(String token) throws InvalidTokenException, NonInPartitaException {
-		if (myLogica.isPlayerInGame(token)) {
-			if (myLogica.getPlayerByToken(token).hasRazza()) {
-				return new ListaGiocatori(myLogica.getPMan());
-			}
+	public Object listaGiocatori(String token) throws InvalidTokenException, NonCollegatoException {
+		if (myLogica.isPlayerLogged(token)) {
+			return new ListaGiocatori(myLogica);
 		}
-		throw new NonInPartitaException();
+		throw new NonCollegatoException();
 	}
 
 	@Override
-	public Object classifica(String token) throws InvalidTokenException, NonInPartitaException {
+	public Object classifica(String token) throws InvalidTokenException, NonInPartitaException, NonCollegatoException {
 		if (myLogica.isPlayerLogged(token)) {
-			return new Classifica(myLogica);
+			return new Classifica(myLogica.getPMan().iterator());
 		}
-		throw new NonInPartitaException();
+		throw new NonCollegatoException();
 	}
 
 	@Override
@@ -77,9 +75,14 @@ public class RMIAdapter implements Adapter {
 	}
 
 	@Override
-	public Object listaDinosauri(String token) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object listaDinosauri(String token) throws InvalidTokenException, RazzaNonCreataException, NonInPartitaException {
+		if (myLogica.isPlayerInGame(token)) {
+			if (myLogica.getPlayerByToken(token).hasRazza()) {
+				return new ListaDinosauri(myLogica.getPlayerByToken(token).getRazza().iterator());
+			}
+			throw new RazzaNonCreataException();
+		}
+		throw new NonInPartitaException();
 	}
 
 	@Override
@@ -89,9 +92,31 @@ public class RMIAdapter implements Adapter {
 	}
 
 	@Override
-	public Object statoDinosauro(String token, String idDinosauro) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object statoDinosauro(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException, NonInPartitaException {
+		if (myLogica.isPlayerInGame(token)) {
+			if (myLogica.existsDinosauroWithId(idDinosauro)) {
+				if (myLogica.getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
+					return new StatoDinosauro(myLogica.getPlayerByToken(token).getNome(),
+							myLogica.getPlayerByToken(token).getRazza().getNome(),
+							myLogica.getPlayerByToken(token).getRazza().getTipo().charValue(),
+							myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getCoord(),
+							myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getDimensione(),
+							myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getEnergiaAttuale(),
+							myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getTurnoDiVita()
+							);
+				}
+				else if (!myLogica.getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
+					return new StatoDinosauro(myLogica.getPlayerByToken(token).getNome(),
+							myLogica.getPlayerByToken(token).getRazza().getNome(),
+							myLogica.getPlayerByToken(token).getRazza().getTipo().charValue(),
+							myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getCoord(),
+							myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getDimensione()
+							);
+				}
+			}
+			throw new InvalidIDException();
+		}
+		throw new NonInPartitaException();
 	}
 
 	@Override

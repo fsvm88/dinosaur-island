@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import dinolib.PlayerManager;
-import dinolib.GameObjects.Giocatore;
+import dinolib.Logica;
+import dinolib.Exceptions.InvalidTokenException;
 
 public class ListaGiocatori implements Serializable {
 	/**
@@ -20,16 +20,17 @@ public class ListaGiocatori implements Serializable {
 	/**
 	 * Crea un'istanza tramite il Player Manager.
 	 * @param pMan Il Player Manager corrente.
+	 * @throws InvalidTokenException 
 	 */
-	public ListaGiocatori(PlayerManager pMan) {
-		if (pMan != null) {
-			nameList = new ArrayList<String>();
-			Iterator<Giocatore> itPMan = pMan.iterator();
-			while (itPMan.hasNext()) {
-				nameList.add(itPMan.next().getNome());
+	public ListaGiocatori(Logica newLogica) {
+		nameList = new ArrayList<String>();
+		if (newLogica.getRRSched().hasQueuedTasks()) {
+			Iterator<String> itInGameTokens = newLogica.getRRSched().iterator();
+			while (itInGameTokens.hasNext()) {
+				try { nameList.add(newLogica.getCMan().getName(itInGameTokens.next())); }
+				catch (InvalidTokenException e) { System.out.println("[ListaGiocatori] Incontrata InvalidTokenException dove non dovrei avere eccezioni!!!"); }
 			}
 		}
-		else throw new NullPointerException();
 	}
 	/**
 	 * Ritorna un iteratore sui nomi dei giocatori.

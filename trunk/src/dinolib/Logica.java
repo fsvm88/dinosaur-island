@@ -226,12 +226,12 @@ public class Logica implements Runnable {
 	 * Restituisce l'oggetto ConnectionManager.
 	 * @return L'oggetto ConnectionManager.
 	 */
-	protected ConnectionManager getCMan() { return cMan; } // Testato
+	public ConnectionManager getCMan() { return cMan; } // Testato
 	/**
 	 * Restituisce l'oggetto RRScheduler.
 	 * @return L'oggetto RRScheduler.
 	 */
-	protected RRScheduler getRRSched() { return rrsched; } // Testato
+	public RRScheduler getRRSched() { return rrsched; } // Testato
 	/**
 	 * Dice se la logica sta ancora lavorando.
 	 * @return True se la logica sta ancora lavorando, false altrimenti.
