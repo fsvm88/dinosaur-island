@@ -1,4 +1,4 @@
-package dinolib.Razza;
+package dinolib.GameObjects;
 
 
 import static org.junit.Assert.*;
@@ -6,7 +6,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import dinolib.Mappa.Coord;
 
 
 /**

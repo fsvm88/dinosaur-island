@@ -1,4 +1,4 @@
-package dinolib.Mappa;
+package dinolib.GameObjects;
 
 import java.io.Serializable;
 

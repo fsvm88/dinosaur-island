@@ -1,6 +1,6 @@
 package client.BackendCommunication;
 
-import dinolib.Mappa.Coord;
+import dinolib.GameObjects.Coord;
 
 public interface BackendCommunicationInterface {
 	Object creaUtente(String nomeUtente, String passwordUtente);

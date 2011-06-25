@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import dinolib.Giocatore;
 import dinolib.Logica;
 import dinolib.Exceptions.InvalidTokenException;
+import dinolib.GameObjects.Giocatore;
 
 public class Classifica implements Serializable {
 	/**

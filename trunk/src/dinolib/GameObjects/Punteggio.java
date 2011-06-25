@@ -1,4 +1,4 @@
-package dinolib;
+package dinolib.GameObjects;
 
 import java.io.Serializable;
 import java.util.Hashtable;
@@ -9,7 +9,7 @@ import java.util.Iterator;
 /**
  * Classe che gestisce il punteggio delle razze di un giocatore.
  */
-class Punteggio implements Serializable {
+public class Punteggio implements Serializable {
 	/**
 	 * Generated version ID for Serializable.
 	 */
@@ -43,7 +43,7 @@ class Punteggio implements Serializable {
 	 * Restituisce un iteratore sui nomi delle razze che sono in classifica.
 	 * @return Un iteratore sui nomi delle razze che sono in classifica.
 	 */
-	protected Iterator<String> iterator() { return listaPunteggio.keySet().iterator(); } // Testato
+	public Iterator<String> iterator() { return listaPunteggio.keySet().iterator(); } // Testato
 	/**
 	 * Ritorna un valore di un punteggio a partire dal nome della razza.
 	 * @param nomeRazza Il nome della razza di cui e' richiesto il punteggio.

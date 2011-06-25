@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import dinolib.Giocatore;
 import dinolib.PlayerManager;
+import dinolib.GameObjects.Giocatore;
 
 public class ListaGiocatori implements Serializable {
 	/**

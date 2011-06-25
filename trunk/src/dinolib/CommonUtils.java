@@ -2,7 +2,7 @@ package dinolib;
 
 import java.util.Random;
 
-import dinolib.Mappa.Coord;
+import dinolib.GameObjects.Coord;
 /**
  * @author fabio
  */

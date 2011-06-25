@@ -4,11 +4,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import dinolib.Mappa.CellaTest;
-import dinolib.Mappa.CoordTest;
-import dinolib.Mappa.MappaTest;
-import dinolib.Razza.DinosauroTest;
-import dinolib.Razza.RazzaTest;
+import dinolib.GameObjects.CellaTest;
+import dinolib.GameObjects.CoordTest;
+import dinolib.GameObjects.DinosauroTest;
+import dinolib.GameObjects.GiocatoreTest;
+import dinolib.GameObjects.MappaTest;
+import dinolib.GameObjects.PunteggioTest;
+import dinolib.GameObjects.RazzaTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({DinosauroTest.class,

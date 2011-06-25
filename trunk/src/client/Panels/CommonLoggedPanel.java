@@ -1,6 +1,5 @@
 package client.Panels;
 
-import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
 import javax.swing.ButtonGroup;

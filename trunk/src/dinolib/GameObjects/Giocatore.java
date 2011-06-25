@@ -1,8 +1,7 @@
-package dinolib;
+package dinolib.GameObjects;
 
 import java.io.Serializable;
 
-import dinolib.Razza.*;
 /**
  * @author  fabio
  */
@@ -41,7 +40,7 @@ public class Giocatore implements Serializable {
 	 * @param nome Il nome del nuovo giocatore.
 	 * @param password La password del nuovo giocatore.
 	 */
-	protected Giocatore(String nome, String password) { // Testato
+	public Giocatore(String nome, String password) { // Testato
 		this.nome = nome;
 		this.password = password;
 		this.punteggio = new Punteggio();
@@ -70,7 +69,7 @@ public class Giocatore implements Serializable {
 	 * Invoca l'aggiornamento su tutte le variabili aggiornabili del giocatore.
 	 * Punteggio e/o razza.
 	 */
-	protected void aggiorna() { // Testato
+	public void aggiorna() { // Testato
 		if (hasRazza() && getRazza().isEmpty()) {
 			getPunteggio().updatePunteggio(getRazza().getNome(), getRazza().getPunteggio());
 			razzaDelGiocatore = null;
@@ -87,7 +86,7 @@ public class Giocatore implements Serializable {
 	 * @param passwordToMatch La password da controllare.
 	 * @return True se la password e' valida, false se non e' valida.
 	 */
-	protected boolean passwordIsValid(String suppliedPassword) { // Testato
+	public boolean passwordIsValid(String suppliedPassword) { // Testato
 		if (password.equals(suppliedPassword)) return true;
 		else return false;
 	}
@@ -97,7 +96,7 @@ public class Giocatore implements Serializable {
 	 * @param nuovoNomeRazza Il nome della nuova razza.
 	 * @param nuovoTipoRazza Il tipo della nuova razza.
 	 */
-	protected void creaNuovaRazza(String nuovoNomeRazza, Character nuovoTipoRazza) { // Testato
+	public void creaNuovaRazza(String nuovoNomeRazza, Character nuovoTipoRazza) { // Testato
 		razzaDelGiocatore = new Razza(nuovoNomeRazza, nuovoTipoRazza);
 	}
 	/**

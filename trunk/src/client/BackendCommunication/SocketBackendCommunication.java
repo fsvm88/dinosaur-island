@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import dinolib.Mappa.Coord;
+import dinolib.GameObjects.Coord;
 
 public class SocketBackendCommunication extends BackendCommunication {
 	/**

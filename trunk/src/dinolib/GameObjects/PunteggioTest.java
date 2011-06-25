@@ -1,4 +1,4 @@
-package dinolib;
+package dinolib.GameObjects;
 
 import static org.junit.Assert.*;
 

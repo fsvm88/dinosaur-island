@@ -10,12 +10,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import dinolib.Exceptions.*;
-import dinolib.Razza.Carnivoro;
-import dinolib.Razza.Dinosauro;
-import dinolib.Razza.Erbivoro;
-import dinolib.Mappa.Cella;
-import dinolib.Mappa.Coord;
-import dinolib.Mappa.Mappa;
+import dinolib.GameObjects.Carnivoro;
+import dinolib.GameObjects.Cella;
+import dinolib.GameObjects.Coord;
+import dinolib.GameObjects.Dinosauro;
+import dinolib.GameObjects.Erbivoro;
+import dinolib.GameObjects.Giocatore;
+import dinolib.GameObjects.Mappa;
 
 public class Logica implements Runnable {
 	/* Tutte le variabili statiche/definitive e non modificabili */

@@ -9,7 +9,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import dinolib.*;
-import dinolib.Mappa.Coord;
+import dinolib.GameObjects.Coord;
 /**
  * @author fabio
  */

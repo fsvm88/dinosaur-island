@@ -7,8 +7,9 @@ import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Test;
 
-import dinolib.Mappa.Coord;
-import dinolib.Razza.Carnivoro;
+import dinolib.GameObjects.Carnivoro;
+import dinolib.GameObjects.Coord;
+import dinolib.GameObjects.Giocatore;
 
 public class PlayerManagerTest {
 	private PlayerManager pMan = null;

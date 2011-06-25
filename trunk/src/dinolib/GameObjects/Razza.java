@@ -1,4 +1,4 @@
-package dinolib.Razza;
+package dinolib.GameObjects;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import dinolib.Exceptions.GenericDinosauroException;
-import dinolib.Mappa.Coord;
 
 /**
  * Astrae la collezione dei dinosauri rispetto al giocatore.
