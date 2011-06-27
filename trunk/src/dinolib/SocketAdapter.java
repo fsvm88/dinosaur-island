@@ -21,9 +21,7 @@ public class SocketAdapter implements Adapter {
 	 * Costruttore pubblico, riceve come unico argomento la classe Logica che deve gestire.
 	 * @param newLogica
 	 */
-	public SocketAdapter (Logica newLogica) {
-		myLogica = newLogica;
-	}
+	public SocketAdapter (Logica newLogica) { myLogica = newLogica; }
 	/**
 	 * Ritorna il messaggio che il token non e' valido.
 	 * @return Il messaggio che il token non e' valido.

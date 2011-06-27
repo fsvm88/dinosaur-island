@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import dinolib.CommonUtils;
+import dinolib.ConfigurationOpts;
 
 /**
  * @author  fabio
@@ -31,33 +32,6 @@ public class Mappa implements Iterable<Cella>, Serializable {
 	 * @uml.associationEnd  multiplicity="(0 -1)"
 	 */
 	private Cella[][] MappaACelle;
-
-	/**
-	 * Percentuale della mappa che deve essere composta di acqua.
-	 * @uml.property  name="FIXED_WATER_PERCENT" readOnly="true"
-	 */
-	private final int fixed_WATER_PERCENT = 20;
-	/**
-	 * Percentuale della mappa che deve essere composta di vegetazione.
-	 * @uml.property name="FIXED_FLORA_PERCENT" readOnly="true"
-	 */
-	private final int fixed_FLORA_PERCENT = 40;
-	/**
-	 * Numero di carogne sempre presenti sulla mappa.
-	 * ATTENZIONE! Questo e' un numero! NON una percentuale!
-	 * @uml.property name="FIXED_SOD_COUNT" readOnly="true"
-	 */
-	private final int fixed_SOD_COUNT = 20;
-	/**
-	 * Contiene il numero minimo di celle acqua presenti in un gruppo.
-	 * @uml.property name="MIN_GRUPPO_ACQUA" readOnly="true"
-	 */
-	private final int min_GRUPPO_ACQUA = 5;
-	/**
-	 * Contiene il numero massimo di celle acqua presenti in un gruppo.
-	 * @uml.property name="MAX_GRUPPO_ACQUA" readOnly="true"
-	 */
-	private final int max_GRUPPO_ACQUA = 15;
 
 	/**
 	 * Dichiara la variabile che verra' usata per gestire il lato della mappa in tutta la classe.
@@ -105,8 +79,8 @@ public class Mappa implements Iterable<Cella>, Serializable {
 	 * Calcola il numero di Celle per di Acqua e Terra sulla Mappa e riempie i campi conteggioAcquaStatico e conteggioTerraStatico.
 	 */
 	private void calcolaNumeroCelleDaPercentuali () { // Testato - col costruttore
-		conteggioAcquaStatico = (int) ( ( calcolaTotaleCelle() / 100 ) * fixed_WATER_PERCENT );
-		conteggioVegetazioneStatico = (int) ((calcolaTotaleCelle() / 100) * fixed_FLORA_PERCENT );
+		conteggioAcquaStatico = (int) ( ( calcolaTotaleCelle() / 100 ) * ConfigurationOpts.FIXED_WATER_PERCENT );
+		conteggioVegetazioneStatico = (int) ((calcolaTotaleCelle() / 100) * ConfigurationOpts.FIXED_FLORA_PERCENT );
 	}
 
 	/**
@@ -250,7 +224,7 @@ public class Mappa implements Iterable<Cella>, Serializable {
 	 */
 	private void spawnCarogne() {
 		int curCarogne = contaCarogne();
-		while (curCarogne<fixed_SOD_COUNT) {
+		while (curCarogne<ConfigurationOpts.FIXED_SOD_COUNT) {
 			Coord carCoord = CommonUtils.getNewRandomCoord(getLatoDellaMappa());
 			if (isCellaTerra(carCoord)) {
 				MappaACelle[carCoord.getX()][carCoord.getY()] = new Carogna((350+CommonUtils.getNewRandomIntValue(301)));
@@ -300,9 +274,9 @@ public class Mappa implements Iterable<Cella>, Serializable {
 		 * Evito un underflow di acque disponibili allocandone fino a raggiungere il massimo per la mappa meno il massimo di un gruppo. */
 		//		System.out.println("[popolaMappa] sto per allocare le acque");
 		int curAcqua = contaAcque();
-		while (curAcqua<(conteggioAcquaStatico-max_GRUPPO_ACQUA-min_GRUPPO_ACQUA+9)) {
+		while (curAcqua<(conteggioAcquaStatico-ConfigurationOpts.MAX_GRUPPO_ACQUA-ConfigurationOpts.MIN_GRUPPO_ACQUA+9)) {
 			//			System.out.println("[popolaMappa] chiamo allocaAcqua");
-			allocaAcqua(min_GRUPPO_ACQUA+CommonUtils.getNewRandomIntValue(max_GRUPPO_ACQUA-min_GRUPPO_ACQUA+1));
+			allocaAcqua(ConfigurationOpts.MIN_GRUPPO_ACQUA+CommonUtils.getNewRandomIntValue(ConfigurationOpts.MAX_GRUPPO_ACQUA-ConfigurationOpts.MIN_GRUPPO_ACQUA+1));
 			curAcqua = contaAcque();
 		}
 		/* Alloco le acque rimanenti dal passo precedente. e' per evitare un underflow di acque disponibili. */

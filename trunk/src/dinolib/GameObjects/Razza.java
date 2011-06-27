@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import dinolib.ConfigurationOpts;
 import dinolib.Exceptions.GenericDinosauroException;
 
 /**
@@ -18,21 +19,11 @@ public class Razza implements Set<Dinosauro>, Serializable {
 	private static final long serialVersionUID = -6356926535239722927L;
 	/* Tutte le variabili statiche/definitive e non modificabili */
 	/**
-	 * Definisce definitivamente i turni di vita massimi per una specie.
-	 * @uml.property name="turni_DI_VITA_MAX"
-	 */
-	private final int TURNI_DI_VITA_MAX = 120;
-	/**
 	 * Variabile che definisce il nome della specie di Dinosauri. Viene impostata definitivamente dal costruttore.
 	 * @uml.property  name="nomeRazza"
 	 */
 	private String nome = null;
-	/**
-	 * Contiene il numero massimo di dinosauri per specie. E' una costante di gioco.
-	 * @uml.property  name="numero_MAX_DINOSAURI"
-	 */
-	private final int numero_MAX_DINOSAURI = 5;
-
+	
 	/* Tutte le variabili istanziabili */
 	/**
 	 * ConcurrentHashMap con tutti i dinosauri presenti nella specie.
@@ -104,7 +95,7 @@ public class Razza implements Set<Dinosauro>, Serializable {
 	 * @return True se ho raggiunto il numero massimo, False altrimenti.
 	 */
 	protected boolean hasNumeroMassimo() { // Testato
-		if (this.size() >= numero_MAX_DINOSAURI) return true;
+		if (this.size() >= ConfigurationOpts.NUMERO_MAX_DINOSAURI) return true;
 		else return false;
 	}
 	/**
@@ -157,7 +148,7 @@ public class Razza implements Set<Dinosauro>, Serializable {
 		}
 		if (!isEmpty()) {
 			turniDiVita += 1;
-			if (turniDiVita >= TURNI_DI_VITA_MAX) {
+			if (turniDiVita >= ConfigurationOpts.TURNI_DI_VITA_MAX) {
 				dinosauri.clear();
 			}
 		}

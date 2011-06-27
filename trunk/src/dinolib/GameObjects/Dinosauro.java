@@ -3,6 +3,7 @@ package dinolib.GameObjects;
 import java.io.Serializable;
 
 import dinolib.CommonUtils;
+import dinolib.ConfigurationOpts;
 /**
  * @author  fabio
  */
@@ -16,18 +17,6 @@ public abstract class Dinosauro implements Serializable {
 	 */
 	private static final long serialVersionUID = 7956386749602820936L;
 	/* Tutte le variabili statiche/definitive e non modificabili */
-	/**
-	 * Indica l'energia necessaria per deporre un uovo.
-	 * E' dichiarata final static perche' e' fissa per ogni dinosauro, indipendente da altri parametri.
-	 * @uml.property  name="energiaDeposizioneUovo"
-	 */
-	private static final int energia_DEPOSIZIONE_UOVO = 1500;
-	/**
-	 * Indica la dimensione massima per un dinosauro.
-	 * E' dichiarata final static perche' e' fissa per ogni dinosauro, indipendente da altri parametri.
-	 * @uml.property  name="DIMENSIONE_MASSIMA" readOnly="true"
-	 */
-	private static final int dimensione_MASSIMA = 5;
 	/**
 	 * Contiene lo spostamento massimo per turno del dinosauro impostato dalle sottoclassi tramite il costruttore.
 	 * @uml.property  name="spostamento_MAX"
@@ -291,7 +280,7 @@ public abstract class Dinosauro implements Serializable {
 	 * @return True se ha abbastanza energia per deporre un uovo, false altrimenti.
 	 */
 	protected boolean hasEnergyToRepl() { // Testato
-		if (energiaAttuale > energia_DEPOSIZIONE_UOVO) return true;
+		if (energiaAttuale > ConfigurationOpts.ENERGIA_DEPOSIZIONE_UOVO) return true;
 		else return false;
 	}
 	/**
@@ -304,7 +293,7 @@ public abstract class Dinosauro implements Serializable {
 	 * Aggiorna l'energia attuale del dinosauro.
 	 */
 	protected void cresci() { // Testato
-		if (this.getDimensione() < dimensione_MASSIMA) {
+		if (this.getDimensione() < ConfigurationOpts.DIMENSIONE_MASSIMA_DINOSAURO) {
 			this.setDimensione((this.getDimensione()+1));
 			this.updateEnergiaMax();
 			this.updateForza();
@@ -319,7 +308,7 @@ public abstract class Dinosauro implements Serializable {
 	 * Assegna il marker che dice che ha gia' compiuto un'azione statica.
 	 */
 	protected void deponiUovo() {
-		this.setEnergiaAttuale(this.getEnergiaAttuale()-energia_DEPOSIZIONE_UOVO);
+		this.setEnergiaAttuale(this.getEnergiaAttuale()-ConfigurationOpts.ENERGIA_DEPOSIZIONE_UOVO);
 		this.azioneStaticaCompiuta = true;
 	}
 	
