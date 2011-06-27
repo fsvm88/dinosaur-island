@@ -37,7 +37,6 @@ public class StartLoggedMenu extends JFrame implements ActionListener {
 		add(loggedPanel);
 		
 		pack();
-		setVisible(true);
 	}
 	
 	@Override
