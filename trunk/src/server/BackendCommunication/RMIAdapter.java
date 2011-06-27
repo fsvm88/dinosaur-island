@@ -1,5 +1,6 @@
-package dinolib;
+package server.BackendCommunication;
 
+import dinolib.Logica;
 import dinolib.CommunicationObjects.Classifica;
 import dinolib.CommunicationObjects.ListaDinosauri;
 import dinolib.CommunicationObjects.ListaGiocatori;

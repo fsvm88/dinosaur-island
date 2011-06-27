@@ -227,7 +227,7 @@ public class Logica implements Runnable {
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 * @throws NonInPartitaException Se il giocatore non e' in partita.
 	 */
-	protected boolean isMioTurno(String token) throws InvalidTokenException, NonInPartitaException {
+	public boolean isMioTurno(String token) throws InvalidTokenException, NonInPartitaException {
 		if (isPlayerInGame(token)) {
 			if (tokenGiocatoreCorrente.equals(token)) { return true; }
 			else { return false; }
@@ -240,7 +240,7 @@ public class Logica implements Runnable {
 	 * @throws InvalidTokenException Se il token non e' valido. 
 	 * @throws NonInPartitaException Se il giocatore non e' in partita.
 	 */
-	protected boolean isPlayerInGame(String token) throws InvalidTokenException { // Testato
+	public boolean isPlayerInGame(String token) throws InvalidTokenException { // Testato
 		if (isPlayerLogged(token)) {
 			if (getRRSched().hasTask(token)) return true;
 			else return false;
@@ -253,7 +253,7 @@ public class Logica implements Runnable {
 	 * @return True se il giocatore e' loggato, false altrimenti.
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 */
-	protected boolean isPlayerLogged(String token) throws InvalidTokenException { // Testato
+	public boolean isPlayerLogged(String token) throws InvalidTokenException { // Testato
 		if (getCMan().existsToken(token)) return true;
 		else return false;
 	}
@@ -262,7 +262,7 @@ public class Logica implements Runnable {
 	 * @param idDinosauro L'id del dinosauro da cercare.
 	 * @return True se il dinosauro esiste nella razza di un giocatore, false altrimenti.
 	 */
-	protected boolean existsDinosauroWithId(String idDinosauro) { // Testato
+	public boolean existsDinosauroWithId(String idDinosauro) { // Testato
 		Iterator<Giocatore> itGiocatori = getPMan().iterator();
 		Giocatore tempGiocatore = null;
 		while (itGiocatori.hasNext()) {
@@ -279,7 +279,7 @@ public class Logica implements Runnable {
 	 * @param idDinosauro L'id del dinosauro da cercare.
 	 * @return Il giocatore a cui appartiene il dinosauro.
 	 */
-	protected Giocatore getPlayerByIdDinosauro(String idDinosauro) { // Testato
+	public Giocatore getPlayerByIdDinosauro(String idDinosauro) { // Testato
 		Iterator<Giocatore> itSuiGiocatori = getPMan().iterator();
 		Giocatore tempGiocatore = null;
 		if (existsDinosauroWithId(idDinosauro)) {
@@ -413,7 +413,7 @@ public class Logica implements Runnable {
 	/**
 	 * Conferma il turno
 	 */
-	void doConfermaTurno() { turnoConfermato = true; }
+	public void doConfermaTurno() { turnoConfermato = true; }
 	/**
 	 * Gestisce la rimozione di tutti i dinosauri dalla mappa per il dato giocatore.
 	 * @param tempGiocatore Il giocatore i cui dinosauri devono essere rimossi dalla mappa.	
@@ -502,7 +502,7 @@ public class Logica implements Runnable {
 	/**
 	 * Passa il turno.
 	 */
-	void doPassaTurno() { turnoConfermato = false; }
+	public void doPassaTurno() { turnoConfermato = false; }
 	/**
 	 * Fa deporre l'uovo al dinosauro.
 	 * È un helper comune, gli adattatori non devono vedere niente della logica interna.
@@ -512,7 +512,7 @@ public class Logica implements Runnable {
 	 * @throws GenericDinosauroException Se viene riscontrata qualche eccezione nella gestione dei dinosauri.
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 */
-	protected String doDeponiUovo(String token, String idDinosauro) throws GenericDinosauroException, InvalidTokenException { // Testato
+	public String doDeponiUovo(String token, String idDinosauro) throws GenericDinosauroException, InvalidTokenException { // Testato
 		Coord coordToRemove = null;
 		try {
 			if (getPlayerByToken(token).hasRazza()) {
@@ -560,7 +560,7 @@ public class Logica implements Runnable {
 	 * @throws GenericDinosauroException Se viene riscontrata qualche eccezione nella gestione dei dinosauri.
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 */
-	protected boolean doCresciDinosauro(String token, String idDinosauro) throws InvalidTokenException, GenericDinosauroException { // Testato
+	public boolean doCresciDinosauro(String token, String idDinosauro) throws InvalidTokenException, GenericDinosauroException { // Testato
 		Coord coordToRemove = null;
 		try {
 			if (getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
@@ -586,7 +586,7 @@ public class Logica implements Runnable {
 	 * @return True se l'operazione ha successo, false altrimenti.
 	 * @throws UserExistsException Se l'utente esiste gia'.
 	 */
-	protected boolean doCreaUtente(String nomeGiocatore, String pwd) throws UserExistsException { // Testato
+	public boolean doCreaUtente(String nomeGiocatore, String pwd) throws UserExistsException { // Testato
 		if (!getPMan().exists(nomeGiocatore)) {
 			return getPMan().add(new Giocatore(nomeGiocatore, pwd));
 		}
@@ -601,7 +601,7 @@ public class Logica implements Runnable {
 	 * @return True se l'operazione ha successo, false altrimenti.
 	 * @throws UserAuthenticationFailedException Se l'autenticazione fallisce (la password non e' valida).
 	 */
-	protected boolean doLogin(String nomeGiocatore, String suppliedPassword) throws UserAuthenticationFailedException { // Testato
+	public boolean doLogin(String nomeGiocatore, String suppliedPassword) throws UserAuthenticationFailedException { // Testato
 		if (getPMan().exists(nomeGiocatore)) {
 			Giocatore tempGiocatore = getPMan().getPlayer(nomeGiocatore);
 			if (tempGiocatore.passwordIsValid(suppliedPassword)) {
@@ -621,7 +621,7 @@ public class Logica implements Runnable {
 	 * @throws NomeRazzaOccupatoException Se il nome della razza e' occupato.
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 */
-	protected boolean doCreaRazza(String token, String nomeRazza, Character tipoRazza) throws NomeRazzaOccupatoException, InvalidTokenException { // Testato
+	public boolean doCreaRazza(String token, String nomeRazza, Character tipoRazza) throws NomeRazzaOccupatoException, InvalidTokenException { // Testato
 		if (isPlayerLogged(token)) {
 			Iterator<Giocatore> itGiocatori = getPMan().iterator();
 			Giocatore tempGiocatore = null;
@@ -668,7 +668,7 @@ public class Logica implements Runnable {
 	 * @throws TroppiGiocatoriException Se ci sono troppi giocatori in partita.
 	 * @throws RazzaNonCreataException Se la razza per l'utente non e' stata creata.
 	 */
-	protected boolean doAccessoPartita(String token) throws InvalidTokenException, TroppiGiocatoriException, RazzaNonCreataException, InterruptedException { // Testato
+	public boolean doAccessoPartita(String token) throws InvalidTokenException, TroppiGiocatoriException, RazzaNonCreataException, InterruptedException { // Testato
 		if (isPlayerLogged(token)) {
 			if (getPlayerByToken(token).hasRazza()) {
 				if (!getRRSched().maxPlayers()) {
@@ -693,7 +693,7 @@ public class Logica implements Runnable {
 	 * @return True se l'uscita ha avuto successo, false altrimenti.
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 */
-	protected boolean doUscitaPartita(String token) throws InvalidTokenException { // Testato
+	public boolean doUscitaPartita(String token) throws InvalidTokenException { // Testato
 		if (isPlayerInGame(token)) {
 			getRRSched().killTask(token);
 			rimuoviDinosauriDallaMappa(getPlayerByToken(token));
@@ -707,7 +707,7 @@ public class Logica implements Runnable {
 	 * @return True se il logout ha avuto successo, false altrimenti.
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 */
-	protected boolean doLogout(String token) throws InvalidTokenException { // Testato
+	public boolean doLogout(String token) throws InvalidTokenException { // Testato
 		if (isPlayerLogged(token)) {
 			if (isPlayerInGame(token)) {
 				if(!doUscitaPartita(token)) {
@@ -916,7 +916,7 @@ public class Logica implements Runnable {
 	 * @return Una stringa che può essere: "destinazioneNonValida" se la destinazione non è valida, "p" se c'è stato un combattimento perso, "v" se il combattimento è stato vinto, "ok" se il movimento ha avuto successo.
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 */
-	protected String doMuoviDinosauro(String token, String idDinosauro, Coord newCoord) throws InvalidTokenException, GenericDinosauroException { // Testato // TODO fixare un apparente loop infinito.
+	public String doMuoviDinosauro(String token, String idDinosauro, Coord newCoord) throws InvalidTokenException, GenericDinosauroException { // Testato // TODO fixare un apparente loop infinito.
 		Dinosauro tempDinosauro = getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
 		Coord oldCoord = tempDinosauro.getCoord();
 		if (!isValidCoord(newCoord) ||

@@ -75,7 +75,7 @@ public class ConnectionManager {
 	 * @param nomeGiocatore Il nome del giocatore associato al token richiesto.
 	 * @return Il token associato al nome del giocatore.
 	 */
-	protected String getToken(String nomeGiocatore) { // Testato
+	public String getToken(String nomeGiocatore) { // Testato
 		Iterator<String> itNames = getIteratorOnTokens();
 		if (itNames == null) return null;
 		String tmpToken = null;

@@ -1,10 +1,11 @@
-package server;
+package server.FrontendCommunication;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import server.BackendCommunication.SocketAdapter;
+
 import dinolib.Logica;
-import dinolib.SocketAdapter;
 import dinolib.ConfigurationOpts;
 
 /**
@@ -13,7 +14,7 @@ import dinolib.ConfigurationOpts;
 /**
  * Classe che gestisce le connessioni via socket.
  */
-class SocketListener implements Runnable {
+public class SocketListener implements Runnable {
 	/**
 	 * Definisce il riferimento al socket del server.
 	 * @uml.property  name="serverInstSocket"
@@ -39,7 +40,7 @@ class SocketListener implements Runnable {
 	/**
 	 * Inizializza il socket.
 	 */
-	SocketListener(Logica inLogica) {
+	public SocketListener(Logica inLogica) {
 		servLogica = inLogica;
 		try {
 			System.out.println("[SocketListener] Trying to instantiate a new ServerSocket...");
@@ -74,7 +75,7 @@ class SocketListener implements Runnable {
 	}
 
 	public boolean isSocketListenerRunning() { return socketListenerRunning; }
-	void shutdownSocketListener() { socketListenerRunning = false; }
+	public void shutdownSocketListener() { socketListenerRunning = false; }
 	@Override
 	public void finalize() {
 		System.out.println("[SocketListener] Closing socket...");
