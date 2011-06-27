@@ -216,7 +216,7 @@ public class Logica implements Runnable {
 	 * Restituisce l'oggetto Mappa.
 	 * @return L'oggetto Mappa.
 	 */
-	protected Mappa getMappa() { return rifMappa; } // Testato
+	public Mappa getMappa() { return rifMappa; } // Testato
 	/**
 	 * Restituisce l'oggetto PlayerManager.
 	 * @return L'oggetto PlayerManager.
@@ -248,7 +248,7 @@ public class Logica implements Runnable {
 	 * @return Il giocatore richiesto.
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 */
-	protected Giocatore getPlayerByToken(String token) throws InvalidTokenException { // Testato
+	public Giocatore getPlayerByToken(String token) throws InvalidTokenException { // Testato
 		if (getCMan().existsToken(token) && getPMan().exists(getCMan().getName(token))) return getPMan().getPlayer(getCMan().getName(token));
 		else throw new InvalidTokenException();
 	}
@@ -261,8 +261,8 @@ public class Logica implements Runnable {
 	 */
 	protected boolean isMioTurno(String token) throws InvalidTokenException, NonInPartitaException {
 		if (isPlayerInGame(token)) {
-			if (tokenGiocatoreCorrente.equals(token)) return true;
-			else return false;
+			if (tokenGiocatoreCorrente.equals(token)) { return true; }
+			else { return false; }
 		}
 		else throw new NonInPartitaException();
 	}

@@ -2,6 +2,8 @@ package dinolib.CommunicationObjects;
 
 import java.io.Serializable;
 
+import dinolib.Logica;
+import dinolib.Exceptions.InvalidTokenException;
 import dinolib.GameObjects.Coord;
 
 public class StatoDinosauro implements Serializable {
@@ -44,7 +46,35 @@ public class StatoDinosauro implements Serializable {
 	 * @uml.property name="turniVissuti"
 	 */
 	private Integer turniVissuti = null;
-
+	
+	/**
+	 * Costruttore pubblico, prende i parametri in ingresso e sposta la logica di creazione di StatoDinosauro all'interno.
+	 * @param myLogica La logica di gioco.
+	 * @param token Il token dell'utente che richiede lo StatoDinosauro.
+	 * @param idDinosauro L'Id del dinosauro di cui fornire lo stato.
+	 * @throws InvalidTokenException
+	 */
+	public StatoDinosauro (Logica myLogica, String token, String idDinosauro) throws InvalidTokenException {
+		if (myLogica.getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
+			new StatoDinosauro(myLogica.getPlayerByToken(token).getNome(),
+					myLogica.getPlayerByToken(token).getRazza().getNome(),
+					myLogica.getPlayerByToken(token).getRazza().getTipo().charValue(),
+					myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getCoord(),
+					myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getDimensione(),
+					myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getEnergiaAttuale(),
+					myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getTurnoDiVita()
+					);
+		}
+		else if (!myLogica.getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
+			new StatoDinosauro(myLogica.getPlayerByToken(token).getNome(),
+					myLogica.getPlayerByToken(token).getRazza().getNome(),
+					myLogica.getPlayerByToken(token).getRazza().getTipo().charValue(),
+					myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getCoord(),
+					myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getDimensione()
+					);
+		}
+	}
+	
 	/**
 	 * Costruttore per il dinosauro di un utente diverso dal proprietario.
 	 * @param newNomeUtente Il nome del proprietario.
@@ -53,13 +83,14 @@ public class StatoDinosauro implements Serializable {
 	 * @param newCoordinate Le coordinate del dinosauro.
 	 * @param newDimensione La dimensione del dinosauro.
 	 */
-	public StatoDinosauro (String newNomeUtente, String newNomeRazza, Character newTipoRazza, Coord newCoordinate, Integer newDimensione) {
+	private StatoDinosauro (String newNomeUtente, String newNomeRazza, Character newTipoRazza, Coord newCoordinate, Integer newDimensione) {
 		this.nomeUtente = newNomeUtente;
 		this.nomeRazza = newNomeRazza;
 		this.tipoRazza = newTipoRazza;
 		this.coordinateDinosauro = newCoordinate;
 		this.dimensioneDinosauro = newDimensione;
 	}
+	
 	/**
 	 * Costruttore per il dinosauro dell'utente proprietario.
 	 * @param newNomeUtente Il nome del proprietario.
@@ -70,7 +101,7 @@ public class StatoDinosauro implements Serializable {
 	 * @param newEnergia L'energia del dinosauro.
 	 * @param newTurniVissuti I turni vissuti dal dinosauro.
 	 */
-	public StatoDinosauro (String newNomeUtente, String newNomeRazza, Character newTipoRazza, Coord newCoordinate, Integer newDimensione, Integer newEnergia, Integer newTurniVissuti) {
+	private StatoDinosauro (String newNomeUtente, String newNomeRazza, Character newTipoRazza, Coord newCoordinate, Integer newDimensione, Integer newEnergia, Integer newTurniVissuti) {
 		this.nomeUtente = newNomeUtente;
 		this.nomeRazza = newNomeRazza;
 		this.tipoRazza = newTipoRazza;

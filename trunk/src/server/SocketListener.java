@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 
 import dinolib.Logica;
 import dinolib.SocketAdapter;
+import dinolib.ConfigurationOpts;
 
 /**
  * @author fabio
@@ -13,11 +14,6 @@ import dinolib.SocketAdapter;
  * Classe che gestisce le connessioni via socket.
  */
 class SocketListener implements Runnable {
-	/**
-	 * Definisce staticamente la porta di gioco.
-	 * @uml.property  name="PORTA_DI_GIOCO"
-	 */
-	private final int PORTA_DI_GIOCO = 32845;
 	/**
 	 * Definisce il riferimento al socket del server.
 	 * @uml.property  name="serverInstSocket"
@@ -47,11 +43,11 @@ class SocketListener implements Runnable {
 		servLogica = inLogica;
 		try {
 			System.out.println("[SocketListener] Trying to instantiate a new ServerSocket...");
-			serverSocket = new ServerSocket(PORTA_DI_GIOCO);
+			serverSocket = new ServerSocket(ConfigurationOpts.PORTA_DI_GIOCO);
 			System.out.println("[SocketListener] ServerSocket instantiated.");
 		}
 		catch (IOException e) {
-			System.out.println("[SocketListener] Could not listen on port " + PORTA_DI_GIOCO);
+			System.out.println("[SocketListener] Could not listen on port " + ConfigurationOpts.PORTA_DI_GIOCO);
 			System.exit(-1);
 		}
 		System.out.println("[SocketListener] Instantiating the Socket Adapter for ClientWorkers...");
@@ -72,7 +68,7 @@ class SocketListener implements Runnable {
 				threadedClientWorker.start();
 				System.out.println("[SocketListener] Thread started.");
 			}
-			catch (IOException e) { System.out.println("[SocketListener] Accept failed on " + PORTA_DI_GIOCO); }
+			catch (IOException e) { System.out.println("[SocketListener] Accept failed on " + ConfigurationOpts.PORTA_DI_GIOCO); }
 		}
 		System.out.println("[SocketListener] Shutting down...");
 	}
