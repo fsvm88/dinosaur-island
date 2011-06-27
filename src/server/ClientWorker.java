@@ -128,13 +128,24 @@ class ClientWorker implements Runnable {
 	 * @param scanner Lo scanner da cui estrarre il nome della razza.
 	 * @return Una stringa che contiene il nome della razza.
 	 */
-	private String estraiRazza(Scanner scanner) { return scanner.next(Pattern.compile("[^(nome=)]")); }
+	private String estraiRazza(Scanner scanner) {
+		String nextScanner = scanner.next();
+		if (nextScanner.matches("(^nome=)\\w+")) {
+			return nextScanner.substring(nextScanner.indexOf('=')+1);
+		}
+		return null;
+	}
 	/**
 	 * Estrae il tipo della razza dallo scanner.
 	 * @param scanner Lo scanner da cui estrarre il tipo della razza.
 	 * @return Un Character che contiene il tipo della razza.
 	 */
-	private Character estraiTipo(Scanner scanner) { String myString = scanner.next("[^(tipo=)]"); return myString.charAt(0); }
+	private Character estraiTipo(Scanner scanner) {
+		String nextScanner = scanner.next();
+		if (nextScanner.matches("(^tipo=)\\w")) {
+			return nextScanner.substring(nextScanner.indexOf('=')+1).charAt(0);
+		}
+		return null;}
 	/**
 	 * Valida il nome e il tipo della razza (entrambi non devono essere nulli).
 	 * @param nomeRazza Il nome della razza da validare.

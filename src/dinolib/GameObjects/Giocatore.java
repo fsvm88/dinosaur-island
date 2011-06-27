@@ -87,8 +87,8 @@ public class Giocatore implements Serializable {
 	 * @return True se la password e' valida, false se non e' valida.
 	 */
 	public boolean passwordIsValid(String suppliedPassword) { // Testato
-		if (password.equals(suppliedPassword)) return true;
-		else return false;
+		if (password.equals(suppliedPassword)) { return true; }
+		else { return false; }
 	}
 	/**
 	 * Crea la razza di dinosauri e assegna un tipo alla razza.
@@ -97,14 +97,14 @@ public class Giocatore implements Serializable {
 	 * @param nuovoTipoRazza Il tipo della nuova razza.
 	 */
 	public void creaNuovaRazza(String nuovoNomeRazza, Character nuovoTipoRazza) { // Testato
-		razzaDelGiocatore = new Razza(nuovoNomeRazza, nuovoTipoRazza);
+		razzaDelGiocatore = new Razza(nuovoNomeRazza, nuovoTipoRazza.charValue());
 	}
 	/**
 	 * Verifica che l'utente abbia una razza di dinosauri.
 	 * @return True se il giocatore ha gia' una razza, false se non ce l'ha gia'.
 	 */
 	public boolean hasRazza() { // Testato
-		if ((getRazza() == null)) return false;
-		else return true;
+		if ((getRazza() == null)) { return false; }
+		else { return true; }
 	}
 }

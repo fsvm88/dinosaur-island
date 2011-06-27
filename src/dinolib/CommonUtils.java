@@ -59,7 +59,7 @@ public abstract class CommonUtils {
 	 * @param rangeVista Il valore da sottrarre alla coordinata.
 	 * @return La coordinata traslata, mantenuta entro i confini della mappa.
 	 */
-	protected static int doSubtraction(int coord, int rangeVista, int latoDellaMappa) {
+	public static int doSubtraction(int coord, int rangeVista, int latoDellaMappa) {
 		int subtraction = (coord - rangeVista);
 		if (subtraction<0) return 0;
 		else if (subtraction>=latoDellaMappa) return (latoDellaMappa-1);
@@ -71,7 +71,7 @@ public abstract class CommonUtils {
 	 * @param rangeVista Il valore da aggiungere alla coordinata.
 	 * @return La coordinata traslata, mantenuta entro i confini della mappa.
 	 */
-	protected static int doAddition(int coord, int rangeVista, int latoDellaMappa) {
+	public static int doAddition(int coord, int rangeVista, int latoDellaMappa) {
 		int addition = (coord + rangeVista);
 		if (addition<0) return 0;
 		else if (addition>=latoDellaMappa) return (latoDellaMappa-1);

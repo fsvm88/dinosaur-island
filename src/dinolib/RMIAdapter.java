@@ -3,7 +3,9 @@ package dinolib;
 import dinolib.CommunicationObjects.Classifica;
 import dinolib.CommunicationObjects.ListaDinosauri;
 import dinolib.CommunicationObjects.ListaGiocatori;
+import dinolib.CommunicationObjects.MappaGenerale;
 import dinolib.CommunicationObjects.StatoDinosauro;
+import dinolib.CommunicationObjects.VistaLocale;
 import dinolib.Exceptions.*;
 import dinolib.GameObjects.Coord;
 
@@ -69,9 +71,11 @@ public class RMIAdapter implements Adapter {
 	}
 
 	@Override
-	public Object mappaGenerale(String token) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object mappaGenerale(String token) throws NonInPartitaException, InvalidTokenException {
+		if (myLogica.isPlayerInGame(token)) {
+			return new MappaGenerale(myLogica, token);
+		}
+		else throw new NonInPartitaException();
 	}
 
 	@Override
@@ -86,9 +90,14 @@ public class RMIAdapter implements Adapter {
 	}
 
 	@Override
-	public Object vistaLocale(String token, String idDinosauro) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object vistaLocale(String token, String idDinosauro) throws InvalidTokenException, InvalidIDException, NonInPartitaException {
+		if (myLogica.isPlayerInGame(token)) {
+			if (myLogica.getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
+				return new VistaLocale(myLogica, myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro));
+			}
+			throw new InvalidIDException();
+		}
+		throw new NonInPartitaException();
 	}
 
 	@Override
@@ -96,22 +105,7 @@ public class RMIAdapter implements Adapter {
 		if (myLogica.isPlayerInGame(token)) {
 			if (myLogica.existsDinosauroWithId(idDinosauro)) {
 				if (myLogica.getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
-					return new StatoDinosauro(myLogica.getPlayerByToken(token).getNome(),
-							myLogica.getPlayerByToken(token).getRazza().getNome(),
-							myLogica.getPlayerByToken(token).getRazza().getTipo().charValue(),
-							myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getCoord(),
-							myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getDimensione(),
-							myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getEnergiaAttuale(),
-							myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getTurnoDiVita()
-							);
-				}
-				else if (!myLogica.getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
-					return new StatoDinosauro(myLogica.getPlayerByToken(token).getNome(),
-							myLogica.getPlayerByToken(token).getRazza().getNome(),
-							myLogica.getPlayerByToken(token).getRazza().getTipo().charValue(),
-							myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getCoord(),
-							myLogica.getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro).getDimensione()
-							);
+					return new StatoDinosauro(myLogica, token, idDinosauro);
 				}
 			}
 			throw new InvalidIDException();
@@ -135,14 +129,20 @@ public class RMIAdapter implements Adapter {
 	}
 
 	@Override
-	public Object confermaTurno(String token) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object confermaTurno(String token) throws NonIlTuoTurnoException, InvalidTokenException, NonInPartitaException {
+		if (myLogica.isMioTurno(token)) {
+			myLogica.doConfermaTurno();
+			return true;
+		}
+		throw new NonIlTuoTurnoException();
 	}
 
 	@Override
-	public Object passaTurno(String token) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object passaTurno(String token) throws InvalidTokenException, NonInPartitaException, NonIlTuoTurnoException {
+		if (myLogica.isMioTurno(token)) {
+			myLogica.doPassaTurno();
+			return true;
+		}
+		throw new NonIlTuoTurnoException();
 	}
 }
