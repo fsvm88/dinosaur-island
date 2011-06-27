@@ -3,6 +3,7 @@ package server;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.security.Policy;
 
 import server.BackendCommunication.RMIAdapter;
 import server.FrontendCommunication.SocketListener;
@@ -76,6 +77,8 @@ class Server {
 		System.out.println("[Server] Trying to setup RMI communication backend...");
 		System.out.println("[Server] --- Trying to install the Security Manager...");
 		if (System.getSecurityManager() == null) {
+			System.out.println("[Server] --- Loading new policy...");
+			System.setProperty("java.security.policy", "dinoisland.policy");
 			System.setSecurityManager(new SecurityManager());
 			System.out.println("[Server] --- Security Manager successfully installed.");
 		}
