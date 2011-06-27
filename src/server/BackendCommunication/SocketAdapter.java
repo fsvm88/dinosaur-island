@@ -1,8 +1,10 @@
-package dinolib;
+package server.BackendCommunication;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import dinolib.CommonUtils;
+import dinolib.Logica;
 import dinolib.Exceptions.*;
 import dinolib.GameObjects.Cella;
 import dinolib.GameObjects.Coord;

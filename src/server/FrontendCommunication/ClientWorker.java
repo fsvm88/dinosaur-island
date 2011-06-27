@@ -1,4 +1,4 @@
-package server;
+package server.FrontendCommunication;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,7 +8,8 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-import dinolib.*;
+import server.BackendCommunication.SocketAdapter;
+
 import dinolib.GameObjects.Coord;
 /**
  * @author fabio

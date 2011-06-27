@@ -32,6 +32,22 @@ public abstract class ConfigurationOpts {
 	 * @uml.property  name="NOME_FILE_GIOCATORI"
 	 */
 	public static final String NOME_FILE_GIOCATORI = "giocatori.dat";
+	/* Costanti RMI. */
+	/**
+	 * Definisce il nome di default del registro RMI.
+	 * @uml.property name="RMI_REGISTRY_NAME"
+	 */
+	public static final String RMI_REGISTRY_NAME = "Dino_Island_Registry";
+	/**
+	 * Definisce la porta di default per il registro RMI.
+	 * @uml.property name="RMI_GAME_PORT"
+	 */
+	public static final int RMI_GAME_PORT = 31499;
+	/**
+	 * Definisce l'url che viene usato dal registro RMI.
+	 * @uml.property name="RMI_REGISTRY_URL"
+	 */
+	public static final String RMI_REGISTRY_URL = "//localhost" + ":" + RMI_GAME_PORT + "/"+ RMI_REGISTRY_NAME;
 	
 	/* Costanti di gioco. */
 	/* --> Costanti della mappa. */
