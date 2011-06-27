@@ -19,38 +19,6 @@ import dinolib.GameObjects.Giocatore;
 import dinolib.GameObjects.Mappa;
 
 public class Logica implements Runnable {
-	/* Tutte le variabili statiche/definitive e non modificabili */
-	/**
-	 * Definisce definitivamente il numero massimo di giocatori ammessi in partita.
-	 * @uml.property  name="NUMERO_MASSIMO_GIOCATORI_INGAME"
-	 */
-	private final int numero_MASSIMO_GIOCATORI_INGAME = 8;
-	/**
-	 * Definisce definitivamente il lato della mappa.
-	 * @uml.property  name="LATO_MAPPA"
-	 */
-	private final int lato_MAPPA = 40;
-	/**
-	 * Definisce definitivamente il tempo da attendere senza la conferma di turno.
-	 * @uml.property  name="SLEEP_CONFERMA_TURNO"
-	 */
-	private final int sleep_CONFERMA_TURNO = 30;
-	/**
-	 * Definisce definitivamente il tempo da dedicare ad ogni giocatore quando questo conferma il turno.
-	 * @uml.property  name="SLEEP_TEMPO_TURNO"
-	 */
-	private final int sleep_TEMPO_TURNO = 120;
-	/**
-	 * Definisce definitivamente il tempo da dedicare ad ogni giocatore quando questo conferma il turno.
-	 * @uml.property  name="NOME_FILE_MAPPA"
-	 */
-	private final String nome_FILE_MAPPA = "mappa.dat";
-	/**
-	 * Definisce definitivamente il tempo da dedicare ad ogni giocatore quando questo conferma il turno.
-	 * @uml.property  name="NOME_FILE_GIOCATORI"
-	 */
-	private final String nome_FILE_GIOCATORI = "giocatori.dat";
-
 	/* Tutte le variabili istanziabili */
 	/**
 	 * Istanzia il riferimento alla mappa.
@@ -124,8 +92,8 @@ public class Logica implements Runnable {
 		System.out.println("[Logica] Istantiating new Connection Manager...");
 		cMan = new ConnectionManager();
 		System.out.println("[Logica] New Connection Manager istantiated.");
-		System.out.println("[Logica] Istantiating new Player Queue of length " + numero_MASSIMO_GIOCATORI_INGAME + "...");
-		rrsched = new RRScheduler(numero_MASSIMO_GIOCATORI_INGAME);
+		System.out.println("[Logica] Istantiating new Player Queue of length " + ConfigurationOpts.NUMERO_MASSIMO_GIOCATORI_INGAME + "...");
+		rrsched = new RRScheduler(ConfigurationOpts.NUMERO_MASSIMO_GIOCATORI_INGAME);
 		System.out.println("[Logica] New Player Queue istantiated.");
 		System.out.println("[Logica] Logica initialized successfully.");
 		logicaIsShuttingDown = false;
@@ -142,8 +110,8 @@ public class Logica implements Runnable {
 		 * Carica file di mappa, se esiste deve esistere anche il file dei giocatori.
 		 * In caso il primo o l'altro non esistano l'eccezione viene gestita e passata al chiamante, che quindi assume un primo avvio.
 		 */
-		caricaFileMappa(nome_FILE_MAPPA);
-		caricaFileGiocatori(nome_FILE_GIOCATORI);
+		caricaFileMappa(ConfigurationOpts.NOME_FILE_MAPPA);
+		caricaFileGiocatori(ConfigurationOpts.NOME_FILE_GIOCATORI);
 	}
 	/**
 	 * Implementa il caricamento del file di mappa, se esiste.
@@ -152,7 +120,7 @@ public class Logica implements Runnable {
 	 * @throws ClassNotFoundException Se la classe che deve essere usata per leggere i file non viene trovata. 
 	 */
 	private void caricaFileMappa(String nomefile) throws IOException, ClassNotFoundException, FileNotFoundException {
-		System.out.println("[Logica] Trying to load map file <" + nome_FILE_MAPPA + ">...");
+		System.out.println("[Logica] Trying to load map file <" + ConfigurationOpts.NOME_FILE_MAPPA + ">...");
 		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nomefile));
 		rifMappa = (Mappa) ois.readObject();
 		ois.close();
@@ -165,7 +133,7 @@ public class Logica implements Runnable {
 	 * @throws ClassNotFoundException Se la classe che deve essere usata per leggere i file non viene trovata.
 	 */
 	private void caricaFileGiocatori(String nomefile) throws IOException, FileNotFoundException, ClassNotFoundException {
-		System.out.println("[Logica] Trying to load players file <" + nome_FILE_GIOCATORI + ">...");
+		System.out.println("[Logica] Trying to load players file <" + ConfigurationOpts.NOME_FILE_GIOCATORI + ">...");
 		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nomefile));
 		pMan = (PlayerManager) ois.readObject();
 		ois.close();
@@ -177,8 +145,8 @@ public class Logica implements Runnable {
 	 * @throws IOException Se si sono verificati problemi con la scrittura.
 	 */
 	private void salvaPartita() throws FileNotFoundException, IOException {
-		salvaFileMappa(nome_FILE_MAPPA);
-		salvaFileGiocatori(nome_FILE_GIOCATORI);
+		salvaFileMappa(ConfigurationOpts.NOME_FILE_MAPPA);
+		salvaFileGiocatori(ConfigurationOpts.NOME_FILE_GIOCATORI);
 	}
 	/**
 	 * Salva la mappa su file.
@@ -187,7 +155,7 @@ public class Logica implements Runnable {
 	 * @throws IOException Se si sono verificati problemi con la scrittura.
 	 */
 	private void salvaFileMappa(String nomefile) throws FileNotFoundException, IOException {
-		System.out.println("[Logica] Trying to save map file <" + nome_FILE_MAPPA + ">...");
+		System.out.println("[Logica] Trying to save map file <" + ConfigurationOpts.NOME_FILE_MAPPA + ">...");
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nomefile));
 		oos.writeObject(rifMappa);
 		oos.close();
@@ -200,7 +168,7 @@ public class Logica implements Runnable {
 	 * @throws IOException Se si sono verificati problemi con la scrittura.
 	 */
 	private void salvaFileGiocatori(String nomefile) throws FileNotFoundException, IOException {
-		System.out.println("[Logica] Trying to save player file <" + nome_FILE_GIOCATORI + ">...");
+		System.out.println("[Logica] Trying to save player file <" + ConfigurationOpts.NOME_FILE_GIOCATORI + ">...");
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nomefile));
 		oos.writeObject(pMan);
 		System.out.println("[Logica] Player file saved successfully.");
@@ -209,7 +177,7 @@ public class Logica implements Runnable {
 	/**
 	 * Crea una nuova mappa.
 	 */
-	private void creaNuovaMappa() { rifMappa = new Mappa(lato_MAPPA); }
+	private void creaNuovaMappa() { rifMappa = new Mappa(ConfigurationOpts.LATO_MAPPA); }
 
 	/* Tutti i getter */
 	/**
@@ -366,13 +334,13 @@ public class Logica implements Runnable {
 					/* Prendi l'istante da cui conto il tempo per confermare il turno */
 					long conferma_start = System.currentTimeMillis();
 					/* Fintanto che posso confermare il turno (30 secondi) */
-					while (((System.currentTimeMillis()-conferma_start) < (sleep_CONFERMA_TURNO*1000)) && !isLogicaShuttingDown()) {
+					while (((System.currentTimeMillis()-conferma_start) < (ConfigurationOpts.SCHEDULER_WAIT_CONFERMA_TURNO*1000)) && !isLogicaShuttingDown()) {
 						/* Se il turno è stato confermato */
 						if (turnoConfermato) {
 							/* Prendi l'istante da cui conto il tempo per usare il turno */
 							long turno_start = System.currentTimeMillis();
 							/* Fintanto che posso usare il turno (muovere i dinosauri o usare le loro azioni) */
-							while (((System.currentTimeMillis()-turno_start) < (sleep_TEMPO_TURNO*1000)) && !isLogicaShuttingDown()) {
+							while (((System.currentTimeMillis()-turno_start) < (ConfigurationOpts.SCHEDULER_TEMPO_TURNO*1000)) && !isLogicaShuttingDown()) {
 								/* Se il turno è stato passato ferma il ciclo */
 								if (!turnoConfermato) break;
 								/* Altrimenti aspetta 1 secondo */

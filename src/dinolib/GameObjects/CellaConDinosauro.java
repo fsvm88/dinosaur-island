@@ -10,9 +10,7 @@ class CellaConDinosauro extends Cella implements Serializable {
 	/**
 	 * Crea la cella CellaConDinosauro e imposta il campo cellaSuCuiSiTrova con il riferimento alla cella passato durante l'inizializzazione della stessa.
 	 */
-	protected CellaConDinosauro(String idDinosauroOccupante, Cella cellaSuCuiSiTrova){
-		super(idDinosauroOccupante, cellaSuCuiSiTrova);
-	}
+	protected CellaConDinosauro(String idDinosauroOccupante, Cella cellaSuCuiSiTrova) { super(idDinosauroOccupante, cellaSuCuiSiTrova); }
 	/**
 	 * Override del metodo di default toString.
 	 * Non posso usare il nome "Dinosauro" per la classe, quindi devo ridefinire toString di modo da semplificare la logica di alto livello.
