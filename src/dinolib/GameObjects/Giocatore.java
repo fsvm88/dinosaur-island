@@ -67,7 +67,7 @@ public class Giocatore implements Serializable {
 	/* Tutti i setter */
 	/**
 	 * Invoca l'aggiornamento su tutte le variabili aggiornabili del giocatore.
-	 * Punteggio e/o razza.
+	 * Punteggio e razza (se esiste).
 	 */
 	public synchronized void aggiorna() { // Testato
 		if (hasRazza() && getRazza().isEmpty()) {
@@ -83,7 +83,7 @@ public class Giocatore implements Serializable {
 	/* Funzioni miscellanee */
 	/**
 	 * Valida la password passata.
-	 * @param passwordToMatch La password da controllare.
+	 * @param suppliedPassword La password da controllare.
 	 * @return True se la password e' valida, false se non e' valida.
 	 */
 	public boolean passwordIsValid(String suppliedPassword) { // Testato

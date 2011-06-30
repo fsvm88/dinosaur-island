@@ -18,7 +18,7 @@ public class Classifica implements Serializable {
 	private ArrayList<TuplaPunteggio> myPunteggi = null;
 	/**
 	 * Crea un'istanza e riempie la classifica con le tuple.
-	 * @param myLogica La Logica da cui prendere le informazioni.
+	 * @param itGiocatori Iteratore sui giocatori registrati.
 	 */
 	public Classifica(Iterator<Giocatore> itGiocatori) {
 		myPunteggi = new ArrayList<TuplaPunteggio>();

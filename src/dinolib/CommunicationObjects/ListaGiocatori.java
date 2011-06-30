@@ -18,8 +18,8 @@ public class ListaGiocatori implements Serializable {
 	 */
 	private ArrayList<String> nameList = null;
 	/**
-	 * Crea un'istanza tramite il Player Manager.
-	 * @param pMan Il Player Manager corrente.
+	 * Crea un'istanza tramite la logica di gioco.
+	 * @param newLogica La logica di gioco.
 	 * @throws InvalidTokenException 
 	 */
 	public ListaGiocatori(Logica newLogica) {
