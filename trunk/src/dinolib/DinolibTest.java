@@ -4,6 +4,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import dinolib.GameCollections.ConnectionManagerTest;
+import dinolib.GameCollections.PlayerManagerTest;
+import dinolib.GameCollections.RRScheduler;
 import dinolib.GameObjects.CellaTest;
 import dinolib.GameObjects.CoordTest;
 import dinolib.GameObjects.DinosauroTest;

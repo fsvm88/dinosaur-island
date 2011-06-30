@@ -1,4 +1,4 @@
-package dinolib;
+package dinolib.GameCollections;
 
 import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * Classe che implementa lo scheduler per i turni dei giocatori.
  * Gestisce la coda dei giocatori attualmente in gioco e nient'altro.
  */
-public class RRScheduler {
+public class RRScheduler implements Iterable<String> {
 	/**
 	 * Contiene il numero massimo dei giocatori in gioco.
 	 * Ne viene fatta una copia locale da parte del costruttore, di modo da poter implementare altre funzioni.
@@ -26,7 +26,7 @@ public class RRScheduler {
 	 * Inizializza la coda con la lunghezza specificata.
 	 * @param queue_lenght La lunghezza massima della coda dei giocatori.
 	 */
-	protected RRScheduler(int queue_lenght) { // Testato - throws IllegalArgumentException if ((queue_lenght <= 0) || queue_lenght != (int))
+	public RRScheduler(int queue_lenght) { // Testato - throws IllegalArgumentException if ((queue_lenght <= 0) || queue_lenght != (int))
 		max_PLAYERS_INGAME = queue_lenght;
 		playersQueue = new ArrayBlockingQueue<String>(max_PLAYERS_INGAME);
 	}
@@ -37,7 +37,7 @@ public class RRScheduler {
 	 * @return True se il giocatore e' stato aggiunto (la collezione e' stata modificata), false altrimenti.
 	 * @throws InterruptedException Se un altro thread sta gia' modificando la collezione.
 	 */
-	protected synchronized boolean newTask(String token) throws InterruptedException { // Testato
+	public synchronized boolean newTask(String token) throws InterruptedException { // Testato
 		if (!playersQueue.contains(token)) {
 			playersQueue.put(token);
 			return true;
@@ -49,7 +49,7 @@ public class RRScheduler {
 	 * @param token Il token del giocatore da rimuovere.
 	 * @return True se il giocatore e' stato rimosso (la collezione e' stata modificata), false altrimenti.
 	 */
-	protected synchronized boolean killTask(String token) { // Testato
+	public synchronized boolean killTask(String token) { // Testato
 		if (playersQueue.contains(token)) {
 			playersQueue.remove(token);
 			return true;
@@ -61,12 +61,12 @@ public class RRScheduler {
 	 * @return La testa della coda
 	 * @throws InterruptedException
 	 */
-	protected String getCurrentTask() throws InterruptedException { return playersQueue.poll(1L, TimeUnit.SECONDS); } // Testato
+	public String getCurrentTask() throws InterruptedException { return playersQueue.poll(1L, TimeUnit.SECONDS); } // Testato
 	/**
 	 * Dice se la lista e' piena.
 	 * @return True se la lista e' piena, false altrimenti.
 	 */
-	protected boolean maxPlayers() { // Testato
+	public boolean maxPlayers() { // Testato
 		if (playersQueue.size() < max_PLAYERS_INGAME) return false;
 		else return true;
 	}
@@ -83,7 +83,7 @@ public class RRScheduler {
 	 * @param token Il token del giocatore che non so se e' contenuto nella lista.
 	 * @return True se il giocatore e' nella lista, false altrimenti.
 	 */
-	protected boolean hasTask(String token) { // Testato
+	public boolean hasTask(String token) { // Testato
 		if (playersQueue.contains(token)) return true;
 		else return false;
 	}
@@ -91,5 +91,6 @@ public class RRScheduler {
 	 * Ritorna un iteratore sulla lista di giocatori nella coda.
 	 * @return L'iteratore sulla lista dei giocatori nella coda.
 	 */
+	@Override
 	public Iterator<String> iterator() { return playersQueue.iterator(); } // Testato
 }
