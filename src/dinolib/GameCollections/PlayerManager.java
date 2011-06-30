@@ -1,4 +1,4 @@
-package dinolib;
+package dinolib.GameCollections;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class PlayerManager implements List<Giocatore>, Serializable {
 	 * @param nomeGiocatore Il nome dell'utente che non so se esiste nella lista.
 	 * @return True se il giocatore e' nella lista, false altrimenti.
 	 */
-	protected boolean exists(String nomeGiocatore) { // Testato
+	public boolean exists(String nomeGiocatore) { // Testato
 		if (!listaGiocatori.isEmpty()) {
 			Iterator<Giocatore> itGiocatori = iterator();
 			while (itGiocatori.hasNext()) {
@@ -49,7 +49,7 @@ public class PlayerManager implements List<Giocatore>, Serializable {
 	 * @param nomeGiocatore Il nome del giocatore richiesto.
 	 * @return Il giocatore richiesto se e' nella lista, null altrimenti.
 	 */
-	protected Giocatore getPlayer(String nomeGiocatore) { // Testato
+	public Giocatore getPlayer(String nomeGiocatore) { // Testato
 		if (exists(nomeGiocatore)) {
 			Iterator<Giocatore> itGiocatori = iterator();
 			Giocatore tempGiocatore = null;
@@ -64,7 +64,7 @@ public class PlayerManager implements List<Giocatore>, Serializable {
 	/**
 	 * Aggiorna tutti i giocatori nella lista sul cambio turno.
 	 */
-	protected synchronized void aggiorna() {
+	public synchronized void aggiorna() {
 		Iterator<Giocatore> itGiocatori = this.iterator();
 		while (itGiocatori.hasNext()) {
 			itGiocatori.next().aggiorna();

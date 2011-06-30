@@ -1,4 +1,4 @@
-package dinolib;
+package dinolib.GameCollections;
 
 import static org.junit.Assert.*;
 
@@ -32,11 +32,11 @@ public class ConnectionManagerTest {
 	
 	@Test
 	public void testGetIteratorOnTokens() {
-		assertNull(cMan.getIteratorOnTokens());
+		assertNull(cMan.iterator());
 		if (! cMan.collega("user1", "tk1")) fail();
 		if (! cMan.collega("user2", "tk2")) fail();
 		if (! cMan.collega("user3", "tk3")) fail();
-		Iterator<String> itTokens = cMan.getIteratorOnTokens();
+		Iterator<String> itTokens = cMan.iterator();
 		assertNotNull(itTokens);
 		assertTrue(itTokens.hasNext());
 		assertNotNull(itTokens.next());

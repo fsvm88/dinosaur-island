@@ -1,4 +1,4 @@
-package dinolib;
+package dinolib.GameCollections;
 
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -10,7 +10,7 @@ import dinolib.Exceptions.InvalidTokenException;
 /**
  * Classe che gestisce le connessioni.
  */
-public class ConnectionManager {
+public class ConnectionManager implements Iterable<String> {
 	/**
 	 * Istanzia il riferimento all'hashtable che contiene le coppie token-chiave.
 	 * @uml.property name="connTable"
@@ -26,7 +26,7 @@ public class ConnectionManager {
 	 * @param token Il token di cui verificare la validita'.
 	 * @return True se il token esiste nella collezione, false altrimenti.
 	 */
-	protected boolean existsToken(String token) { // Testato
+	public boolean existsToken(String token) { // Testato
 		if (token != null) {
 			if (connTable.containsKey(token)) { 
 				return true;
@@ -40,7 +40,7 @@ public class ConnectionManager {
 	 * @param token Il token del giocatore da aggiungere.
 	 * @return True se il giocatore e' stato aggiunto, false se il giocatore non e' stato aggiunto.
 	 */
-	protected synchronized boolean collega(String nomeGiocatore, String token) { // Testato
+	public synchronized boolean collega(String nomeGiocatore, String token) { // Testato
 		if (connTable.put(token, nomeGiocatore) == null) return true;
 		else return false;
 	}
@@ -49,7 +49,7 @@ public class ConnectionManager {
 	 * @param token Il token del giocatore da scollegare.
 	 * @return True se l'utente e' stato scollegato, false altrimenti.
 	 */
-	protected synchronized boolean scollega(String token) { // Testato
+	public synchronized boolean scollega(String token) { // Testato
 		if (connTable.remove(token) != null) return true;
 		else return false;
 	}
@@ -57,7 +57,8 @@ public class ConnectionManager {
 	 * Restituisce un iteratore sui token presenti nella collezione.
 	 * @return Un iteratore sui token presenti nella collezione.
 	 */
-	protected Iterator<String> getIteratorOnTokens() { // Testato
+	@Override
+	public Iterator<String> iterator() { // Testato
 		if (!connTable.isEmpty()) return connTable.keySet().iterator();
 		else return null;
 	}
@@ -76,7 +77,7 @@ public class ConnectionManager {
 	 * @return Il token associato al nome del giocatore.
 	 */
 	public String getToken(String nomeGiocatore) { // Testato
-		Iterator<String> itNames = getIteratorOnTokens();
+		Iterator<String> itNames = iterator();
 		if (itNames == null) return null;
 		String tmpToken = null;
 		while (itNames.hasNext()) {

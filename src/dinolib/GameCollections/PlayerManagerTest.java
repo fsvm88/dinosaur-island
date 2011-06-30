@@ -1,4 +1,4 @@
-package dinolib;
+package dinolib.GameCollections;
 
 import static org.junit.Assert.*;
 

@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import dinolib.Exceptions.*;
+import dinolib.GameCollections.ConnectionManager;
+import dinolib.GameCollections.PlayerManager;
+import dinolib.GameCollections.RRScheduler;
 import dinolib.GameObjects.Carnivoro;
 import dinolib.GameObjects.Cella;
 import dinolib.GameObjects.Coord;
