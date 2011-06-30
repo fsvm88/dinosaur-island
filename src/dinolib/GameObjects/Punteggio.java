@@ -30,7 +30,7 @@ public class Punteggio implements Serializable {
 	 * @param punteggioToUpdate Il punteggio della razza di cui aggiornare il punteggio.
 	 * @return True se il punteggio è stato aggiornato (la collezione è stata modificata), false altrimenti
 	 */
-	protected boolean updatePunteggio(String nomeRazza, Integer punteggioToUpdate) {  // Testato
+	protected synchronized boolean updatePunteggio(String nomeRazza, Integer punteggioToUpdate) {  // Testato
 		if ((nomeRazza != null) &&
 				(punteggioToUpdate != null) &&
 				(punteggioToUpdate.intValue()>0)) {

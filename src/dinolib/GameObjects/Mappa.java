@@ -311,7 +311,7 @@ public class Mappa implements Iterable<Cella>, Serializable {
 	 * @param myCoord Le coordinate della cella che sara' occupata dal dinosauro (piano cartesiano).
 	 * @param idDinosauroOccupante L'id del dinosauro che occupera' la cella.
 	 */
-	public void spawnDinosauro(Coord myCoord, String idDinosauroOccupante) { // Testato
+	public synchronized void spawnDinosauro(Coord myCoord, String idDinosauroOccupante) { // Testato
 		Cella tempCella = getCella(myCoord);
 		MappaACelle[myCoord.getX()][CommonUtils.translateYforServer(myCoord.getY(), getLatoDellaMappa())] = new CellaConDinosauro(idDinosauroOccupante, tempCella);
 	}
@@ -325,13 +325,13 @@ public class Mappa implements Iterable<Cella>, Serializable {
 				(0 <= myCoord.getY()) &&
 				(myCoord.getY() < getLatoDellaMappa())) 
 			return MappaACelle[myCoord.getX()][CommonUtils.translateYforServer(myCoord.getY(), getLatoDellaMappa())];
-		else return null;
+		else { return null; }
 	}
 	/**
 	 * Rimuove il dinosauro dalla cella richiesta e reimposta la cella al suo vecchio valore.
 	 * @param coordToRemove La coordinate della cella richiesta (piano cartesiano).
 	 */
-	public void rimuoviIlDinosauroDallaCella(Coord coordToRemove) { // Testato
+	public synchronized void rimuoviIlDinosauroDallaCella(Coord coordToRemove) { // Testato
 		int tempY = CommonUtils.translateYforServer(coordToRemove.getY(), getLatoDellaMappa());
 		if ( (MappaACelle[coordToRemove.getX()][tempY].getIdDelDinosauro() != null) &&
 				(MappaACelle[coordToRemove.getX()][tempY].getCellaSuCuiSiTrova() != null) ) {
@@ -342,7 +342,7 @@ public class Mappa implements Iterable<Cella>, Serializable {
 	/**
 	 * Aggiorna la mappa su cambio del turno.
 	 */
-	public void aggiorna() { // Testato
+	public synchronized void aggiorna() { // Testato
 		Iterator<Cella> itCelle = this.iterator();
 		Cella tempCella = null;
 		while (itCelle.hasNext()) {

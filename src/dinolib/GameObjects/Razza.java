@@ -79,7 +79,7 @@ public class Razza implements Set<Dinosauro>, Serializable {
 	 * @param idDinosauroCercato L'Id del dinosauro che sto cercando.
 	 * @return Il dinosauro che stavo cercando. Null altrimenti.
 	 */
-	public Dinosauro getDinosauroById(String idDinosauroCercato) { // Testato
+	public synchronized Dinosauro getDinosauroById(String idDinosauroCercato) { // Testato
 		if (existsDinosauroWithId(idDinosauroCercato)) {
 			Iterator<Dinosauro> itDinosauri = this.iterator();
 			Dinosauro tempDinosauro;
@@ -94,7 +94,7 @@ public class Razza implements Set<Dinosauro>, Serializable {
 	 * Verifica se la razza ha il numero massimo di dinosauri.
 	 * @return True se ho raggiunto il numero massimo, False altrimenti.
 	 */
-	protected boolean hasNumeroMassimo() { // Testato
+	protected synchronized boolean hasNumeroMassimo() { // Testato
 		if (this.size() >= ConfigurationOpts.NUMERO_MAX_DINOSAURI) return true;
 		else return false;
 	}
@@ -114,7 +114,7 @@ public class Razza implements Set<Dinosauro>, Serializable {
 	/**
 	 * Aggiorna il punteggio della specie.
 	 */
-	private void aggiornaPunteggio() {
+	private synchronized void aggiornaPunteggio() {
 		Iterator<Dinosauro> itDinosauri = this.iterator();
 		while (itDinosauri.hasNext()) {
 			punteggio += (1+itDinosauri.next().getDimensione()); 
@@ -123,7 +123,7 @@ public class Razza implements Set<Dinosauro>, Serializable {
 	/**
 	 * Helper per invecchiare i dinosauri nella specie.
 	 */
-	private void invecchiaDinosauri() {
+	private synchronized void invecchiaDinosauri() {
 		Iterator<Dinosauro> itDinosauri = this.iterator();
 		Dinosauro tempDinosauro = null;
 		while (itDinosauri.hasNext()) {
@@ -141,7 +141,7 @@ public class Razza implements Set<Dinosauro>, Serializable {
 	 * Se la razza non e' estinta aumenta di 1 il turno di vita.
 	 * Verifica se la razza deve estinguersi questo turno perche' e' troppo vecchia, se si' estinguila.
 	 */
-	public void aggiornaRazza() { // Testato
+	public synchronized void aggiornaRazza() { // Testato
 		if (!isEmpty()) {
 			aggiornaPunteggio();
 			invecchiaDinosauri();
@@ -157,7 +157,7 @@ public class Razza implements Set<Dinosauro>, Serializable {
 	 * Rimuove un dinosauro dalla razza usando l'id come parametro.
 	 * @param idToRemove L'Id del dinosauro da rimuovere.
 	 */
-	public void removeById(String idToRemove) { // Testato
+	public synchronized void removeById(String idToRemove) { // Testato
 		Iterator<Dinosauro> itDinosauri = this.iterator();
 		Dinosauro tempDinosauro = null;
 		while(itDinosauri.hasNext()) {
@@ -175,7 +175,7 @@ public class Razza implements Set<Dinosauro>, Serializable {
 	 * @param idDinosauro L'Id del dinosauro da crescere.
 	 * @throws GenericDinosauroException Se il dinosauro muore per inedia o raggiunge la dimensione massima.
 	 */
-	public void cresciDinosauro(String idDinosauro) throws GenericDinosauroException { // Testato
+	public synchronized void cresciDinosauro(String idDinosauro) throws GenericDinosauroException { // Testato
 		Dinosauro tempDinosauro = getDinosauroById(idDinosauro);
 		if (!tempDinosauro.isAtDimensioneMax()) {
 			if (tempDinosauro.hasEnergyToGrow()) {
@@ -194,7 +194,7 @@ public class Razza implements Set<Dinosauro>, Serializable {
 	 * @param idDinosauro L'Id del dinosauro a cui far deporre l'uovo.
 	 * @throws GenericDinosauroException Se il dinosauro muore per inedia o la razza ha gia' il numero massimo di dinosauri.
 	 */
-	public void deponiUovo(String idDinosauro) throws GenericDinosauroException { // Testato
+	public synchronized void deponiUovo(String idDinosauro) throws GenericDinosauroException { // Testato
 		Dinosauro tempDinosauro = getDinosauroById(idDinosauro);
 		if (!hasNumeroMassimo()) {
 			if (tempDinosauro.hasEnergyToRepl()) {
@@ -214,7 +214,7 @@ public class Razza implements Set<Dinosauro>, Serializable {
 	 * @param newCoord Le nuove coordinate del dinosauro.
 	 * @throws GenericDinosauroException Se il dinosauro muore per inedia o ha gia' raggiunto il suo limite di mosse.
 	 */
-	public void muoviDinosauro(String idDinosauro, Coord newCoord) throws GenericDinosauroException { // Testato
+	public synchronized void muoviDinosauro(String idDinosauro, Coord newCoord) throws GenericDinosauroException { // Testato
 		Dinosauro tempDinosauro = getDinosauroById(idDinosauro);
 		if (tempDinosauro.hasMovimento()) {
 			if (tempDinosauro.getEnergiaAttuale()<tempDinosauro.getEnergiaMovimento()) {
@@ -265,7 +265,7 @@ public class Razza implements Set<Dinosauro>, Serializable {
 	 * @return True se la collezione e' stata modificata (il dinosauro e' stato aggiunto), false se la collezione non e' stata modificata (il dinosauro non e' stato aggiunto).
 	 */
 	@Override
-	public boolean add(Dinosauro e) { // Testato
+	public synchronized boolean add(Dinosauro e) { // Testato
 		if (e != null) {
 			Iterator<Dinosauro> itDinosauro = this.iterator();
 			while (itDinosauro.hasNext()) {
@@ -284,7 +284,7 @@ public class Razza implements Set<Dinosauro>, Serializable {
 	 * @return True se la collezione e' stata modificata (il dinosauro e' stato rimosso), false se la collezione non e' stata modificata (il dinosauro non e' stato rimosso).
 	 */
 	@Override
-	public boolean remove(Object o) {  // Testato
+	public synchronized boolean remove(Object o) {  // Testato
 		if (o != null) {
 			dinosauri.remove((Dinosauro) o);
 			if (this.isEmpty()) {

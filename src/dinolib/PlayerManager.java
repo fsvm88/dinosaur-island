@@ -64,7 +64,7 @@ public class PlayerManager implements List<Giocatore>, Serializable {
 	/**
 	 * Aggiorna tutti i giocatori nella lista sul cambio turno.
 	 */
-	protected void aggiorna() {
+	protected synchronized void aggiorna() {
 		Iterator<Giocatore> itGiocatori = this.iterator();
 		while (itGiocatori.hasNext()) {
 			itGiocatori.next().aggiorna();
@@ -77,7 +77,7 @@ public class PlayerManager implements List<Giocatore>, Serializable {
 	 * @return True se la collezione e' stata modificata, false altrimenti.
 	 */
 	@Override // Testato
-	public boolean add(Giocatore newGiocatore) { return listaGiocatori.add(newGiocatore); } // Testato
+	public synchronized boolean add(Giocatore newGiocatore) { return listaGiocatori.add(newGiocatore); } // Testato
 	/**
 	 * Restituisce un iteratore sui giocatori.
 	 * @return Un iteratore sui giocatori.

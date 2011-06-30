@@ -51,12 +51,12 @@ public class Giocatore implements Serializable {
 	 * Restituisce l'oggetto Punteggio.
 	 * @return L'oggetto Punteggio.
 	 */
-	public Punteggio getPunteggio() { return punteggio; } // Testato
+	public synchronized Punteggio getPunteggio() { return punteggio; } // Testato
 	/**
 	 * Restituisce l'oggetto Razza.
 	 * @return L'oggetto Razza.
 	 */
-	public Razza getRazza() { return razzaDelGiocatore; } // Testato
+	public synchronized Razza getRazza() { return razzaDelGiocatore; } // Testato
 	/**
 	 * Restituisce il nome del giocatore.
 	 * @return Il nome del giocatore.
@@ -69,7 +69,7 @@ public class Giocatore implements Serializable {
 	 * Invoca l'aggiornamento su tutte le variabili aggiornabili del giocatore.
 	 * Punteggio e/o razza.
 	 */
-	public void aggiorna() { // Testato
+	public synchronized void aggiorna() { // Testato
 		if (hasRazza() && getRazza().isEmpty()) {
 			getPunteggio().updatePunteggio(getRazza().getNome(), getRazza().getPunteggio());
 			razzaDelGiocatore = null;
@@ -96,7 +96,7 @@ public class Giocatore implements Serializable {
 	 * @param nuovoNomeRazza Il nome della nuova razza.
 	 * @param nuovoTipoRazza Il tipo della nuova razza.
 	 */
-	public void creaNuovaRazza(String nuovoNomeRazza, Character nuovoTipoRazza) { // Testato
+	public synchronized void creaNuovaRazza(String nuovoNomeRazza, Character nuovoTipoRazza) { // Testato
 		razzaDelGiocatore = new Razza(nuovoNomeRazza, nuovoTipoRazza.charValue());
 	}
 	/**
