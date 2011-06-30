@@ -37,7 +37,7 @@ public class RRScheduler {
 	 * @return True se il giocatore e' stato aggiunto (la collezione e' stata modificata), false altrimenti.
 	 * @throws InterruptedException Se un altro thread sta gia' modificando la collezione.
 	 */
-	protected boolean newTask(String token) throws InterruptedException { // Testato
+	protected synchronized boolean newTask(String token) throws InterruptedException { // Testato
 		if (!playersQueue.contains(token)) {
 			playersQueue.put(token);
 			return true;
@@ -49,7 +49,7 @@ public class RRScheduler {
 	 * @param token Il token del giocatore da rimuovere.
 	 * @return True se il giocatore e' stato rimosso (la collezione e' stata modificata), false altrimenti.
 	 */
-	protected boolean killTask(String token) { // Testato
+	protected synchronized boolean killTask(String token) { // Testato
 		if (playersQueue.contains(token)) {
 			playersQueue.remove(token);
 			return true;

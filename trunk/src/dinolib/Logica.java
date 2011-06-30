@@ -105,7 +105,7 @@ public class Logica implements Runnable {
 	 * @throws FileNotFoundException Se il file non viene trovato.
 	 * @throws ClassNotFoundException Se la classe che deve essere usata per leggere i file non viene trovata. 
 	 */
-	private void caricaPartitaDaFile() throws IOException, ClassNotFoundException, FileNotFoundException {
+	private synchronized void caricaPartitaDaFile() throws IOException, ClassNotFoundException, FileNotFoundException {
 		/**
 		 * Carica file di mappa, se esiste deve esistere anche il file dei giocatori.
 		 * In caso il primo o l'altro non esistano l'eccezione viene gestita e passata al chiamante, che quindi assume un primo avvio.
@@ -119,7 +119,7 @@ public class Logica implements Runnable {
 	 * @throws FileNotFoundException Se il file non viene trovato.
 	 * @throws ClassNotFoundException Se la classe che deve essere usata per leggere i file non viene trovata. 
 	 */
-	private void caricaFileMappa(String nomefile) throws IOException, ClassNotFoundException, FileNotFoundException {
+	private synchronized void caricaFileMappa(String nomefile) throws IOException, ClassNotFoundException, FileNotFoundException {
 		System.out.println("[Logica] Trying to load map file <" + ConfigurationOpts.NOME_FILE_MAPPA + ">...");
 		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nomefile));
 		rifMappa = (Mappa) ois.readObject();
@@ -132,7 +132,7 @@ public class Logica implements Runnable {
 	 * @throws FileNotFoundException Se il file non viene trovato.
 	 * @throws ClassNotFoundException Se la classe che deve essere usata per leggere i file non viene trovata.
 	 */
-	private void caricaFileGiocatori(String nomefile) throws IOException, FileNotFoundException, ClassNotFoundException {
+	private synchronized void caricaFileGiocatori(String nomefile) throws IOException, FileNotFoundException, ClassNotFoundException {
 		System.out.println("[Logica] Trying to load players file <" + ConfigurationOpts.NOME_FILE_GIOCATORI + ">...");
 		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nomefile));
 		pMan = (PlayerManager) ois.readObject();
@@ -144,7 +144,7 @@ public class Logica implements Runnable {
 	 * @throws FileNotFoundException Se il file risulta inaccessibile.
 	 * @throws IOException Se si sono verificati problemi con la scrittura.
 	 */
-	private void salvaPartita() throws FileNotFoundException, IOException {
+	private synchronized void salvaPartita() throws FileNotFoundException, IOException {
 		salvaFileMappa(ConfigurationOpts.NOME_FILE_MAPPA);
 		salvaFileGiocatori(ConfigurationOpts.NOME_FILE_GIOCATORI);
 	}
@@ -154,7 +154,7 @@ public class Logica implements Runnable {
 	 * @throws FileNotFoundException Se il file risulta inaccessibile.
 	 * @throws IOException Se si sono verificati problemi con la scrittura.
 	 */
-	private void salvaFileMappa(String nomefile) throws FileNotFoundException, IOException {
+	private synchronized void salvaFileMappa(String nomefile) throws FileNotFoundException, IOException {
 		System.out.println("[Logica] Trying to save map file <" + ConfigurationOpts.NOME_FILE_MAPPA + ">...");
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nomefile));
 		oos.writeObject(rifMappa);
@@ -167,7 +167,7 @@ public class Logica implements Runnable {
 	 * @throws FileNotFoundException Se il file risulta inaccessibile.
 	 * @throws IOException Se si sono verificati problemi con la scrittura.
 	 */
-	private void salvaFileGiocatori(String nomefile) throws FileNotFoundException, IOException {
+	private synchronized void salvaFileGiocatori(String nomefile) throws FileNotFoundException, IOException {
 		System.out.println("[Logica] Trying to save player file <" + ConfigurationOpts.NOME_FILE_GIOCATORI + ">...");
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nomefile));
 		oos.writeObject(pMan);
@@ -177,39 +177,39 @@ public class Logica implements Runnable {
 	/**
 	 * Crea una nuova mappa.
 	 */
-	private void creaNuovaMappa() { rifMappa = new Mappa(ConfigurationOpts.LATO_MAPPA); }
+	private synchronized void creaNuovaMappa() { rifMappa = new Mappa(ConfigurationOpts.LATO_MAPPA); }
 
 	/* Tutti i getter */
 	/**
 	 * Restituisce l'oggetto Mappa.
 	 * @return L'oggetto Mappa.
 	 */
-	public Mappa getMappa() { return rifMappa; } // Testato
+	public synchronized Mappa getMappa() { return rifMappa; } // Testato
 	/**
 	 * Restituisce l'oggetto PlayerManager.
 	 * @return L'oggetto PlayerManager.
 	 */
-	public PlayerManager getPMan() { return pMan; } // Testato
+	public synchronized PlayerManager getPMan() { return pMan; } // Testato
 	/**
 	 * Restituisce l'oggetto ConnectionManager.
 	 * @return L'oggetto ConnectionManager.
 	 */
-	public ConnectionManager getCMan() { return cMan; } // Testato
+	public synchronized ConnectionManager getCMan() { return cMan; } // Testato
 	/**
 	 * Restituisce l'oggetto RRScheduler.
 	 * @return L'oggetto RRScheduler.
 	 */
-	public RRScheduler getRRSched() { return rrsched; } // Testato
+	public synchronized RRScheduler getRRSched() { return rrsched; } // Testato
 	/**
 	 * Dice se la logica sta ancora lavorando.
 	 * @return True se la logica sta ancora lavorando, false altrimenti.
 	 */
-	public boolean isLogicaRunning() { return logicaIsRunning; } // Testato
+	public synchronized boolean isLogicaRunning() { return logicaIsRunning; } // Testato
 	/**
 	 * Dice se la logica sta ancora lavorando.
 	 * @return True se la logica sta ancora lavorando, false altrimenti.
 	 */
-	public boolean isLogicaShuttingDown() { return logicaIsShuttingDown; } // Testato
+	public synchronized boolean isLogicaShuttingDown() { return logicaIsShuttingDown; } // Testato
 	/**
 	 * Ritorna il giocatore richiesto tramite il token.
 	 * @param token Il token dell'utente richiesto.
@@ -295,14 +295,14 @@ public class Logica implements Runnable {
 		return tempGiocatore;
 	}
 
-	private void broadcastCambioTurno() {
+	protected synchronized void broadcastCambioTurno() {
 
 	}
 
 	/**
 	 * Aggiorna l'ambiente di gioco ogni volta che si passa da un giocatore all'altro.
 	 */
-	private void updatePartita() {
+	private synchronized void updatePartita() {
 		getMappa().aggiorna();
 		getPMan().aggiorna();
 	}
@@ -379,7 +379,7 @@ public class Logica implements Runnable {
 	/**
 	 * Implementa il metodo stop per lo shutdown, che chiude la logica e salva i file.
 	 */
-	private void stop() {
+	private synchronized void stop() {
 		/* Fai uscire tutti gli utenti dalla partita.
 		 * Rende la mappa consistente e rimuove tutti i dinosauri. */
 		System.out.println("[Logica] Disconnecting players from game...");
@@ -407,7 +407,7 @@ public class Logica implements Runnable {
 	/**
 	 * Fornisce a server un modo per chiudere logica in modo corretto.
 	 */
-	public void shutdownLogica() { logicaIsShuttingDown = true; }
+	public synchronized void shutdownLogica() { logicaIsShuttingDown = true; }
 
 	/* Helper esterni */
 	/**
@@ -419,7 +419,7 @@ public class Logica implements Runnable {
 	 * @param tempGiocatore Il giocatore i cui dinosauri devono essere rimossi dalla mappa.	
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 */
-	private void rimuoviDinosauriDallaMappa(Giocatore tempGiocatore) {
+	private synchronized void rimuoviDinosauriDallaMappa(Giocatore tempGiocatore) {
 		if (tempGiocatore.hasRazza()) {
 			Iterator<Dinosauro> itDinosauri = tempGiocatore.getRazza().iterator();
 			Dinosauro tempDinosauro;
@@ -437,7 +437,7 @@ public class Logica implements Runnable {
 	 * @param maxDistance La distanza massima dal punto di origine dove piazzare il dinosauro.
 	 * @return True se il dinosauro e' stato piazzato, false altrimenti.
 	 */
-	private boolean trySpawn(Dinosauro tempDinosauro, int maxDistance) {
+	private synchronized boolean trySpawn(Dinosauro tempDinosauro, int maxDistance) {
 		Coord tempCoord = null;
 		if (maxDistance == 0) {
 			if (!isCellaAcqua(tempDinosauro.getCoord()) &&
@@ -473,7 +473,7 @@ public class Logica implements Runnable {
 	 * Quando l'utente esegue il login aggiunge i dinosauri alla mappa.
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 */
-	private void inserisciDinosauriNellaMappa(String token) throws InvalidTokenException {
+	private synchronized void inserisciDinosauriNellaMappa(String token) throws InvalidTokenException {
 		if (getPlayerByToken(token).hasRazza()) {
 			Iterator<Dinosauro> itDinosauri = getPlayerByToken(token).getRazza().iterator();
 			while (itDinosauri.hasNext()) {
@@ -492,12 +492,8 @@ public class Logica implements Runnable {
 		if ( (0 <= coordTest.getX()) &&
 				(coordTest.getX() < getMappa().getLatoDellaMappa()) &&
 				(0 <= coordTest.getY()) &&
-				(coordTest.getY() < getMappa().getLatoDellaMappa())) {
-			return true;
-		}
-		else {
-			return false;
-		}
+				(coordTest.getY() < getMappa().getLatoDellaMappa())) { return true; }
+		else { return false; }
 	}
 	/**
 	 * Passa il turno.
@@ -512,7 +508,7 @@ public class Logica implements Runnable {
 	 * @throws GenericDinosauroException Se viene riscontrata qualche eccezione nella gestione dei dinosauri.
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 */
-	public String doDeponiUovo(String token, String idDinosauro) throws GenericDinosauroException, InvalidTokenException { // Testato
+	public synchronized String doDeponiUovo(String token, String idDinosauro) throws GenericDinosauroException, InvalidTokenException { // Testato
 		Coord coordToRemove = null;
 		try {
 			if (getPlayerByToken(token).hasRazza()) {
@@ -560,7 +556,7 @@ public class Logica implements Runnable {
 	 * @throws GenericDinosauroException Se viene riscontrata qualche eccezione nella gestione dei dinosauri.
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 */
-	public boolean doCresciDinosauro(String token, String idDinosauro) throws InvalidTokenException, GenericDinosauroException { // Testato
+	public synchronized boolean doCresciDinosauro(String token, String idDinosauro) throws InvalidTokenException, GenericDinosauroException { // Testato
 		Coord coordToRemove = null;
 		try {
 			if (getPlayerByToken(token).getRazza().existsDinosauroWithId(idDinosauro)) {
@@ -586,7 +582,7 @@ public class Logica implements Runnable {
 	 * @return True se l'operazione ha successo, false altrimenti.
 	 * @throws UserExistsException Se l'utente esiste gia'.
 	 */
-	public boolean doCreaUtente(String nomeGiocatore, String pwd) throws UserExistsException { // Testato
+	public synchronized boolean doCreaUtente(String nomeGiocatore, String pwd) throws UserExistsException { // Testato
 		if (!getPMan().exists(nomeGiocatore)) {
 			return getPMan().add(new Giocatore(nomeGiocatore, pwd));
 		}
@@ -601,7 +597,7 @@ public class Logica implements Runnable {
 	 * @return True se l'operazione ha successo, false altrimenti.
 	 * @throws UserAuthenticationFailedException Se l'autenticazione fallisce (la password non e' valida).
 	 */
-	public boolean doLogin(String nomeGiocatore, String suppliedPassword) throws UserAuthenticationFailedException { // Testato
+	public synchronized boolean doLogin(String nomeGiocatore, String suppliedPassword) throws UserAuthenticationFailedException { // Testato
 		if (getPMan().exists(nomeGiocatore)) {
 			Giocatore tempGiocatore = getPMan().getPlayer(nomeGiocatore);
 			if (tempGiocatore.passwordIsValid(suppliedPassword)) {
@@ -621,7 +617,7 @@ public class Logica implements Runnable {
 	 * @throws NomeRazzaOccupatoException Se il nome della razza e' occupato.
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 */
-	public boolean doCreaRazza(String token, String nomeRazza, Character tipoRazza) throws NomeRazzaOccupatoException, InvalidTokenException { // Testato
+	public synchronized boolean doCreaRazza(String token, String nomeRazza, Character tipoRazza) throws NomeRazzaOccupatoException, InvalidTokenException { // Testato
 		if (isPlayerLogged(token)) {
 			Iterator<Giocatore> itGiocatori = getPMan().iterator();
 			Giocatore tempGiocatore = null;
@@ -645,7 +641,7 @@ public class Logica implements Runnable {
 	 * @return True se il dinosauro e' stato creato, false altrimenti.
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 */
-	private boolean creaPrimoDinosauro(String token) throws InvalidTokenException {
+	private synchronized boolean creaPrimoDinosauro(String token) throws InvalidTokenException {
 		Giocatore tempGiocatore = getPlayerByToken(token);
 		if (tempGiocatore.getRazza().getTipo().equals('c')) {
 			if(tempGiocatore.getRazza().add(new Carnivoro(CommonUtils.getNewRandomCoord(getMappa().getLatoDellaMappa())))) {
@@ -668,7 +664,7 @@ public class Logica implements Runnable {
 	 * @throws TroppiGiocatoriException Se ci sono troppi giocatori in partita.
 	 * @throws RazzaNonCreataException Se la razza per l'utente non e' stata creata.
 	 */
-	public boolean doAccessoPartita(String token) throws InvalidTokenException, TroppiGiocatoriException, RazzaNonCreataException, InterruptedException { // Testato
+	public synchronized boolean doAccessoPartita(String token) throws InvalidTokenException, TroppiGiocatoriException, RazzaNonCreataException, InterruptedException { // Testato
 		if (isPlayerLogged(token)) {
 			if (getPlayerByToken(token).hasRazza()) {
 				if (!getRRSched().maxPlayers()) {
@@ -693,7 +689,7 @@ public class Logica implements Runnable {
 	 * @return True se l'uscita ha avuto successo, false altrimenti.
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 */
-	public boolean doUscitaPartita(String token) throws InvalidTokenException { // Testato
+	public synchronized boolean doUscitaPartita(String token) throws InvalidTokenException { // Testato
 		if (isPlayerInGame(token)) {
 			getRRSched().killTask(token);
 			rimuoviDinosauriDallaMappa(getPlayerByToken(token));
@@ -707,7 +703,7 @@ public class Logica implements Runnable {
 	 * @return True se il logout ha avuto successo, false altrimenti.
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 */
-	public boolean doLogout(String token) throws InvalidTokenException { // Testato
+	public synchronized boolean doLogout(String token) throws InvalidTokenException { // Testato
 		if (isPlayerLogged(token)) {
 			if (isPlayerInGame(token)) {
 				if(!doUscitaPartita(token)) {
@@ -802,9 +798,7 @@ public class Logica implements Runnable {
 			/* Se l'array non ha celle ritorno false.
 			 * Attenzione! Dovrebbe essere una condizione NON verificabile, se qui l'array non ha celle o qualcosa è andato storto sopra,
 			 * oppure sono su una singola isola di terra, che è comunque non verificabile come scenario. */
-			if (myPaths.isEmpty()) {
-				return false;
-			}
+			if (myPaths.isEmpty()) { return false; }
 			Coord curCoord = null;
 			boolean hasPath = false;
 			/* Fintanto che l'array non è vuoto */
@@ -916,7 +910,7 @@ public class Logica implements Runnable {
 	 * @return Una stringa che può essere: "destinazioneNonValida" se la destinazione non è valida, "p" se c'è stato un combattimento perso, "v" se il combattimento è stato vinto, "ok" se il movimento ha avuto successo.
 	 * @throws InvalidTokenException Se il token non e' valido.
 	 */
-	public String doMuoviDinosauro(String token, String idDinosauro, Coord newCoord) throws InvalidTokenException, GenericDinosauroException { // Testato // TODO fixare un apparente loop infinito.
+	public synchronized String doMuoviDinosauro(String token, String idDinosauro, Coord newCoord) throws InvalidTokenException, GenericDinosauroException { // Testato
 		Dinosauro tempDinosauro = getPlayerByToken(token).getRazza().getDinosauroById(idDinosauro);
 		Coord oldCoord = tempDinosauro.getCoord();
 		if (!isValidCoord(newCoord) ||

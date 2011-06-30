@@ -252,7 +252,7 @@ public abstract class Dinosauro implements Serializable {
 	 * Invecchia il dinosauro.
 	 * Aumenta di uno il turno di vita e rimuove i marker per movimento e azione statica compiuti.
 	 */
-	protected void invecchia() { // Testato
+	protected synchronized void invecchia() { // Testato
 		this.turnoDiVita += 1;
 		this.azioneStaticaCompiuta = false;
 		this.movimentoCompiuto = false;
@@ -292,7 +292,7 @@ public abstract class Dinosauro implements Serializable {
 	 * Assegna il marker che dice che ha gia' compiuto un'azione statica.
 	 * Aggiorna l'energia attuale del dinosauro.
 	 */
-	protected void cresci() { // Testato
+	protected synchronized void cresci() { // Testato
 		if (this.getDimensione() < ConfigurationOpts.DIMENSIONE_MASSIMA_DINOSAURO) {
 			this.setDimensione((this.getDimensione()+1));
 			this.updateEnergiaMax();
@@ -307,7 +307,7 @@ public abstract class Dinosauro implements Serializable {
 	 * Serve solo per la parte di aggiornamento dell'energia del dinosauro, il resto e' fatto piu' in alto nella logica).
 	 * Assegna il marker che dice che ha gia' compiuto un'azione statica.
 	 */
-	protected void deponiUovo() {
+	protected synchronized void deponiUovo() {
 		this.setEnergiaAttuale(this.getEnergiaAttuale()-ConfigurationOpts.ENERGIA_DEPOSIZIONE_UOVO);
 		this.azioneStaticaCompiuta = true;
 	}

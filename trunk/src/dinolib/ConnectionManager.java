@@ -40,7 +40,7 @@ public class ConnectionManager {
 	 * @param token Il token del giocatore da aggiungere.
 	 * @return True se il giocatore e' stato aggiunto, false se il giocatore non e' stato aggiunto.
 	 */
-	protected boolean collega(String nomeGiocatore, String token) { // Testato
+	protected synchronized boolean collega(String nomeGiocatore, String token) { // Testato
 		if (connTable.put(token, nomeGiocatore) == null) return true;
 		else return false;
 	}
@@ -49,7 +49,7 @@ public class ConnectionManager {
 	 * @param token Il token del giocatore da scollegare.
 	 * @return True se l'utente e' stato scollegato, false altrimenti.
 	 */
-	protected boolean scollega(String token) { // Testato
+	protected synchronized boolean scollega(String token) { // Testato
 		if (connTable.remove(token) != null) return true;
 		else return false;
 	}
