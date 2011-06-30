@@ -1,1 +1,15 @@
+client
+client.BackendCommunication
+client.Buttons
+client.Exceptions
+client.FrontendCommunication
+client.InputVerifiers
+client.MainFrames
+client.Panels
 dinolib
+dinolib.CommunicationObjects
+dinolib.Exceptions
+dinolib.GameObjects
+server
+server.BackendCommunication
+server.FrontendCommunication

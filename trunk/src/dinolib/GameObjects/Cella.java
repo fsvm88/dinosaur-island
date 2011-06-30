@@ -105,7 +105,7 @@ public abstract class Cella implements Serializable {
 	private HashSet<String> visitedFrom;
 	/**
 	 * Controlla se la cella e' stata visitata dall'utente.
-	 * @param userName Il nome del giocatore che non so se ha visitato la cella.
+	 * @param nomeGiocatore Il nome del giocatore che non so se ha visitato la cella.
 	 * @return True se il nome del giocatore passato come argomento e' gia' passato sulla cella, false se il giocatore e' passato.
 	 */
 	public boolean isUserPassed(String nomeGiocatore) {

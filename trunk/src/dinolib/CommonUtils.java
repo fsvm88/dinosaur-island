@@ -12,7 +12,7 @@ import dinolib.GameObjects.Coord;
 public abstract class CommonUtils {
 	/* Funzioni per la generazione di valori casuali. */
 	/**
-	 * Genera di un nuovo token alfanumerico.
+	 * Genera un nuovo token alfanumerico.
 	 * @return Un token alfanumerico casuale.
 	 */
 	public static String getNewToken() { return Long.toString(Double.doubleToLongBits(Math.random())); }

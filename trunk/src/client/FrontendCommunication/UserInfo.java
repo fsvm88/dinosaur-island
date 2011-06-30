@@ -29,17 +29,17 @@ public class UserInfo {
 	
 	/**
 	 * Imposta il nome dell'utente.
-	 * @param newNomeUtente Il nome dell'utente
+	 * @param newNomeUtente Il nome dell'utente.
 	 */
 	public void setNome(String newNomeUtente) { this.nomeUtente = newNomeUtente; }
 	/**
 	 * Imposta la password dell'utente.
-	 * @param newNomeUtente La password dell'utente
+	 * @param newPwdUtente La password dell'utente.
 	 */
 	public void setPwd(String newPwdUtente) { this.pwdUtente = newPwdUtente; }
 	/**
 	 * Imposta il token dell'utente.
-	 * @param newNomeUtente Il token dell'utente
+	 * @param newToken Il token dell'utente.
 	 */
 	public void setToken(String newToken) { this.curToken = newToken; }
 	/**

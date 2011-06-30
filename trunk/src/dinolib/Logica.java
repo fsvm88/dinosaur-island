@@ -577,7 +577,7 @@ public class Logica implements Runnable {
 	/**
 	 * Implementa la creazione dell'utente, se esiste già lancia eccezione.
 	 * Viene chiamato dagli adattatori.
-	 * @param user Il nome del nuovo utente.
+	 * @param nomeGiocatore Il nome del nuovo utente.
 	 * @param pwd La password del nuovo utente.
 	 * @return True se l'operazione ha successo, false altrimenti.
 	 * @throws UserExistsException Se l'utente esiste gia'.
